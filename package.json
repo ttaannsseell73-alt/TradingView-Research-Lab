@@ -1,6 +1,6 @@
 {
   "name": "tradingview-research-lab",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,7 +11,8 @@
     "research": "npm run build && node scripts/run-research.mjs",
     "acceptance": "npm run build && node scripts/run-acceptance.mjs",
     "fetch:binance": "node scripts/fetch-binance.mjs",
-    "final:local": "npm run build && node scripts/final-local.mjs"
+    "final:local": "npm run build && node scripts/final-local.mjs",
+    "final:local:publish": "npm run build && node scripts/final-local.mjs --publish"
   },
   "devDependencies": {
     "typescript": "5.8.3"

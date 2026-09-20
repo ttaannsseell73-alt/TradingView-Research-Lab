@@ -25,10 +25,10 @@ Promotion is per setup, not all-or-nothing. A setup is a candidate only if every
 
 GitHub-hosted runners are not relied on for Binance Futures downloads because that endpoint can be geo-blocked from hosted infrastructure. The final full-size market-data acceptance is intentionally local.
 
-One command performs the complete final gate for BTCUSDT on 1m and 5m with 50,000 candles each:
+One command performs the complete final gate for BTCUSDT on 1m and 5m with 50,000 candles each **and publishes only the compact JSON evidence back to main**:
 
 ```bash
-npm run final:local
+npm run final:local:publish
 ```
 
-It produces `FINAL_ACCEPTANCE.json`. No API key is required.
+The raw CSV market data stays local and ignored. The evidence records source commit, runtime metadata and SHA-256 hashes of the raw datasets. No API key is required.

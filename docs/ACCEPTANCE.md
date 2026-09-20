@@ -2,15 +2,23 @@
 
 CI proves software integrity. Historical market evidence is a separate gate because hosted GitHub runners can be geo-blocked from Binance Futures endpoints.
 
-## One-command final gate
+## One-command final gate and evidence publication
 
 On the target Windows machine:
 
 ```bash
-npm run final:local
+npm run final:local:publish
 ```
 
-This downloads 50,000 public USDⓈ-M candles for BTCUSDT on both 1m and 5m, then runs the canonical acceptance pipeline and writes `FINAL_ACCEPTANCE.json`.
+This downloads 50,000 public USDⓈ-M candles for BTCUSDT on both 1m and 5m, runs the canonical acceptance pipeline, writes `FINAL_ACCEPTANCE.json`, commits the compact JSON evidence files, and pushes them to `main`.
+
+Raw CSV market data is not committed. The final evidence contains its SHA-256 hashes and byte sizes.
+
+Optional local-only run:
+
+```bash
+npm run final:local
+```
 
 Optional symbol / sample size:
 
