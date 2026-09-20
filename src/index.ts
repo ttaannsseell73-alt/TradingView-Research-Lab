@@ -75,3 +75,20 @@ export type {
   SonarScalpV2Stats,
   SonarScalpV2StudyConfig,
 } from './sonarScalpV2.js';
+
+export {
+  detectSonarOrderflowEventsFromRows,
+  evaluateSonarOrderflowEvents,
+  parseSonarOrderflowCsv,
+  runSonarOrderflowRobustness,
+  summarizeSonarOrderflowOutcomes,
+} from './sonarOrderflow.js';
+export type {
+  SonarOrderflowConfig,
+  SonarOrderflowEvent,
+  SonarOrderflowOutcome,
+  SonarOrderflowReport,
+  SonarOrderflowRow,
+  SonarOrderflowRun,
+  SonarOrderflowStats,
+} from './sonarOrderflow.js';

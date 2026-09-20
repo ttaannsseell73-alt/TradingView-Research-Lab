@@ -1,12 +1,12 @@
 {
   "name": "tradingview-research-lab",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "node --test tests/*.test.mjs",
-    "check:scripts": "node --check scripts/fetch-binance.mjs && node --check scripts/run-research.mjs && node --check scripts/run-acceptance.mjs && node --check scripts/final-local.mjs && node --check scripts/run-sonar-acceptance.mjs && node --check scripts/final-sonar-local.mjs && node --check scripts/run-sonar-v2-acceptance.mjs && node --check scripts/final-sonar-v2-local.mjs",
+    "check:scripts": "node --check scripts/fetch-binance.mjs && node --check scripts/run-research.mjs && node --check scripts/run-acceptance.mjs && node --check scripts/final-local.mjs && node --check scripts/run-sonar-acceptance.mjs && node --check scripts/final-sonar-local.mjs && node --check scripts/run-sonar-v2-acceptance.mjs && node --check scripts/final-sonar-v2-local.mjs && node --check scripts/fetch-sonar-orderflow.mjs && node --check scripts/run-sonar-v3-orderflow-acceptance.mjs && node --check scripts/final-sonar-v3-orderflow-local.mjs",
     "check": "npm run build && npm run check:scripts && npm test",
     "research": "npm run build && node scripts/run-research.mjs",
     "acceptance": "npm run build && node scripts/run-acceptance.mjs",
@@ -19,7 +19,9 @@
     "sonar:local:publish": "npm run build && node scripts/final-sonar-local.mjs --publish",
     "sonar:v2:acceptance": "npm run build && node scripts/run-sonar-v2-acceptance.mjs",
     "sonar:v2:local": "npm run build && node scripts/final-sonar-v2-local.mjs",
-    "sonar:v2:local:publish": "npm run build && node scripts/final-sonar-v2-local.mjs --publish"
+    "sonar:v2:local:publish": "npm run build && node scripts/final-sonar-v2-local.mjs --publish",
+    "sonar:v3:local": "npm run build && node scripts/final-sonar-v3-orderflow-local.mjs",
+    "sonar:v3:local:publish": "npm run build && node scripts/final-sonar-v3-orderflow-local.mjs --publish"
   },
   "devDependencies": {
     "typescript": "5.8.3"
