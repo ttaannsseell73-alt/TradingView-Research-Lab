@@ -14,17 +14,17 @@ permissions:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - name: Checkout research lab
         uses: actions/checkout@v4
 
-      - name: Checkout grid_trading_bot
+      - name: Checkout pinned grid_trading_bot
         uses: actions/checkout@v4
         with:
           repository: jordantete/grid_trading_bot
-          ref: master
+          ref: 93d5e57191bdf10ce3be4f8f6db30e768ba9dd60
           path: upstream/grid_trading_bot
 
       - uses: actions/setup-python@v5
@@ -37,14 +37,23 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
-      - name: Build offline benchmark datasets and configs
+      - name: Build offline robustness datasets and configs
         working-directory: upstream/grid_trading_bot
         shell: bash
         run: |
           python - <<'PY'
-          import csv, io, json, urllib.request, zipfile
+          import calendar
+          import csv
+          import io
+          import json
+          import urllib.request
+          import zipfile
           from pathlib import Path
           import pandas as pd
+
+          months = ("2026-05", "2026-06", "2026-07", "2026-08")
+          coins = ("BTC", "ETH", "SOL")
+          strategies = ("simple_grid", "hedged_grid")
 
           data_dir = Path("benchmark_data")
           cfg_dir = Path("benchmark_configs")
@@ -52,86 +61,95 @@ jobs:
           for d in (data_dir, cfg_dir, out_dir):
               d.mkdir(parents=True, exist_ok=True)
 
-          for coin in ("BTC", "ETH", "SOL"):
-              symbol = f"{coin}USDT"
-              url = f"https://data.binance.vision/data/futures/um/monthly/klines/{symbol}/1m/{symbol}-1m-2026-08.zip"
-              print("Downloading", url)
-              with urllib.request.urlopen(url, timeout=90) as resp:
-                  raw = resp.read()
-              with zipfile.ZipFile(io.BytesIO(raw)) as zf:
-                  name = next(n for n in zf.namelist() if n.endswith(".csv"))
-                  rows = list(csv.reader(io.StringIO(zf.read(name).decode("utf-8"))))
+          for month in months:
+              year, mon = map(int, month.split("-"))
+              last_day = calendar.monthrange(year, mon)[1]
+              train_start = f"{month}-01"
+              test_start = f"{month}-08"
+              test_end = f"{month}-{last_day:02d} 23:59:00"
 
-              parsed = []
-              for row in rows:
-                  if not row:
-                      continue
-                  try:
-                      ts = int(row[0])
-                  except ValueError:
-                      continue
-                  if ts > 10_000_000_000_000:
-                      ts //= 1000
-                  parsed.append([ts, *map(float, row[1:6])])
+              for coin in coins:
+                  symbol = f"{coin}USDT"
+                  url = f"https://data.binance.vision/data/futures/um/monthly/klines/{symbol}/1m/{symbol}-1m-{month}.zip"
+                  print("Downloading", url)
+                  with urllib.request.urlopen(url, timeout=90) as resp:
+                      raw = resp.read()
+                  with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+                      name = next(n for n in zf.namelist() if n.endswith(".csv"))
+                      rows = list(csv.reader(io.StringIO(zf.read(name).decode("utf-8"))))
 
-              df = pd.DataFrame(parsed, columns=["timestamp","open","high","low","close","volume"])
-              df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True).dt.tz_localize(None)
-              train = df[(df["timestamp"] >= "2026-08-01") & (df["timestamp"] < "2026-08-08")]
-              test = df[(df["timestamp"] >= "2026-08-08") & (df["timestamp"] <= "2026-08-31 23:59:00")]
-              if len(train) < 9000 or len(test) < 30000:
-                  raise SystemExit(f"Insufficient data for {coin}: train={len(train)} test={len(test)}")
+                  parsed = []
+                  for row in rows:
+                      if not row:
+                          continue
+                      try:
+                          ts = int(row[0])
+                      except ValueError:
+                          continue
+                      if ts > 10_000_000_000_000:
+                          ts //= 1000
+                      parsed.append([ts, *map(float, row[1:6])])
 
-              bottom = float(train["low"].quantile(0.02)) * 0.995
-              top = float(train["high"].quantile(0.98)) * 1.005
-              if not top > bottom:
-                  raise SystemExit(f"Invalid grid range for {coin}")
+                  df = pd.DataFrame(parsed, columns=["timestamp","open","high","low","close","volume"])
+                  df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True).dt.tz_localize(None)
+                  train = df[(df["timestamp"] >= train_start) & (df["timestamp"] < test_start)]
+                  test = df[(df["timestamp"] >= test_start) & (df["timestamp"] <= test_end)]
+                  if len(train) < 9000 or len(test) < 30000:
+                      raise SystemExit(f"Insufficient data for {coin} {month}: train={len(train)} test={len(test)}")
 
-              csv_path = data_dir / f"{symbol}_2026-08.csv"
-              df.to_csv(csv_path, index=False)
+                  bottom = float(train["low"].quantile(0.02)) * 0.995
+                  top = float(train["high"].quantile(0.98)) * 1.005
+                  if not top > bottom:
+                      raise SystemExit(f"Invalid grid range for {coin} {month}")
 
-              cfg = {
-                "exchange": {
-                  "name": "binance",
-                  "trading_fee": 0.0004,
-                  "trading_mode": "backtest"
-                },
-                "pair": {
-                  "base_currency": coin,
-                  "quote_currency": "USDT"
-                },
-                "trading_settings": {
-                  "timeframe": "1m",
-                  "period": {
-                    "start_date": "2026-08-08T00:00:00Z",
-                    "end_date": "2026-08-31T23:59:00Z"
-                  },
-                  "initial_balance": 10000,
-                  "historical_data_file": str(csv_path)
-                },
-                "grid_strategy": {
-                  "type": "hedged_grid",
-                  "spacing": "geometric",
-                  "num_grids": 8,
-                  "range": {"top": top, "bottom": bottom},
-                  "buy_ratio": 1.0,
-                  "sell_ratio": 1.0
-                },
-                "risk_management": {
-                  "take_profit": {"enabled": False, "threshold": 0},
-                  "stop_loss": {"enabled": False, "threshold": 0}
-                },
-                "execution": {
-                  "backtest_slippage": 0.0005,
-                  "reconciliation_interval": 300.0,
-                  "reconciliation_balance_tolerance": 0.01
-                },
-                "logging": {"log_level": "INFO", "log_to_file": False}
-              }
-              (cfg_dir / f"{coin}.json").write_text(json.dumps(cfg, indent=2))
-              print(coin, "range", bottom, top, "train", len(train), "test", len(test))
+                  csv_path = data_dir / f"{symbol}_{month}.csv"
+                  df.to_csv(csv_path, index=False)
+
+                  for strategy in strategies:
+                      cfg = {
+                        "exchange": {
+                          "name": "binance",
+                          "trading_fee": 0.0004,
+                          "trading_mode": "backtest"
+                        },
+                        "pair": {
+                          "base_currency": coin,
+                          "quote_currency": "USDT"
+                        },
+                        "trading_settings": {
+                          "timeframe": "1m",
+                          "period": {
+                            "start_date": f"{test_start}T00:00:00Z",
+                            "end_date": f"{month}-{last_day:02d}T23:59:00Z"
+                          },
+                          "initial_balance": 10000,
+                          "historical_data_file": str(csv_path)
+                        },
+                        "grid_strategy": {
+                          "type": strategy,
+                          "spacing": "geometric",
+                          "num_grids": 8,
+                          "range": {"top": top, "bottom": bottom},
+                          "buy_ratio": 1.0,
+                          "sell_ratio": 1.0
+                        },
+                        "risk_management": {
+                          "take_profit": {"enabled": False, "threshold": 0},
+                          "stop_loss": {"enabled": False, "threshold": 0}
+                        },
+                        "execution": {
+                          "backtest_slippage": 0.0005,
+                          "reconciliation_interval": 300.0,
+                          "reconciliation_balance_tolerance": 0.01
+                        },
+                        "logging": {"log_level": "WARNING", "log_to_file": False}
+                      }
+                      stem = f"{coin}-{month}-{strategy}"
+                      (cfg_dir / f"{stem}.json").write_text(json.dumps(cfg, indent=2))
+                  print(month, coin, "range", bottom, top, "train", len(train), "test", len(test))
           PY
 
-      - name: Run BTC ETH SOL backtests
+      - name: Run robustness backtests
         working-directory: upstream/grid_trading_bot
         shell: bash
         run: |
@@ -176,11 +194,17 @@ jobs:
           PY
 
           set -euo pipefail
-          for coin in BTC ETH SOL; do
-            python benchmark_runner.py               "benchmark_configs/$coin.json"               "benchmark_results/$coin.json"
+          for month in 2026-05 2026-06 2026-07 2026-08; do
+            for coin in BTC ETH SOL; do
+              for strategy in simple_grid hedged_grid; do
+                stem="$coin-$month-$strategy"
+                echo "=== $stem ==="
+                python benchmark_runner.py                   "benchmark_configs/$stem.json"                   "benchmark_results/$stem.json"
+              done
+            done
           done
 
-      - name: Normalize summary
+      - name: Normalize robustness summary
         working-directory: upstream/grid_trading_bot
         shell: bash
         run: |
@@ -188,35 +212,85 @@ jobs:
           import json
           from pathlib import Path
 
+          months = ("2026-05", "2026-06", "2026-07", "2026-08")
+          coins = ("BTC", "ETH", "SOL")
+          strategies = ("simple_grid", "hedged_grid")
+
+          def pct(v):
+              return float(str(v).replace("%","").strip())
+
+          def num(v):
+              return float(str(v).split()[0])
+
           out = {
             "engine": "jordantete/grid_trading_bot",
-            "revision": "master",
+            "revision": "93d5e57191bdf10ce3be4f8f6db30e768ba9dd60",
             "exchange": "binance",
             "market_data": "Binance USD-M futures 1m OHLCV",
-            "training_window_for_grid_range": ["2026-08-01", "2026-08-07"],
-            "evaluation_window": ["2026-08-08", "2026-08-31"],
+            "protocol": {
+              "months": list(months),
+              "range_training_days": "day 1 through day 7 of each month",
+              "evaluation_days": "day 8 through month end",
+              "range_rule": "train-only low q02/high q98 expanded 0.5%",
+              "grid_levels": 8,
+              "spacing": "geometric",
+              "initial_balance": 10000
+            },
             "costs": {"trading_fee": 0.0004, "backtest_slippage": 0.0005},
-            "symbols": {}
+            "runs": {},
+            "aggregate": {}
           }
-          for coin in ("BTC","ETH","SOL"):
-              data = json.loads(Path(f"benchmark_results/{coin}.json").read_text())
-              if not data:
-                  raise SystemExit(f"No performance result for {coin}")
-              item = data
-              cfg = json.loads(Path(f"benchmark_configs/{coin}.json").read_text())
-              out["symbols"][coin] = {
-                "performance_summary": item.get("performance_summary", {}),
-                "order_count": len(item.get("orders", [])),
-                "grid": cfg.get("grid_strategy", {})
+
+          buckets = {s: [] for s in strategies}
+
+          for month in months:
+              for coin in coins:
+                  for strategy in strategies:
+                      stem = f"{coin}-{month}-{strategy}"
+                      item = json.loads(Path(f"benchmark_results/{stem}.json").read_text())
+                      perf = item["performance_summary"]
+                      cfg = json.loads(Path(f"benchmark_configs/{stem}.json").read_text())
+                      rec = {
+                        "roi_pct": pct(perf["ROI"]),
+                        "max_drawdown_pct": pct(perf["Max Drawdown"]),
+                        "buy_hold_return_pct": pct(perf["Buy and Hold Return %"]),
+                        "excess_vs_buy_hold_pct": pct(perf["ROI"]) - pct(perf["Buy and Hold Return %"]),
+                        "grid_trading_gains": num(perf["Grid Trading Gains"]),
+                        "total_fees": num(perf["Total Fees"]),
+                        "final_balance": num(perf["Final Balance (Fiat)"]),
+                        "buy_trades": int(perf["Number of Buy Trades"]),
+                        "sell_trades": int(perf["Number of Sell Trades"]),
+                        "order_count": len(item.get("orders", [])),
+                        "range": cfg["grid_strategy"]["range"]
+                      }
+                      out["runs"][stem] = rec
+                      buckets[strategy].append(rec)
+
+          for strategy, rows in buckets.items():
+              out["aggregate"][strategy] = {
+                "run_count": len(rows),
+                "positive_roi_runs": sum(r["roi_pct"] > 0 for r in rows),
+                "positive_grid_gains_runs": sum(r["grid_trading_gains"] > 0 for r in rows),
+                "beat_buy_hold_runs": sum(r["excess_vs_buy_hold_pct"] > 0 for r in rows),
+                "mean_roi_pct": sum(r["roi_pct"] for r in rows) / len(rows),
+                "median_roi_pct": sorted(r["roi_pct"] for r in rows)[len(rows)//2-1:len(rows)//2+1],
+                "worst_roi_pct": min(r["roi_pct"] for r in rows),
+                "best_roi_pct": max(r["roi_pct"] for r in rows),
+                "worst_max_drawdown_pct": max(r["max_drawdown_pct"] for r in rows),
+                "mean_excess_vs_buy_hold_pct": sum(r["excess_vs_buy_hold_pct"] for r in rows) / len(rows),
+                "grid_trading_gains_sum": sum(r["grid_trading_gains"] for r in rows),
+                "fees_sum": sum(r["total_fees"] for r in rows),
+                "orders_total": sum(r["order_count"] for r in rows)
               }
-          Path("benchmark_results/JORDANTETE_SUMMARY.json").write_text(json.dumps(out, indent=2))
+
+          Path("benchmark_results/JORDANTETE_ROBUSTNESS_SUMMARY.json").write_text(json.dumps(out, indent=2))
           print(json.dumps(out, indent=2))
           PY
 
       - name: Upload benchmark artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: jordantete-grid-benchmark-${{ github.run_id }}
+          name: jordantete-grid-robustness-${{ github.run_id }}
           path: |
             upstream/grid_trading_bot/benchmark_results
             upstream/grid_trading_bot/benchmark_configs
