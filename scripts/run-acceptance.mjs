@@ -17,15 +17,18 @@ if (!path) {
 const candles = parseCandleCsv(fs.readFileSync(path, 'utf8'));
 const quality = inspectCandleQuality(candles);
 if (!quality.pass) {
-  const result = { status: 'DATA_QUALITY_FAIL', quality };
+  const result = { status: 'DATA_QUALITY_FAIL', promotableSetups: [], quality };
   fs.writeFileSync(output, JSON.stringify(result, null, 2) + '\n', 'utf8');
   console.log(JSON.stringify(result, null, 2));
   process.exitCode = 3;
 } else {
   const robustness = runRobustnessMatrix(candles);
-  const allPass = robustness.decisions.every((decision) => decision.status === 'PASS');
+  const promotableSetups = robustness.decisions
+    .filter((decision) => decision.status === 'PASS')
+    .map((decision) => decision.setup);
   const result = {
-    status: allPass ? 'RESEARCH_GATE_PASS' : 'RESEARCH_GATE_NOT_PASSED',
+    status: promotableSetups.length > 0 ? 'PROMOTION_CANDIDATES_PRESENT' : 'NO_PROMOTABLE_SETUP',
+    promotableSetups,
     quality,
     robustness,
   };

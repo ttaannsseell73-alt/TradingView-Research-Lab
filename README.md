@@ -21,39 +21,36 @@ closed OHLCV
   -> data-quality gate
   -> 18-feature engine
   -> deterministic replay / no-lookahead checks
+  -> train-only setup-threshold tuning
   -> breakout | sweep/reclaim | compression-release events
   -> fee + slippage aware forward-return study
   -> chronological train / validation / holdout
   -> multi-horizon + stressed-cost robustness matrix
-  -> PASS | REJECT | INSUFFICIENT_DATA
+  -> PASS | REJECT | INSUFFICIENT_DATA per setup
   -> only then controlled promotion to the main bot
 ```
 
-## Commands
+## Software validation
 
 ```bash
 npm ci
 npm run check
 ```
 
-Download public Binance USDⓈ-M candles without API keys:
+## Final local market-data gate
+
+One command downloads 50,000 public Binance USDⓈ-M candles on both 1m and 5m, runs the full acceptance matrix, and writes `FINAL_ACCEPTANCE.json`:
 
 ```bash
-npm run fetch:binance -- BTCUSDT 1m 50000 BTCUSDT-1m.csv
+npm run final:local
 ```
 
-Run the final acceptance gate:
+No API key is required. Optional symbol/sample size:
 
 ```bash
-npm run acceptance -- BTCUSDT-1m.csv BTCUSDT-1m-acceptance.json
+npm run final:local -- ETHUSDT 50000
 ```
 
-CSV schema:
+A setup is promotable only when it appears under `promotable` in `FINAL_ACCEPTANCE.json`. This is historical research evidence, not a guarantee of future performance.
 
-```text
-timestamp,open,high,low,close,volume
-```
-
-The acceptance output includes data-quality results, deterministic replay signature, event count, 3/6/12/24-bar studies, base/stressed transaction costs, walk-forward metrics, and robust promotion decisions.
-
-A PASS means only that the configured research gate passed on the supplied historical sample; it is not a guarantee of future performance. See `docs/ACCEPTANCE.md`.
+See `PROJECT_STATE.md` and `docs/ACCEPTANCE.md`.

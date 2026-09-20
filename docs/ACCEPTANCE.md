@@ -1,27 +1,37 @@
 # Final Research Acceptance Gate
 
-The repository is software-complete when CI is green. Strategy evidence is intentionally a separate gate because hosted GitHub runners can be geo-blocked from Binance Futures market-data endpoints.
+CI proves software integrity. Historical market evidence is a separate gate because hosted GitHub runners can be geo-blocked from Binance Futures endpoints.
 
-## Required local evidence
+## One-command final gate
 
-Use a sufficiently large public USDⓈ-M candle sample. No API key is required.
+On the target Windows machine:
 
 ```bash
-npm ci
-npm run fetch:binance -- BTCUSDT 1m 50000 BTCUSDT-1m.csv
-npm run acceptance -- BTCUSDT-1m.csv BTCUSDT-1m-acceptance.json
+npm run final:local
 ```
 
-The acceptance command performs:
+This downloads 50,000 public USDⓈ-M candles for BTCUSDT on both 1m and 5m, then runs the canonical acceptance pipeline and writes `FINAL_ACCEPTANCE.json`.
+
+Optional symbol / sample size:
+
+```bash
+npm run final:local -- ETHUSDT 50000
+```
+
+No API key is required.
+
+## What acceptance does
 
 - timestamp/OHLCV integrity and gap checks,
 - deterministic 18-feature replay,
-- all three canonical setup families,
+- train-only threshold tuning,
+- breakout / liquidity-sweep-reclaim / compression-release event studies,
 - chronological train/validation/holdout isolation,
-- horizons 3/6/12/24 bars,
-- base and stressed transaction-cost assumptions,
-- minimum-sample and positive-net-expectancy promotion gates.
+- 3/6/12/24-bar horizons,
+- base and stressed transaction costs,
+- minimum sample enforcement,
+- positive net expectancy requirement on validation and holdout.
 
-A setup is robustly accepted only when **every** configured horizon/cost run passes. Any insufficient window remains `INSUFFICIENT_DATA`; it is never converted into a pass.
+Promotion is evaluated **per setup**. A setup becomes a candidate only when every configured robustness run passes. One rejected or insufficient run blocks that setup.
 
-The generated JSON is evidence, not an execution command. Main-bot integration remains blocked until this local evidence exists.
+The generated JSON is research evidence, not an execution command. Main-bot integration remains blocked until a setup is listed under `promotable`.
