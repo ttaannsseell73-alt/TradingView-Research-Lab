@@ -1,8 +1,6 @@
 # TradingView Research Lab
 
-Independent research repository for the Binance Futures price-action bot. It
-distills useful ideas from open TradingView indicators into original,
-repaint-free TypeScript features and validates them before any main-bot change.
+Independent research repository for the Binance Futures price-action bot. It distills useful ideas from open TradingView indicators into original, repaint-free TypeScript features and validates them before any main-bot change.
 
 ## Boundary
 
@@ -22,6 +20,10 @@ closed Binance candles
   -> controlled promotion to BinanceGridBot
 ```
 
+## Locked canonical feature contract
+
+`InternalStructure`, `ExternalStructure`, `BOSStrength`, `CHOCHStrength`, `SwingQuality`, `RangeBoundary`, `BreakoutDisplacement`, `LiquidityDensity`, `SweepDepth`, `ReclaimQuality`, `PostSweepDisplacement`, `StructureShiftAfterSweep`, `RetestQuality`, `CompressionDepth`, `CompressionDuration`, `ExpansionVelocity`, `TrendRangeScore`, `RelativeVolume`.
+
 ## Commands
 
 ```bash
@@ -29,6 +31,4 @@ npm install
 npm run check
 ```
 
-The first milestone implements the locked feature contract and integrity gates.
-Signal profitability is deliberately not claimed until real Binance replay and
-out-of-sample testing pass.
+The first milestone implements the locked 18-feature contract, closed-candle enforcement, deterministic replay, repaint/no-lookahead prefix invariance, and 9 deterministic tests. Signal profitability is deliberately not claimed until real Binance replay and out-of-sample testing pass.
