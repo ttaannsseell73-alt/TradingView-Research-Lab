@@ -135,12 +135,49 @@ jobs:
         working-directory: upstream/grid_trading_bot
         shell: bash
         run: |
+          cat > benchmark_runner.py <<'PY'
+          import asyncio
+          import json
+          import sys
+          from pathlib import Path
+
+          from grid_trading_bot.cli import initialize_config, initialize_notification_handler
+          from grid_trading_bot.core.bot_management.event_bus import EventBus
+          from grid_trading_bot.core.bot_management.grid_trading_bot import GridTradingBot
+          from grid_trading_bot.utils.config_name_generator import generate_config_name
+          from grid_trading_bot.utils.logging_config import setup_logging
+
+          async def run_one(config_path: str, output_path: str) -> None:
+              config_manager = initialize_config(config_path)
+              setup_logging(
+                  config_manager.get_logging_level(),
+                  config_manager.should_log_to_file(),
+                  generate_config_name(config_manager),
+              )
+              event_bus = EventBus()
+              notification_handler = initialize_notification_handler(config_manager, event_bus)
+              bot = GridTradingBot(
+                  config_path,
+                  config_manager,
+                  notification_handler,
+                  event_bus,
+                  save_performance_results_path=None,
+                  no_plot=True,
+              )
+              try:
+                  result = await bot.run()
+                  if result is None:
+                      raise RuntimeError("GridTradingBot.run() returned no performance result")
+                  Path(output_path).write_text(json.dumps(result, indent=2, default=str))
+              finally:
+                  await event_bus.shutdown()
+
+          asyncio.run(run_one(sys.argv[1], sys.argv[2]))
+          PY
+
           set -euo pipefail
           for coin in BTC ETH SOL; do
-            grid_trading_bot run \
-              --config "benchmark_configs/$coin.json" \
-              --save_performance_results "benchmark_results/$coin.json" \
-              --no-plot
+            python benchmark_runner.py               "benchmark_configs/$coin.json"               "benchmark_results/$coin.json"
           done
 
       - name: Normalize summary
@@ -165,11 +202,12 @@ jobs:
               data = json.loads(Path(f"benchmark_results/{coin}.json").read_text())
               if not data:
                   raise SystemExit(f"No performance result for {coin}")
-              item = data[-1]
+              item = data
+              cfg = json.loads(Path(f"benchmark_configs/{coin}.json").read_text())
               out["symbols"][coin] = {
                 "performance_summary": item.get("performance_summary", {}),
                 "order_count": len(item.get("orders", [])),
-                "grid": item.get("config", {}).get("grid_strategy", {})
+                "grid": cfg.get("grid_strategy", {})
               }
           Path("benchmark_results/JORDANTETE_SUMMARY.json").write_text(json.dumps(out, indent=2))
           print(json.dumps(out, indent=2))
