@@ -63,3 +63,9 @@ V1 evidence is preserved. V2 separates trend-retest from range-sweep instead of 
 Branch: `research/sonar-scalping-v3-orderflow`
 
 V3 is the first Sonar scalp hypothesis in this lab that uses real Binance public taker-volume and open-interest history instead of candle-only proxies. V1/V2 evidence remains preserved. `BinanceGridBot` and `Freqtrade-Research-Lab` remain untouched.
+
+## SonarScalp V4 — 1m taker microstructure
+
+Branch: `research/sonar-scalping-v4-taker1m`
+
+V3 multi-symbol evidence remains preserved as rejected. V4 tests real 1m Binance taker-buy imbalance, 5m Open Interest and train-only TP/SL/time barrier selection. It is a new hypothesis, not a relaxation of V3. BinanceGridBot and Freqtrade-Research-Lab remain untouched.
