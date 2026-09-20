@@ -14,14 +14,12 @@ export interface DataQualityReport {
   pass: boolean;
 }
 
-function median(values: number[]): number {
+function inferInterval(values: number[]): number {
   if (values.length === 0) return 0;
-  const sorted = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  const value = sorted[mid];
-  if (value === undefined) return 0;
-  if (sorted.length % 2 === 1) return value;
-  return ((sorted[mid - 1] ?? value) + value) / 2;
+  const counts = new Map<number, number>();
+  for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0] - b[0])[0]?.[0] ?? 0;
 }
 
 export function inspectCandleQuality(candles: Candle[], gapTolerance = 1.5): DataQualityReport {
@@ -52,7 +50,7 @@ export function inspectCandleQuality(candles: Candle[], gapTolerance = 1.5): Dat
     if (delta > 0) intervals.push(delta);
   }
 
-  const inferredIntervalMs = median(intervals);
+  const inferredIntervalMs = inferInterval(intervals);
   let gapCount = 0;
   let largestGapMultiple = 1;
   if (inferredIntervalMs > 0) {
