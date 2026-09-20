@@ -1,0 +1,157 @@
+name: passivbot-futures-benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/passivbot-futures-benchmark.yml'
+      - 'research/upstream-grid/PASSIVBOT_BENCHMARK.md'
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout research lab
+        uses: actions/checkout@v4
+
+      - name: Checkout Passivbot v8.1.0
+        uses: actions/checkout@v4
+        with:
+          repository: enarjord/passivbot
+          ref: v8.1.0
+          path: upstream/passivbot
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rust 1.90.0
+        uses: dtolnay/rust-toolchain@1.90.0
+        with:
+          components: rustfmt, clippy
+
+      - name: Install Passivbot backtest profile
+        working-directory: upstream/passivbot
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[full]"
+
+      - name: Build canonical benchmark configs
+        working-directory: upstream/passivbot
+        shell: bash
+        run: |
+          mkdir -p benchmark-configs benchmark_results
+          python - <<'PY'
+          import copy, json
+          from pathlib import Path
+
+          src = Path("configs/examples/default_trailing_martingale_long.json")
+          base = json.loads(src.read_text())
+          for coin in ("BTC", "ETH", "SOL"):
+              cfg = copy.deepcopy(base)
+              cfg["backtest"]["start_date"] = "2026-08-01"
+              cfg["backtest"]["end_date"] = "2026-09-01"
+              cfg["backtest"]["exchanges"] = ["binance"]
+              cfg["backtest"]["starting_balance"] = 10000
+              cfg["backtest"]["suite_enabled"] = False
+              cfg["backtest"]["base_dir"] = f"benchmark_results/{coin}"
+              cfg["backtest"]["maker_fee_override"] = 0.0004
+              cfg["backtest"]["taker_fee_override"] = 0.00055
+              cfg["backtest"]["market_order_slippage_pct"] = 0.0005
+              cfg["live"]["approved_coins"]["long"] = [coin]
+              cfg["live"]["approved_coins"]["short"] = []
+              cfg["live"]["ignored_coins"]["long"] = []
+              cfg["live"]["ignored_coins"]["short"] = []
+              Path(f"benchmark-configs/{coin}.json").write_text(json.dumps(cfg, indent=2))
+          PY
+
+      - name: Run BTC ETH SOL Binance Futures backtests
+        working-directory: upstream/passivbot
+        shell: bash
+        run: |
+          set -euo pipefail
+          for coin in BTC ETH SOL; do
+            echo "=== $coin ==="
+            passivbot backtest "benchmark-configs/$coin.json" -s "$coin" -sd 2026-08-01 -ed 2026-09-01 --suite n -dp 2>&1 | tee "benchmark_results/$coin.log"
+          done
+
+      - name: Normalize benchmark metrics
+        working-directory: upstream/passivbot
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          wanted = [
+              "gain_strategy_eq",
+              "gain_usd",
+              "adg_strategy_eq",
+              "drawdown_worst_strategy_eq",
+              "loss_profit_ratio",
+              "sharpe_ratio_strategy_eq",
+              "sortino_ratio_strategy_eq",
+              "volume_pct_per_day_avg",
+              "position_held_days_max",
+              "backtest_completion_ratio",
+              "n_fills",
+              "n_days",
+          ]
+
+          out = {
+              "engine": "enarjord/passivbot",
+              "revision": "v8.1.0",
+              "exchange": "binance",
+              "market": "USDT-M perpetual futures",
+              "window": {"start": "2026-08-01", "end": "2026-09-01"},
+              "costs": {
+                  "maker_fee": 0.0004,
+                  "taker_fee": 0.00055,
+                  "market_order_slippage_pct": 0.0005,
+              },
+              "symbols": {},
+          }
+
+          root = Path("benchmark_results")
+          for coin in ("BTC", "ETH", "SOL"):
+              analyses = sorted((root / coin).rglob("analysis.json"), key=lambda p: p.stat().st_mtime)
+              if not analyses:
+                  raise SystemExit(f"No analysis.json produced for {coin}")
+              path = analyses[-1]
+              data = json.loads(path.read_text())
+              out["symbols"][coin] = {
+                  "analysis_path": str(path),
+                  "metrics": {k: data.get(k) for k in wanted},
+              }
+
+          Path("benchmark_results/PASSIVBOT_SUMMARY.json").write_text(json.dumps(out, indent=2))
+          print(json.dumps(out, indent=2))
+          PY
+
+      - name: Publish summary
+        working-directory: upstream/passivbot
+        shell: bash
+        run: |
+          {
+            echo "## Passivbot Futures Benchmark"
+            echo
+            echo '~~~json'
+            cat benchmark_results/PASSIVBOT_SUMMARY.json
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: passivbot-futures-benchmark-${{ github.run_id }}
+          path: |
+            upstream/passivbot/benchmark_results
+            upstream/passivbot/benchmark-configs
+          if-no-files-found: error
+          retention-days: 14
