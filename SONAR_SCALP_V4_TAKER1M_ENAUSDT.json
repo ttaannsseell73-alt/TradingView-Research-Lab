@@ -4,8 +4,8 @@
   "quality": {
     "oneMinute": {
       "candleCount": 42000,
-      "firstTimestamp": 1787401980000,
-      "lastTimestamp": 1789921920000,
+      "firstTimestamp": 1787405160000,
+      "lastTimestamp": 1789925100000,
       "inferredIntervalMs": 60000,
       "duplicateTimestamps": 0,
       "nonIncreasingTimestamps": 0,
@@ -87,32 +87,32 @@
           "timeRate": 0.043343653250773995
         },
         "validation": {
-          "sampleCount": 100,
-          "hitRate": 0.53,
-          "grossExpectancy": 0.0009331800221371226,
-          "expectancy": -0.00006681997786287714,
-          "profitFactor": 0.9523746722979387,
+          "sampleCount": 101,
+          "hitRate": 0.5247524752475248,
+          "grossExpectancy": 0.000899188140729824,
+          "expectancy": -0.00010081185927017566,
+          "profitFactor": 0.929195038207661,
           "averageWin": 0.0025211594766447586,
-          "averageLoss": -0.0029851797882651044,
-          "averageMae": -0.0018720072104129154,
-          "averageMfe": 0.003451565498245992,
-          "tpRate": 0.4,
-          "slRate": 0.36,
-          "timeRate": 0.24
+          "averageLoss": -0.002995905209342915,
+          "averageMae": -0.0018827692955342371,
+          "averageMfe": 0.003417391582421774,
+          "tpRate": 0.39603960396039606,
+          "slRate": 0.36633663366336633,
+          "timeRate": 0.2376237623762376
         },
         "holdout": {
-          "sampleCount": 125,
-          "hitRate": 0.32,
-          "grossExpectancy": -0.0004638577318563623,
-          "expectancy": -0.0014638577318563625,
-          "profitFactor": 0.37972130006085164,
+          "sampleCount": 124,
+          "hitRate": 0.3225806451612903,
+          "grossExpectancy": -0.0004474372296939136,
+          "expectancy": -0.0014474372296939136,
+          "profitFactor": 0.3842805609535206,
           "averageWin": 0.0028004445879487297,
-          "averageLoss": -0.003470588235294054,
-          "averageMae": -0.0029543766983633796,
-          "averageMfe": 0.002960401422808221,
-          "tpRate": 0.296,
-          "slRate": 0.672,
-          "timeRate": 0.032
+          "averageLoss": -0.003470238095238031,
+          "averageMae": -0.002954339592643193,
+          "averageMfe": 0.002984275627830868,
+          "tpRate": 0.29838709677419356,
+          "slRate": 0.6693548387096774,
+          "timeRate": 0.03225806451612903
         },
         "status": "REJECT",
         "reasons": [
@@ -148,32 +148,32 @@
           "timeRate": 0.043343653250773995
         },
         "validation": {
-          "sampleCount": 100,
-          "hitRate": 0.51,
-          "grossExpectancy": 0.0009331800221371226,
-          "expectancy": -0.000666819977862877,
-          "profitFactor": 0.6054037941224473,
+          "sampleCount": 101,
+          "hitRate": 0.504950495049505,
+          "grossExpectancy": 0.000899188140729824,
+          "expectancy": -0.0007008118592701754,
+          "profitFactor": 0.5910633632697229,
           "averageWin": 0.0020059987587695716,
-          "averageLoss": -0.0034487333568068543,
-          "averageMae": -0.0018720072104129154,
-          "averageMfe": 0.003451565498245992,
-          "tpRate": 0.4,
-          "slRate": 0.36,
-          "timeRate": 0.24
+          "averageLoss": -0.0034617586896707173,
+          "averageMae": -0.0018827692955342371,
+          "averageMfe": 0.003417391582421774,
+          "tpRate": 0.39603960396039606,
+          "slRate": 0.36633663366336633,
+          "timeRate": 0.2376237623762376
         },
         "holdout": {
-          "sampleCount": 125,
-          "hitRate": 0.296,
-          "grossExpectancy": -0.0004638577318563623,
-          "expectancy": -0.0020638577318563625,
-          "profitFactor": 0.2560684942291369,
+          "sampleCount": 124,
+          "hitRate": 0.29838709677419356,
+          "grossExpectancy": -0.0004474372296939136,
+          "expectancy": -0.0020474372296939137,
+          "profitFactor": 0.2591322097528588,
           "averageWin": 0.002399999999999998,
-          "averageLoss": -0.003940707005477787,
-          "averageMae": -0.0029543766983633796,
-          "averageMfe": 0.002960401422808221,
-          "tpRate": 0.296,
-          "slRate": 0.672,
-          "timeRate": 0.032
+          "averageLoss": -0.003938876051517762,
+          "averageMae": -0.002954339592643193,
+          "averageMfe": 0.002984275627830868,
+          "tpRate": 0.29838709677419356,
+          "slRate": 0.6693548387096774,
+          "timeRate": 0.03225806451612903
         },
         "status": "REJECT",
         "reasons": [
@@ -194,7 +194,7 @@
       ]
     },
     "replay": {
-      "oneMinute": "2709a8eb",
+      "oneMinute": "ec8af596",
       "fiveMinute": "476e584c"
     }
   }
