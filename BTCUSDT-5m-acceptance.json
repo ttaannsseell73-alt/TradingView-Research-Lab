@@ -1,0 +1,1378 @@
+{
+  "status": "NO_PROMOTABLE_SETUP",
+  "promotableSetups": [],
+  "quality": {
+    "candleCount": 50000,
+    "firstTimestamp": 1774917600000,
+    "lastTimestamp": 1789917300000,
+    "inferredIntervalMs": 300000,
+    "duplicateTimestamps": 0,
+    "nonIncreasingTimestamps": 0,
+    "invalidOhlc": 0,
+    "negativeVolume": 0,
+    "gapCount": 0,
+    "largestGapMultiple": 1,
+    "pass": true
+  },
+  "robustness": {
+    "candleCount": 50000,
+    "eventCount": 2742,
+    "replaySignature": "68bfa67b",
+    "runs": [
+      {
+        "horizonBars": 3,
+        "costScenario": "base",
+        "feeRate": 0.0004,
+        "slippageRate": 0.0001,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 438,
+              "hitRate": 0.23515981735159816,
+              "grossExpectancy": -0.00026367694426976634,
+              "expectancy": -0.0012636769442697679,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0030549675764015697,
+              "averageLoss": -0.0025914989909239386,
+              "averageMae": -0.0023269060163117693,
+              "averageMfe": 0.0025483079378934904
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1110,
+              "hitRate": 0.31261261261261264,
+              "grossExpectancy": 0.000035329318953118664,
+              "expectancy": -0.0009646706810468804,
+              "breakEvenRoundTripCost": 0.000035329318953118664,
+              "averageWin": 0.0014231932308246401,
+              "averageLoss": -0.0020506323814655143,
+              "averageMae": -0.0019043170034130372,
+              "averageMfe": 0.0017339207685389954
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.275,
+              "grossExpectancy": 0.00016417343160500536,
+              "expectancy": -0.0008358265683949945,
+              "breakEvenRoundTripCost": 0.00016417343160500536,
+              "averageWin": 0.0022638524092454195,
+              "averageLoss": -0.0020115668702586,
+              "averageMae": -0.0015650730878240295,
+              "averageMfe": 0.002031324904183947
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 173,
+              "hitRate": 0.18497109826589594,
+              "grossExpectancy": -0.00016674062542780104,
+              "expectancy": -0.0011667406254278012,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.001643694410558903,
+              "averageLoss": -0.0018045698534531523,
+              "averageMae": -0.0014461094011395084,
+              "averageMfe": 0.001417354286766578
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 402,
+              "hitRate": 0.22139303482587064,
+              "grossExpectancy": -0.000022799021192982746,
+              "expectancy": -0.001022799021192983,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0012026320087596145,
+              "averageLoss": -0.0016555893140549035,
+              "averageMae": -0.001292508758569312,
+              "averageMfe": 0.001166699017752544
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0.12,
+              "grossExpectancy": -0.000050533225946457506,
+              "expectancy": -0.0010505332259464575,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.000043648602788695125,
+              "averageLoss": -0.0011997398389557963,
+              "averageMae": -0.0006200641388578086,
+              "averageMfe": 0.000612150623322558
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.3333333333333333,
+              "grossExpectancy": 0.00027851577031310807,
+              "expectancy": -0.0007214842296868919,
+              "breakEvenRoundTripCost": 0.00027851577031310807,
+              "averageWin": 0.003578485229775973,
+              "averageLoss": -0.0028714689594183237,
+              "averageMae": -0.0025765024466635833,
+              "averageMfe": 0.0034114153892641787
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.2597402597402597,
+              "grossExpectancy": -0.000067098900217978,
+              "expectancy": -0.0010670989002179781,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0015936479441597472,
+              "averageLoss": -0.002000694284210163,
+              "averageMae": -0.0019179305610430323,
+              "averageMfe": 0.001564463677680803
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.2727272727272727,
+              "grossExpectancy": 0.0003101428598766822,
+              "expectancy": -0.0006898571401233179,
+              "breakEvenRoundTripCost": 0.0003101428598766822,
+              "averageWin": 0.00499012194918523,
+              "averageLoss": -0.002819849298614023,
+              "averageMae": -0.0021983782596597112,
+              "averageMfe": 0.0030359627063767758
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "horizonBars": 3,
+        "costScenario": "stress",
+        "feeRate": 0.0005,
+        "slippageRate": 0.0003,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 438,
+              "hitRate": 0.1780821917808219,
+              "grossExpectancy": -0.00026367694426976634,
+              "expectancy": -0.0018636769442697634,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0033520454171974867,
+              "averageLoss": -0.0029937501225876704,
+              "averageMae": -0.0023269060163117693,
+              "averageMfe": 0.0025483079378934904
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1110,
+              "hitRate": 0.2045045045045045,
+              "grossExpectancy": 0.000035329318953118664,
+              "expectancy": -0.0015646706810468834,
+              "breakEvenRoundTripCost": 0.000035329318953118664,
+              "averageWin": 0.0014309383195395258,
+              "averageLoss": -0.0023347762791591305,
+              "averageMae": -0.0019043170034130372,
+              "averageMfe": 0.0017339207685389954
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.225,
+              "grossExpectancy": 0.00016417343160500536,
+              "expectancy": -0.0014358265683949943,
+              "breakEvenRoundTripCost": 0.00016417343160500536,
+              "averageWin": 0.002097068835835631,
+              "averageLoss": -0.0024615058793006593,
+              "averageMae": -0.0015650730878240295,
+              "averageMfe": 0.002031324904183947
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 173,
+              "hitRate": 0.12138728323699421,
+              "grossExpectancy": -0.00016674062542780104,
+              "expectancy": -0.0017667406254278008,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0017882585456886317,
+              "averageLoss": -0.0022578918267004665,
+              "averageMae": -0.0014461094011395084,
+              "averageMfe": 0.001417354286766578
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 402,
+              "hitRate": 0.1417910447761194,
+              "grossExpectancy": -0.000022799021192982746,
+              "expectancy": -0.0016227990211929836,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0011340055085059847,
+              "averageLoss": -0.0020782710739258563,
+              "averageMae": -0.001292508758569312,
+              "averageMfe": 0.001166699017752544
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0,
+              "grossExpectancy": -0.000050533225946457506,
+              "expectancy": -0.0016505332259464573,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0,
+              "averageLoss": -0.0016505332259464573,
+              "averageMae": -0.0006200641388578086,
+              "averageMfe": 0.000612150623322558
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.24358974358974358,
+              "grossExpectancy": 0.00027851577031310807,
+              "expectancy": -0.0013214842296868918,
+              "breakEvenRoundTripCost": 0.00027851577031310807,
+              "averageWin": 0.004189496746539701,
+              "averageLoss": -0.003096206916946303,
+              "averageMae": -0.0025765024466635833,
+              "averageMfe": 0.0034114153892641787
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.17922077922077922,
+              "grossExpectancy": -0.000067098900217978,
+              "expectancy": -0.001667098900217978,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0015810193820087906,
+              "averageLoss": -0.0023763399175396466,
+              "averageMae": -0.0019179305610430323,
+              "averageMfe": 0.001564463677680803
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.2727272727272727,
+              "grossExpectancy": 0.0003101428598766822,
+              "expectancy": -0.0012898571401233174,
+              "breakEvenRoundTripCost": 0.0003101428598766822,
+              "averageWin": 0.00439012194918523,
+              "averageLoss": -0.003419849298614023,
+              "averageMae": -0.0021983782596597112,
+              "averageMfe": 0.0030359627063767758
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "horizonBars": 6,
+        "costScenario": "base",
+        "feeRate": 0.0004,
+        "slippageRate": 0.0001,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 438,
+              "hitRate": 0.2922374429223744,
+              "grossExpectancy": -0.0005231836732274902,
+              "expectancy": -0.00152318367322749,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.00305500956538995,
+              "averageLoss": -0.0034135344298179167,
+              "averageMae": -0.003195527923740749,
+              "averageMfe": 0.0032717817960851844
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1110,
+              "hitRate": 0.37117117117117115,
+              "grossExpectancy": 0.00008607854281180038,
+              "expectancy": -0.0009139214571882006,
+              "breakEvenRoundTripCost": 0.00008607854281180038,
+              "averageWin": 0.0020701196377241504,
+              "averageLoss": -0.002675275226678011,
+              "averageMae": -0.002625991549737932,
+              "averageMfe": 0.0024555261127960216
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.4,
+              "grossExpectancy": 0.0006391691893978295,
+              "expectancy": -0.00036083081060217065,
+              "breakEvenRoundTripCost": 0.0006391691893978295,
+              "averageWin": 0.0028573427202309974,
+              "averageLoss": -0.0025062798311576155,
+              "averageMae": -0.0019953223564032506,
+              "averageMfe": 0.003237484656432028
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 172,
+              "hitRate": 0.22093023255813954,
+              "grossExpectancy": -0.00023198148430609647,
+              "expectancy": -0.0012319814843060964,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.002514958937013833,
+              "averageLoss": -0.002294546678411748,
+              "averageMae": -0.0019292995610404725,
+              "averageMfe": 0.0019498686269584541
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 402,
+              "hitRate": 0.2835820895522388,
+              "grossExpectancy": -0.00005300417568798637,
+              "expectancy": -0.0010530041756879865,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0016259831620618979,
+              "averageLoss": -0.002113436663547317,
+              "averageMae": -0.001822428506673799,
+              "averageMfe": 0.0016476887156673867
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0.08,
+              "grossExpectancy": -0.00018094298689773494,
+              "expectancy": -0.001180942986897735,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0005886729418854695,
+              "averageLoss": -0.001334822632878883,
+              "averageMae": -0.0008478432070012251,
+              "averageMfe": 0.0008011727923929769
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.32051282051282054,
+              "grossExpectancy": 0.00042902168684393017,
+              "expectancy": -0.0005709783131560698,
+              "breakEvenRoundTripCost": 0.00042902168684393017,
+              "averageWin": 0.0054137765956603755,
+              "averageLoss": -0.0033939759116543926,
+              "averageMae": -0.0031249824386123744,
+              "averageMfe": 0.004857702118052452
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.34805194805194806,
+              "grossExpectancy": 0.0001393354543863963,
+              "expectancy": -0.0008606645456136038,
+              "breakEvenRoundTripCost": 0.0001393354543863963,
+              "averageWin": 0.0019889621569079436,
+              "averageLoss": -0.002381979199549409,
+              "averageMae": -0.002552009701947383,
+              "averageMfe": 0.0021974884292009565
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.45454545454545453,
+              "grossExpectancy": 0.0004811943609347663,
+              "expectancy": -0.0005188056390652337,
+              "breakEvenRoundTripCost": 0.0004811943609347663,
+              "averageWin": 0.002066200637824567,
+              "averageLoss": -0.0026729775364734004,
+              "averageMae": -0.0026980129057628762,
+              "averageMfe": 0.0032966452122542705
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "horizonBars": 6,
+        "costScenario": "stress",
+        "feeRate": 0.0005,
+        "slippageRate": 0.0003,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 438,
+              "hitRate": 0.2465753424657534,
+              "grossExpectancy": -0.0005231836732274902,
+              "expectancy": -0.00212318367322749,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.002979745798636871,
+              "averageLoss": -0.003793233318564914,
+              "averageMae": -0.003195527923740749,
+              "averageMfe": 0.0032717817960851844
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1110,
+              "hitRate": 0.27837837837837837,
+              "grossExpectancy": 0.00008607854281180038,
+              "expectancy": -0.001513921457188199,
+              "breakEvenRoundTripCost": 0.00008607854281180038,
+              "averageWin": 0.0020626325604625514,
+              "averageLoss": -0.0028936407973306267,
+              "averageMae": -0.002625991549737932,
+              "averageMfe": 0.0024555261127960216
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.3,
+              "grossExpectancy": 0.0006391691893978295,
+              "expectancy": -0.0009608308106021704,
+              "breakEvenRoundTripCost": 0.0006391691893978295,
+              "averageWin": 0.00310854015312078,
+              "averageLoss": -0.0027048469379120058,
+              "averageMae": -0.0019953223564032506,
+              "averageMfe": 0.003237484656432028
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 172,
+              "hitRate": 0.1511627906976744,
+              "grossExpectancy": -0.00023198148430609647,
+              "expectancy": -0.0018319814843060962,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.002930963038741864,
+              "averageLoss": -0.002680177084300938,
+              "averageMae": -0.0019292995610404725,
+              "averageMfe": 0.0019498686269584541
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 402,
+              "hitRate": 0.1865671641791045,
+              "grossExpectancy": -0.00005300417568798637,
+              "expectancy": -0.001653004175687986,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.001746553211455772,
+              "averageLoss": -0.0024327191727393067,
+              "averageMae": -0.001822428506673799,
+              "averageMfe": 0.0016476887156673867
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0.04,
+              "grossExpectancy": -0.00018094298689773494,
+              "expectancy": -0.001780942986897735,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.00037773242588505463,
+              "averageLoss": -0.0018708877957636847,
+              "averageMae": -0.0008478432070012251,
+              "averageMfe": 0.0008011727923929769
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.27564102564102566,
+              "grossExpectancy": 0.00042902168684393017,
+              "expectancy": -0.00117097831315607,
+              "breakEvenRoundTripCost": 0.00042902168684393017,
+              "averageWin": 0.005638222575294756,
+              "averageLoss": -0.003762090155663908,
+              "averageMae": -0.0031249824386123744,
+              "averageMfe": 0.004857702118052452
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.23376623376623376,
+              "grossExpectancy": 0.0001393354543863963,
+              "expectancy": -0.0014606645456136053,
+              "breakEvenRoundTripCost": 0.0001393354543863963,
+              "averageWin": 0.0022194491249060266,
+              "averageLoss": -0.0025834110891619654,
+              "averageMae": -0.002552009701947383,
+              "averageMfe": 0.0021974884292009565
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.2727272727272727,
+              "grossExpectancy": 0.0004811943609347663,
+              "expectancy": -0.0011188056390652337,
+              "breakEvenRoundTripCost": 0.0004811943609347663,
+              "averageWin": 0.002572290695189027,
+              "averageLoss": -0.0025029667644105814,
+              "averageMae": -0.0026980129057628762,
+              "averageMfe": 0.0032966452122542705
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "horizonBars": 12,
+        "costScenario": "base",
+        "feeRate": 0.0004,
+        "slippageRate": 0.0001,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 438,
+              "hitRate": 0.3242009132420091,
+              "grossExpectancy": -0.000434168030755402,
+              "expectancy": -0.0014341680307554006,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.003833498533354517,
+              "averageLoss": -0.003961224287862186,
+              "averageMae": -0.004125744269228181,
+              "averageMfe": 0.004192743232875064
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1109,
+              "hitRate": 0.43552750225428316,
+              "grossExpectancy": 0.00023449580042457055,
+              "expectancy": -0.0007655041995754295,
+              "breakEvenRoundTripCost": 0.00023449580042457055,
+              "averageWin": 0.0030116700633825884,
+              "averageLoss": -0.0036798415302602846,
+              "averageMae": -0.0036852001171427825,
+              "averageMfe": 0.003484609698294745
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.425,
+              "grossExpectancy": 0.0007409176306996768,
+              "expectancy": -0.00025908236930032323,
+              "breakEvenRoundTripCost": 0.0007409176306996768,
+              "averageWin": 0.0031855094154364613,
+              "averageLoss": -0.002805084992801425,
+              "averageMae": -0.002588755778502804,
+              "averageMfe": 0.0038973438825822106
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 172,
+              "hitRate": 0.2441860465116279,
+              "grossExpectancy": -0.0002851780670994795,
+              "expectancy": -0.0012851780670994795,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0032256637595358176,
+              "averageLoss": -0.002742526964935497,
+              "averageMae": -0.0026490085888314046,
+              "averageMfe": 0.0025748620415849575
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 402,
+              "hitRate": 0.30597014925373134,
+              "grossExpectancy": -0.00023343059060382788,
+              "expectancy": -0.0012334305906038282,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.002370110204340702,
+              "averageLoss": -0.002822088360418082,
+              "averageMae": -0.0026483431318003892,
+              "averageMfe": 0.002375201829535095
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0.12,
+              "grossExpectancy": -0.00013164873750358833,
+              "expectancy": -0.0011316487375035882,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.001294056774712485,
+              "averageLoss": -0.0014624267618966894,
+              "averageMae": -0.0012860629281877612,
+              "averageMfe": 0.001271412661274132
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.36538461538461536,
+              "grossExpectancy": 0.0010814343594154742,
+              "expectancy": 0.00008143435941547382,
+              "breakEvenRoundTripCost": 0.0010814343594154742,
+              "averageWin": 0.007447462464220272,
+              "averageLoss": -0.004159612125169104,
+              "averageMae": -0.004053193671342009,
+              "averageMfe": 0.006281746152824202
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.4025974025974026,
+              "grossExpectancy": 0.00013614981466439225,
+              "expectancy": -0.0008638501853356074,
+              "breakEvenRoundTripCost": 0.00013614981466439225,
+              "averageWin": 0.0028234357816325187,
+              "averageLoss": -0.0033487602935097765,
+              "averageMae": -0.003582180559880514,
+              "averageMfe": 0.003257127007922432
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.45454545454545453,
+              "grossExpectancy": 0.000543585079237077,
+              "expectancy": -0.0004564149207629229,
+              "breakEvenRoundTripCost": 0.000543585079237077,
+              "averageWin": 0.0033236703477640566,
+              "averageLoss": -0.00360648597786874,
+              "averageMae": -0.003244019730938243,
+              "averageMfe": 0.004546027146033004
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "horizonBars": 12,
+        "costScenario": "stress",
+        "feeRate": 0.0005,
+        "slippageRate": 0.0003,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 438,
+              "hitRate": 0.2876712328767123,
+              "grossExpectancy": -0.000434168030755402,
+              "expectancy": -0.0020341680307554015,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.003684478298166634,
+              "averageLoss": -0.004343621355896992,
+              "averageMae": -0.004125744269228181,
+              "averageMfe": 0.004192743232875064
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1109,
+              "hitRate": 0.36699729486023447,
+              "grossExpectancy": 0.00023449580042457055,
+              "expectancy": -0.0013655041995754285,
+              "breakEvenRoundTripCost": 0.00023449580042457055,
+              "averageWin": 0.0029160339402579025,
+              "averageLoss": -0.003847820471530081,
+              "averageMae": -0.0036852001171427825,
+              "averageMfe": 0.003484609698294745
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.375,
+              "grossExpectancy": 0.0007409176306996768,
+              "expectancy": -0.0008590823693003232,
+              "breakEvenRoundTripCost": 0.0007409176306996768,
+              "averageWin": 0.002976792613845693,
+              "averageLoss": -0.003160607359187933,
+              "averageMae": -0.002588755778502804,
+              "averageMfe": 0.0038973438825822106
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 172,
+              "hitRate": 0.18604651162790697,
+              "grossExpectancy": -0.0002851780670994795,
+              "expectancy": -0.00188517806709948,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.003536497523512347,
+              "averageLoss": -0.0031244182020964684,
+              "averageMae": -0.0026490085888314046,
+              "averageMfe": 0.0025748620415849575
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 402,
+              "hitRate": 0.23383084577114427,
+              "grossExpectancy": -0.00023343059060382788,
+              "expectancy": -0.0018334305906038298,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.002410142127458094,
+              "averageLoss": -0.003128546939622729,
+              "averageMae": -0.0026483431318003892,
+              "averageMfe": 0.002375201829535095
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0.08,
+              "grossExpectancy": -0.00013164873750358833,
+              "expectancy": -0.0017316487375035883,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0010955209272639401,
+              "averageLoss": -0.0019774895779181563,
+              "averageMae": -0.0012860629281877612,
+              "averageMfe": 0.001271412661274132
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.3333333333333333,
+              "grossExpectancy": 0.0010814343594154742,
+              "expectancy": -0.0005185656405845258,
+              "breakEvenRoundTripCost": 0.0010814343594154742,
+              "averageWin": 0.00752459844100206,
+              "averageLoss": -0.004540147681377819,
+              "averageMae": -0.004053193671342009,
+              "averageMfe": 0.006281746152824202
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.3090909090909091,
+              "grossExpectancy": 0.00013614981466439225,
+              "expectancy": -0.0014638501853356074,
+              "breakEvenRoundTripCost": 0.00013614981466439225,
+              "averageWin": 0.002976621630721427,
+              "averageLoss": -0.0034503770504137553,
+              "averageMae": -0.003582180559880514,
+              "averageMfe": 0.003257127007922432
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.36363636363636365,
+              "grossExpectancy": 0.000543585079237077,
+              "expectancy": -0.0010564149207629228,
+              "breakEvenRoundTripCost": 0.000543585079237077,
+              "averageWin": 0.0034352154334014217,
+              "averageLoss": -0.003623060837428263,
+              "averageMae": -0.003244019730938243,
+              "averageMfe": 0.004546027146033004
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "horizonBars": 24,
+        "costScenario": "base",
+        "feeRate": 0.0004,
+        "slippageRate": 0.0001,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 437,
+              "hitRate": 0.34324942791762014,
+              "grossExpectancy": -0.0009937914863674764,
+              "expectancy": -0.001993791486367478,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.004909757265897134,
+              "averageLoss": -0.0056019180119413125,
+              "averageMae": -0.005786238793695252,
+              "averageMfe": 0.00522570330708532
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1107,
+              "hitRate": 0.4679313459801265,
+              "grossExpectancy": 0.00037911909738766925,
+              "expectancy": -0.0006208809026123299,
+              "breakEvenRoundTripCost": 0.00037911909738766925,
+              "averageWin": 0.004363628998763366,
+              "averageLoss": -0.005004541562905393,
+              "averageMae": -0.005003450988050156,
+              "averageMfe": 0.005003128798945931
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.35,
+              "grossExpectancy": 0.00011616144694555686,
+              "expectancy": -0.0008838385530544436,
+              "breakEvenRoundTripCost": 0.00011616144694555686,
+              "averageWin": 0.004810632384125458,
+              "averageLoss": -0.003950092134612852,
+              "averageMae": -0.004041580843838619,
+              "averageMfe": 0.005044164140044569
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 172,
+              "hitRate": 0.3430232558139535,
+              "grossExpectancy": -0.00031821627807781947,
+              "expectancy": -0.0013182162780778195,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.003394940716399797,
+              "averageLoss": -0.003779068160150204,
+              "averageMae": -0.00366460871448507,
+              "averageMfe": 0.003365100789109721
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 400,
+              "hitRate": 0.365,
+              "grossExpectancy": 0.00005240120117219423,
+              "expectancy": -0.0009475987988278059,
+              "breakEvenRoundTripCost": 0.00005240120117219423,
+              "averageWin": 0.0033272659843887387,
+              "averageLoss": -0.0034048045403617245,
+              "averageMae": -0.0033759134106335614,
+              "averageMfe": 0.0033200290786219127
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0.24,
+              "grossExpectancy": -0.0002050730977266145,
+              "expectancy": -0.0012050730977266144,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.003012558647112621,
+              "averageLoss": -0.002536956806623215,
+              "averageMae": -0.002422122522910931,
+              "averageMfe": 0.002043012430781868
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.40384615384615385,
+              "grossExpectancy": 0.0013591469888950226,
+              "expectancy": 0.00035914698889502264,
+              "breakEvenRoundTripCost": 0.0013591469888950226,
+              "averageWin": 0.008412586283765826,
+              "averageLoss": -0.005096408662469068,
+              "averageMae": -0.005067222097745193,
+              "averageMfe": 0.008365309899832288
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.4597402597402597,
+              "grossExpectancy": -0.00007428062965224096,
+              "expectancy": -0.0010742806296522402,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0035860327208574105,
+              "averageLoss": -0.005040028048114782,
+              "averageMae": -0.0053102990483668965,
+              "averageMfe": 0.004529282785019393
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.36363636363636365,
+              "grossExpectancy": -0.0008701411088667435,
+              "expectancy": -0.0018701411088667434,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.005602348144990705,
+              "averageLoss": -0.0061401349682138565,
+              "averageMae": -0.0061335809822869874,
+              "averageMfe": 0.005899260772997122
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "horizonBars": 24,
+        "costScenario": "stress",
+        "feeRate": 0.0005,
+        "slippageRate": 0.0003,
+        "report": {
+          "windows": {
+            "train": {
+              "startIndex": 0,
+              "endIndexExclusive": 30000
+            },
+            "validation": {
+              "startIndex": 30000,
+              "endIndexExclusive": 40000
+            },
+            "holdout": {
+              "startIndex": 40000,
+              "endIndexExclusive": 50000
+            }
+          },
+          "train": [
+            {
+              "setup": "breakout",
+              "sampleCount": 437,
+              "hitRate": 0.28832951945080093,
+              "grossExpectancy": -0.0009937914863674764,
+              "expectancy": -0.0025937914863674773,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.005206295739976467,
+              "averageLoss": -0.005753955443021297,
+              "averageMae": -0.005786238793695252,
+              "averageMfe": 0.00522570330708532
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 1107,
+              "hitRate": 0.42005420054200543,
+              "grossExpectancy": 0.00037911909738766925,
+              "expectancy": -0.0012208809026123283,
+              "breakEvenRoundTripCost": 0.00037911909738766925,
+              "averageWin": 0.004227772092201155,
+              "averageLoss": -0.005167335174556675,
+              "averageMae": -0.005003450988050156,
+              "averageMfe": 0.005003128798945931
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 40,
+              "hitRate": 0.3,
+              "grossExpectancy": 0.00011616144694555686,
+              "expectancy": -0.001483838553054443,
+              "breakEvenRoundTripCost": 0.00011616144694555686,
+              "averageWin": 0.00497171067302763,
+              "averageLoss": -0.004250502507089617,
+              "averageMae": -0.004041580843838619,
+              "averageMfe": 0.005044164140044569
+            }
+          ],
+          "validation": [
+            {
+              "setup": "breakout",
+              "sampleCount": 172,
+              "hitRate": 0.3081395348837209,
+              "grossExpectancy": -0.00031821627807781947,
+              "expectancy": -0.0019182162780778183,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.003140566254701546,
+              "averageLoss": -0.004171287490156023,
+              "averageMae": -0.00366460871448507,
+              "averageMfe": 0.003365100789109721
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 400,
+              "hitRate": 0.3175,
+              "grossExpectancy": 0.00005240120117219423,
+              "expectancy": -0.0015475987988278054,
+              "breakEvenRoundTripCost": 0.00005240120117219423,
+              "averageWin": 0.003188473416413834,
+              "averageLoss": -0.003750826532658166,
+              "averageMae": -0.0033759134106335614,
+              "averageMfe": 0.0033200290786219127
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 25,
+              "hitRate": 0.2,
+              "grossExpectancy": -0.0002050730977266145,
+              "expectancy": -0.0018050730977266145,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.0030110091454714953,
+              "averageLoss": -0.003009093658526142,
+              "averageMae": -0.002422122522910931,
+              "averageMfe": 0.002043012430781868
+            }
+          ],
+          "holdout": [
+            {
+              "setup": "breakout",
+              "sampleCount": 156,
+              "hitRate": 0.36538461538461536,
+              "grossExpectancy": 0.0013591469888950226,
+              "expectancy": -0.0002408530111049769,
+              "breakEvenRoundTripCost": 0.0013591469888950226,
+              "averageWin": 0.008668096100318315,
+              "averageLoss": -0.00537024795404566,
+              "averageMae": -0.005067222097745193,
+              "averageMfe": 0.008365309899832288
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "sampleCount": 385,
+              "hitRate": 0.35844155844155845,
+              "grossExpectancy": -0.00007428062965224096,
+              "expectancy": -0.0016742806296522414,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.003911472432736582,
+              "averageLoss": -0.00479506574143223,
+              "averageMae": -0.0053102990483668965,
+              "averageMfe": 0.004529282785019393
+            },
+            {
+              "setup": "compression_release",
+              "sampleCount": 11,
+              "hitRate": 0.18181818181818182,
+              "grossExpectancy": -0.0008701411088667435,
+              "expectancy": -0.0024701411088667432,
+              "breakEvenRoundTripCost": 0,
+              "averageWin": 0.010335811322685573,
+              "averageLoss": -0.00531590831587837,
+              "averageMae": -0.0061335809822869874,
+              "averageMfe": 0.005899260772997122
+            }
+          ],
+          "decisions": [
+            {
+              "setup": "breakout",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "liquidity_sweep_reclaim",
+              "status": "REJECT",
+              "reasons": [
+                "validation net expectancy did not clear threshold",
+                "holdout net expectancy did not clear threshold"
+              ]
+            },
+            {
+              "setup": "compression_release",
+              "status": "INSUFFICIENT_DATA",
+              "reasons": [
+                "minimum sample count not met in both validation and holdout"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "setup": "breakout",
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "setup failed at least one horizon/cost stress run"
+        ]
+      },
+      {
+        "setup": "liquidity_sweep_reclaim",
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "setup failed at least one horizon/cost stress run"
+        ]
+      },
+      {
+        "setup": "compression_release",
+        "status": "INSUFFICIENT_DATA",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "at least one horizon/cost window lacks minimum samples"
+        ]
+      }
+    ],
+    "tuning": {
+      "config": {
+        "breakoutStrength": 0.9,
+        "sweepStrength": 0.08,
+        "reclaimStrength": 0.12,
+        "compressionDepth": 0.1,
+        "compressionDuration": 0.15,
+        "expansionVelocity": 2.1
+      },
+      "choices": [
+        {
+          "setup": "breakout",
+          "sampleCount": 438,
+          "expectancy": -0.0014341680307554006,
+          "selected": {
+            "breakoutStrength": 0.9
+          }
+        },
+        {
+          "setup": "liquidity_sweep_reclaim",
+          "sampleCount": 1109,
+          "expectancy": -0.0007655041995754295,
+          "selected": {
+            "sweepStrength": 0.08,
+            "reclaimStrength": 0.12
+          }
+        },
+        {
+          "setup": "compression_release",
+          "sampleCount": 40,
+          "expectancy": -0.00025908236930032323,
+          "selected": {
+            "compressionDepth": 0.1,
+            "compressionDuration": 0.15,
+            "expansionVelocity": 2.1
+          }
+        }
+      ]
+    }
+  }
+}
