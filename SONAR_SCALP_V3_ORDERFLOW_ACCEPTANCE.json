@@ -1,0 +1,397 @@
+{
+  "strategy": "SONAR_SCALP_V3_ORDERFLOW",
+  "status": "NO_PROMOTABLE_SETUP",
+  "quality": {
+    "oneMinute": {
+      "candleCount": 50000,
+      "firstTimestamp": 1786917600000,
+      "lastTimestamp": 1789917540000,
+      "inferredIntervalMs": 60000,
+      "duplicateTimestamps": 0,
+      "nonIncreasingTimestamps": 0,
+      "invalidOhlc": 0,
+      "negativeVolume": 0,
+      "gapCount": 0,
+      "largestGapMultiple": 1,
+      "pass": true
+    },
+    "fiveMinute": {
+      "candleCount": 50000,
+      "firstTimestamp": 1774917600000,
+      "lastTimestamp": 1789917300000,
+      "inferredIntervalMs": 300000,
+      "duplicateTimestamps": 0,
+      "nonIncreasingTimestamps": 0,
+      "invalidOhlc": 0,
+      "negativeVolume": 0,
+      "gapCount": 0,
+      "largestGapMultiple": 1,
+      "pass": true
+    }
+  },
+  "robustness": {
+    "oneMinuteCount": 50000,
+    "fiveMinuteCount": 50000,
+    "orderflowCount": 8351,
+    "overlapOneMinuteCount": 41715,
+    "eventCount": 425,
+    "config": {
+      "minTriggerScore": 0.2,
+      "minTakerScore": 0.12,
+      "minRelativeVolume": 0.9,
+      "maxOpposingContext": 0.25,
+      "cooldownBars": 2
+    },
+    "runs": [
+      {
+        "horizonBars": 2,
+        "costScenario": "base",
+        "train": {
+          "sampleCount": 231,
+          "hitRate": 0.08658008658008658,
+          "grossExpectancy": -0.00006518566801567908,
+          "expectancy": -0.0010651856680156792,
+          "averageWin": 0.0011574089716654384,
+          "averageLoss": -0.0012758581457105712,
+          "averageMae": -0.0006093306863819706,
+          "averageMfe": 0.0006583885500050026
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.08333333333333333,
+          "grossExpectancy": -0.00001018637083570788,
+          "expectancy": -0.001010186370835708,
+          "averageWin": 0.0012977086425899284,
+          "averageLoss": -0.0012199950084198566,
+          "averageMae": -0.00046636636878489787,
+          "averageMfe": 0.0005726933480588306
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.08256880733944955,
+          "grossExpectancy": -0.00007789108779982675,
+          "expectancy": -0.0010778910877998263,
+          "averageWin": 0.0013393582893523803,
+          "averageLoss": -0.0012954435317435254,
+          "averageMae": -0.0005964233493146228,
+          "averageMfe": 0.0006000222339158256
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      },
+      {
+        "horizonBars": 2,
+        "costScenario": "stress",
+        "train": {
+          "sampleCount": 231,
+          "hitRate": 0.047619047619047616,
+          "grossExpectancy": -0.00006518566801567908,
+          "expectancy": -0.0016651856680156792,
+          "averageWin": 0.0012989380011988762,
+          "averageLoss": -0.0018133918514764069,
+          "averageMae": -0.0006093306863819706,
+          "averageMfe": 0.0006583885500050026
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.03571428571428571,
+          "grossExpectancy": -0.00001018637083570788,
+          "expectancy": -0.0016101863708357076,
+          "averageWin": 0.0021619658903318053,
+          "averageLoss": -0.0017498957138419122,
+          "averageMae": -0.00046636636878489787,
+          "averageMfe": 0.0005726933480588306
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.027522935779816515,
+          "grossExpectancy": -0.00007789108779982675,
+          "expectancy": -0.001677891087799826,
+          "averageWin": 0.0029465818000037145,
+          "averageLoss": -0.001808772395945209,
+          "averageMae": -0.0005964233493146228,
+          "averageMfe": 0.0006000222339158256
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      },
+      {
+        "horizonBars": 3,
+        "costScenario": "base",
+        "train": {
+          "sampleCount": 231,
+          "hitRate": 0.09956709956709957,
+          "grossExpectancy": -0.00006327879336328144,
+          "expectancy": -0.001063278793363281,
+          "averageWin": 0.0014024216418941423,
+          "averageLoss": -0.001335928360723477,
+          "averageMae": -0.0007566429804596752,
+          "averageMfe": 0.000806773564079843
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.14285714285714285,
+          "grossExpectancy": 0.000009900896687001753,
+          "expectancy": -0.0009900991033129987,
+          "averageWin": 0.0010688493652825338,
+          "averageLoss": -0.0013332571814122537,
+          "averageMae": -0.0006009920370401992,
+          "averageMfe": 0.0007199481284394714
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.10091743119266056,
+          "grossExpectancy": -0.00014414194855402518,
+          "expectancy": -0.0011441419485540246,
+          "averageWin": 0.0012191339349108894,
+          "averageLoss": -0.001409407608942943,
+          "averageMae": -0.0007155753726196562,
+          "averageMfe": 0.0007138967756321022
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      },
+      {
+        "horizonBars": 3,
+        "costScenario": "stress",
+        "train": {
+          "sampleCount": 231,
+          "hitRate": 0.06926406926406926,
+          "grossExpectancy": -0.00006327879336328144,
+          "expectancy": -0.0016632787933632816,
+          "averageWin": 0.001314473931414232,
+          "averageLoss": -0.0018848789961374223,
+          "averageMae": -0.0007566429804596752,
+          "averageMfe": 0.000806773564079843
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.047619047619047616,
+          "grossExpectancy": 0.000009900896687001753,
+          "expectancy": -0.0015900991033129985,
+          "averageWin": 0.0021248598906812607,
+          "averageLoss": -0.0017758470530127117,
+          "averageMae": -0.0006009920370401992,
+          "averageMfe": 0.0007199481284394714
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.03669724770642202,
+          "grossExpectancy": -0.00014414194855402518,
+          "expectancy": -0.0017441419485540255,
+          "averageWin": 0.0022275289263043933,
+          "averageLoss": -0.00189544369616768,
+          "averageMae": -0.0007155753726196562,
+          "averageMfe": 0.0007138967756321022
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      },
+      {
+        "horizonBars": 5,
+        "costScenario": "base",
+        "train": {
+          "sampleCount": 230,
+          "hitRate": 0.16521739130434782,
+          "grossExpectancy": -0.00001529785239681616,
+          "expectancy": -0.0010152978523968157,
+          "averageWin": 0.0011408189387556891,
+          "averageLoss": -0.001442029300645749,
+          "averageMae": -0.0009521748125361876,
+          "averageMfe": 0.0010605568056394382
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.14285714285714285,
+          "grossExpectancy": -0.0000317740744551885,
+          "expectancy": -0.0010317740744551886,
+          "averageWin": 0.0012129622360280137,
+          "averageLoss": -0.0014058967928690556,
+          "averageMae": -0.0007369656637911062,
+          "averageMfe": 0.0008813942791082046
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.11926605504587157,
+          "grossExpectancy": -0.00014849112522418193,
+          "expectancy": -0.001148491125224182,
+          "averageWin": 0.0011745323094851082,
+          "averageLoss": -0.0014630672153410646,
+          "averageMae": -0.0009018040815695563,
+          "averageMfe": 0.0008783625804698714
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      },
+      {
+        "horizonBars": 5,
+        "costScenario": "stress",
+        "train": {
+          "sampleCount": 230,
+          "hitRate": 0.09130434782608696,
+          "grossExpectancy": -0.00001529785239681616,
+          "expectancy": -0.0016152978523968156,
+          "averageWin": 0.001269988663870345,
+          "averageLoss": -0.001905207023887774,
+          "averageMae": -0.0009521748125361876,
+          "averageMfe": 0.0010605568056394382
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.05952380952380952,
+          "grossExpectancy": -0.0000317740744551885,
+          "expectancy": -0.001631774074455188,
+          "averageWin": 0.0019125843302564935,
+          "averageLoss": -0.0018561005557660535,
+          "averageMae": -0.0007369656637911062,
+          "averageMfe": 0.0008813942791082046
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.045871559633027525,
+          "grossExpectancy": -0.00014849112522418193,
+          "expectancy": -0.001748491125224182,
+          "averageWin": 0.002365348539303585,
+          "averageLoss": -0.0019462718783264785,
+          "averageMae": -0.0009018040815695563,
+          "averageMfe": 0.0008783625804698714
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      },
+      {
+        "horizonBars": 8,
+        "costScenario": "base",
+        "train": {
+          "sampleCount": 230,
+          "hitRate": 0.20869565217391303,
+          "grossExpectancy": 0.00002573071434291699,
+          "expectancy": -0.0009742692856570825,
+          "averageWin": 0.0013204458666236445,
+          "averageLoss": -0.0015794688862585918,
+          "averageMae": -0.0011226088805625647,
+          "averageMfe": 0.001366129947898383
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.17857142857142858,
+          "grossExpectancy": -0.00021130140931596432,
+          "expectancy": -0.0012113014093159636,
+          "averageWin": 0.0009642945464487875,
+          "averageLoss": -0.001684257051873519,
+          "averageMae": -0.0009752347301917994,
+          "averageMfe": 0.000997356845420238
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.1743119266055046,
+          "grossExpectancy": -0.00008318026978162537,
+          "expectancy": -0.0010831802697816254,
+          "averageWin": 0.0014283817922048601,
+          "averageLoss": -0.001613398927312106,
+          "averageMae": -0.0011563793556507221,
+          "averageMfe": 0.0011452214556937467
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      },
+      {
+        "horizonBars": 8,
+        "costScenario": "stress",
+        "train": {
+          "sampleCount": 230,
+          "hitRate": 0.1608695652173913,
+          "grossExpectancy": 0.00002573071434291699,
+          "expectancy": -0.0015742692856570832,
+          "averageWin": 0.001037125820640834,
+          "averageLoss": -0.002074899435569119,
+          "averageMae": -0.0011226088805625647,
+          "averageMfe": 0.001366129947898383
+        },
+        "validation": {
+          "sampleCount": 84,
+          "hitRate": 0.09523809523809523,
+          "grossExpectancy": -0.00021130140931596432,
+          "expectancy": -0.0018113014093159654,
+          "averageWin": 0.0009838821421792015,
+          "averageLoss": -0.002105531256841772,
+          "averageMae": -0.0009752347301917994,
+          "averageMfe": 0.000997356845420238
+        },
+        "holdout": {
+          "sampleCount": 109,
+          "hitRate": 0.06422018348623854,
+          "grossExpectancy": -0.00008318026978162537,
+          "expectancy": -0.001683180269781626,
+          "averageWin": 0.002915500582308854,
+          "averageLoss": -0.001998776014532933,
+          "averageMae": -0.0011563793556507221,
+          "averageMfe": 0.0011452214556937467
+        },
+        "status": "REJECT",
+        "reasons": [
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero"
+        ]
+      }
+    ],
+    "decision": {
+      "status": "REJECT",
+      "passedRuns": 0,
+      "totalRuns": 8,
+      "reasons": [
+        "orderflow-confirmed scalp failed at least one robustness run"
+      ]
+    },
+    "replay": {
+      "oneMinute": "086a3722",
+      "fiveMinute": "68bfa67b"
+    }
+  },
+  "sourceCommit": "e3f7d81221e7f7ea4dd106e5c3c52c799fb29aea",
+  "symbol": "BTCUSDT",
+  "generatedAt": "2026-09-20T15:59:02.286Z",
+  "runtime": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "data": {
+    "oneMinute": {
+      "file": "BTCUSDT-1m-50000.csv",
+      "bytes": 2861137,
+      "sha256": "f244eb92362e6066f5c488a259de86443dedc1aded9bc98e72c5e42d378da4b5"
+    },
+    "fiveMinute": {
+      "file": "BTCUSDT-5m-50000.csv",
+      "bytes": 2900238,
+      "sha256": "8605aa83e53da8261f8692811503934f4989afc5e9d4c147878e8f764fc72498"
+    },
+    "orderflow": {
+      "file": "BTCUSDT-sonar-orderflow-5m.csv",
+      "bytes": 620795,
+      "sha256": "57e98b2af86bf71ab8e0183e280eb83a974494e4bc1ba143f7b8fbcde99ef685"
+    }
+  }
+}
