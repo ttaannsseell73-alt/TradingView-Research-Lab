@@ -3,7 +3,7 @@ import process from 'node:process';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const node = process.execPath;
 const git = process.platform === 'win32' ? 'git.exe' : 'git';
 const args = process.argv.slice(2);
 const publish = args.includes('--publish');
@@ -29,6 +29,10 @@ function run(command, commandArgs, options = {}) {
   return options.capture ? (result.stdout ?? '').trim() : '';
 }
 
+function runNode(script, scriptArgs = []) {
+  run(node, [script, ...scriptArgs]);
+}
+
 function sha256(path) {
   return crypto.createHash('sha256').update(fs.readFileSync(path)).digest('hex');
 }
@@ -38,8 +42,8 @@ const evidence = [];
 for (const timeframe of ['1m', '5m']) {
   const csv = `${symbol}-${timeframe}-${bars}.csv`;
   const json = `${symbol}-${timeframe}-acceptance.json`;
-  run(npm, ['run', 'fetch:binance', '--', symbol, timeframe, String(bars), csv]);
-  run(npm, ['run', 'acceptance', '--', csv, json]);
+  runNode('scripts/fetch-binance.mjs', [symbol, timeframe, String(bars), csv]);
+  runNode('scripts/run-acceptance.mjs', [csv, json]);
   evidence.push({
     timeframe,
     data: {
