@@ -183,16 +183,21 @@ export function parseSonarOrderflowCsv(text: string): SonarOrderflowRow[] {
   const header = lines[0]?.split(',') ?? [];
   const required = ['timestamp','buyVol','sellVol','buySellRatio','openInterest','openInterestValue'];
   for (const name of required) if (!header.includes(name)) throw new Error(`Missing orderflow column: ${name}`);
-  const idx = Object.fromEntries(header.map((name, i) => [name, i]));
+  const idx = new Map(header.map((name, i) => [name, i] as const));
+  const column = (name: string): number => {
+    const value = idx.get(name);
+    if (value === undefined) throw new Error(`Missing orderflow column: ${name}`);
+    return value;
+  };
   const rows = lines.slice(1).filter(Boolean).map((line) => {
     const parts = line.split(',');
     const row: SonarOrderflowRow = {
-      timestamp: Number(parts[idx.timestamp]),
-      buyVol: Number(parts[idx.buyVol]),
-      sellVol: Number(parts[idx.sellVol]),
-      buySellRatio: Number(parts[idx.buySellRatio]),
-      openInterest: Number(parts[idx.openInterest]),
-      openInterestValue: Number(parts[idx.openInterestValue]),
+      timestamp: Number(parts[column('timestamp')]),
+      buyVol: Number(parts[column('buyVol')]),
+      sellVol: Number(parts[column('sellVol')]),
+      buySellRatio: Number(parts[column('buySellRatio')]),
+      openInterest: Number(parts[column('openInterest')]),
+      openInterestValue: Number(parts[column('openInterestValue')]),
     };
     if (Object.values(row).some((value) => !Number.isFinite(value))) throw new Error('Invalid orderflow row');
     return row;
