@@ -88,10 +88,8 @@ if (publish) {
   const foreign = staged.filter((path) => !allowed.has(path));
   if (foreign.length) throw new Error(`Refusing to publish unrelated staged files: ${foreign.join(', ')}`);
 
-  const name = run(git, ['config', '--local', '--get', 'user.name'], { capture: true });
-  const email = run(git, ['config', '--local', '--get', 'user.email'], { capture: true });
-  if (!name) run(git, ['config', '--local', 'user.name', 'ttaannsseell73-alt']);
-  if (!email) run(git, ['config', '--local', 'user.email', '254803259+ttaannsseell73-alt@users.noreply.github.com']);
+  run(git, ['config', '--local', 'user.name', 'ttaannsseell73-alt']);
+  run(git, ['config', '--local', 'user.email', '254803259+ttaannsseell73-alt@users.noreply.github.com']);
 
   run(git, ['add', '-f', '--', ...evidencePaths]);
   run(git, ['commit', '-m', `evidence: final local acceptance ${symbol}`]);
