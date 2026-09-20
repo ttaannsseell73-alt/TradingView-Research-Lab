@@ -28,7 +28,9 @@ jobs:
           python-version: "3.12"
 
       - name: Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.90.0
+        with:
+          components: rustfmt, clippy
 
       - name: Install
         working-directory: upstream/passivbot
