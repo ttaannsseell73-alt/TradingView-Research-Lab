@@ -1,5 +1,6 @@
 import { detectSetups, type SetupDetectorConfig } from './setups.js';
-import { replay, type FeatureEngineConfig } from './replay.js';
+import type { FeatureEngineConfig } from './featureEngine.js';
+import { replay } from './replay.js';
 import { runWalkForwardStudy, type WalkForwardReport } from './walkForward.js';
 import type { Candle, EventStudyConfig, GateConfig, GateStatus, SetupKind } from './types.js';
 
