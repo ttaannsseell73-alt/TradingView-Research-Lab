@@ -77,13 +77,22 @@ console.log('\nFINAL_ACCEPTANCE.json written.');
 console.log(JSON.stringify({ status: final.status, promotable: final.promotable }, null, 2));
 
 if (publish) {
-  const staged = run(git, ['diff', '--cached', '--name-only'], { capture: true });
-  if (staged) throw new Error('Refusing to publish because unrelated staged Git changes already exist');
-
   const evidencePaths = [
     'FINAL_ACCEPTANCE.json',
     ...evidence.map((item) => item.acceptanceFile),
   ];
+  const staged = run(git, ['diff', '--cached', '--name-only'], { capture: true })
+    .split(/\r?\n/)
+    .filter(Boolean);
+  const allowed = new Set(evidencePaths);
+  const foreign = staged.filter((path) => !allowed.has(path));
+  if (foreign.length) throw new Error(`Refusing to publish unrelated staged files: ${foreign.join(', ')}`);
+
+  const name = run(git, ['config', '--local', '--get', 'user.name'], { capture: true });
+  const email = run(git, ['config', '--local', '--get', 'user.email'], { capture: true });
+  if (!name) run(git, ['config', '--local', 'user.name', 'ttaannsseell73-alt']);
+  if (!email) run(git, ['config', '--local', 'user.email', '254803259+ttaannsseell73-alt@users.noreply.github.com']);
+
   run(git, ['add', '-f', '--', ...evidencePaths]);
   run(git, ['commit', '-m', `evidence: final local acceptance ${symbol}`]);
   run(git, ['push', 'origin', 'HEAD:main']);
