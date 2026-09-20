@@ -57,3 +57,21 @@ export type {
   SonarScalpStudyConfig,
   SonarTriggerKind,
 } from './sonarScalp.js';
+
+export {
+  detectSonarScalpV2Events,
+  detectSonarScalpV2EventsFromRows,
+  evaluateSonarScalpV2Events,
+  runSonarScalpV2Robustness,
+  summarizeSonarScalpV2Outcomes,
+} from './sonarScalpV2.js';
+export type {
+  SonarScalpV2Config,
+  SonarScalpV2Event,
+  SonarScalpV2Kind,
+  SonarScalpV2Outcome,
+  SonarScalpV2Report,
+  SonarScalpV2Run,
+  SonarScalpV2Stats,
+  SonarScalpV2StudyConfig,
+} from './sonarScalpV2.js';

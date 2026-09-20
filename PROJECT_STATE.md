@@ -51,3 +51,9 @@ This research lane is complete and frozen at the final acceptance result above. 
 Branch: `research/sonar-scalping-v1`
 
 This is a materially new hypothesis. The frozen Kıvanç/TradingView result remains unchanged. This branch tests 5m context + 1m trigger scalping with next-bar entry and fail-closed cost/holdout gates. `BinanceGridBot` and `Freqtrade-Research-Lab` remain untouched.
+
+## SonarScalp V2 — regime separation
+
+Branch: `research/sonar-scalping-v2-regime`
+
+V1 evidence is preserved. V2 separates trend-retest from range-sweep instead of mixing incompatible regimes. It remains isolated from `BinanceGridBot` and `Freqtrade-Research-Lab`.
