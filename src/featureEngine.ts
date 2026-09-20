@@ -59,9 +59,8 @@ function structureScore(history: Candle[], lookback: number): number {
 
 function validateCandle(candle: Candle, previousTimestamp?: number): void {
   if (!candle.closed) throw new Error('Only closed candles are accepted');
-  if (!Number.isFinite(candle.timestamp) || !Number.isFinite(candle.volume)) {
-    throw new Error('Candle contains non-finite values');
-  }
+  const values = [candle.timestamp, candle.open, candle.high, candle.low, candle.close, candle.volume];
+  if (values.some((value) => !Number.isFinite(value))) throw new Error('Candle contains non-finite values');
   if (candle.volume < 0) throw new Error('Volume must be non-negative');
   if (candle.high < Math.max(candle.open, candle.close) || candle.low > Math.min(candle.open, candle.close)) {
     throw new Error('Invalid OHLC candle');
@@ -115,8 +114,8 @@ export class FeatureEngine {
       : breakoutDown
         ? candle.close - priorLow
         : 0;
-    const breakoutDisplacement = clamp(safeDiv(breakoutDistance, avgLongRange), -3, 3);
-    const bosStrength = breakoutDirection === 0 ? 0 : breakoutDisplacement;
+    const breakoutDisplacement = breakoutDirection * clamp(safeDiv(Math.abs(breakoutDistance), avgLongRange), 0, 3);
+    const bosStrength = breakoutDisplacement;
     const chochStrength =
       breakoutDirection !== 0 && externalStructure !== 0 && breakoutDirection !== externalStructure
         ? breakoutDisplacement
@@ -144,9 +143,7 @@ export class FeatureEngine {
       if (Math.abs(prior.high - candle.close) <= tolerance) nearbyTouches += 1;
       if (Math.abs(prior.low - candle.close) <= tolerance) nearbyTouches += 1;
     }
-    const liquidityDensity = priorLevels.length
-      ? nearbyTouches / (priorLevels.length * 2)
-      : 0;
+    const liquidityDensity = priorLevels.length ? nearbyTouches / (priorLevels.length * 2) : 0;
 
     const upperWick = candle.high - Math.max(candle.open, candle.close);
     const lowerWick = Math.min(candle.open, candle.close) - candle.low;
@@ -189,9 +186,7 @@ export class FeatureEngine {
       if (value === undefined || value >= avgLongRange * 0.75) break;
       compressedCount += 1;
     }
-    const compressionDuration = shortRanges.length
-      ? compressedCount / this.config.compressionLookback
-      : 0;
+    const compressionDuration = shortRanges.length ? compressedCount / this.config.compressionLookback : 0;
 
     const expansionVelocity = clamp(safeDiv(currentRange, avgLongRange, 1) * bodyRatio, 0, 4);
     const trendRangeScore = clamp((internalStructure + externalStructure) / 2, -1, 1);
