@@ -1,0 +1,419 @@
+{
+  "strategy": "SONAR_SCALP_V4_TAKER1M_UNIVERSE",
+  "sourceCommit": "b349f5ee1ef3337ab46696270fc6d6614e03d3af",
+  "generatedAt": "2026-09-20T16:34:05.010Z",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "XRPUSDT",
+    "DOGEUSDT",
+    "AVAXUSDT",
+    "ENAUSDT",
+    "NEARUSDT",
+    "SUIUSDT",
+    "1000PEPEUSDT",
+    "ARBUSDT",
+    "INJUSDT"
+  ],
+  "results": [
+    {
+      "symbol": "BTCUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 609,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "medium",
+          "trainNet": -0.0009827006316715048,
+          "validationNet": -0.0010135425693043214,
+          "holdoutNet": -0.0010946055123318406,
+          "validationPF": 0.17120150636599096,
+          "holdoutPF": 0.12082658865561428
+        },
+        {
+          "cost": "stress",
+          "profile": "medium",
+          "trainNet": -0.0015827006316715057,
+          "validationNet": -0.0016135425693043224,
+          "holdoutNet": -0.0016946055123318402,
+          "validationPF": 0.07140959771502253,
+          "holdoutPF": 0.04364065810110553
+        }
+      ]
+    },
+    {
+      "symbol": "ETHUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 556,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "wide",
+          "trainNet": -0.0009724451223094764,
+          "validationNet": -0.0010228343090314502,
+          "holdoutNet": -0.0009672285907691742,
+          "validationPF": 0.31141915017318594,
+          "holdoutPF": 0.38460332531002206
+        },
+        {
+          "cost": "stress",
+          "profile": "wide",
+          "trainNet": -0.0015724451223094774,
+          "validationNet": -0.0016228343090314503,
+          "holdoutNet": -0.0015672285907691744,
+          "validationPF": 0.17464527685219322,
+          "holdoutPF": 0.22268720864463373
+        }
+      ]
+    },
+    {
+      "symbol": "SOLUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 594,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "tight",
+          "trainNet": -0.0009888296363063577,
+          "validationNet": -0.0009988014303364747,
+          "holdoutNet": -0.000961630572643825,
+          "validationPF": 0.15864226456260064,
+          "holdoutPF": 0.20402779035081053
+        },
+        {
+          "cost": "stress",
+          "profile": "tight",
+          "trainNet": -0.0015888296363063552,
+          "validationNet": -0.0015988014303364747,
+          "holdoutNet": -0.0015616305726438254,
+          "validationPF": 0.042741332830666924,
+          "holdoutPF": 0.05115317359792143
+        }
+      ]
+    },
+    {
+      "symbol": "XRPUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 551,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "wide",
+          "trainNet": -0.0008440381835944177,
+          "validationNet": -0.0008165651571586253,
+          "holdoutNet": -0.0011549555005722371,
+          "validationPF": 0.44335034906689524,
+          "holdoutPF": 0.3542129747529752
+        },
+        {
+          "cost": "stress",
+          "profile": "wide",
+          "trainNet": -0.0014440381835944171,
+          "validationNet": -0.001416565157158625,
+          "holdoutNet": -0.0017549555005722365,
+          "validationPF": 0.24821637418173953,
+          "holdoutPF": 0.21143286405845776
+        }
+      ]
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 533,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "medium",
+          "trainNet": -0.0008005163526349271,
+          "validationNet": -0.0010264583690212455,
+          "holdoutNet": -0.0010727988140921154,
+          "validationPF": 0.3118025325047396,
+          "holdoutPF": 0.2886112324925605
+        },
+        {
+          "cost": "stress",
+          "profile": "medium",
+          "trainNet": -0.0014005163526349276,
+          "validationNet": -0.001626458369021245,
+          "holdoutNet": -0.0016727988140921137,
+          "validationPF": 0.15789255373153935,
+          "holdoutPF": 0.14271213388068432
+        }
+      ]
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 604,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "tight",
+          "trainNet": -0.0009932953500963308,
+          "validationNet": -0.0010043081159164895,
+          "holdoutNet": -0.0008890195055503735,
+          "validationPF": 0.19024618238026955,
+          "holdoutPF": 0.2675594340494531
+        },
+        {
+          "cost": "stress",
+          "profile": "tight",
+          "trainNet": -0.0015932953500963304,
+          "validationNet": -0.0016043081159164898,
+          "holdoutNet": -0.0014890195055503738,
+          "validationPF": 0.053221970415286486,
+          "holdoutPF": 0.0768582005654582
+        }
+      ]
+    },
+    {
+      "symbol": "ENAUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 548,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "wide",
+          "trainNet": -0.0011750146894489546,
+          "validationNet": -0.00006681997786287714,
+          "holdoutNet": -0.0014638577318563625,
+          "validationPF": 0.9523746722979387,
+          "holdoutPF": 0.37972130006085164
+        },
+        {
+          "cost": "stress",
+          "profile": "wide",
+          "trainNet": -0.0017750146894489546,
+          "validationNet": -0.000666819977862877,
+          "holdoutNet": -0.0020638577318563625,
+          "validationPF": 0.6054037941224473,
+          "holdoutPF": 0.2560684942291369
+        }
+      ]
+    },
+    {
+      "symbol": "NEARUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 572,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "tight",
+          "trainNet": -0.0009325555618475143,
+          "validationNet": -0.0009858193843509367,
+          "holdoutNet": -0.0014166801497563649,
+          "validationPF": 0.2732673682017389,
+          "holdoutPF": 0.14553382575883655
+        },
+        {
+          "cost": "stress",
+          "profile": "tight",
+          "trainNet": -0.001532555561847514,
+          "validationNet": -0.0015858193843509352,
+          "holdoutNet": -0.0020166801497563643,
+          "validationPF": 0.08550618103307002,
+          "holdoutPF": 0.045282729824861395
+        }
+      ]
+    },
+    {
+      "symbol": "SUIUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 617,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "medium",
+          "trainNet": -0.0009641447068743709,
+          "validationNet": -0.0012318644523439655,
+          "holdoutNet": -0.0007663864442770365,
+          "validationPF": 0.2760771078101682,
+          "holdoutPF": 0.4692906599702428
+        },
+        {
+          "cost": "stress",
+          "profile": "medium",
+          "trainNet": -0.0015641447068743717,
+          "validationNet": -0.0018318644523439656,
+          "holdoutNet": -0.0013663864442770364,
+          "validationPF": 0.15051076161284715,
+          "holdoutPF": 0.2503317478122137
+        }
+      ]
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 559,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "wide",
+          "trainNet": -0.0011182643016599395,
+          "validationNet": -0.001084983294945666,
+          "holdoutNet": -0.0012122226718913347,
+          "validationPF": 0.44195839104347373,
+          "holdoutPF": 0.40180532055047613
+        },
+        {
+          "cost": "stress",
+          "profile": "wide",
+          "trainNet": -0.0017182643016599385,
+          "validationNet": -0.0016849832949456657,
+          "holdoutNet": -0.0018122226718913345,
+          "validationPF": 0.28570006361144834,
+          "holdoutPF": 0.2556422654045517
+        }
+      ]
+    },
+    {
+      "symbol": "ARBUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 531,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "wide",
+          "trainNet": -0.0009035342349010466,
+          "validationNet": -0.0005234091683499796,
+          "holdoutNet": -0.0009703508101402429,
+          "validationPF": 0.7104982965690543,
+          "holdoutPF": 0.5325306404151899
+        },
+        {
+          "cost": "stress",
+          "profile": "wide",
+          "trainNet": -0.0015035342349010452,
+          "validationNet": -0.0011234091683499797,
+          "holdoutNet": -0.0015703508101402423,
+          "validationPF": 0.4747975133534123,
+          "holdoutPF": 0.35983102388632987
+        }
+      ]
+    },
+    {
+      "symbol": "INJUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 544,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 2,
+        "reasons": [
+          "1m-taker Sonar scalp failed at least one cost robustness run"
+        ]
+      },
+      "runs": [
+        {
+          "cost": "base",
+          "profile": "medium",
+          "trainNet": -0.001051918839101214,
+          "validationNet": -0.0008400564377047235,
+          "holdoutNet": -0.0012060000385510144,
+          "validationPF": 0.4706760495800797,
+          "holdoutPF": 0.3243595043883168
+        },
+        {
+          "cost": "stress",
+          "profile": "medium",
+          "trainNet": -0.0016519188391012122,
+          "validationNet": -0.0014400564377047217,
+          "holdoutNet": -0.001806000038551014,
+          "validationPF": 0.2621345856731411,
+          "holdoutPF": 0.18201033031183378
+        }
+      ]
+    }
+  ],
+  "promotable": [],
+  "status": "NO_PROMOTABLE_SYMBOL"
+}

@@ -1,0 +1,201 @@
+{
+  "strategy": "SONAR_SCALP_V4_TAKER1M",
+  "status": "NO_PROMOTABLE_SETUP",
+  "quality": {
+    "oneMinute": {
+      "candleCount": 42000,
+      "firstTimestamp": 1787402040000,
+      "lastTimestamp": 1789921980000,
+      "inferredIntervalMs": 60000,
+      "duplicateTimestamps": 0,
+      "nonIncreasingTimestamps": 0,
+      "invalidOhlc": 0,
+      "negativeVolume": 0,
+      "gapCount": 0,
+      "largestGapMultiple": 1,
+      "pass": true
+    },
+    "fiveMinute": {
+      "candleCount": 9000,
+      "firstTimestamp": 1787221200000,
+      "lastTimestamp": 1789920900000,
+      "inferredIntervalMs": 300000,
+      "duplicateTimestamps": 0,
+      "nonIncreasingTimestamps": 0,
+      "invalidOhlc": 0,
+      "negativeVolume": 0,
+      "gapCount": 0,
+      "largestGapMultiple": 1,
+      "pass": true
+    }
+  },
+  "robustness": {
+    "oneMinuteCount": 42000,
+    "fiveMinuteCount": 9000,
+    "oiCount": 8352,
+    "eventCount": 559,
+    "config": {
+      "minTriggerScore": 0.2,
+      "minTakerImbalance": 0.12,
+      "minRelativeVolume": 0.9,
+      "maxOpposingContext": 0.25,
+      "cooldownBars": 2
+    },
+    "profileCandidates": [
+      {
+        "name": "tight",
+        "takeProfit": 0.002,
+        "stopLoss": 0.0012,
+        "maxHoldBars": 5
+      },
+      {
+        "name": "medium",
+        "takeProfit": 0.003,
+        "stopLoss": 0.0018,
+        "maxHoldBars": 8
+      },
+      {
+        "name": "wide",
+        "takeProfit": 0.004,
+        "stopLoss": 0.0025,
+        "maxHoldBars": 12
+      }
+    ],
+    "runs": [
+      {
+        "costScenario": "base",
+        "feeRate": 0.0004,
+        "slippageRate": 0.0001,
+        "selectedProfile": {
+          "name": "wide",
+          "takeProfit": 0.004,
+          "stopLoss": 0.0025,
+          "maxHoldBars": 12
+        },
+        "train": {
+          "sampleCount": 331,
+          "hitRate": 0.3413897280966767,
+          "grossExpectancy": -0.00011826430165993919,
+          "expectancy": -0.0011182643016599395,
+          "profitFactor": 0.4292132752040326,
+          "averageWin": 0.002463163800724147,
+          "averageLoss": -0.0029746926299599476,
+          "averageMae": -0.0022688687388050994,
+          "averageMfe": 0.002330566154426046,
+          "tpRate": 0.2628398791540785,
+          "slRate": 0.48036253776435045,
+          "timeRate": 0.256797583081571
+        },
+        "validation": {
+          "sampleCount": 106,
+          "hitRate": 0.330188679245283,
+          "grossExpectancy": -0.00008498329494566594,
+          "expectancy": -0.001084983294945666,
+          "profitFactor": 0.44195839104347373,
+          "averageWin": 0.0026024097305691607,
+          "averageLoss": -0.002902712251185369,
+          "averageMae": -0.002138563784581167,
+          "averageMfe": 0.0024901466186663954,
+          "tpRate": 0.2641509433962264,
+          "slRate": 0.4811320754716981,
+          "timeRate": 0.25471698113207547
+        },
+        "holdout": {
+          "sampleCount": 122,
+          "hitRate": 0.32786885245901637,
+          "grossExpectancy": -0.00021222267189133467,
+          "expectancy": -0.0012122226718913347,
+          "profitFactor": 0.40180532055047613,
+          "averageWin": 0.0024834497610435624,
+          "averageLoss": -0.003014989712347383,
+          "averageMae": -0.0023771923396127327,
+          "averageMfe": 0.0025195242235554016,
+          "tpRate": 0.2459016393442623,
+          "slRate": 0.5081967213114754,
+          "timeRate": 0.2459016393442623
+        },
+        "status": "REJECT",
+        "reasons": [
+          "train-selected profile has non-positive train net expectancy",
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero",
+          "validation PF did not clear 1",
+          "holdout PF did not clear 1"
+        ]
+      },
+      {
+        "costScenario": "stress",
+        "feeRate": 0.0005,
+        "slippageRate": 0.0003,
+        "selectedProfile": {
+          "name": "wide",
+          "takeProfit": 0.004,
+          "stopLoss": 0.0025,
+          "maxHoldBars": 12
+        },
+        "train": {
+          "sampleCount": 331,
+          "hitRate": 0.2990936555891239,
+          "grossExpectancy": -0.00011826430165993919,
+          "expectancy": -0.0017182643016599385,
+          "profitFactor": 0.2748127153231695,
+          "averageWin": 0.00217705504101044,
+          "averageLoss": -0.0033804910901270393,
+          "averageMae": -0.0022688687388050994,
+          "averageMfe": 0.002330566154426046,
+          "tpRate": 0.2628398791540785,
+          "slRate": 0.48036253776435045,
+          "timeRate": 0.256797583081571
+        },
+        "validation": {
+          "sampleCount": 106,
+          "hitRate": 0.3018867924528302,
+          "grossExpectancy": -0.00008498329494566594,
+          "expectancy": -0.0016849832949456657,
+          "profitFactor": 0.28570006361144834,
+          "averageWin": 0.002232447282593808,
+          "averageLoss": -0.003379007328476248,
+          "averageMae": -0.002138563784581167,
+          "averageMfe": 0.0024901466186663954,
+          "tpRate": 0.2641509433962264,
+          "slRate": 0.4811320754716981,
+          "timeRate": 0.25471698113207547
+        },
+        "holdout": {
+          "sampleCount": 122,
+          "hitRate": 0.30327868852459017,
+          "grossExpectancy": -0.00021222267189133467,
+          "expectancy": -0.0018122226718913345,
+          "profitFactor": 0.2556422654045517,
+          "averageWin": 0.002052204416687501,
+          "averageLoss": -0.0034943850516256513,
+          "averageMae": -0.0023771923396127327,
+          "averageMfe": 0.0025195242235554016,
+          "tpRate": 0.2459016393442623,
+          "slRate": 0.5081967213114754,
+          "timeRate": 0.2459016393442623
+        },
+        "status": "REJECT",
+        "reasons": [
+          "train-selected profile has non-positive train net expectancy",
+          "validation net expectancy did not clear zero",
+          "holdout net expectancy did not clear zero",
+          "validation PF did not clear 1",
+          "holdout PF did not clear 1"
+        ]
+      }
+    ],
+    "decision": {
+      "status": "REJECT",
+      "passedRuns": 0,
+      "totalRuns": 2,
+      "reasons": [
+        "1m-taker Sonar scalp failed at least one cost robustness run"
+      ]
+    },
+    "replay": {
+      "oneMinute": "67f840b8",
+      "fiveMinute": "93930767"
+    }
+  }
+}
