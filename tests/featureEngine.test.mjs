@@ -32,6 +32,11 @@ test('rejects non-increasing timestamps', () => {
   assert.throws(() => engine.process(candle(1)), /strictly increasing/);
 });
 
+test('rejects non-finite OHLC values', () => {
+  const engine = new FeatureEngine(cfg);
+  assert.throws(() => engine.process(candle(1, { close: Number.NaN })), /non-finite/);
+});
+
 test('emits exactly the locked 18 canonical features', () => {
   const engine = new FeatureEngine(cfg);
   const row = engine.process(candle(1));
@@ -52,6 +57,15 @@ test('current candle cannot leak into its prior breakout boundary', () => {
   const row = engine.process(candle(3, { open: 101, high: 120, low: 100, close: 110 }));
   assert.ok(row.features.BOSStrength > 0);
   assert.ok(row.features.BreakoutDisplacement > 0);
+});
+
+test('downside breakout carries negative signed strength', () => {
+  const engine = new FeatureEngine(cfg);
+  engine.process(candle(1, { high: 101, low: 99, close: 100 }));
+  engine.process(candle(2, { high: 101, low: 98, close: 99 }));
+  const row = engine.process(candle(3, { open: 99, high: 99, low: 90, close: 92 }));
+  assert.ok(row.features.BOSStrength < 0);
+  assert.ok(row.features.BreakoutDisplacement < 0);
 });
 
 test('detects high liquidity sweep and reclaim', () => {
