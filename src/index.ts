@@ -38,3 +38,22 @@ export type {
   StudyWindow,
   WalkForwardWindows,
 } from './types.js';
+
+export {
+  detectSonarScalpEvents,
+  detectSonarScalpEventsFromRows,
+  evaluateSonarScalpEvents,
+  latestClosedContextIndex,
+  runSonarScalpRobustness,
+  summarizeSonarScalpOutcomes,
+} from './sonarScalp.js';
+export type {
+  SonarScalpConfig,
+  SonarScalpEvent,
+  SonarScalpOutcome,
+  SonarScalpRobustnessReport,
+  SonarScalpRun,
+  SonarScalpStats,
+  SonarScalpStudyConfig,
+  SonarTriggerKind,
+} from './sonarScalp.js';

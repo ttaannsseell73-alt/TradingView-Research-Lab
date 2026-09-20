@@ -45,3 +45,9 @@ Raw CSV market data remains local and ignored. Only compact acceptance evidence 
 ## Project disposition
 
 This research lane is complete and frozen at the final acceptance result above. Reopen only for a materially new hypothesis, setup family, dataset scope, or explicit user decision.
+
+## Reopened research lane — SonarScalp V1
+
+Branch: `research/sonar-scalping-v1`
+
+This is a materially new hypothesis. The frozen Kıvanç/TradingView result remains unchanged. This branch tests 5m context + 1m trigger scalping with next-bar entry and fail-closed cost/holdout gates. `BinanceGridBot` and `Freqtrade-Research-Lab` remain untouched.

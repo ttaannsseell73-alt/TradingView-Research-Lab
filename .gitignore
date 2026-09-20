@@ -8,3 +8,4 @@ research-output*.json
 FINAL_ACCEPTANCE.json
 *-1m-*.csv
 *-5m-*.csv
+SONAR_SCALP_ACCEPTANCE.json
