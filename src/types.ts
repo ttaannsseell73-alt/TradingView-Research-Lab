@@ -64,7 +64,9 @@ export interface SetupStats {
   setup: SetupKind;
   sampleCount: number;
   hitRate: number;
+  grossExpectancy: number;
   expectancy: number;
+  breakEvenRoundTripCost: number;
   averageWin: number;
   averageLoss: number;
   averageMae: number;
