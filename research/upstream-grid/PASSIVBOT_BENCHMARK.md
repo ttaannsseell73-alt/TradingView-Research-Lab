@@ -1,29 +1,15 @@
-# Passivbot Futures Benchmark V1
+# Passivbot v8.1.0 futures robustness benchmark
 
-This benchmark evaluates a ready-made perpetual-futures grid/market-making engine without changing BinanceGridBot.
+The candidate is pinned to `enarjord/passivbot v8.1.0`.
 
-## Engine
+The benchmark is historical/offline and places no orders. Binance Vision USD-M 1m data is supplied through Passivbot's caller-managed OHLCV source directory.
 
-- upstream: `enarjord/passivbot`
-- revision: `v8.1.0`
-- exchange: Binance USDT-M Futures
-- symbols: BTC, ETH, SOL
-- timeframe: Passivbot native 1-minute backtester
-- window: 2026-08-01 through 2026-09-01
-- starting balance: 10,000 quote units per independent symbol run
+Robustness matrix:
+- BTC, ETH, SOL.
+- May, June, July, August 2026.
+- Evaluation begins on day 8 and runs to month-end.
+- Representative upstream `default_trailing_martingale_long.json` configuration.
+- 10,000 USDT starting balance.
+- Maker fee 0.04%, taker fee 0.055%, market-order slippage 0.05%.
 
-## Explicit cost assumptions
-
-- maker fee: 0.0004
-- taker fee: 0.00055
-- market-order slippage: 0.0005
-
-These are fixed benchmark assumptions, not a claim about any user's actual Binance fee tier.
-
-## Output
-
-Each symbol produces Passivbot's native `analysis.json`, fills and equity artifacts. The workflow also emits a normalized `PASSIVBOT_SUMMARY.json` containing gain, ADG, drawdown, loss/profit ratio, Sharpe, Sortino, fill count and completion metrics when present.
-
-## Interpretation
-
-This is historical research evidence only. Repository stars, example screenshots, or a positive single-window backtest are not treated as proof of future profitability. A candidate that looks promising here must still survive longer windows, stressed costs and TESTNET/paper execution.
+The report records strategy-equity gain, drawdown, Sharpe/Sortino, fill count, turnover and holding duration. Positive results are treated only as historical evidence, not as proof of future profitability.
