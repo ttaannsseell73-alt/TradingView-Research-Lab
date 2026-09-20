@@ -92,3 +92,23 @@ export type {
   SonarOrderflowRun,
   SonarOrderflowStats,
 } from './sonarOrderflow.js';
+
+export {
+  detectSonarScalpV4EventsFromRows,
+  evaluateSonarScalpV4Events,
+  parseOpenInterestFiveMinuteCsv,
+  parseTakerOneMinuteCsv,
+  runSonarScalpV4Robustness,
+  summarizeSonarScalpV4Outcomes,
+} from './sonarScalpV4.js';
+export type {
+  ExitProfile,
+  OpenInterestFiveMinuteRow,
+  SonarScalpV4Config,
+  SonarScalpV4CostRun,
+  SonarScalpV4Event,
+  SonarScalpV4Outcome,
+  SonarScalpV4Report,
+  SonarScalpV4Stats,
+  TakerOneMinuteRow,
+} from './sonarScalpV4.js';
