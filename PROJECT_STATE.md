@@ -15,20 +15,33 @@ Canonical branch: `main`
 - Multi-horizon 3/6/12/24 robustness matrix implemented.
 - Base and stressed transaction-cost scenarios implemented.
 - Final data-quality and acceptance gate implemented.
-- Main `binance-bot` remains untouched.
+- Main `BinanceGridBot` remains untouched.
 
 ## Promotion rule
 
 Promotion is per setup, not all-or-nothing. A setup is a candidate only if every configured validation/holdout horizon and cost scenario is `PASS` with the minimum sample count. `REJECT` and `INSUFFICIENT_DATA` remain blocked.
 
-## Final physical gate
+## Final acceptance — CLOSED
 
-GitHub-hosted runners are not relied on for Binance Futures downloads because that endpoint can be geo-blocked from hosted infrastructure. The final full-size market-data acceptance is intentionally local.
+Final evidence commit: `1f6ccefa7a697ac986e9b1a9b6686b45b7fe629c`
 
-One command performs the complete final gate for BTCUSDT on 1m and 5m with 50,000 candles each **and publishes only the compact JSON evidence back to main**:
+Dataset:
+- BTCUSDT 1m: 50,000 candles, quality PASS, zero detected gaps, SHA-256 recorded in `FINAL_ACCEPTANCE.json`.
+- BTCUSDT 5m: 50,000 candles, quality PASS, zero detected gaps, SHA-256 recorded in `FINAL_ACCEPTANCE.json`.
+- Source implementation commit recorded by the evidence: `6e695b52537406036ae521aa7337e9b92c83b6d3`.
+- Evidence CI: PASS.
 
-```bash
-npm run final:local:publish
-```
+Final status: `NO_PROMOTABLE_SETUP`.
 
-The raw CSV market data stays local and ignored. The evidence records source commit, runtime metadata and SHA-256 hashes of the raw datasets. No API key is required.
+Per-setup result on both 1m and 5m across the configured 3/6/12/24 horizons and base/stress cost scenarios:
+- `breakout`: REJECT.
+- `liquidity_sweep_reclaim`: REJECT.
+- `compression_release`: INSUFFICIENT_DATA.
+
+Therefore no TradingView/Kıvanç setup from this research lane is approved for promotion into `BinanceGridBot`. The rejection is the final research result for this version; gates are not to be loosened to manufacture a PASS.
+
+Raw CSV market data remains local and ignored. Only compact acceptance evidence is committed.
+
+## Project disposition
+
+This research lane is complete and frozen at the final acceptance result above. Reopen only for a materially new hypothesis, setup family, dataset scope, or explicit user decision.
