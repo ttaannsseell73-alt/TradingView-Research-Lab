@@ -1,34 +1,55 @@
 # TradingView Research Lab
 
-Independent research repository for the Binance Futures price-action bot. It distills useful ideas from open TradingView indicators into original, repaint-free TypeScript features and validates them before any main-bot change.
+Independent research lane for the Binance Futures price-action bot. The repository converts useful TradingView/Kıvanç concepts into original, closed-candle, non-repainting features and subjects them to cost-aware out-of-sample research before any main-bot integration.
 
-## Boundary
+## Hard boundary
 
-- This repository is **not** an execution engine.
-- It never submits orders and never needs API keys.
-- It does not copy Pine source code.
-- `BinanceGridBot` remains untouched until a feature passes `RESEARCH_GATE.md`.
+- No order placement.
+- No API secrets.
+- No copied Pine code.
+- No modification of `binance-bot`.
+- No RSI/MACD/TKE-style classical oscillator stack as the canonical decision core.
 
-## Canonical flow
-
-```text
-closed Binance candles
-  -> canonical 18-feature engine
-  -> deterministic replay / no-lookahead checks
-  -> fee and slippage aware OOS research
-  -> ACCEPT or REJECT
-  -> controlled promotion to BinanceGridBot
-```
-
-## Locked canonical feature contract
+## Canonical 18-feature contract
 
 `InternalStructure`, `ExternalStructure`, `BOSStrength`, `CHOCHStrength`, `SwingQuality`, `RangeBoundary`, `BreakoutDisplacement`, `LiquidityDensity`, `SweepDepth`, `ReclaimQuality`, `PostSweepDisplacement`, `StructureShiftAfterSweep`, `RetestQuality`, `CompressionDepth`, `CompressionDuration`, `ExpansionVelocity`, `TrendRangeScore`, `RelativeVolume`.
+
+## Research pipeline
+
+```text
+closed OHLCV
+  -> 18-feature engine
+  -> deterministic replay / no-lookahead checks
+  -> breakout | sweep/reclaim | compression-release events
+  -> fee + slippage aware forward-return study
+  -> chronological train / validation / holdout
+  -> PASS | REJECT | INSUFFICIENT_DATA
+  -> only then controlled promotion to the main bot
+```
 
 ## Commands
 
 ```bash
-npm install
+npm ci
 npm run check
 ```
 
-The first milestone implements the locked 18-feature contract, closed-candle enforcement, deterministic replay, repaint/no-lookahead prefix invariance, and 9 deterministic tests. Signal profitability is deliberately not claimed until real Binance replay and out-of-sample testing pass.
+Download public Binance USDⓈ-M candles without API keys:
+
+```bash
+npm run fetch:binance -- BTCUSDT 1m 5000 BTCUSDT-1m.csv
+```
+
+Run the research gate on a canonical CSV:
+
+```bash
+npm run research -- BTCUSDT-1m.csv 12
+```
+
+CSV schema:
+
+```text
+timestamp,open,high,low,close,volume
+```
+
+The CLI prints candle count, deterministic replay signature, event count, train/validation/holdout metrics and promotion decisions. A PASS means only that the configured research gate passed on the supplied data; it is not a guarantee of future performance.
