@@ -14,7 +14,7 @@ permissions:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 150
 
     steps:
       - name: Checkout research lab
@@ -70,7 +70,7 @@ jobs:
           asyncio.run(main())
           PY
 
-      - name: Download Binance Vision 1m futures candles
+      - name: Download Binance Vision source data
         working-directory: upstream/passivbot
         shell: bash
         run: |
@@ -80,14 +80,14 @@ jobs:
           from pathlib import Path
           import numpy as np
 
+          months = ("2026-04", "2026-05", "2026-06", "2026-07", "2026-08")
           root = Path("benchmark_ohlcv/binance/1m")
           root.mkdir(parents=True, exist_ok=True)
 
-          def fetch_rows(symbol, period, monthly=True):
-              scope = "monthly" if monthly else "daily"
-              url = f"https://data.binance.vision/data/futures/um/{scope}/klines/{symbol}/1m/{symbol}-1m-{period}.zip"
+          def fetch_rows(symbol, month):
+              url = f"https://data.binance.vision/data/futures/um/monthly/klines/{symbol}/1m/{symbol}-1m-{month}.zip"
               print("Downloading", url)
-              with urllib.request.urlopen(url, timeout=60) as resp:
+              with urllib.request.urlopen(url, timeout=90) as resp:
                   raw = resp.read()
               with zipfile.ZipFile(io.BytesIO(raw)) as zf:
                   name = next(n for n in zf.namelist() if n.endswith(".csv"))
@@ -106,9 +106,8 @@ jobs:
           for coin in ("BTC", "ETH", "SOL"):
               symbol = f"{coin}USDT"
               rows = []
-              for month in ("2026-07", "2026-08"):
-                  rows.extend(fetch_rows(symbol, month, monthly=True))
-              rows.extend(fetch_rows(symbol, "2026-09-01", monthly=False))
+              for month in months:
+                  rows.extend(fetch_rows(symbol, month))
 
               by_day = {}
               for row in rows:
@@ -121,15 +120,13 @@ jobs:
                   arr = np.asarray(sorted(candles, key=lambda x: x[0]), dtype=np.float64)
                   np.save(outdir / f"{day}.npy", arr)
 
-              required_start = "2026-07-06"
-              required_end = "2026-09-01"
               days = sorted(p.stem for p in outdir.glob("*.npy"))
-              if not days or days[0] > required_start or days[-1] < required_end:
+              if not days or days[0] > "2026-04-01" or days[-1] < "2026-08-31":
                   raise SystemExit(f"Incomplete Binance Vision source for {coin}: {days[:1]}..{days[-1:]}")
               print(f"{coin}: wrote {len(days)} daily source shards")
           PY
 
-      - name: Build canonical benchmark configs
+      - name: Build robustness configs
         working-directory: upstream/passivbot
         shell: bash
         run: |
@@ -138,39 +135,55 @@ jobs:
           import copy, json
           from pathlib import Path
 
+          windows = {
+            "2026-05": ("2026-05-08", "2026-06-01"),
+            "2026-06": ("2026-06-08", "2026-07-01"),
+            "2026-07": ("2026-07-08", "2026-08-01"),
+            "2026-08": ("2026-08-08", "2026-09-01"),
+          }
           src = Path("configs/examples/default_trailing_martingale_long.json")
           base = json.loads(src.read_text())
-          for coin in ("BTC", "ETH", "SOL"):
-              cfg = copy.deepcopy(base)
-              cfg["backtest"]["start_date"] = "2026-08-01"
-              cfg["backtest"]["end_date"] = "2026-09-01"
-              cfg["backtest"]["exchanges"] = ["binance"]
-              cfg["backtest"]["starting_balance"] = 10000
-              cfg["backtest"]["suite_enabled"] = False
-              cfg["backtest"]["base_dir"] = f"benchmark_results/{coin}"
-              cfg["backtest"]["ohlcv_source_dir"] = "benchmark_ohlcv"
-              cfg["backtest"]["maker_fee_override"] = 0.0004
-              cfg["backtest"]["taker_fee_override"] = 0.00055
-              cfg["backtest"]["market_order_slippage_pct"] = 0.0005
-              cfg["live"]["minimum_coin_age_days"] = 0
-              cfg["live"]["approved_coins"]["long"] = [coin]
-              cfg["live"]["approved_coins"]["short"] = []
-              cfg["live"]["ignored_coins"]["long"] = []
-              cfg["live"]["ignored_coins"]["short"] = []
-              Path(f"benchmark-configs/{coin}.json").write_text(json.dumps(cfg, indent=2))
+          for month, (start, end) in windows.items():
+              for coin in ("BTC", "ETH", "SOL"):
+                  cfg = copy.deepcopy(base)
+                  cfg["backtest"]["start_date"] = start
+                  cfg["backtest"]["end_date"] = end
+                  cfg["backtest"]["exchanges"] = ["binance"]
+                  cfg["backtest"]["starting_balance"] = 10000
+                  cfg["backtest"]["suite_enabled"] = False
+                  cfg["backtest"]["base_dir"] = f"benchmark_results/{coin}-{month}"
+                  cfg["backtest"]["ohlcv_source_dir"] = "benchmark_ohlcv"
+                  cfg["backtest"]["maker_fee_override"] = 0.0004
+                  cfg["backtest"]["taker_fee_override"] = 0.00055
+                  cfg["backtest"]["market_order_slippage_pct"] = 0.0005
+                  cfg["live"]["minimum_coin_age_days"] = 0
+                  cfg["live"]["approved_coins"]["long"] = [coin]
+                  cfg["live"]["approved_coins"]["short"] = []
+                  cfg["live"]["ignored_coins"]["long"] = []
+                  cfg["live"]["ignored_coins"]["short"] = []
+                  Path(f"benchmark-configs/{coin}-{month}.json").write_text(json.dumps(cfg, indent=2))
           PY
 
-      - name: Run BTC ETH SOL Binance Futures backtests
+      - name: Run robustness backtests
         working-directory: upstream/passivbot
         shell: bash
         run: |
           set -euo pipefail
-          for coin in BTC ETH SOL; do
-            echo "=== $coin ==="
-            VIRTUAL_ENV="$PWD/.venv" .venv/bin/passivbot backtest "benchmark-configs/$coin.json" -sd 2026-08-01 -ed 2026-09-01 --suite n -dp 2>&1 | tee "benchmark_results/$coin.log"
+          for month in 2026-05 2026-06 2026-07 2026-08; do
+            case "$month" in
+              2026-05) start=2026-05-08; end=2026-06-01 ;;
+              2026-06) start=2026-06-08; end=2026-07-01 ;;
+              2026-07) start=2026-07-08; end=2026-08-01 ;;
+              2026-08) start=2026-08-08; end=2026-09-01 ;;
+            esac
+            for coin in BTC ETH SOL; do
+              stem="$coin-$month"
+              echo "=== $stem ==="
+              VIRTUAL_ENV="$PWD/.venv" .venv/bin/passivbot backtest                 "benchmark-configs/$stem.json"                 -sd "$start" -ed "$end" --suite n -dp                 2>&1 | tee "benchmark_results/$stem.log"
+            done
           done
 
-      - name: Normalize benchmark metrics
+      - name: Normalize robustness metrics
         working-directory: upstream/passivbot
         shell: bash
         run: |
@@ -178,6 +191,8 @@ jobs:
           import json
           from pathlib import Path
 
+          months = ("2026-05", "2026-06", "2026-07", "2026-08")
+          coins = ("BTC", "ETH", "SOL")
           wanted = [
               "gain_strategy_eq",
               "gain_usd",
@@ -189,8 +204,8 @@ jobs:
               "volume_pct_per_day_avg",
               "position_held_days_max",
               "backtest_completion_ratio",
-              "n_fills",
-              "n_days",
+              "fills_count",
+              "fills_analysis_duration_days",
           ]
 
           out = {
@@ -198,47 +213,62 @@ jobs:
               "revision": "v8.1.0",
               "exchange": "binance",
               "market": "USDT-M perpetual futures",
-              "window": {"start": "2026-08-01", "end": "2026-09-01"},
+              "protocol": {
+                  "months": list(months),
+                  "evaluation_days": "day 8 through month end",
+                  "starting_balance": 10000,
+              },
               "costs": {
                   "maker_fee": 0.0004,
                   "taker_fee": 0.00055,
                   "market_order_slippage_pct": 0.0005,
               },
-              "symbols": {},
+              "runs": {},
+              "aggregate": {},
           }
 
-          root = Path("benchmark_results")
-          for coin in ("BTC", "ETH", "SOL"):
-              analyses = sorted((root / coin).rglob("analysis.json"), key=lambda p: p.stat().st_mtime)
-              if not analyses:
-                  raise SystemExit(f"No analysis.json produced for {coin}")
-              path = analyses[-1]
-              data = json.loads(path.read_text())
-              out["symbols"][coin] = {
-                  "analysis_path": str(path),
-                  "metrics": {k: data.get(k) for k in wanted},
-              }
+          rows = []
+          for month in months:
+              for coin in coins:
+                  root = Path(f"benchmark_results/{coin}-{month}")
+                  analyses = sorted(root.rglob("analysis.json"), key=lambda p: p.stat().st_mtime)
+                  if not analyses:
+                      raise SystemExit(f"No analysis.json produced for {coin} {month}")
+                  path = analyses[-1]
+                  data = json.loads(path.read_text())
+                  metrics = {k: data.get(k) for k in wanted}
+                  gain_ratio = metrics["gain_strategy_eq"]
+                  rec = {
+                      "analysis_path": str(path),
+                      "gain_ratio": gain_ratio,
+                      "gain_pct": (gain_ratio - 1.0) * 100.0 if gain_ratio is not None else None,
+                      "drawdown_pct": metrics["drawdown_worst_strategy_eq"] * 100.0
+                          if metrics["drawdown_worst_strategy_eq"] is not None else None,
+                      "metrics": metrics,
+                  }
+                  out["runs"][f"{coin}-{month}"] = rec
+                  rows.append(rec)
 
-          Path("benchmark_results/PASSIVBOT_SUMMARY.json").write_text(json.dumps(out, indent=2))
+          valid = [r for r in rows if r["gain_pct"] is not None]
+          out["aggregate"] = {
+              "run_count": len(valid),
+              "positive_gain_runs": sum(r["gain_pct"] > 0 for r in valid),
+              "mean_gain_pct": sum(r["gain_pct"] for r in valid) / len(valid),
+              "worst_gain_pct": min(r["gain_pct"] for r in valid),
+              "best_gain_pct": max(r["gain_pct"] for r in valid),
+              "worst_drawdown_pct": max(r["drawdown_pct"] for r in valid if r["drawdown_pct"] is not None),
+              "fills_total": sum((r["metrics"].get("fills_count") or 0) for r in valid),
+              "mean_sharpe_strategy_eq": sum((r["metrics"].get("sharpe_ratio_strategy_eq") or 0) for r in valid) / len(valid),
+          }
+
+          Path("benchmark_results/PASSIVBOT_ROBUSTNESS_SUMMARY.json").write_text(json.dumps(out, indent=2))
           print(json.dumps(out, indent=2))
           PY
-
-      - name: Publish summary
-        working-directory: upstream/passivbot
-        shell: bash
-        run: |
-          {
-            echo "## Passivbot Futures Benchmark"
-            echo
-            echo '~~~json'
-            cat benchmark_results/PASSIVBOT_SUMMARY.json
-            echo '~~~'
-          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload benchmark artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: passivbot-futures-benchmark-${{ github.run_id }}
+          name: passivbot-futures-robustness-${{ github.run_id }}
           path: |
             upstream/passivbot/benchmark_results
             upstream/passivbot/benchmark-configs
