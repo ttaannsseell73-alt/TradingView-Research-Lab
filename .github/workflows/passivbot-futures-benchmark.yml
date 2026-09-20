@@ -43,6 +43,33 @@ jobs:
           .venv/bin/python -m pip install --upgrade pip
           .venv/bin/python -m pip install -e ".[full]"
 
+      - name: Seed Binance Futures market metadata from testnet
+        working-directory: upstream/passivbot
+        shell: bash
+        run: |
+          VIRTUAL_ENV="$PWD/.venv" .venv/bin/python - <<'PY'
+          import asyncio, json
+          from pathlib import Path
+          import ccxt.async_support as ccxt
+
+          async def main():
+              ex = ccxt.binanceusdm({"enableRateLimit": True})
+              ex.set_sandbox_mode(True)
+              try:
+                  markets = await ex.load_markets(True)
+              finally:
+                  await ex.close()
+              required = {"BTC/USDT:USDT", "ETH/USDT:USDT", "SOL/USDT:USDT"}
+              missing = sorted(required - set(markets))
+              if missing:
+                  raise SystemExit(f"Missing required testnet market metadata: {missing}")
+              p = Path("caches/binance/markets.json")
+              p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(markets))
+              print(f"Seeded {len(markets)} Binance Futures markets from testnet metadata")
+          asyncio.run(main())
+          PY
+
       - name: Build canonical benchmark configs
         working-directory: upstream/passivbot
         shell: bash
@@ -79,7 +106,7 @@ jobs:
           set -euo pipefail
           for coin in BTC ETH SOL; do
             echo "=== $coin ==="
-            VIRTUAL_ENV="$PWD/.venv" .venv/bin/passivbot backtest "benchmark-configs/$coin.json" -s "$coin" -sd 2026-08-01 -ed 2026-09-01 --suite n -dp 2>&1 | tee "benchmark_results/$coin.log"
+            VIRTUAL_ENV="$PWD/.venv" .venv/bin/passivbot backtest "benchmark-configs/$coin.json" -sd 2026-08-01 -ed 2026-09-01 --suite n -dp 2>&1 | tee "benchmark_results/$coin.log"
           done
 
       - name: Normalize benchmark metrics
