@@ -1,0 +1,6 @@
+import fs from 'node:fs'; import process from 'node:process';
+const symbol=(process.argv[2]??'BTCUSDT').toUpperCase(),days=Number(process.argv[3]??29),output=process.argv[4]??`${symbol}-oi-5m.csv`,ms=300000,now=Date.now(),start=now-Math.floor(days*86400000),rows=new Map();
+let cursor=start;while(cursor<=now){const end=Math.min(now,cursor+500*ms-1),p=new URLSearchParams({symbol,period:'5m',limit:'500',startTime:String(cursor),endTime:String(end)});
+ const r=await fetch(`https://fapi.binance.com/futures/data/openInterestHist?${p}`);if(!r.ok)throw new Error(`HTTP ${r.status}: ${await r.text()}`);const page=await r.json();for(const x of page)rows.set(Number(x.timestamp),[x.timestamp,x.sumOpenInterest,x.sumOpenInterestValue]);cursor=end+1;await new Promise(q=>setTimeout(q,120));}
+const out=[...rows.values()].sort((a,b)=>Number(a[0])-Number(b[0]));if(out.length<1000)throw new Error('Too few OI rows');
+fs.writeFileSync(output,['timestamp,openInterest,openInterestValue',...out.map(x=>x.join(','))].join('\n')+'\n');console.log(JSON.stringify({symbol,rows:out.length,output},null,2));
