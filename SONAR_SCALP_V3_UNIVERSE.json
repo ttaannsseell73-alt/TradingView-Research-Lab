@@ -1,0 +1,191 @@
+{
+  "strategy": "SONAR_SCALP_V3_ORDERFLOW_UNIVERSE",
+  "sourceCommit": "f779d0ae0f0e9e65d1204034f0a9b82fe6749cea",
+  "generatedAt": "2026-09-20T16:21:10.227Z",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "XRPUSDT",
+    "DOGEUSDT",
+    "AVAXUSDT",
+    "ENAUSDT",
+    "NEARUSDT",
+    "SUIUSDT",
+    "1000PEPEUSDT",
+    "ARBUSDT",
+    "INJUSDT"
+  ],
+  "results": [
+    {
+      "symbol": "BTCUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 425,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "ETHUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 388,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "SOLUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 360,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "XRPUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 323,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 347,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 421,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "ENAUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 371,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "NEARUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 361,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "SUIUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 361,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 341,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    },
+    {
+      "symbol": "ARBUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 340,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41746
+    },
+    {
+      "symbol": "INJUSDT",
+      "status": "NO_PROMOTABLE_SETUP",
+      "eventCount": 383,
+      "decision": {
+        "status": "REJECT",
+        "passedRuns": 0,
+        "totalRuns": 8,
+        "reasons": [
+          "orderflow-confirmed scalp failed at least one robustness run"
+        ]
+      },
+      "overlapOneMinuteCount": 41751
+    }
+  ],
+  "promotable": [],
+  "status": "NO_PROMOTABLE_SYMBOL"
+}
