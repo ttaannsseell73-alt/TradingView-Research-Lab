@@ -2,4 +2,27 @@ export { FeatureEngine } from './featureEngine.js';
 export type { FeatureEngineConfig } from './featureEngine.js';
 export { replay } from './replay.js';
 export type { ReplayResult } from './replay.js';
-export type { Candle, CanonicalFeatureVector, FeatureRow } from './types.js';
+export { parseCandleCsv } from './csv.js';
+export { detectSetups } from './setups.js';
+export type { SetupDetectorConfig } from './setups.js';
+export { evaluateEvents, summarizeAll, summarizeOutcomes } from './eventStudy.js';
+export { decidePromotion, makeWalkForwardWindows, runWalkForwardStudy } from './walkForward.js';
+export type { WalkForwardReport } from './walkForward.js';
+export { KIVANC_CANDIDATES } from './candidates.js';
+export type { CandidateDisposition, ResearchCandidate } from './candidates.js';
+export type {
+  Candle,
+  CanonicalFeatureVector,
+  Direction,
+  EventOutcome,
+  EventStudyConfig,
+  FeatureRow,
+  GateConfig,
+  GateDecision,
+  GateStatus,
+  SetupEvent,
+  SetupKind,
+  SetupStats,
+  StudyWindow,
+  WalkForwardWindows,
+} from './types.js';
