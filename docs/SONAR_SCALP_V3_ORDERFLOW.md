@@ -24,3 +24,18 @@ Run:
 ```bash
 npm run sonar:v3:local:publish
 ```
+
+
+## Multi-symbol universe
+
+The default universe intentionally does **not** test only large-cap contracts:
+
+`BTCUSDT, ETHUSDT, SOLUSDT, XRPUSDT, DOGEUSDT, AVAXUSDT, ENAUSDT, NEARUSDT, SUIUSDT, 1000PEPEUSDT, ARBUSDT, INJUSDT`
+
+This mixes majors with liquid mid/alt contracts. Each symbol is evaluated independently with the same locked V3 rules; there is no symbol-specific threshold tuning.
+
+Run:
+
+```bash
+npm run sonar:v3:universe:local:publish
+```
