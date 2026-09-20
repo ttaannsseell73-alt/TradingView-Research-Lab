@@ -18,11 +18,13 @@ Independent research lane for the Binance Futures price-action bot. The reposito
 
 ```text
 closed OHLCV
+  -> data-quality gate
   -> 18-feature engine
   -> deterministic replay / no-lookahead checks
   -> breakout | sweep/reclaim | compression-release events
   -> fee + slippage aware forward-return study
   -> chronological train / validation / holdout
+  -> multi-horizon + stressed-cost robustness matrix
   -> PASS | REJECT | INSUFFICIENT_DATA
   -> only then controlled promotion to the main bot
 ```
@@ -37,13 +39,13 @@ npm run check
 Download public Binance USDⓈ-M candles without API keys:
 
 ```bash
-npm run fetch:binance -- BTCUSDT 1m 5000 BTCUSDT-1m.csv
+npm run fetch:binance -- BTCUSDT 1m 50000 BTCUSDT-1m.csv
 ```
 
-Run the research gate on a canonical CSV:
+Run the final acceptance gate:
 
 ```bash
-npm run research -- BTCUSDT-1m.csv 12
+npm run acceptance -- BTCUSDT-1m.csv BTCUSDT-1m-acceptance.json
 ```
 
 CSV schema:
@@ -52,4 +54,6 @@ CSV schema:
 timestamp,open,high,low,close,volume
 ```
 
-The CLI prints candle count, deterministic replay signature, event count, train/validation/holdout metrics and promotion decisions. A PASS means only that the configured research gate passed on the supplied data; it is not a guarantee of future performance.
+The acceptance output includes data-quality results, deterministic replay signature, event count, 3/6/12/24-bar studies, base/stressed transaction costs, walk-forward metrics, and robust promotion decisions.
+
+A PASS means only that the configured research gate passed on the supplied historical sample; it is not a guarantee of future performance. See `docs/ACCEPTANCE.md`.

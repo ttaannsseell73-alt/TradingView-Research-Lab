@@ -8,6 +8,16 @@ export type { SetupDetectorConfig } from './setups.js';
 export { evaluateEvents, summarizeAll, summarizeOutcomes } from './eventStudy.js';
 export { decidePromotion, makeWalkForwardWindows, runWalkForwardStudy } from './walkForward.js';
 export type { WalkForwardReport } from './walkForward.js';
+export { inspectCandleQuality } from './dataQuality.js';
+export type { DataQualityReport } from './dataQuality.js';
+export { runRobustnessMatrix } from './robustness.js';
+export type {
+  CostScenario,
+  RobustnessConfig,
+  RobustnessDecision,
+  RobustnessReport,
+  RobustnessRun,
+} from './robustness.js';
 export { KIVANC_CANDIDATES } from './candidates.js';
 export type { CandidateDisposition, ResearchCandidate } from './candidates.js';
 export type {
