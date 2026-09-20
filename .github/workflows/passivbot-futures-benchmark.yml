@@ -70,6 +70,65 @@ jobs:
           asyncio.run(main())
           PY
 
+      - name: Download Binance Vision 1m futures candles
+        working-directory: upstream/passivbot
+        shell: bash
+        run: |
+          VIRTUAL_ENV="$PWD/.venv" .venv/bin/python - <<'PY'
+          import csv, io, urllib.request, zipfile
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import numpy as np
+
+          root = Path("benchmark_ohlcv/binance/1m")
+          root.mkdir(parents=True, exist_ok=True)
+
+          def fetch_rows(symbol, period, monthly=True):
+              scope = "monthly" if monthly else "daily"
+              url = f"https://data.binance.vision/data/futures/um/{scope}/klines/{symbol}/1m/{symbol}-1m-{period}.zip"
+              print("Downloading", url)
+              with urllib.request.urlopen(url, timeout=60) as resp:
+                  raw = resp.read()
+              with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+                  name = next(n for n in zf.namelist() if n.endswith(".csv"))
+                  text = zf.read(name).decode("utf-8")
+              for row in csv.reader(io.StringIO(text)):
+                  if not row:
+                      continue
+                  try:
+                      ts = int(row[0])
+                  except ValueError:
+                      continue
+                  if ts > 10_000_000_000_000:
+                      ts //= 1000
+                  yield [ts, float(row[1]), float(row[2]), float(row[3]), float(row[4]), float(row[5])]
+
+          for coin in ("BTC", "ETH", "SOL"):
+              symbol = f"{coin}USDT"
+              rows = []
+              for month in ("2026-07", "2026-08"):
+                  rows.extend(fetch_rows(symbol, month, monthly=True))
+              rows.extend(fetch_rows(symbol, "2026-09-01", monthly=False))
+
+              by_day = {}
+              for row in rows:
+                  day = datetime.fromtimestamp(row[0] / 1000, tz=timezone.utc).strftime("%Y-%m-%d")
+                  by_day.setdefault(day, []).append(row)
+
+              outdir = root / coin
+              outdir.mkdir(parents=True, exist_ok=True)
+              for day, candles in sorted(by_day.items()):
+                  arr = np.asarray(sorted(candles, key=lambda x: x[0]), dtype=np.float64)
+                  np.save(outdir / f"{day}.npy", arr)
+
+              required_start = "2026-07-06"
+              required_end = "2026-09-01"
+              days = sorted(p.stem for p in outdir.glob("*.npy"))
+              if not days or days[0] > required_start or days[-1] < required_end:
+                  raise SystemExit(f"Incomplete Binance Vision source for {coin}: {days[:1]}..{days[-1:]}")
+              print(f"{coin}: wrote {len(days)} daily source shards")
+          PY
+
       - name: Build canonical benchmark configs
         working-directory: upstream/passivbot
         shell: bash
@@ -89,9 +148,11 @@ jobs:
               cfg["backtest"]["starting_balance"] = 10000
               cfg["backtest"]["suite_enabled"] = False
               cfg["backtest"]["base_dir"] = f"benchmark_results/{coin}"
+              cfg["backtest"]["ohlcv_source_dir"] = "benchmark_ohlcv"
               cfg["backtest"]["maker_fee_override"] = 0.0004
               cfg["backtest"]["taker_fee_override"] = 0.00055
               cfg["backtest"]["market_order_slippage_pct"] = 0.0005
+              cfg["live"]["minimum_coin_age_days"] = 0
               cfg["live"]["approved_coins"]["long"] = [coin]
               cfg["live"]["approved_coins"]["short"] = []
               cfg["live"]["ignored_coins"]["long"] = []
