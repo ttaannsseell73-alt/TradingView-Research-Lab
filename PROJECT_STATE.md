@@ -69,3 +69,34 @@ V3 is the first Sonar scalp hypothesis in this lab that uses real Binance public
 Branch: `research/sonar-scalping-v4-taker1m`
 
 V3 multi-symbol evidence remains preserved as rejected. V4 tests real 1m Binance taker-buy imbalance, 5m Open Interest and train-only TP/SL/time barrier selection. It is a new hypothesis, not a relaxation of V3. BinanceGridBot and Freqtrade-Research-Lab remain untouched.
+
+
+## SonarScalp V4 final acceptance — CLOSED
+
+Evidence commit: `cfd6981a1ec65289ac71567bdd32caac341c85e5`
+
+Universe:
+- BTCUSDT
+- ETHUSDT
+- SOLUSDT
+- XRPUSDT
+- DOGEUSDT
+- AVAXUSDT
+- ENAUSDT
+- NEARUSDT
+- SUIUSDT
+- 1000PEPEUSDT
+- ARBUSDT
+- INJUSDT
+
+Final status: `NO_PROMOTABLE_SYMBOL`.
+
+All 12 symbols are `REJECT` under both base and stress cost scenarios. No symbol produced a positive validation+holdout robustness result. Importantly, the train-selected profiles are already net-negative across the universe, so the failure is not merely a holdout or transaction-cost artifact.
+
+Decision:
+- Do not loosen V4 thresholds or re-optimize the same hypothesis against these holdouts.
+- Do not promote any SonarScalp V1–V4 logic into `BinanceGridBot`.
+- Freeze the SonarScalp V1–V4 family here.
+- Reopen only for a materially different signal family or data source, not another threshold variant of the same candle/taker/OI construction.
+
+`BinanceGridBot` and `Freqtrade-Research-Lab` remain untouched.
