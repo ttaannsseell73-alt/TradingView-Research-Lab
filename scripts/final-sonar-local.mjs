@@ -5,9 +5,11 @@ import { spawnSync } from 'node:child_process';
 
 const node = process.execPath;
 const git = process.platform === 'win32' ? 'git.exe' : 'git';
-const symbol = (process.argv[2] ?? 'BTCUSDT').toUpperCase();
-const bars = Number(process.argv[3] ?? 50000);
-const publish = process.argv.includes('--publish');
+const cliArgs = process.argv.slice(2);
+const publish = cliArgs.includes('--publish');
+const positionalArgs = cliArgs.filter((arg) => !arg.startsWith('--'));
+const symbol = (positionalArgs[0] ?? 'BTCUSDT').toUpperCase();
+const bars = Number(positionalArgs[1] ?? 50000);
 
 if (!/^[A-Z0-9]+$/.test(symbol)) throw new Error('Invalid symbol');
 if (!Number.isInteger(bars) || bars < 10000 || bars > 100000) throw new Error('bars must be 10000..100000');
