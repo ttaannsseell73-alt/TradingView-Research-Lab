@@ -3,6 +3,8 @@ import test from 'node:test';
 import {
   inspectCandleQuality,
   runRobustnessMatrix,
+  tuneSetupConfig,
+  replay,
 } from '../dist/index.js';
 
 const candle = (timestamp, close = 100, overrides = {}) => ({
@@ -78,4 +80,39 @@ test('robustness decision cannot PASS if any run is insufficient', () => {
     gateConfig: { minimumSamplesPerWindow: 30, minimumNetExpectancy: 0 },
   });
   assert.ok(report.decisions.every((decision) => decision.status !== 'PASS'));
+});
+
+
+test('setup tuning is deterministic and uses training-window evidence only', () => {
+  const candles = [];
+  for (let index = 0; index < 240; index += 1) {
+    const wave = Math.sin(index / 8) * 2;
+    const drift = index * 0.01;
+    const close = 100 + wave + drift;
+    candles.push(candle(index * 60_000, close, {
+      open: close - Math.sin(index / 5) * 0.2,
+      high: close + 0.9,
+      low: close - 0.9,
+      volume: 100 + (index % 12) * 7,
+    }));
+  }
+  const rows = replay(candles).rows;
+  const train = { startIndex: 0, endIndexExclusive: 144 };
+  const a = tuneSetupConfig(candles, rows, train, { horizonBars: 6, feeRate: 0.0004, slippageRate: 0.0001 }, 2);
+  const b = tuneSetupConfig(candles, rows, train, { horizonBars: 6, feeRate: 0.0004, slippageRate: 0.0001 }, 2);
+  assert.deepEqual(a, b);
+  assert.equal(a.choices.length, 3);
+});
+
+test('robustness report records train-only tuning evidence by default', () => {
+  const candles = Array.from({ length: 180 }, (_, index) => candle(index * 60_000, 100 + Math.sin(index / 6), {
+    volume: 100 + (index % 8) * 10,
+  }));
+  const report = runRobustnessMatrix(candles, {
+    horizons: [3],
+    costScenarios: [{ name: 'base', feeRate: 0.0004, slippageRate: 0.0001 }],
+    gateConfig: { minimumSamplesPerWindow: 2, minimumNetExpectancy: -1 },
+  });
+  assert.ok(report.tuning);
+  assert.equal(report.tuning.choices.length, 3);
 });

@@ -11,6 +11,8 @@ export type { WalkForwardReport } from './walkForward.js';
 export { inspectCandleQuality } from './dataQuality.js';
 export type { DataQualityReport } from './dataQuality.js';
 export { runRobustnessMatrix } from './robustness.js';
+export { tuneSetupConfig } from './optimizer.js';
+export type { SetupTuningChoice, SetupTuningReport } from './optimizer.js';
 export type {
   CostScenario,
   RobustnessConfig,

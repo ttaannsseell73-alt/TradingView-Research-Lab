@@ -1,7 +1,8 @@
 import { detectSetups, type SetupDetectorConfig } from './setups.js';
 import type { FeatureEngineConfig } from './featureEngine.js';
 import { replay } from './replay.js';
-import { runWalkForwardStudy, type WalkForwardReport } from './walkForward.js';
+import { runWalkForwardStudy, makeWalkForwardWindows, type WalkForwardReport } from './walkForward.js';
+import { tuneSetupConfig, type SetupTuningReport } from './optimizer.js';
 import type { Candle, EventStudyConfig, GateConfig, GateStatus, SetupKind } from './types.js';
 
 export interface CostScenario {
@@ -16,6 +17,7 @@ export interface RobustnessConfig {
   featureConfig?: Partial<FeatureEngineConfig>;
   setupConfig?: Partial<SetupDetectorConfig>;
   gateConfig?: Partial<GateConfig>;
+  autoTuneOnTrain?: boolean;
 }
 
 export interface RobustnessRun {
@@ -40,6 +42,7 @@ export interface RobustnessReport {
   replaySignature: string;
   runs: RobustnessRun[];
   decisions: RobustnessDecision[];
+  tuning?: SetupTuningReport;
 }
 
 const DEFAULT_COSTS: CostScenario[] = [
@@ -64,7 +67,21 @@ export function runRobustnessMatrix(
   }
 
   const replayResult = replay(candles, config.featureConfig);
-  const events = detectSetups(candles, replayResult.rows, config.setupConfig);
+  const gateSettings: Partial<GateConfig> = config.gateConfig ?? {};
+  let tuning: SetupTuningReport | undefined;
+  let detectorConfig = config.setupConfig;
+  if (config.autoTuneOnTrain ?? true) {
+    const windows = makeWalkForwardWindows(candles.length);
+    tuning = tuneSetupConfig(
+      candles,
+      replayResult.rows,
+      windows.train,
+      { horizonBars: 12, feeRate: 0.0004, slippageRate: 0.0001 },
+      gateSettings.minimumSamplesPerWindow ?? 30,
+    );
+    detectorConfig = { ...tuning.config, ...config.setupConfig };
+  }
+  const events = detectSetups(candles, replayResult.rows, detectorConfig);
   const runs: RobustnessRun[] = [];
 
   for (const horizonBars of horizons) {
@@ -79,7 +96,7 @@ export function runRobustnessMatrix(
         costScenario: scenario.name,
         feeRate: scenario.feeRate,
         slippageRate: scenario.slippageRate,
-        report: runWalkForwardStudy(candles, events, eventConfig, config.gateConfig),
+        report: runWalkForwardStudy(candles, events, eventConfig, gateSettings),
       });
     }
   }
@@ -109,5 +126,6 @@ export function runRobustnessMatrix(
     replaySignature: replayResult.signature,
     runs,
     decisions,
+    ...(tuning ? { tuning } : {}),
   };
 }
