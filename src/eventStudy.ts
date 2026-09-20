@@ -66,11 +66,14 @@ export function summarizeOutcomes(outcomes: EventOutcome[], setup: SetupKind): S
   const selected = outcomes.filter((outcome) => outcome.kind === setup);
   const winners = selected.filter((outcome) => outcome.netReturn > 0).map((outcome) => outcome.netReturn);
   const losers = selected.filter((outcome) => outcome.netReturn <= 0).map((outcome) => outcome.netReturn);
+  const grossExpectancy = mean(selected.map((outcome) => outcome.grossReturn));
   return {
     setup,
     sampleCount: selected.length,
     hitRate: selected.length ? winners.length / selected.length : 0,
+    grossExpectancy,
     expectancy: mean(selected.map((outcome) => outcome.netReturn)),
+    breakEvenRoundTripCost: Math.max(0, grossExpectancy),
     averageWin: mean(winners),
     averageLoss: mean(losers),
     averageMae: mean(selected.map((outcome) => outcome.mae)),
