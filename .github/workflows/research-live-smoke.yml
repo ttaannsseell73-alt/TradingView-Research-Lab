@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   btcusdt-1m:
-    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'test: run public Binance research smoke'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
