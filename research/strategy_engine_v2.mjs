@@ -454,7 +454,7 @@ export const STRATEGIES = [
   {id:'chandelier_zlsma',name:'Chandelier Exit ZLSMA Strategy',family:'trend_breakout_filter',version:'tv-open-v1',mode:'TARGET_POSITION',signal:targetsChandelierZLSMA}
 ];
 
-function backtest(c,signals) {
+function backtest(c,signals,tradeStart=-Infinity) {
   const trades=[];
   let pos=0,entryPrice=0,entryTime=0;
   const closeTrade=(px,xt)=>{
@@ -466,6 +466,7 @@ function backtest(c,signals) {
     const s=signals[i];
     if(!s||s===pos) continue;
     const px=c[i+1].o,tm=c[i+1].t;
+    if(tm<tradeStart) continue;
     if(pos) closeTrade(px,tm);
     pos=s;entryPrice=px;entryTime=tm;
   }
@@ -475,7 +476,7 @@ function backtest(c,signals) {
   }
   return trades;
 }
-function backtestTargetPosition(c,target) {
+function backtestTargetPosition(c,target,tradeStart=-Infinity) {
   const trades=[];
   let pos=0,entryPrice=0,entryTime=0;
   const closeTrade=(px,xt)=>{
@@ -487,6 +488,7 @@ function backtestTargetPosition(c,target) {
     const want=target[i];
     if(![-1,0,1].includes(want)||want===pos) continue;
     const px=c[i+1].o,tm=c[i+1].t;
+    if(tm<tradeStart) continue;
     if(pos) closeTrade(px,tm);
     pos=want;
     if(pos){entryPrice=px;entryTime=tm;}
@@ -536,7 +538,7 @@ export function evaluateStrategies(candles, {
   if(!Number.isFinite(start)||!Number.isFinite(end)) throw new Error('evaluateStrategies requires finite start/end');
   return STRATEGIES.map(s=>{
     const raw=s.signal(candles);
-    const trades=s.mode==='TARGET_POSITION'?backtestTargetPosition(candles,raw):backtest(candles,raw);
+    const trades=s.mode==='TARGET_POSITION'?backtestTargetPosition(candles,raw,start):backtest(candles,raw,start);
     const base=stats(trades,cost,start,end);
     const stress=stats(trades,stressCost,start,end);
     const low=stats(trades,lowCost,start,end);
