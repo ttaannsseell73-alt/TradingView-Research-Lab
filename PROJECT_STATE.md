@@ -45,3 +45,18 @@ Raw CSV market data remains local and ignored. Only compact acceptance evidence 
 ## Project disposition
 
 This research lane is complete and frozen at the final acceptance result above. Reopen only for a materially new hypothesis, setup family, dataset scope, or explicit user decision.
+
+
+## Explicit reopen — Strategy Selector program (2026-09-24)
+
+The earlier BTC-only setup-family conclusion remains valid for that historical experiment, but the research lane has been explicitly reopened for a materially different hypothesis and dataset scope.
+
+New canonical question:
+
+> Which TradingView strategies work best on which Binance Futures coins and timeframes?
+
+Kıvanç's five strategies are the first implemented pack. The program is now author-agnostic and extensible. New strategies are admitted through a deterministic closed-candle adapter and evaluated as `strategy × coin × timeframe`.
+
+Primary product output is a profitability-first **Top-5 per strategy/timeframe** plus a cross-strategy Opportunity Board. Risk metrics are surfaced for decision-making; they are not used to redefine the objective as a zero-risk search.
+
+Main `binance-bot` remains untouched until explicit promotion.
