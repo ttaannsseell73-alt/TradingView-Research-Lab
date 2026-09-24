@@ -4,7 +4,11 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'scripts/kivanc-universe-90d.mjs'
+      - 'scripts/fetch-kivanc-vision-shard.py'
+      - 'scripts/run-kivanc-offline-shard.mjs'
+      - 'scripts/combine-kivanc-shards.mjs'
+      - 'research/kivanc_symbols_2026-09-24.json'
+      - 'research/kivanc_chunk_engine.js.txt'
       - '.github/workflows/kivanc-top5-universe-90d.yml'
 
 permissions:
@@ -12,27 +16,53 @@ permissions:
 
 jobs:
   research:
+    name: shard-${{ matrix.shard }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: node --check scripts/kivanc-universe-90d.mjs
-      - name: Run Kivanc top-5 universe research
-        env:
-          START_DATE: '2026-06-24T00:00:00Z'
-          END_DATE: '2026-09-24T00:00:00Z'
-          ROUND_TRIP_COST: '0.0014'
-        run: node scripts/kivanc-universe-90d.mjs
-      - name: Upload research evidence
-        if: always()
+      - name: Validate scripts
+        run: |
+          python -m py_compile scripts/fetch-kivanc-vision-shard.py
+          node --check scripts/run-kivanc-offline-shard.mjs
+          node --check scripts/combine-kivanc-shards.mjs
+      - name: Download Binance Vision 1h candles
+        run: python scripts/fetch-kivanc-vision-shard.py --shard ${{ matrix.shard }} --shards 12 --out .tmp/kivanc-${{ matrix.shard }}
+      - name: Evaluate Kivanc top-5
+        run: node scripts/run-kivanc-offline-shard.mjs ${{ matrix.shard }} .tmp/kivanc-${{ matrix.shard }} artifacts/kivanc-shards/results-shard-${{ matrix.shard }}.json
+      - name: Upload shard evidence
         uses: actions/upload-artifact@v4
         with:
-          name: kivanc-top5-universe-90d-1h
-          path: artifacts/kivanc_top5_90d_1h/
-          if-no-files-found: warn
+          name: kivanc-shard-${{ matrix.shard }}
+          path: artifacts/kivanc-shards/results-shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    needs: research
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: kivanc-shard-*
+          path: artifacts/kivanc-shards
+          merge-multiple: true
+      - run: node scripts/combine-kivanc-shards.mjs artifacts/kivanc-shards artifacts/kivanc-final
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kivanc-top5-universe-90d-1h-final
+          path: artifacts/kivanc-final/
+          if-no-files-found: error
           retention-days: 30
