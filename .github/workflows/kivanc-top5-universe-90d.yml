@@ -15,18 +15,16 @@ on:
 permissions:
   contents: read
 
-env:
-  TIMEFRAME: 1h
-  SHARDS: 12
-
 jobs:
   research:
-    name: 1h-shard-${{ matrix.shard }}
+    name: ${{ matrix.timeframe }}-shard-${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 50
     strategy:
       fail-fast: false
+      max-parallel: 12
       matrix:
+        timeframe: [1h, 4h, 1d]
         shard: [0,1,2,3,4,5,6,7,8,9,10,11]
     steps:
       - uses: actions/checkout@v4
@@ -44,21 +42,21 @@ jobs:
         run: |
           python scripts/fetch-kivanc-vision-shard.py \
             --shard ${{ matrix.shard }} \
-            --shards $SHARDS \
-            --timeframe $TIMEFRAME \
+            --shards 12 \
+            --timeframe ${{ matrix.timeframe }} \
             --warmup-bars 200 \
-            --out .tmp/strategy-$TIMEFRAME-${{ matrix.shard }}
+            --out .tmp/strategy-${{ matrix.timeframe }}-${{ matrix.shard }}
       - name: Evaluate strategy catalog
         run: |
           node scripts/run-kivanc-offline-shard.mjs \
             ${{ matrix.shard }} \
-            .tmp/strategy-$TIMEFRAME-${{ matrix.shard }} \
+            .tmp/strategy-${{ matrix.timeframe }}-${{ matrix.shard }} \
             artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json \
-            $TIMEFRAME
+            ${{ matrix.timeframe }}
       - name: Upload shard evidence
         uses: actions/upload-artifact@v4
         with:
-          name: strategy-shard-1h-${{ matrix.shard }}
+          name: strategy-shard-${{ matrix.timeframe }}-${{ matrix.shard }}
           path: artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json
           if-no-files-found: error
           retention-days: 30
@@ -67,6 +65,10 @@ jobs:
     needs: research
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        timeframe: [1h, 4h, 1d]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -74,7 +76,7 @@ jobs:
           node-version: '22'
       - uses: actions/download-artifact@v4
         with:
-          pattern: strategy-shard-1h-*
+          pattern: strategy-shard-${{ matrix.timeframe }}-*
           path: artifacts/strategy-shards
           merge-multiple: true
       - name: Combine strategy results
@@ -82,15 +84,16 @@ jobs:
           node scripts/combine-kivanc-shards.mjs \
             artifacts/strategy-shards \
             artifacts/strategy-final \
-            $TIMEFRAME
+            ${{ matrix.timeframe }}
       - name: Build profitability-first opportunity board
         run: |
+          TF_UP=$(echo "${{ matrix.timeframe }}" | tr '[:lower:]' '[:upper:]')
           node scripts/build-opportunity-board.mjs \
-            artifacts/strategy-final/STRATEGY_SELECTOR_90D_1H.json \
+            "artifacts/strategy-final/STRATEGY_SELECTOR_90D_${TF_UP}.json" \
             artifacts/opportunity-board
       - uses: actions/upload-artifact@v4
         with:
-          name: strategy-selector-universe-90d-1h-final
+          name: strategy-selector-universe-90d-${{ matrix.timeframe }}-final
           path: |
             artifacts/strategy-final/
             artifacts/opportunity-board/
