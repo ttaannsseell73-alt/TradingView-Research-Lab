@@ -21,7 +21,7 @@ env:
 
 jobs:
   research:
-    name: ${{ env.TIMEFRAME }}-shard-${{ matrix.shard }}
+    name: 1h-shard-${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 50
     strategy:
@@ -58,7 +58,7 @@ jobs:
       - name: Upload shard evidence
         uses: actions/upload-artifact@v4
         with:
-          name: strategy-shard-${{ env.TIMEFRAME }}-${{ matrix.shard }}
+          name: strategy-shard-1h-${{ matrix.shard }}
           path: artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json
           if-no-files-found: error
           retention-days: 30
@@ -74,7 +74,7 @@ jobs:
           node-version: '22'
       - uses: actions/download-artifact@v4
         with:
-          pattern: strategy-shard-${{ env.TIMEFRAME }}-*
+          pattern: strategy-shard-1h-*
           path: artifacts/strategy-shards
           merge-multiple: true
       - name: Combine strategy results
@@ -90,7 +90,7 @@ jobs:
             artifacts/opportunity-board
       - uses: actions/upload-artifact@v4
         with:
-          name: strategy-selector-universe-90d-${{ env.TIMEFRAME }}-final
+          name: strategy-selector-universe-90d-1h-final
           path: |
             artifacts/strategy-final/
             artifacts/opportunity-board/
