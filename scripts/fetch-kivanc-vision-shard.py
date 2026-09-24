@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, csv, io, json, os, time, urllib.error, urllib.request, zipfile
+import argparse, csv, io, json, os, time, urllib.error, urllib.request, urllib.parse, zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
