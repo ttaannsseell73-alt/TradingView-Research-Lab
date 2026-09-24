@@ -19,13 +19,192 @@ jobs:
   research:
     name: ${{ matrix.timeframe }}-shard-${{ matrix.shard }}
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 80
     strategy:
       fail-fast: false
       max-parallel: 12
       matrix:
-        timeframe: [1h, 4h, 1d]
-        shard: [0,1,2,3,4,5,6,7,8,9,10,11]
+        include:
+          - timeframe: 1h
+            shard: 0
+            shards: 12
+          - timeframe: 1h
+            shard: 1
+            shards: 12
+          - timeframe: 1h
+            shard: 2
+            shards: 12
+          - timeframe: 1h
+            shard: 3
+            shards: 12
+          - timeframe: 1h
+            shard: 4
+            shards: 12
+          - timeframe: 1h
+            shard: 5
+            shards: 12
+          - timeframe: 1h
+            shard: 6
+            shards: 12
+          - timeframe: 1h
+            shard: 7
+            shards: 12
+          - timeframe: 1h
+            shard: 8
+            shards: 12
+          - timeframe: 1h
+            shard: 9
+            shards: 12
+          - timeframe: 1h
+            shard: 10
+            shards: 12
+          - timeframe: 1h
+            shard: 11
+            shards: 12
+          - timeframe: 4h
+            shard: 0
+            shards: 12
+          - timeframe: 4h
+            shard: 1
+            shards: 12
+          - timeframe: 4h
+            shard: 2
+            shards: 12
+          - timeframe: 4h
+            shard: 3
+            shards: 12
+          - timeframe: 4h
+            shard: 4
+            shards: 12
+          - timeframe: 4h
+            shard: 5
+            shards: 12
+          - timeframe: 4h
+            shard: 6
+            shards: 12
+          - timeframe: 4h
+            shard: 7
+            shards: 12
+          - timeframe: 4h
+            shard: 8
+            shards: 12
+          - timeframe: 4h
+            shard: 9
+            shards: 12
+          - timeframe: 4h
+            shard: 10
+            shards: 12
+          - timeframe: 4h
+            shard: 11
+            shards: 12
+          - timeframe: 1d
+            shard: 0
+            shards: 12
+          - timeframe: 1d
+            shard: 1
+            shards: 12
+          - timeframe: 1d
+            shard: 2
+            shards: 12
+          - timeframe: 1d
+            shard: 3
+            shards: 12
+          - timeframe: 1d
+            shard: 4
+            shards: 12
+          - timeframe: 1d
+            shard: 5
+            shards: 12
+          - timeframe: 1d
+            shard: 6
+            shards: 12
+          - timeframe: 1d
+            shard: 7
+            shards: 12
+          - timeframe: 1d
+            shard: 8
+            shards: 12
+          - timeframe: 1d
+            shard: 9
+            shards: 12
+          - timeframe: 1d
+            shard: 10
+            shards: 12
+          - timeframe: 1d
+            shard: 11
+            shards: 12
+          - timeframe: 5m
+            shard: 0
+            shards: 24
+          - timeframe: 5m
+            shard: 1
+            shards: 24
+          - timeframe: 5m
+            shard: 2
+            shards: 24
+          - timeframe: 5m
+            shard: 3
+            shards: 24
+          - timeframe: 5m
+            shard: 4
+            shards: 24
+          - timeframe: 5m
+            shard: 5
+            shards: 24
+          - timeframe: 5m
+            shard: 6
+            shards: 24
+          - timeframe: 5m
+            shard: 7
+            shards: 24
+          - timeframe: 5m
+            shard: 8
+            shards: 24
+          - timeframe: 5m
+            shard: 9
+            shards: 24
+          - timeframe: 5m
+            shard: 10
+            shards: 24
+          - timeframe: 5m
+            shard: 11
+            shards: 24
+          - timeframe: 5m
+            shard: 12
+            shards: 24
+          - timeframe: 5m
+            shard: 13
+            shards: 24
+          - timeframe: 5m
+            shard: 14
+            shards: 24
+          - timeframe: 5m
+            shard: 15
+            shards: 24
+          - timeframe: 5m
+            shard: 16
+            shards: 24
+          - timeframe: 5m
+            shard: 17
+            shards: 24
+          - timeframe: 5m
+            shard: 18
+            shards: 24
+          - timeframe: 5m
+            shard: 19
+            shards: 24
+          - timeframe: 5m
+            shard: 20
+            shards: 24
+          - timeframe: 5m
+            shard: 21
+            shards: 24
+          - timeframe: 5m
+            shard: 22
+            shards: 24
+          - timeframe: 5m
+            shard: 23
+            shards: 24
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,7 +221,7 @@ jobs:
         run: |
           python scripts/fetch-kivanc-vision-shard.py \
             --shard ${{ matrix.shard }} \
-            --shards 12 \
+            --shards ${{ matrix.shards }} \
             --timeframe ${{ matrix.timeframe }} \
             --warmup-bars 200 \
             --out .tmp/strategy-${{ matrix.timeframe }}-${{ matrix.shard }}
@@ -64,11 +243,11 @@ jobs:
   aggregate:
     needs: research
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        timeframe: [1h, 4h, 1d]
+        timeframe: [1h, 4h, 1d, 5m]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
