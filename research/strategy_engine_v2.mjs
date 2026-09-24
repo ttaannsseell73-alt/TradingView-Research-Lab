@@ -87,6 +87,60 @@ function mfi(c,p) {
   }
   return out;
 }
+
+function rollingStdPopulation(xs,p) {
+  const out=Array(xs.length).fill(NaN);
+  for(let i=p-1;i<xs.length;i++){
+    const win=xs.slice(i-p+1,i+1);
+    if(!win.every(finite)) continue;
+    const m=mean(win);
+    out[i]=Math.sqrt(win.reduce((s,x)=>s+(x-m)**2,0)/p);
+  }
+  return out;
+}
+function rsi(xs,p) {
+  const gains=Array(xs.length).fill(0),losses=Array(xs.length).fill(0);
+  for(let i=1;i<xs.length;i++){
+    const d=xs[i]-xs[i-1];
+    gains[i]=Math.max(d,0);
+    losses[i]=Math.max(-d,0);
+  }
+  const ag=rma(gains,p),al=rma(losses,p),out=Array(xs.length).fill(NaN);
+  for(let i=0;i<xs.length;i++){
+    if(!finite(ag[i])||!finite(al[i])) continue;
+    out[i]=al[i]===0?100:ag[i]===0?0:100-100/(1+ag[i]/al[i]);
+  }
+  return out;
+}
+function crossAny(ap,bp,a,b) {
+  return crossOver(ap,bp,a,b)||crossUnder(ap,bp,a,b);
+}
+function qqeTrack(xs,{rsiPeriod=6,smoothing=5,factor=3}={}) {
+  const rsiMa=ema(rsi(xs,rsiPeriod),smoothing);
+  const wilders=rsiPeriod*2-1;
+  const atrRsi=rsiMa.map((v,i)=>i&&finite(v)&&finite(rsiMa[i-1])?Math.abs(rsiMa[i-1]-v):NaN);
+  const maAtr=ema(atrRsi,wilders);
+  const dar=ema(maAtr,wilders).map(v=>finite(v)?v*factor:NaN);
+  const longband=Array(xs.length).fill(NaN),shortband=Array(xs.length).fill(NaN),trend=Array(xs.length).fill(1),fast=Array(xs.length).fill(NaN);
+  for(let i=0;i<xs.length;i++){
+    if(!finite(rsiMa[i])||!finite(dar[i])) continue;
+    const idx=rsiMa[i],newShort=idx+dar[i],newLong=idx-dar[i];
+    const prevLong=i&&finite(longband[i-1])?longband[i-1]:0;
+    const prevShort=i&&finite(shortband[i-1])?shortband[i-1]:0;
+    const prevIdx=i&&finite(rsiMa[i-1])?rsiMa[i-1]:idx;
+    longband[i]=prevIdx>prevLong&&idx>prevLong?Math.max(prevLong,newLong):newLong;
+    shortband[i]=prevIdx<prevShort&&idx<prevShort?Math.min(prevShort,newShort):newShort;
+    let tr=i?trend[i-1]:1;
+    if(i>=2&&finite(shortband[i-1])&&finite(shortband[i-2])&&finite(rsiMa[i-1])){
+      if(crossAny(rsiMa[i-1],shortband[i-2],rsiMa[i],shortband[i-1])) tr=1;
+      else if(finite(longband[i-1])&&finite(longband[i-2])&&crossAny(longband[i-2],rsiMa[i-1],longband[i-1],rsiMa[i])) tr=-1;
+    }
+    trend[i]=tr;
+    fast[i]=tr===1?longband[i]:shortband[i];
+  }
+  return {rsiMa,fast};
+}
+
 function vidyaVar(xs,p) {
   const out=Array(xs.length).fill(NaN),up=Array(xs.length).fill(0),dn=Array(xs.length).fill(0);
   const a=2/(p+1);
@@ -216,13 +270,52 @@ function signalsSSLHybridFlip(c) {
   return sig;
 }
 
+
+function signalsSSLHybridQQEFlip(c) {
+  const close=c.map(b=>b.c);
+  const highs=hma(c.map(b=>b.h),60);
+  const lows=hma(c.map(b=>b.l),60);
+  const state=Array(c.length).fill(0),ssl=Array(c.length).fill(NaN);
+  for(let i=0;i<c.length;i++){
+    let s=i?state[i-1]:0;
+    if(finite(highs[i])&&c[i].c>highs[i]) s=1;
+    else if(finite(lows[i])&&c[i].c<lows[i]) s=-1;
+    state[i]=s;
+    ssl[i]=s<0?highs[i]:lows[i];
+  }
+
+  const q1=qqeTrack(close,{rsiPeriod:6,smoothing:5,factor:3});
+  const q2=qqeTrack(close,{rsiPeriod:6,smoothing:5,factor:1.61});
+  const basis=sma(q1.fast.map(v=>finite(v)?v-50:NaN),50);
+  const dev=rollingStdPopulation(q1.fast.map(v=>finite(v)?v-50:NaN),50);
+  const upper=basis.map((v,i)=>finite(v)&&finite(dev[i])?v+0.35*dev[i]:NaN);
+  const lower=basis.map((v,i)=>finite(v)&&finite(dev[i])?v-0.35*dev[i]:NaN);
+
+  const sig=Array(c.length).fill(0);
+  let started=false;
+  for(let i=1;i<c.length;i++){
+    if(!started&&finite(ssl[i])&&finite(ssl[i-1])&&crossAny(close[i-1],ssl[i-1],close[i],ssl[i])) started=true;
+    if(!started) continue;
+    if(![ssl[i],q1.rsiMa[i],q2.rsiMa[i],q2.fast[i],upper[i],lower[i]].every(finite)) continue;
+    const green1=q2.rsiMa[i]-50>3;
+    const green2=q1.rsiMa[i]-50>upper[i];
+    const red1=q2.rsiMa[i]-50<-3;
+    const red2=q1.rsiMa[i]-50<lower[i];
+    const qqeLine=q2.fast[i]-50;
+    if(close[i]>ssl[i]&&green1&&green2&&qqeLine>0) sig[i]=1;
+    else if(close[i]<ssl[i]&&red1&&red2&&qqeLine<0) sig[i]=-1;
+  }
+  return sig;
+}
+
 export const STRATEGIES = [
   {id:'pmax',name:'PMax Explorer',family:'trend_atr',version:'kivanc-core-v1',signal:signalsPMax},
   {id:'alphatrend',name:'AlphaTrend',family:'trend_volume_atr',version:'kivanc-core-v1',signal:signalsAlphaTrend},
   {id:'ott',name:'Optimized Trend Tracker',family:'adaptive_trend',version:'kivanc-core-v1',signal:signalsOTT},
   {id:'tott',name:'Twin Optimized Trend Tracker',family:'adaptive_trend',version:'kivanc-core-v1',signal:signalsTOTT},
   {id:'mavilimw',name:'MavilimW',family:'smoothed_trend',version:'kivanc-core-v1',signal:signalsMavilimW},
-  {id:'ssl_hybrid_flip',name:'SSL Hybrid — Flip Mode',family:'baseline_trend',version:'tv-open-v1',signal:signalsSSLHybridFlip}
+  {id:'ssl_hybrid_flip',name:'SSL Hybrid — Flip Mode',family:'baseline_trend',version:'tv-open-v1',signal:signalsSSLHybridFlip},
+  {id:'ssl_hybrid_qqe_flip',name:'SSL Hybrid + QQE — Flip Mode',family:'trend_momentum_filter',version:'tv-open-v1',signal:signalsSSLHybridQQEFlip}
 ];
 
 function backtest(c,signals) {
