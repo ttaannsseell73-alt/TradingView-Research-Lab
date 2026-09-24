@@ -10,11 +10,11 @@ for (const file of files) {
   const d = JSON.parse(fs.readFileSync(path.join(inDir,file),'utf8'));
   rows.push(...d.results); failures.push(...d.failures);
 }
-const ids = ['pmax','alphatrend','ott','tott','mavilimw'];
 const median = xs => { if (!xs.length) return 0; const a=[...xs].sort((x,y)=>x-y); const m=Math.floor(a.length/2); return a.length%2?a[m]:(a[m-1]+a[m])/2; };
+const ids=[...new Set(rows.map(r=>r.id))].sort();
 const summary = ids.map(id => {
   const x=rows.filter(r=>r.id===id), p=x.filter(r=>r.pass);
-  return {strategy:id, tested:x.length, pass:p.length, passRate:x.length?p.length/x.length:0,
+  return {strategy:id, strategyName:x[0]?.name??id, family:x[0]?.family??'unknown', version:x[0]?.version??'unknown', tested:x.length, pass:p.length, passRate:x.length?p.length/x.length:0,
     positive:x.filter(r=>r.net>0).length, positiveRate:x.length?x.filter(r=>r.net>0).length/x.length:0,
     medianNet:median(x.map(r=>r.net)), medianPF:median(x.map(r=>r.pf)), medianDD:median(x.map(r=>r.dd)),
     medianTrades:median(x.map(r=>r.n))};
@@ -32,13 +32,13 @@ const final={schemaVersion:1,generatedAt:new Date().toISOString(),window:{start:
   combinations:rows.length,summary,top,multiStrategySymbols:multi,failures,rows};
 fs.mkdirSync(outDir,{recursive:true});
 fs.writeFileSync(path.join(outDir,'KIVANC_TOP5_90D_1H.json'),JSON.stringify(final,null,2)+'\n');
-const head=['symbol','strategy','candles','trades','winRate','netReturn','profitFactor','maxDrawdown','expectancy','tradeSharpe','positiveSegments','netAt15bps','netAt6bps','pass'];
+const head=['symbol','strategy','strategyName','family','version','candles','trades','winRate','netReturn','profitFactor','maxDrawdown','expectancy','tradeSharpe','positiveSegments','netAt15bps','netAt6bps','pass'];
 const esc=v=>{const s=String(v??'');return /[,"\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s};
 const csv=[head.join(',')];
-for(const r of [...rows].sort((a,b)=>b.net-a.net)) csv.push([r.symbol,r.id,r.candles,r.n,r.wr,r.net,r.pf,r.dd,r.exp,r.sh,r.posseg,r.net15,r.net6,r.pass].map(esc).join(','));
+for(const r of [...rows].sort((a,b)=>b.net-a.net)) csv.push([r.symbol,r.id,r.name??r.id,r.family??'',r.version??'',r.candles,r.n,r.wr,r.net,r.pf,r.dd,r.exp,r.sh,r.posseg,r.net15,r.net6,r.pass].map(esc).join(','));
 fs.writeFileSync(path.join(outDir,'leaderboard.csv'),csv.join('\n')+'\n');
 const pc=x=>(100*x).toFixed(2)+'%', nn=x=>Number.isFinite(x)?x.toFixed(2):'∞';
-const md=['# Kıvanç Top-5 — Binance USDⓈ-M Futures — 90 gün / 1h','',
+const md=['# Strategy Selector — Binance USDⓈ-M Futures — 90 gün / 1h','',
 '**Pencere:** 2026-06-24 → 2026-09-24 UTC  ',
 '**Sinyal:** kapanmış mum → bir sonraki mum açılışı  ',
 '**Canonical round-trip maliyet:** 14 bps; stres kontrolü: 15 bps; duyarlılık: 6 bps  ',
@@ -46,7 +46,7 @@ const md=['# Kıvanç Top-5 — Binance USDⓈ-M Futures — 90 gün / 1h','',
 '## Strateji özeti','',
 '| Strateji | Test | PASS | PASS oranı | Net pozitif | Medyan net | Medyan PF | Medyan DD | Medyan işlem |',
 '|---|---:|---:|---:|---:|---:|---:|---:|---:|'];
-for(const s of summary) md.push(`| ${s.strategy} | ${s.tested} | ${s.pass} | ${pc(s.passRate)} | ${s.positive} | ${pc(s.medianNet)} | ${nn(s.medianPF)} | ${pc(s.medianDD)} | ${nn(s.medianTrades)} |`);
+for(const s of summary) md.push(`| ${s.strategyName} (${s.strategy}) | ${s.tested} | ${s.pass} | ${pc(s.passRate)} | ${s.positive} | ${pc(s.medianNet)} | ${nn(s.medianPF)} | ${pc(s.medianDD)} | ${nn(s.medianTrades)} |`);
 md.push('','## En güçlü 30 PASS kombinasyonu','',
 '| # | Coin | Strateji | İşlem | Win | Net | PF | Max DD | Pozitif alt dönem | 15 bps net |',
 '|---:|---|---|---:|---:|---:|---:|---:|---:|---:|');
