@@ -1,0 +1,85 @@
+name: strategy-selector-universe-90d-5m
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/strategy_engine_v2.mjs'
+      - 'scripts/fetch-kivanc-vision-shard.py'
+      - 'scripts/run-kivanc-offline-shard.mjs'
+      - 'scripts/combine-kivanc-shards.mjs'
+      - 'scripts/build-opportunity-board.mjs'
+      - 'research/kivanc_symbols_2026-09-24.json'
+      - '.github/workflows/strategy-selector-5m.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    name: 5m-shard-${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate research engine
+        run: |
+          python -m py_compile scripts/fetch-kivanc-vision-shard.py
+          node --check research/strategy_engine_v2.mjs
+          node --check scripts/run-kivanc-offline-shard.mjs
+          node --check scripts/combine-kivanc-shards.mjs
+          node --check scripts/build-opportunity-board.mjs
+      - name: Download 5m Binance Vision candles
+        run: |
+          python scripts/fetch-kivanc-vision-shard.py \
+            --shard ${{ matrix.shard }} \
+            --shards 24 \
+            --timeframe 5m \
+            --warmup-bars 200 \
+            --out .tmp/strategy-5m-${{ matrix.shard }}
+      - name: Evaluate strategy catalog
+        run: |
+          node scripts/run-kivanc-offline-shard.mjs \
+            ${{ matrix.shard }} \
+            .tmp/strategy-5m-${{ matrix.shard }} \
+            artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json \
+            5m
+      - uses: actions/upload-artifact@v4
+        with:
+          name: strategy-shard-5m-${{ matrix.shard }}
+          path: artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    needs: research
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: strategy-shard-5m-*
+          path: artifacts/strategy-shards
+          merge-multiple: true
+      - run: node scripts/combine-kivanc-shards.mjs artifacts/strategy-shards artifacts/strategy-final 5m
+      - run: node scripts/build-opportunity-board.mjs artifacts/strategy-final/STRATEGY_SELECTOR_90D_5M.json artifacts/opportunity-board
+      - uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-universe-90d-5m-final
+          path: |
+            artifacts/strategy-final/
+            artifacts/opportunity-board/
+          if-no-files-found: error
+          retention-days: 30
