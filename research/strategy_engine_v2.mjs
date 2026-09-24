@@ -532,6 +532,7 @@ export function evaluateStrategies(candles, {
   cost=0.0014,
   stressCost=0.0015,
   lowCost=0.0006,
+  minTrades=20,
   start,
   end
 }={}) {
@@ -542,13 +543,14 @@ export function evaluateStrategies(candles, {
     const base=stats(trades,cost,start,end);
     const stress=stats(trades,stressCost,start,end);
     const low=stats(trades,lowCost,start,end);
-    const pass=base.n>=20&&base.net>0&&base.exp>0&&base.pf>1.05&&base.posseg>=2&&stress.net>0;
+    const pass=base.n>=minTrades&&base.net>0&&base.exp>0&&base.pf>1.05&&base.posseg>=2&&stress.net>0;
     return {
       id:s.id,
       name:s.name,
       family:s.family,
       version:s.version,
       mode:s.mode??'REVERSAL',
+      minTradesRequired:minTrades,
       ...base,
       net15:stress.net,
       net6:low.net,
