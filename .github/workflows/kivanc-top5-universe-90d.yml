@@ -9,6 +9,9 @@ on:
       - 'scripts/combine-kivanc-shards.mjs'
       - 'research/kivanc_symbols_2026-09-24.json'
       - 'research/kivanc_chunk_engine.js.txt'
+      - 'research/strategy_catalog.json'
+      - 'scripts/build-opportunity-board.mjs'
+      - 'docs/STRATEGY_SELECTOR.md'
       - '.github/workflows/kivanc-top5-universe-90d.yml'
 
 permissions:
@@ -33,6 +36,7 @@ jobs:
           python -m py_compile scripts/fetch-kivanc-vision-shard.py
           node --check scripts/run-kivanc-offline-shard.mjs
           node --check scripts/combine-kivanc-shards.mjs
+          node --check scripts/build-opportunity-board.mjs
       - name: Download Binance Vision 1h candles
         run: python scripts/fetch-kivanc-vision-shard.py --shard ${{ matrix.shard }} --shards 12 --out .tmp/kivanc-${{ matrix.shard }}
       - name: Evaluate Kivanc top-5
@@ -60,9 +64,13 @@ jobs:
           path: artifacts/kivanc-shards
           merge-multiple: true
       - run: node scripts/combine-kivanc-shards.mjs artifacts/kivanc-shards artifacts/kivanc-final
+      - name: Build profitability-first opportunity board
+        run: node scripts/build-opportunity-board.mjs artifacts/kivanc-final/KIVANC_TOP5_90D_1H.json artifacts/opportunity-board
       - uses: actions/upload-artifact@v4
         with:
           name: kivanc-top5-universe-90d-1h-final
-          path: artifacts/kivanc-final/
+          path: |
+            artifacts/kivanc-final/
+            artifacts/opportunity-board/
           if-no-files-found: error
           retention-days: 30
