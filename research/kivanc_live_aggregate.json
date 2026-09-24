@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "window": {
+    "start": "2026-06-24T00:00:00Z",
+    "end": "2026-09-24T00:00:00Z"
+  },
+  "timeframe": "1h",
+  "canonicalRoundTripCost": 0.0014,
+  "stressRoundTripCost": 0.0015,
+  "lowCostSensitivity": 0.0006,
+  "universeCount": 565,
+  "nextIndex": 0,
+  "processedSymbols": 0,
+  "failedSymbols": 0,
+  "strategy": {
+    "pmax": {
+      "tested": 0,
+      "pass": 0,
+      "positive": 0,
+      "sumNet": 0,
+      "sumPF": 0
+    },
+    "alphatrend": {
+      "tested": 0,
+      "pass": 0,
+      "positive": 0,
+      "sumNet": 0,
+      "sumPF": 0
+    },
+    "ott": {
+      "tested": 0,
+      "pass": 0,
+      "positive": 0,
+      "sumNet": 0,
+      "sumPF": 0
+    },
+    "tott": {
+      "tested": 0,
+      "pass": 0,
+      "positive": 0,
+      "sumNet": 0,
+      "sumPF": 0
+    },
+    "mavilimw": {
+      "tested": 0,
+      "pass": 0,
+      "positive": 0,
+      "sumNet": 0,
+      "sumPF": 0
+    }
+  },
+  "top": [],
+  "worst": [],
+  "failures": []
+}
