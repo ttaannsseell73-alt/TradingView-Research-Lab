@@ -130,9 +130,21 @@
           "id": "chandelier_zlsma",
           "name": "Chandelier Exit ZLSMA Strategy",
           "family": "trend_breakout_filter",
-          "status": "DISCOVERY_REVIEW",
+          "status": "IMPLEMENTED",
           "source": "https://www.tradingview.com/script/njG2EVJ0-Chandelier-Exit-ZLSMA-Strategy/",
-          "notes": "CE direction plus ZLSMA confirmation; candidate for 5m-heavy scan after exact-rule validation."
+          "notes": "Independent implementation of published CE+ZLSMA rules. Public strategy recommends 5m; engine preserves flat exits and re-entry state.",
+          "implementation": "research/strategy_engine_v2.mjs",
+          "defaults": {
+            "atrPeriod": 1,
+            "atrMultiplier": 2,
+            "zlsmaLength": 50,
+            "offset": 0
+          },
+          "executionMode": "TARGET_POSITION",
+          "timeframePriority": [
+            "5m",
+            "1h"
+          ]
         },
         {
           "id": "lorentzian_classification_strategy",
