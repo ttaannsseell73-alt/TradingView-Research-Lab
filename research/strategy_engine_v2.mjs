@@ -88,6 +88,15 @@ function mfi(c,p) {
   return out;
 }
 
+function rollingMeanFinite(xs,p) {
+  const out=Array(xs.length).fill(NaN);
+  for(let i=p-1;i<xs.length;i++){
+    const win=xs.slice(i-p+1,i+1);
+    if(!win.every(finite)) continue;
+    out[i]=mean(win);
+  }
+  return out;
+}
 function rollingStdPopulation(xs,p) {
   const out=Array(xs.length).fill(NaN);
   for(let i=p-1;i<xs.length;i++){
@@ -286,7 +295,7 @@ function signalsSSLHybridQQEFlip(c) {
 
   const q1=qqeTrack(close,{rsiPeriod:6,smoothing:5,factor:3});
   const q2=qqeTrack(close,{rsiPeriod:6,smoothing:5,factor:1.61});
-  const basis=sma(q1.fast.map(v=>finite(v)?v-50:NaN),50);
+  const basis=rollingMeanFinite(q1.fast.map(v=>finite(v)?v-50:NaN),50);
   const dev=rollingStdPopulation(q1.fast.map(v=>finite(v)?v-50:NaN),50);
   const upper=basis.map((v,i)=>finite(v)&&finite(dev[i])?v+0.35*dev[i]:NaN);
   const lower=basis.map((v,i)=>finite(v)&&finite(dev[i])?v-0.35*dev[i]:NaN);
