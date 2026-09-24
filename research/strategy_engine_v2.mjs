@@ -317,6 +317,41 @@ function signalsSSLHybridQQEFlip(c) {
   return sig;
 }
 
+/*
+UT Bot Strategy research adapter.
+QuantNomad's public strategy defaults: sensitivity key=1, ATR period=10,
+regular candles (Heikin-Ashi source disabled). This independent adapter
+uses the published ATR trailing-stop state machine, confirmed-bar signals
+and the lab's common next-bar-open execution model.
+*/
+function signalsUTBotQuantNomad(c) {
+  const src=c.map(b=>b.c);
+  const atr=rma(trueRange(c),10);
+  const stop=Array(c.length).fill(NaN);
+  const sig=Array(c.length).fill(0);
+
+  for(let i=0;i<c.length;i++){
+    if(!finite(atr[i])) continue;
+    const loss=atr[i]; // key value = 1
+    const prevStop=i&&finite(stop[i-1])?stop[i-1]:0;
+    const prevSrc=i?src[i-1]:src[i];
+
+    if(i&&src[i]>prevStop&&prevSrc>prevStop) {
+      stop[i]=Math.max(prevStop,src[i]-loss);
+    } else if(i&&src[i]<prevStop&&prevSrc<prevStop) {
+      stop[i]=Math.min(prevStop,src[i]+loss);
+    } else {
+      stop[i]=src[i]>prevStop?src[i]-loss:src[i]+loss;
+    }
+
+    if(i&&finite(stop[i-1])){
+      if(crossOver(src[i-1],stop[i-1],src[i],stop[i])&&src[i]>stop[i]) sig[i]=1;
+      else if(crossUnder(src[i-1],stop[i-1],src[i],stop[i])&&src[i]<stop[i]) sig[i]=-1;
+    }
+  }
+  return sig;
+}
+
 export const STRATEGIES = [
   {id:'pmax',name:'PMax Explorer',family:'trend_atr',version:'kivanc-core-v1',signal:signalsPMax},
   {id:'alphatrend',name:'AlphaTrend',family:'trend_volume_atr',version:'kivanc-core-v1',signal:signalsAlphaTrend},
@@ -324,7 +359,8 @@ export const STRATEGIES = [
   {id:'tott',name:'Twin Optimized Trend Tracker',family:'adaptive_trend',version:'kivanc-core-v1',signal:signalsTOTT},
   {id:'mavilimw',name:'MavilimW',family:'smoothed_trend',version:'kivanc-core-v1',signal:signalsMavilimW},
   {id:'ssl_hybrid_flip',name:'SSL Hybrid — Flip Mode',family:'baseline_trend',version:'tv-open-v1',signal:signalsSSLHybridFlip},
-  {id:'ssl_hybrid_qqe_flip',name:'SSL Hybrid + QQE — Flip Mode',family:'trend_momentum_filter',version:'tv-open-v1',signal:signalsSSLHybridQQEFlip}
+  {id:'ssl_hybrid_qqe_flip',name:'SSL Hybrid + QQE — Flip Mode',family:'trend_momentum_filter',version:'tv-open-v1',signal:signalsSSLHybridQQEFlip},
+  {id:'ut_bot_quantnomad',name:'UT Bot Strategy — QuantNomad',family:'atr_trailing_stop',version:'tv-open-v1',signal:signalsUTBotQuantNomad}
 ];
 
 function backtest(c,signals) {
