@@ -150,6 +150,27 @@ function qqeTrack(xs,{rsiPeriod=6,smoothing=5,factor=3}={}) {
   return {rsiMa,fast};
 }
 
+
+function rollingLinReg(xs,p,offset=0) {
+  const out=Array(xs.length).fill(NaN);
+  const sx=(p-1)*p/2;
+  const sxx=(p-1)*p*(2*p-1)/6;
+  const denom=p*sxx-sx*sx;
+  for(let i=p-1;i<xs.length;i++){
+    let sy=0,sxy=0,ok=true;
+    for(let k=0;k<p;k++){
+      const y=xs[i-p+1+k];
+      if(!finite(y)){ok=false;break;}
+      sy+=y;sxy+=k*y;
+    }
+    if(!ok) continue;
+    const slope=denom===0?0:(p*sxy-sx*sy)/denom;
+    const intercept=(sy-slope*sx)/p;
+    out[i]=intercept+slope*(p-1-offset);
+  }
+  return out;
+}
+
 function vidyaVar(xs,p) {
   const out=Array(xs.length).fill(NaN),up=Array(xs.length).fill(0),dn=Array(xs.length).fill(0);
   const a=2/(p+1);
@@ -352,15 +373,85 @@ function signalsUTBotQuantNomad(c) {
   return sig;
 }
 
+/*
+Chandelier Exit + ZLSMA research adapter.
+Public strategy defaults: CE ATR period=1, ATR multiplier=2, prior-bar OHLC4
+source, ZLSMA length=50. Unlike reversal-only systems this strategy can be
+flat between exits and the next qualified entry, so it emits target positions.
+*/
+function targetsChandelierZLSMA(c) {
+  const n=c.length;
+  const haClose=Array(n).fill(NaN);
+  const tr=trueRange(c);
+  const longStop=Array(n).fill(NaN),shortStop=Array(n).fill(NaN);
+  const dir=Array(n).fill(1);
+  for(let i=1;i<n;i++){
+    haClose[i]=(c[i-1].o+c[i-1].h+c[i-1].l+c[i-1].c)/4;
+    const atr=2*tr[i-1];
+    let ls=haClose[i]-atr;
+    let ss=haClose[i]+atr;
+    const prevLs=i>1&&finite(longStop[i-1])?longStop[i-1]:ls;
+    const prevSs=i>1&&finite(shortStop[i-1])?shortStop[i-1]:ss;
+    if(haClose[i]>prevLs) ls=Math.max(ls,prevLs);
+    if(haClose[i]<prevSs) ss=Math.min(ss,prevSs);
+    longStop[i]=ls;shortStop[i]=ss;
+    const prevDir=i>1?dir[i-1]:1;
+    dir[i]=haClose[i]>prevSs?1:haClose[i]<prevLs?-1:prevDir;
+  }
+
+  const lsma=rollingLinReg(haClose,50,0);
+  const lsma2=rollingLinReg(lsma,50,0);
+  const zlsma=lsma.map((v,i)=>finite(v)&&finite(lsma2[i])?2*v-lsma2[i]:NaN);
+
+  const target=Array(n).fill(0);
+  let pos=0;
+  let pending=0;
+  for(let i=1;i<n;i++){
+    const crossUp=crossOver(haClose[i-1],zlsma[i-1],haClose[i],zlsma[i]);
+    const crossDn=crossUnder(haClose[i-1],zlsma[i-1],haClose[i],zlsma[i]);
+    const buy=dir[i]===1&&dir[i-1]===-1;
+    const sell=dir[i]===-1&&dir[i-1]===1;
+    let enterLong=buy&&crossUp;
+    let enterShort=sell&&crossDn;
+    const exitLong=crossDn;
+    const exitShort=crossUp;
+
+    if(pos===0&&pending!==0){
+      pos=pending;
+      pending=0;
+      target[i]=pos;
+      continue;
+    }
+
+    if(pos===0){
+      if(enterLong) pos=1;
+      else if(enterShort) pos=-1;
+    } else if(pos===1){
+      if(exitLong){
+        if(enterShort) pending=-1;
+        pos=0;
+      }
+    } else if(pos===-1){
+      if(exitShort){
+        if(enterLong) pending=1;
+        pos=0;
+      }
+    }
+    target[i]=pos;
+  }
+  return target;
+}
+
 export const STRATEGIES = [
-  {id:'pmax',name:'PMax Explorer',family:'trend_atr',version:'kivanc-core-v1',signal:signalsPMax},
-  {id:'alphatrend',name:'AlphaTrend',family:'trend_volume_atr',version:'kivanc-core-v1',signal:signalsAlphaTrend},
-  {id:'ott',name:'Optimized Trend Tracker',family:'adaptive_trend',version:'kivanc-core-v1',signal:signalsOTT},
-  {id:'tott',name:'Twin Optimized Trend Tracker',family:'adaptive_trend',version:'kivanc-core-v1',signal:signalsTOTT},
-  {id:'mavilimw',name:'MavilimW',family:'smoothed_trend',version:'kivanc-core-v1',signal:signalsMavilimW},
-  {id:'ssl_hybrid_flip',name:'SSL Hybrid — Flip Mode',family:'baseline_trend',version:'tv-open-v1',signal:signalsSSLHybridFlip},
-  {id:'ssl_hybrid_qqe_flip',name:'SSL Hybrid + QQE — Flip Mode',family:'trend_momentum_filter',version:'tv-open-v1',signal:signalsSSLHybridQQEFlip},
-  {id:'ut_bot_quantnomad',name:'UT Bot Strategy — QuantNomad',family:'atr_trailing_stop',version:'tv-open-v1',signal:signalsUTBotQuantNomad}
+  {id:'pmax',name:'PMax Explorer',family:'trend_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsPMax},
+  {id:'alphatrend',name:'AlphaTrend',family:'trend_volume_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsAlphaTrend},
+  {id:'ott',name:'Optimized Trend Tracker',family:'adaptive_trend',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsOTT},
+  {id:'tott',name:'Twin Optimized Trend Tracker',family:'adaptive_trend',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsTOTT},
+  {id:'mavilimw',name:'MavilimW',family:'smoothed_trend',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsMavilimW},
+  {id:'ssl_hybrid_flip',name:'SSL Hybrid — Flip Mode',family:'baseline_trend',version:'tv-open-v1',mode:'REVERSAL',signal:signalsSSLHybridFlip},
+  {id:'ssl_hybrid_qqe_flip',name:'SSL Hybrid + QQE — Flip Mode',family:'trend_momentum_filter',version:'tv-open-v1',mode:'REVERSAL',signal:signalsSSLHybridQQEFlip},
+  {id:'ut_bot_quantnomad',name:'UT Bot Strategy — QuantNomad',family:'atr_trailing_stop',version:'tv-open-v1',mode:'REVERSAL',signal:signalsUTBotQuantNomad},
+  {id:'chandelier_zlsma',name:'Chandelier Exit ZLSMA Strategy',family:'trend_breakout_filter',version:'tv-open-v1',mode:'TARGET_POSITION',signal:targetsChandelierZLSMA}
 ];
 
 function backtest(c,signals) {
@@ -384,6 +475,29 @@ function backtest(c,signals) {
   }
   return trades;
 }
+function backtestTargetPosition(c,target) {
+  const trades=[];
+  let pos=0,entryPrice=0,entryTime=0;
+  const closeTrade=(px,xt)=>{
+    if(!pos) return;
+    const gross=pos===1?px/entryPrice-1:entryPrice/px-1;
+    trades.push({side:pos,entryTime,exitTime:xt,gross});
+  };
+  for(let i=0;i<target.length-1;i++){
+    const want=target[i];
+    if(![-1,0,1].includes(want)||want===pos) continue;
+    const px=c[i+1].o,tm=c[i+1].t;
+    if(pos) closeTrade(px,tm);
+    pos=want;
+    if(pos){entryPrice=px;entryTime=tm;}
+  }
+  if(pos&&c.length){
+    const b=c[c.length-1];
+    closeTrade(b.c,b.t);
+  }
+  return trades;
+}
+
 function stats(trades,cost,start,end) {
   const rs=trades.map(t=>t.gross-cost);
   let eq=1,peak=1,dd=0,wins=0,grossWins=0,grossLoss=0;
@@ -421,7 +535,8 @@ export function evaluateStrategies(candles, {
 }={}) {
   if(!Number.isFinite(start)||!Number.isFinite(end)) throw new Error('evaluateStrategies requires finite start/end');
   return STRATEGIES.map(s=>{
-    const trades=backtest(candles,s.signal(candles));
+    const raw=s.signal(candles);
+    const trades=s.mode==='TARGET_POSITION'?backtestTargetPosition(candles,raw):backtest(candles,raw);
     const base=stats(trades,cost,start,end);
     const stress=stats(trades,stressCost,start,end);
     const low=stats(trades,lowCost,start,end);
@@ -431,6 +546,7 @@ export function evaluateStrategies(candles, {
       name:s.name,
       family:s.family,
       version:s.version,
+      mode:s.mode??'REVERSAL',
       ...base,
       net15:stress.net,
       net6:low.net,
