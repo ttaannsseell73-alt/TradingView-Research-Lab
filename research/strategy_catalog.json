@@ -70,12 +70,14 @@
           "executionVariant": "TP/SL disabled; SSL1 flip drives reversal; closed candle -> next bar open"
         },
         {
-          "id": "ssl_hybrid_qqe",
-          "name": "SSL Hybrid + QQE Strategy",
+          "id": "ssl_hybrid_qqe_flip",
+          "name": "SSL Hybrid + QQE — Flip Mode",
           "family": "trend_momentum_filter",
-          "status": "QUEUED_FOR_RULE_REIMPLEMENTATION",
+          "status": "IMPLEMENTED",
           "source": "https://www.tradingview.com/script/fl8CV2N0-SSL-Hybrid-QQE-Strategy/",
-          "notes": "SSL Hybrid entries filtered by QQE state."
+          "notes": "Independent research adapter using published QQE defaults and SSL1 HMA(60) defaults.",
+          "implementation": "research/strategy_engine_v2.mjs",
+          "executionVariant": "Published SSL+QQE entry filter with TP/SL disabled; opposite qualified state reverses; closed candle -> next bar open"
         },
         {
           "id": "supertrend_base",
