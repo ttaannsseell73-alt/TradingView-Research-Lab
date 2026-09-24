@@ -7,6 +7,7 @@ const dataDir=process.argv[3];
 const outFile=process.argv[4];
 const timeframe=process.argv[5]??process.env.TIMEFRAME??'1h';
 const TF_MS={'1m':60000,'5m':300000,'1h':3600000,'4h':14400000,'1d':86400000};
+const MIN_TRADES={'1m':50,'5m':30,'1h':20,'4h':10,'1d':3};
 if(!Number.isInteger(shard)||!dataDir||!outFile||!TF_MS[timeframe]){
   console.error('Usage: node scripts/run-kivanc-offline-shard.mjs SHARD DATA_DIR OUT.json [1m|5m|1h|4h|1d]');
   process.exit(2);
@@ -34,7 +35,7 @@ for(const name of fs.readdirSync(dataDir).filter(x=>x.endsWith('.csv')).sort()){
     failures.push({symbol,timeframe,reason:'PARTIAL_COVERAGE',candles:testCandles,expected,rawCandles:candles.length});
     continue;
   }
-  for(const r of evaluateStrategies(candles,{cost:0.0014,stressCost:0.0015,lowCost:0.0006,start:START,end:END})){
+  for(const r of evaluateStrategies(candles,{cost:0.0014,stressCost:0.0015,lowCost:0.0006,minTrades:MIN_TRADES[timeframe],start:START,end:END})){
     results.push({symbol,timeframe,candles:testCandles,rawCandles:candles.length,coverage:testCandles/expected,...r});
   }
 }
