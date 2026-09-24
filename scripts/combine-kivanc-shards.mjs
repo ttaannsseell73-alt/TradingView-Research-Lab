@@ -5,6 +5,7 @@ const inDir=process.argv[2]??'artifacts/strategy-shards';
 const outDir=process.argv[3]??'artifacts/strategy-final';
 const timeframe=process.argv[4]??process.env.TIMEFRAME??'1h';
 const safeTf=timeframe.toUpperCase().replace(/[^A-Z0-9]/g,'');
+const MIN_TRADES={'1m':50,'5m':30,'1h':20,'4h':10,'1d':3};
 const files=fs.readdirSync(inDir).filter(x=>/^results-shard-\d+\.json$/.test(x)).sort((a,b)=>Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0]));
 if(!files.length) throw new Error('No shard result files found');
 const rows=[],failures=[];
@@ -29,6 +30,7 @@ const multi=[...bySymbol.entries()].map(([symbol,x])=>({symbol,passingStrategies
  .sort((a,b)=>b.passingStrategies-a.passingStrategies||b.bestNet-a.bestNet);
 const final={schemaVersion:2,generatedAt:new Date().toISOString(),window:{start:'2026-06-24T00:00:00Z',end:'2026-09-24T00:00:00Z'},timeframe,
  execution:{signal:'confirmed closed candle',entry:'next bar open',modes:['REVERSAL','TARGET_POSITION'],roundTripCost:0.0014,stressCost:0.0015,lowCostSensitivity:0.0006,funding:'excluded'},
+ evidenceGate:{minTrades:MIN_TRADES[timeframe]??20,minProfitFactor:1.05,minPositiveSegments:2,stressMustBePositive:true},
  universeSnapshot:565,testedSymbols:new Set(rows.map(r=>r.symbol)).size,failedOrPartialSymbols:new Set(failures.map(f=>f.symbol)).size,
  combinations:rows.length,summary,top,multiStrategySymbols:multi,failures,rows};
 fs.mkdirSync(outDir,{recursive:true});
@@ -48,6 +50,6 @@ md.push('','## En güçlü 30 PASS kombinasyonu','',
 '| # | Coin | Strateji | İşlem | Win | Net | PF | Max DD | Pozitif alt dönem | 15 bps net |',
 '|---:|---|---|---:|---:|---:|---:|---:|---:|---:|');
 top.slice(0,30).forEach((r,i)=>md.push(`| ${i+1} | ${r.symbol} | ${r.id} | ${r.n} | ${pc(r.wr)} | ${pc(r.net)} | ${nn(r.pf)} | ${pc(r.dd)} | ${r.posseg}/3 | ${pc(r.net15)} |`));
-md.push('','PASS: ≥20 işlem, 14 bps sonrası net>0 ve expectancy>0, PF>1.05, en az 2/3 pozitif alt dönem ve 15 bps stres maliyetinde net>0.');
+md.push('',`Evidence PASS: ≥${MIN_TRADES[timeframe]??20} işlem (${timeframe}), 14 bps sonrası net>0 ve expectancy>0, PF>1.05, en az 2/3 pozitif alt dönem ve 15 bps stres maliyetinde net>0.`);
 fs.writeFileSync(path.join(outDir,'SUMMARY.md'),md.join('\n')+'\n');
 console.log(JSON.stringify({timeframe,files:files.length,testedSymbols:final.testedSymbols,failedOrPartial:final.failedOrPartialSymbols,summary,top:top.slice(0,10),multi:multi.slice(0,10),jsonName},null,2));
