@@ -1,4 +1,4 @@
-name: kivanc-top5-universe-90d
+name: strategy-selector-universe-90d
 
 on:
   pull_request:
@@ -8,19 +8,20 @@ on:
       - 'scripts/run-kivanc-offline-shard.mjs'
       - 'scripts/combine-kivanc-shards.mjs'
       - 'research/kivanc_symbols_2026-09-24.json'
-      - 'research/kivanc_chunk_engine.js.txt'
-      - 'research/strategy_catalog.json'
       - 'research/strategy_engine_v2.mjs'
       - 'scripts/build-opportunity-board.mjs'
-      - 'docs/STRATEGY_SELECTOR.md'
       - '.github/workflows/kivanc-top5-universe-90d.yml'
 
 permissions:
   contents: read
 
+env:
+  TIMEFRAME: 1h
+  SHARDS: 12
+
 jobs:
   research:
-    name: shard-${{ matrix.shard }}
+    name: ${{ env.TIMEFRAME }}-shard-${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 50
     strategy:
@@ -39,15 +40,26 @@ jobs:
           node --check scripts/combine-kivanc-shards.mjs
           node --check scripts/build-opportunity-board.mjs
           node --check research/strategy_engine_v2.mjs
-      - name: Download Binance Vision 1h candles
-        run: python scripts/fetch-kivanc-vision-shard.py --shard ${{ matrix.shard }} --shards 12 --out .tmp/kivanc-${{ matrix.shard }}
+      - name: Download Binance Vision candles with warmup
+        run: |
+          python scripts/fetch-kivanc-vision-shard.py \
+            --shard ${{ matrix.shard }} \
+            --shards $SHARDS \
+            --timeframe $TIMEFRAME \
+            --warmup-bars 200 \
+            --out .tmp/strategy-$TIMEFRAME-${{ matrix.shard }}
       - name: Evaluate strategy catalog
-        run: node scripts/run-kivanc-offline-shard.mjs ${{ matrix.shard }} .tmp/kivanc-${{ matrix.shard }} artifacts/kivanc-shards/results-shard-${{ matrix.shard }}.json
+        run: |
+          node scripts/run-kivanc-offline-shard.mjs \
+            ${{ matrix.shard }} \
+            .tmp/strategy-$TIMEFRAME-${{ matrix.shard }} \
+            artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json \
+            $TIMEFRAME
       - name: Upload shard evidence
         uses: actions/upload-artifact@v4
         with:
-          name: kivanc-shard-${{ matrix.shard }}
-          path: artifacts/kivanc-shards/results-shard-${{ matrix.shard }}.json
+          name: strategy-shard-${{ env.TIMEFRAME }}-${{ matrix.shard }}
+          path: artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json
           if-no-files-found: error
           retention-days: 30
 
@@ -62,17 +74,25 @@ jobs:
           node-version: '22'
       - uses: actions/download-artifact@v4
         with:
-          pattern: kivanc-shard-*
-          path: artifacts/kivanc-shards
+          pattern: strategy-shard-${{ env.TIMEFRAME }}-*
+          path: artifacts/strategy-shards
           merge-multiple: true
-      - run: node scripts/combine-kivanc-shards.mjs artifacts/kivanc-shards artifacts/kivanc-final
+      - name: Combine strategy results
+        run: |
+          node scripts/combine-kivanc-shards.mjs \
+            artifacts/strategy-shards \
+            artifacts/strategy-final \
+            $TIMEFRAME
       - name: Build profitability-first opportunity board
-        run: node scripts/build-opportunity-board.mjs artifacts/kivanc-final/KIVANC_TOP5_90D_1H.json artifacts/opportunity-board
+        run: |
+          node scripts/build-opportunity-board.mjs \
+            artifacts/strategy-final/STRATEGY_SELECTOR_90D_1H.json \
+            artifacts/opportunity-board
       - uses: actions/upload-artifact@v4
         with:
-          name: strategy-selector-universe-90d-1h-final
+          name: strategy-selector-universe-90d-${{ env.TIMEFRAME }}-final
           path: |
-            artifacts/kivanc-final/
+            artifacts/strategy-final/
             artifacts/opportunity-board/
           if-no-files-found: error
           retention-days: 30
