@@ -22,7 +22,7 @@ function synthetic(count=720) {
 test('generic strategy engine exposes implemented catalog',()=>{
   assert.deepEqual(
     STRATEGIES.map(x=>x.id),
-    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad']
+    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad','chandelier_zlsma']
   );
   assert.equal(new Set(STRATEGIES.map(x=>x.id)).size,STRATEGIES.length);
 });
@@ -73,4 +73,14 @@ test('UT Bot QuantNomad adapter is deterministic and active',()=>{
   assert.deepEqual(a,b);
   assert.ok(a.n>0);
   for(const k of ['net','dd','exp','sh','net15','net6']) assert.ok(Number.isFinite(a[k]),k);
+});
+
+test('Chandelier ZLSMA uses target-position execution and remains finite',()=>{
+  const candles=synthetic(1800);
+  const start=candles[0].t;
+  const end=candles.at(-1).t+3600000;
+  const r=evaluateStrategies(candles,{start,end}).find(x=>x.id==='chandelier_zlsma');
+  assert.ok(r);
+  assert.equal(r.mode,'TARGET_POSITION');
+  for(const k of ['net','dd','exp','sh','net15','net6']) assert.ok(Number.isFinite(r[k]),k);
 });
