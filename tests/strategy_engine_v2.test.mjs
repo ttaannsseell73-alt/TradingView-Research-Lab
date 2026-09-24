@@ -22,7 +22,7 @@ function synthetic(count=720) {
 test('generic strategy engine exposes implemented catalog',()=>{
   assert.deepEqual(
     STRATEGIES.map(x=>x.id),
-    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip']
+    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip']
   );
   assert.equal(new Set(STRATEGIES.map(x=>x.id)).size,STRATEGIES.length);
 });
@@ -50,4 +50,15 @@ test('SSL Hybrid flip adapter generates both directions on regime changes',()=>{
   const ssl=evaluateStrategies(candles,{start,end}).find(x=>x.id==='ssl_hybrid_flip');
   assert.ok(ssl);
   assert.ok(ssl.n>=2);
+});
+
+test('SSL Hybrid QQE adapter is present and deterministic',()=>{
+  const candles=synthetic();
+  const start=candles[0].t;
+  const end=candles.at(-1).t+3600000;
+  const a=evaluateStrategies(candles,{start,end}).find(x=>x.id==='ssl_hybrid_qqe_flip');
+  const b=evaluateStrategies(candles,{start,end}).find(x=>x.id==='ssl_hybrid_qqe_flip');
+  assert.ok(a);
+  assert.deepEqual(a,b);
+  for(const k of ['net','dd','exp','sh','net15','net6']) assert.ok(Number.isFinite(a[k]),k);
 });
