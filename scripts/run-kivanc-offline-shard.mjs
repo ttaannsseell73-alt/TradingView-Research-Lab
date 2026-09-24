@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { evaluateStrategies } from '../research/strategy_engine_v2.mjs';
 
 const shard = Number(process.argv[2]);
 const dataDir = process.argv[3];
@@ -8,7 +9,6 @@ if (!Number.isInteger(shard) || !dataDir || !outFile) {
   console.error('Usage: node scripts/run-kivanc-offline-shard.mjs SHARD DATA_DIR OUT.json');
   process.exit(2);
 }
-eval(fs.readFileSync('research/kivanc_chunk_engine.js.txt', 'utf8'));
 const START = Date.parse('2026-06-24T00:00:00Z');
 const END = Date.parse('2026-09-24T00:00:00Z');
 const expected = Math.round((END - START) / 3600000);
@@ -30,7 +30,7 @@ for (const name of fs.readdirSync(dataDir).filter(x => x.endsWith('.csv')).sort(
     failures.push({symbol, reason:'PARTIAL_COVERAGE', candles:candles.length, expected});
     continue;
   }
-  for (const r of globalThis.kivancEvaluate(candles, 0.0014)) {
+  for (const r of evaluateStrategies(candles, {cost:0.0014, stressCost:0.0015, lowCost:0.0006, start:START, end:END})) {
     results.push({symbol, timeframe:'1h', candles:candles.length, coverage:candles.length/expected, ...r});
   }
 }
