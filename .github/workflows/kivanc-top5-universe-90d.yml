@@ -1,0 +1,38 @@
+name: kivanc-top5-universe-90d
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/kivanc-universe-90d.mjs'
+      - '.github/workflows/kivanc-top5-universe-90d.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: node --check scripts/kivanc-universe-90d.mjs
+      - name: Run Kivanc top-5 universe research
+        env:
+          START_DATE: '2026-06-24T00:00:00Z'
+          END_DATE: '2026-09-24T00:00:00Z'
+          ROUND_TRIP_COST: '0.0014'
+        run: node scripts/kivanc-universe-90d.mjs
+      - name: Upload research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kivanc-top5-universe-90d-1h
+          path: artifacts/kivanc_top5_90d_1h/
+          if-no-files-found: warn
+          retention-days: 30
