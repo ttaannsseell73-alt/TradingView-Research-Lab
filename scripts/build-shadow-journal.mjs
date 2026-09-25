@@ -232,6 +232,10 @@ export function updateShadowState(current,previous=null,{
   const allEvents=[...(prev.events??[]),...events].slice(-1000);
   const realized=closedTrades.map(x=>Number(x.netReturn??0));
   const unrealized=positions.map(x=>Number(x.unrealizedNetIfClosed??0));
+  const realizedPnl=round(closedTrades.reduce((a,x)=>a+Number(x.pnlPerReferenceNotional??0),0));
+  const unrealizedPnl=round(positions.reduce((a,x)=>a+Number(x.unrealizedPnlPerReferenceNotional??0),0));
+  const closedReferenceNotional=closedTrades.length*prev.referenceNotional;
+  const openReferenceNotional=positions.length*prev.referenceNotional;
   const summary={
     openPositions:positions.length,
     closedTrades:closedTrades.length,
@@ -239,9 +243,13 @@ export function updateShadowState(current,previous=null,{
     losses:realized.filter(x=>x<0).length,
     winRate:realized.length?round(realized.filter(x=>x>0).length/realized.length):0,
     realizedNetReturnSum:round(realized.reduce((a,b)=>a+b,0)),
-    realizedPnlPerReferenceNotionalSum:round(closedTrades.reduce((a,x)=>a+Number(x.pnlPerReferenceNotional??0),0)),
+    realizedPnlPerReferenceNotionalSum:realizedPnl,
+    closedReferenceNotional,
+    realizedReturnOnClosedReference:closedReferenceNotional?round(realizedPnl/closedReferenceNotional):0,
     unrealizedNetReturnSum:round(unrealized.reduce((a,b)=>a+b,0)),
-    unrealizedPnlPerReferenceNotionalSum:round(positions.reduce((a,x)=>a+Number(x.unrealizedPnlPerReferenceNotional??0),0))
+    unrealizedPnlPerReferenceNotionalSum:unrealizedPnl,
+    openReferenceNotional,
+    unrealizedReturnOnOpenReference:openReferenceNotional?round(unrealizedPnl/openReferenceNotional):0
   };
   return {
     schemaVersion:1,
@@ -301,7 +309,25 @@ async function main(){
   fs.mkdirSync(outDir,{recursive:true});
   fs.writeFileSync(path.join(outDir,'SHADOW_STATE.json'),JSON.stringify(state,null,2)+'\n');
   fs.writeFileSync(path.join(outDir,'SHADOW_JOURNAL.md'),renderMd(state));
-  console.log(JSON.stringify(state.summary));
+  console.log(JSON.stringify({
+    summary:state.summary,
+    open:state.positions.map(p=>({
+      underlying:p.underlying,
+      direction:p.direction,
+      contract:p.executionContract,
+      lead:`${p.leadStrategy}/${p.leadTimeframe}`,
+      support:p.supportCount,
+      entryPrice:p.entryPrice,
+      markPrice:p.markPrice??null,
+      netIfClosed:p.unrealizedNetIfClosed??null,
+      pnlRef:p.unrealizedPnlPerReferenceNotional??null,
+      source:p.intentSource
+    })),
+    latestClosed:[...state.closedTrades].slice(-10).map(t=>({
+      underlying:t.underlying,direction:t.direction,reason:t.exitReason,
+      netReturn:t.netReturn,pnlRef:t.pnlPerReferenceNotional
+    }))
+  }));
 }
 
 if(process.argv[1]?.endsWith('build-shadow-journal.mjs')){
