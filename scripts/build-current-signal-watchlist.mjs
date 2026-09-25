@@ -80,12 +80,21 @@ for(const ex of execution.candidates??[]){
     })[0]??null;
     const flags=evidenceFlags(combo);
     const currentBar=series.doc.currentBar??null;
-    const nextBarOpenReady=Boolean(
-      signal?.fresh&&
-      currentBar&&
-      Number.isFinite(Number(currentBar.t))&&
-      Number.isFinite(Number(currentBar.o))&&
-      Number(currentBar.t)===Number(signal.lastClosedBarTime)+intervalMs[timeframe]
+    const signalIndex=signal?.lastSignalTime==null
+      ?-1
+      :series.candles.findIndex(b=>Number(b.t)===Number(signal.lastSignalTime));
+    const closedEntryBar=signalIndex>=0&&signalIndex+1<series.candles.length
+      ?series.candles[signalIndex+1]
+      :null;
+    const openEntryBar=signalIndex===series.candles.length-1&&
+      currentBar&&Number(currentBar.t)===Number(signal.lastClosedBarTime)+intervalMs[timeframe]
+      ?currentBar
+      :null;
+    const canonicalEntryBar=closedEntryBar??openEntryBar;
+    const canonicalEntryReady=Boolean(
+      canonicalEntryBar&&
+      Number.isFinite(Number(canonicalEntryBar.t))&&
+      Number.isFinite(Number(canonicalEntryBar.o))
     );
     rows.push({
       underlying:ex.underlying,
@@ -104,8 +113,10 @@ for(const ex of execution.candidates??[]){
       lastSignalTime:signal?.lastSignalTime??null,
       lastClosedBarTime:signal?.lastClosedBarTime??null,
       barsUsed:signal?.barsUsed??0,
-      nextBarOpen:nextBarOpenReady?Number(currentBar.o):null,
-      nextBarOpenTime:nextBarOpenReady?Number(currentBar.t):null,
+      canonicalEntryPrice:canonicalEntryReady?Number(canonicalEntryBar.o):null,
+      canonicalEntryTime:canonicalEntryReady?Number(canonicalEntryBar.t):null,
+      nextBarOpen:signal?.fresh&&canonicalEntryReady?Number(canonicalEntryBar.o):null,
+      nextBarOpenTime:signal?.fresh&&canonicalEntryReady?Number(canonicalEntryBar.t):null,
       evidence:{net:combo.net,pf:combo.pf,dd:combo.dd,trades:combo.trades},
       market:ex.market??null
     });
@@ -158,12 +169,14 @@ const paperIntents=[...paperIntentMap.entries()].map(([underlying,xs])=>{
     leadStrategy:lead.strategy,
     leadTimeframe:lead.timeframe,
     signalTime:lead.lastSignalTime,
-    entryPrice:lead.nextBarOpen,
-    entryTime:lead.nextBarOpenTime,
-    entryReady:Number.isFinite(lead.nextBarOpen)&&Number.isFinite(lead.nextBarOpenTime),
+    entryPrice:lead.canonicalEntryPrice,
+    entryTime:lead.canonicalEntryTime,
+    entryReady:Number.isFinite(lead.canonicalEntryPrice)&&Number.isFinite(lead.canonicalEntryTime),
     supportingSignals:xs.map(x=>({
       strategy:x.strategy,timeframe:x.timeframe,
       signalTime:x.lastSignalTime,
+      canonicalEntryPrice:x.canonicalEntryPrice,
+      canonicalEntryTime:x.canonicalEntryTime,
       nextBarOpen:x.nextBarOpen,
       nextBarOpenTime:x.nextBarOpenTime,
       evidence:x.evidence,contractTransfer:x.contractTransfer
