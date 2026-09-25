@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Execution-quality classification for Strategy Selector deployment candidates",
+  "principle": "Tradability is an execution gate, not a low-risk investment selector.",
+  "strong": {
+    "minQuoteVolume24h": 20000000,
+    "maxSpreadBps": 3,
+    "minSideDepth10bps": 10000,
+    "minOpenInterestNotional": 10000000
+  },
+  "tradeable": {
+    "minQuoteVolume24h": 3000000,
+    "maxSpreadBps": 8,
+    "minSideDepth10bps": 1000,
+    "minOpenInterestNotional": 2000000
+  },
+  "hardBlock": {
+    "maxSpreadBps": 25,
+    "minQuoteVolume24h": 500000,
+    "minSideDepth10bps": 250,
+    "minOpenInterestNotional": 500000
+  },
+  "contractSelection": [
+    "not hard-blocked",
+    "STRONG before TRADEABLE before REVIEW",
+    "higher minimum 10 bps book-side depth",
+    "higher 24h quote volume",
+    "lower spread"
+  ],
+  "notes": [
+    "Thresholds are deliberately moderate; the system is not searching for zero-risk markets.",
+    "Position sizing must still respect current book depth.",
+    "USDT and USDC contracts of the same underlying are compared at execution time instead of being counted as separate coins."
+  ]
+}
