@@ -1,0 +1,73 @@
+name: strategy-selector-shadow-reconciliation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/shadow_reconciliation.json'
+      - 'scripts/apply-shadow-reconciliation.mjs'
+      - 'scripts/build-shadow-journal.mjs'
+      - '.github/workflows/shadow-reconciliation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: strategy-selector-shadow-reconciliation
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate reconciliation code
+        run: |
+          node --check scripts/build-shadow-journal.mjs
+          node --check scripts/apply-shadow-reconciliation.mjs
+          node --test tests/shadow_journal.test.mjs
+
+      - name: Restore latest shadow state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/shadow-previous
+          STATE_ID=$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=strategy-selector-shadow-state&per_page=100" --jq '.artifacts | map(select(.expired == false)) | sort_by(.created_at) | reverse | .[0].id // empty')
+          if [ -z "$STATE_ID" ]; then
+            echo "No persistent shadow state artifact is available."
+            exit 1
+          fi
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${STATE_ID}/zip" > /tmp/shadow-state.zip
+          unzip -q -o /tmp/shadow-state.zip -d artifacts/shadow-previous
+          test -f artifacts/shadow-previous/SHADOW_STATE.json
+
+      - name: Apply reconciliation
+        run: |
+          node scripts/apply-shadow-reconciliation.mjs \
+            artifacts/shadow-previous/SHADOW_STATE.json \
+            research/shadow_reconciliation.json \
+            artifacts/shadow-reconciliation
+
+      - name: Upload reconciliation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-shadow-reconciliation
+          path: artifacts/shadow-reconciliation/
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Publish persistent reconciled state
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-shadow-state
+          path: artifacts/shadow-reconciliation/SHADOW_STATE.json
+          if-no-files-found: error
+          retention-days: 90
