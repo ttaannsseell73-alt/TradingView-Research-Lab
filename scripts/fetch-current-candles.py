@@ -6,34 +6,37 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
-BASE="https://fapi.binance.com"
+BASES=["https://fapi.binance.com","https://fapi1.binance.com","https://fapi2.binance.com","https://fapi3.binance.com","https://fapi4.binance.com"]
 LIMIT=350
 
-def get_json(path, params=None, retries=4):
-    url=BASE+path
-    if params:
-        url += "?" + urlencode(params)
+def get_json(path, params=None, retries=2):
     last=None
-    for attempt in range(retries):
-        try:
-            req=Request(url, headers={"User-Agent":"TradingView-Research-Lab/1.0"})
-            with urlopen(req, timeout=25) as r:
-                return json.loads(r.read().decode("utf-8"))
-        except HTTPError as e:
+    for base in BASES:
+        url=base+path
+        if params:
+            url += "?" + urlencode(params)
+        for attempt in range(retries):
             try:
-                body=e.read().decode("utf-8","replace")[:300]
-            except Exception:
-                body=""
-            last=RuntimeError(f"HTTP {e.code}: {body}")
-            if attempt+1<retries:
-                retry_after=e.headers.get("Retry-After")
-                wait=float(retry_after) if retry_after and retry_after.replace(".","",1).isdigit() else 2.0*(attempt+1)
-                time.sleep(min(wait,15.0))
-        except Exception as e:
-            last=e
-            if attempt+1<retries:
-                time.sleep(2.0*(attempt+1))
-    raise RuntimeError(f"GET {url} failed: {last}")
+                req=Request(url, headers={"User-Agent":"Mozilla/5.0 TradingView-Research-Lab/1.0","Accept":"application/json"})
+                with urlopen(req, timeout=25) as r:
+                    return json.loads(r.read().decode("utf-8"))
+            except HTTPError as e:
+                try:
+                    body=e.read().decode("utf-8","replace")[:300]
+                except Exception:
+                    body=""
+                last=RuntimeError(f"{base} HTTP {e.code}: {body}")
+                if e.code==451:
+                    break
+                if attempt+1<retries:
+                    retry_after=e.headers.get("Retry-After")
+                    wait=float(retry_after) if retry_after and retry_after.replace(".","",1).isdigit() else 1.5*(attempt+1)
+                    time.sleep(min(wait,8.0))
+            except Exception as e:
+                last=e
+                if attempt+1<retries:
+                    time.sleep(1.5*(attempt+1))
+    raise RuntimeError(f"GET {path} failed across {len(BASES)} futures hosts: {last}")
 
 def main():
     if len(sys.argv)<4:
