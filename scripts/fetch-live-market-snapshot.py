@@ -46,6 +46,29 @@ def depth_notional(levels, mid, side, max_bps):
             total += p*q
     return total
 
+def select_base():
+    global BASES
+    original=list(BASES)
+    diagnostics=[]
+    for base in original:
+        url=base+"/fapi/v1/ping"
+        try:
+            req=Request(url, headers={"User-Agent":"Mozilla/5.0 TradingView-Research-Lab/1.0","Accept":"application/json"})
+            with urlopen(req, timeout=8) as r:
+                json.loads(r.read().decode("utf-8"))
+            BASES=[base]
+            return base, diagnostics
+        except HTTPError as e:
+            try:
+                body=e.read().decode("utf-8","replace")[:240]
+            except Exception:
+                body=""
+            diagnostics.append({"base":base,"error":f"HTTP {e.code}: {body}"})
+        except Exception as e:
+            diagnostics.append({"base":base,"error":str(e)})
+    BASES=original
+    return None, diagnostics
+
 def main():
     if len(sys.argv)<3:
         raise SystemExit("Usage: fetch-live-market-snapshot.py CROSS_BOARD.json OUT.json")
@@ -53,6 +76,24 @@ def main():
     out=Path(sys.argv[2]); out.parent.mkdir(parents=True, exist_ok=True)
     source=board.get("deploymentCandidates") or board.get("managementWatchlist") or []
     symbols=sorted({s for x in source for s in x.get("contracts",[])})
+    active_base,base_diagnostics=select_base()
+    if active_base is None:
+        payload={
+            "schemaVersion":1,
+            "snapshotAt":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "source":"Binance USDⓈ-M Futures public REST",
+            "requestedContracts":len(symbols),
+            "dataAvailable":False,
+            "allFailed":True,
+            "activeBase":None,
+            "baseDiagnostics":base_diagnostics,
+            "contracts":[],
+            "failures":[{"symbol":"*","error":"No Binance Futures REST host reachable from this runner"}]
+        }
+        out.write_text(json.dumps(payload,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+        print(json.dumps({"requested":len(symbols),"ok":0,"failed":len(symbols),"allFailed":True,"activeBase":None,"baseDiagnostics":base_diagnostics[:5]},ensure_ascii=False))
+        return
+
     def fetch_symbol(symbol):
         ticker=get_json("/fapi/v1/ticker/24hr", {"symbol":symbol})
         book=get_json("/fapi/v1/depth", {"symbol":symbol,"limit":50})
@@ -95,6 +136,8 @@ def main():
         "schemaVersion":1,
         "snapshotAt":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "source":"Binance USDⓈ-M Futures public REST",
+        "activeBase":active_base,
+        "baseDiagnostics":base_diagnostics,
         "requestedContracts":len(symbols),
         "dataAvailable":len(rows)>0,
         "allFailed":len(symbols)>0 and len(rows)==0,
@@ -105,7 +148,7 @@ def main():
     print(json.dumps({
         "requested":len(symbols),"ok":len(rows),"failed":len(failures),
         "allFailed":len(symbols)>0 and len(rows)==0,
-        "failureSample":failures[:3]
+        "activeBase":active_base,"failureSample":failures[:3]
     },ensure_ascii=False))
     if not rows:
         print("Market snapshot unavailable; downstream will carry forward previous shadow state.",file=sys.stderr)
