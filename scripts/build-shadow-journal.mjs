@@ -114,7 +114,7 @@ export function updateShadowState(current,previous=null,{
       market:lead.market
     });
   }
-  const freshByUnder=new Map(freshIntents.map(x=>[x.underlying,{...x,source:'FRESH'}]));
+  const freshByUnder=new Map(freshIntents.map(x=>[x.underlying,{...x,source:x.source??'FRESH'}]));
   for(const x of catchupIntents){
     if(!freshByUnder.has(x.underlying)) freshByUnder.set(x.underlying,x);
   }
@@ -210,7 +210,19 @@ export function updateShadowState(current,previous=null,{
     if(intent&&intent.direction!==pos.direction&&finite(intent.entryPrice)&&finite(intent.entryTime)){
       closePosition(pos,intent.entryPrice,intent.entryTime,'REVERSE_SIGNAL');
       const np=openFromIntent(intent);
-      if(np) positions.push(np);
+      if(np){
+        const reverseMark=pxOfMarket(intent.market??market);
+        if(finite(reverseMark)){
+          const gross=grossReturn(np.direction,np.entryPrice,reverseMark);
+          const net=gross-prev.modeledRoundTripCost;
+          np.markPrice=Number(reverseMark);
+          np.markTime=nowMs;
+          np.unrealizedGrossReturn=round(gross);
+          np.unrealizedNetIfClosed=round(net);
+          np.unrealizedPnlPerReferenceNotional=round(net*prev.referenceNotional);
+        }
+        positions.push(np);
+      }
       handled.add(pos.underlying);
       continue;
     }
