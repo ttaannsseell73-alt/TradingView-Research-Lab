@@ -198,6 +198,7 @@ const out={
   schemaVersion:1,
   generatedAt:new Date().toISOString(),
   snapshotAtMs:manifest.snapshotAtMs??null,
+  dataAvailable:execution.marketDataAvailable!==false&&manifest.dataAvailable!==false&&(manifest.series??[]).length>0,
   semantics:{
     candle:'confirmed closed candle only',
     execution:'signal on closed candle; next-bar-open remains canonical execution assumption',
