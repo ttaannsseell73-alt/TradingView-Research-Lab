@@ -79,6 +79,14 @@ for(const ex of execution.candidates??[]){
       strategyIds:[strategy]
     })[0]??null;
     const flags=evidenceFlags(combo);
+    const currentBar=series.doc.currentBar??null;
+    const nextBarOpenReady=Boolean(
+      signal?.fresh&&
+      currentBar&&
+      Number.isFinite(Number(currentBar.t))&&
+      Number.isFinite(Number(currentBar.o))&&
+      Number(currentBar.t)===Number(signal.lastClosedBarTime)+intervalMs[timeframe]
+    );
     rows.push({
       underlying:ex.underlying,
       executionContract,
@@ -96,6 +104,8 @@ for(const ex of execution.candidates??[]){
       lastSignalTime:signal?.lastSignalTime??null,
       lastClosedBarTime:signal?.lastClosedBarTime??null,
       barsUsed:signal?.barsUsed??0,
+      nextBarOpen:nextBarOpenReady?Number(currentBar.o):null,
+      nextBarOpenTime:nextBarOpenReady?Number(currentBar.t):null,
       evidence:{net:combo.net,pf:combo.pf,dd:combo.dd,trades:combo.trades},
       market:ex.market??null
     });
@@ -147,13 +157,20 @@ const paperIntents=[...paperIntentMap.entries()].map(([underlying,xs])=>{
     supportCount:xs.length,
     leadStrategy:lead.strategy,
     leadTimeframe:lead.timeframe,
+    signalTime:lead.lastSignalTime,
+    entryPrice:lead.nextBarOpen,
+    entryTime:lead.nextBarOpenTime,
+    entryReady:Number.isFinite(lead.nextBarOpen)&&Number.isFinite(lead.nextBarOpenTime),
     supportingSignals:xs.map(x=>({
       strategy:x.strategy,timeframe:x.timeframe,
+      signalTime:x.lastSignalTime,
+      nextBarOpen:x.nextBarOpen,
+      nextBarOpenTime:x.nextBarOpenTime,
       evidence:x.evidence,contractTransfer:x.contractTransfer
     })),
     market:lead.market
   };
-}).filter(Boolean).sort((a,b)=>
+}).filter(x=>x&&x.entryReady).sort((a,b)=>
   b.supportCount-a.supportCount||
   (rank[b.executionStatus]??-9)-(rank[a.executionStatus]??-9)||
   Number(b.supportingSignals?.[0]?.evidence?.trades??0)-Number(a.supportingSignals?.[0]?.evidence?.trades??0)
