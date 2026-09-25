@@ -36,6 +36,28 @@ export function updateShadowState(current,previous=null,{
   prev.referenceNotional=Number(prev.referenceNotional??referenceNotional);
   prev.modeledRoundTripCost=Number(prev.modeledRoundTripCost??roundTripCost);
 
+  if(current?.dataAvailable===false){
+    const carried=previous&&previous.schemaVersion===1?structuredClone(previous):{
+      ...prev,
+      snapshotAtMs:null,
+      summary:{
+        openPositions:0,closedTrades:0,wins:0,losses:0,winRate:0,
+        realizedNetReturnSum:0,realizedPnlPerReferenceNotionalSum:0,
+        closedReferenceNotional:0,realizedReturnOnClosedReference:0,
+        unrealizedNetReturnSum:0,unrealizedPnlPerReferenceNotionalSum:0,
+        openReferenceNotional:0,unrealizedReturnOnOpenReference:0
+      }
+    };
+    carried.lastAttemptAt=new Date(nowMs).toISOString();
+    carried.lastAttemptStatus='MARKET_DATA_UNAVAILABLE';
+    carried.events=[...(carried.events??[]),{
+      type:'DATA_UNAVAILABLE',
+      at:nowMs,
+      reason:'MARKET_OR_CANDLE_DATA_UNAVAILABLE'
+    }].slice(-1000);
+    return carried;
+  }
+
   const rows=current?.rows??[];
   const freshIntents=current?.paperIntents??[];
   const previousSnapshot=previous&&finite(previous.snapshotAtMs)?Number(previous.snapshotAtMs):null;
