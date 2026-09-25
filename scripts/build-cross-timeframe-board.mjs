@@ -25,6 +25,7 @@ const median=xs=>{
   return a.length%2?a[m]:(a[m-1]+a[m])/2;
 };
 const unique=xs=>[...new Set(xs)];
+const underlyingOf=s=>String(s??'').replace(/(USDT|USDC)$/,'');
 const reviewFlags=r=>{
   const f=[];
   if(r.n<(r.minTradesRequired??minTrades[r.timeframe]??20)) f.push('LOW_SAMPLE');
@@ -54,10 +55,20 @@ for(const r of candidates){
 }
 const top5ByStrategyTimeframe=[...groupMap.entries()].map(([key,xs])=>{
   const [strategy,timeframe]=key.split('::');
+  const seen=new Set();
+  const dedup=[];
+  for(const r of [...xs].sort((a,b)=>b.net-a.net)){
+    const underlying=underlyingOf(r.symbol);
+    if(seen.has(underlying)) continue;
+    seen.add(underlying);
+    dedup.push(r);
+    if(dedup.length===5) break;
+  }
   return {
     strategy,timeframe,
-    top5:[...xs].sort((a,b)=>b.net-a.net).slice(0,5).map(r=>({
-      symbol:r.symbol,net:r.net,pf:r.pf,dd:r.dd,trades:r.n,
+    top5:dedup.map(r=>({
+      underlying:underlyingOf(r.symbol),researchContract:r.symbol,
+      net:r.net,pf:r.pf,dd:r.dd,trades:r.n,
       evidencePass:r.pass,positiveSegments:r.posseg,reviewFlags:r.reviewFlags
     }))
   };
@@ -99,22 +110,71 @@ const coinMatrix=[...bySymbol.entries()].map(([symbol,xs])=>{
   };
 });
 
+
+const byUnderlying=new Map();
+for(const r of candidates){
+  const underlying=underlyingOf(r.symbol);
+  if(!byUnderlying.has(underlying)) byUnderlying.set(underlying,[]);
+  byUnderlying.get(underlying).push(r);
+}
+const dedupBest=xs=>{
+  const m=new Map();
+  for(const r of xs){
+    const k=`${r.id}::${r.timeframe}`;
+    const prev=m.get(k);
+    if(!prev||r.net>prev.net) m.set(k,r);
+  }
+  return [...m.values()];
+};
+const underlyingMatrix=[...byUnderlying.entries()].map(([underlying,xs])=>{
+  const contracts=unique(xs.map(x=>x.symbol)).sort();
+  const ev=dedupBest(xs.filter(x=>x.pass));
+  const ranked=dedupBest(xs);
+  const families=unique(ev.map(x=>x.family));
+  const strategies=unique(ev.map(x=>x.id));
+  const timeframes=unique(ev.map(x=>x.timeframe)).sort((a,b)=>tfOrder[a]-tfOrder[b]);
+  const clean=ev.filter(x=>x.dd<=0.40&&x.pf>=1.20&&x.net>0.10);
+  return {
+    underlying,
+    contracts,
+    evidenceCombinations:ev.length,
+    evidenceTimeframes:timeframes,
+    evidenceTimeframeCount:timeframes.length,
+    evidenceStrategies:strategies,
+    evidenceStrategyCount:strategies.length,
+    evidenceFamilies:families,
+    evidenceFamilyCount:families.length,
+    cleanCombinations:clean.length,
+    bestNet:ranked.length?Math.max(...ranked.map(x=>x.net)):null,
+    bestEvidenceNet:ev.length?Math.max(...ev.map(x=>x.net)):null,
+    medianEvidenceNet:ev.length?median(ev.map(x=>x.net)):null,
+    medianEvidenceDD:ev.length?median(ev.map(x=>x.dd)):null,
+    maxEvidenceDD:ev.length?Math.max(...ev.map(x=>x.dd)):null,
+    bestClean:clean.length?[...clean].sort((a,b)=>b.net-a.net).slice(0,5).map(r=>({
+      contract:r.symbol,strategy:r.id,timeframe:r.timeframe,net:r.net,pf:r.pf,dd:r.dd,trades:r.n
+    })):[],
+    allTop:[...ranked].sort((a,b)=>b.net-a.net).slice(0,8).map(r=>({
+      contract:r.symbol,strategy:r.id,timeframe:r.timeframe,net:r.net,pf:r.pf,dd:r.dd,trades:r.n,
+      evidencePass:r.pass,reviewFlags:r.reviewFlags
+    }))
+  };
+});
 // Management view: breadth first, then clean combinations, then profit.
 // This is secondary to the pure profitability Top-5.
-coinMatrix.sort((a,b)=>
+underlyingMatrix.sort((a,b)=>
   b.evidenceTimeframeCount-a.evidenceTimeframeCount||
   b.evidenceFamilyCount-a.evidenceFamilyCount||
   b.cleanCombinations-a.cleanCombinations||
   (b.bestEvidenceNet??-Infinity)-(a.bestEvidenceNet??-Infinity)
 );
 
-const managementWatchlist=coinMatrix.filter(x=>
+const managementWatchlist=underlyingMatrix.filter(x=>
   x.evidenceTimeframeCount>=2&&
   x.evidenceFamilyCount>=2&&
   x.cleanCombinations>=2
 ).slice(0,50);
 
-const deploymentCandidates=coinMatrix.filter(x=>
+const deploymentCandidates=underlyingMatrix.filter(x=>
   x.evidenceTimeframeCount>=3&&
   x.evidenceFamilyCount>=2&&
   x.cleanCombinations>=4&&
@@ -160,14 +220,16 @@ const out={
     combinations:normalized.length,
     rankable:candidates.length,
     evidencePass:evidence.length,
-    symbols:unique(normalized.map(r=>r.symbol)).length
+    contracts:unique(normalized.map(r=>r.symbol)).length,
+    underlyings:unique(normalized.map(r=>underlyingOf(r.symbol))).length
   },
   timeframeSummary,
   top5ByStrategyTimeframe,
   managementWatchlist,
   deploymentCandidates,
   highProfitReview,
-  coinMatrix
+  underlyingMatrix,
+  contractMatrix:coinMatrix
 };
 
 fs.mkdirSync(outDir,{recursive:true});
@@ -188,16 +250,16 @@ for(const t of timeframeSummary){
   lines.push(`| ${t.timeframe} | ${t.evidencePasses} | ${best?.strategy??''} (${pc(best?.passRate)}) |`);
 }
 lines.push('','## Management watchlist','',
-  '| # | Coin | TF count | Families | Evidence combos | Clean combos | Best evidence net | Median DD |',
+  '| # | Underlying | TF count | Families | Evidence combos | Clean combos | Best evidence net | Median DD |',
   '|---:|---|---:|---:|---:|---:|---:|---:|');
 managementWatchlist.slice(0,30).forEach((x,i)=>lines.push(
-  `| ${i+1} | ${x.symbol} | ${x.evidenceTimeframeCount} | ${x.evidenceFamilyCount} | ${x.evidenceCombinations} | ${x.cleanCombinations} | ${pc(x.bestEvidenceNet)} | ${pc(x.medianEvidenceDD)} |`
+  `| ${i+1} | ${x.underlying} | ${x.evidenceTimeframeCount} | ${x.evidenceFamilyCount} | ${x.evidenceCombinations} | ${x.cleanCombinations} | ${pc(x.bestEvidenceNet)} | ${pc(x.medianEvidenceDD)} |`
 ));
 lines.push('','## Deployment candidates','',
-  '| # | Coin | TF count | Families | Evidence combos | Clean combos | Best evidence net | Median DD |',
+  '| # | Underlying | TF count | Families | Evidence combos | Clean combos | Best evidence net | Median DD |',
   '|---:|---|---:|---:|---:|---:|---:|---:|');
 deploymentCandidates.slice(0,30).forEach((x,i)=>lines.push(
-  `| ${i+1} | ${x.symbol} | ${x.evidenceTimeframeCount} | ${x.evidenceFamilyCount} | ${x.evidenceCombinations} | ${x.cleanCombinations} | ${pc(x.bestEvidenceNet)} | ${pc(x.medianEvidenceDD)} |`
+  `| ${i+1} | ${x.underlying} | ${x.evidenceTimeframeCount} | ${x.evidenceFamilyCount} | ${x.evidenceCombinations} | ${x.cleanCombinations} | ${pc(x.bestEvidenceNet)} | ${pc(x.medianEvidenceDD)} |`
 ));
 lines.push('','## Highest-profit REVIEW cases','',
   '| # | Coin | Strategy | TF | Net | PF | DD | Trades | Flags |',
