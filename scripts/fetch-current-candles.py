@@ -38,12 +38,36 @@ def get_json(path, params=None, retries=2):
                     time.sleep(1.5*(attempt+1))
     raise RuntimeError(f"GET {path} failed across {len(BASES)} futures hosts: {last}")
 
+def select_base():
+    global BASES
+    original=list(BASES)
+    diagnostics=[]
+    for base in original:
+        url=base+"/fapi/v1/ping"
+        try:
+            req=Request(url, headers={"User-Agent":"Mozilla/5.0 TradingView-Research-Lab/1.0","Accept":"application/json"})
+            with urlopen(req, timeout=8) as r:
+                json.loads(r.read().decode("utf-8"))
+            BASES=[base]
+            return base, diagnostics
+        except HTTPError as e:
+            try:
+                body=e.read().decode("utf-8","replace")[:240]
+            except Exception:
+                body=""
+            diagnostics.append({"base":base,"error":f"HTTP {e.code}: {body}"})
+        except Exception as e:
+            diagnostics.append({"base":base,"error":str(e)})
+    BASES=original
+    return None, diagnostics
+
 def main():
     if len(sys.argv)<4:
         raise SystemExit("Usage: fetch-current-candles.py CROSS_BOARD.json EXECUTION_WATCHLIST.json OUT_DIR")
     board=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     execution=json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
     out=Path(sys.argv[3]); out.mkdir(parents=True,exist_ok=True)
+    active_base,base_diagnostics=select_base()
     by_under={x.get("underlying"):x for x in (board.get("deploymentCandidates") or board.get("managementWatchlist") or [])}
     requests=set()
     for x in execution.get("candidates",[]):
@@ -80,6 +104,8 @@ def main():
         return symbol,tf,closed,current_bar
 
     reqs=sorted(requests)
+    if active_base is None:
+        reqs=[]
     workers=max(1,min(4,len(reqs)))
     with ThreadPoolExecutor(max_workers=workers) as pool:
         future_map={pool.submit(fetch_series,symbol,tf):(symbol,tf) for symbol,tf in reqs}
@@ -102,12 +128,14 @@ def main():
     failures.sort(key=lambda x:(x["symbol"],x["timeframe"]))
     (out/"manifest.json").write_text(json.dumps({
         "schemaVersion":1,"snapshotAtMs":now_ms,"requested":len(requests),
+        "activeBase":active_base,"baseDiagnostics":base_diagnostics,
         "dataAvailable":len(manifest)>0,
         "series":manifest,"failures":failures
     },indent=2)+"\n",encoding="utf-8")
     print(json.dumps({
         "requested":len(requests),"ok":len(manifest),"failed":len(failures),
         "dataAvailable":len(manifest)>0,
+        "activeBase":active_base,
         "failureSample":failures[:3]
     },ensure_ascii=False))
     if not manifest:
