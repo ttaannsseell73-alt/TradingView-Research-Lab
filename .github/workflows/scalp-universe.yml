@@ -1,0 +1,129 @@
+name: scalp-universe
+
+on:
+  workflow_dispatch:
+    inputs:
+      bars_1m:
+        description: "1m candles per symbol"
+        required: false
+        default: "10000"
+      bars_5m:
+        description: "5m candles per symbol"
+        required: false
+        default: "3000"
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Discover current Binance USD-M USDT perpetual universe
+        run: node scripts/discover-binance-futures-universe.mjs artifacts/scalp-universe/universe.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scalp-universe-symbols
+          path: artifacts/scalp-universe/universe.json
+
+  shard:
+    needs: discover
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        shard:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          - 13
+          - 14
+          - 15
+          - 16
+          - 17
+          - 18
+          - 19
+          - 20
+          - 21
+          - 22
+          - 23
+          - 24
+          - 25
+          - 26
+          - 27
+          - 28
+          - 29
+          - 30
+          - 31
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: scalp-universe-symbols
+          path: artifacts/scalp-universe
+      - name: Run coin x system x direction shard
+        run: >
+          node scripts/run-scalp-universe-shard.mjs
+          artifacts/scalp-universe/universe.json
+          ${{ matrix.shard }}
+          32
+          ${{ inputs.bars_1m }}
+          ${{ inputs.bars_5m }}
+          artifacts/scalp-universe/shard-${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scalp-universe-shard-${{ matrix.shard }}
+          path: artifacts/scalp-universe/shard-${{ matrix.shard }}
+          if-no-files-found: warn
+
+  aggregate:
+    if: always()
+    needs:
+      - discover
+      - shard
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: scalp-universe-shard-*
+          path: artifacts/scalp-universe
+          merge-multiple: true
+      - name: Aggregate universe reports
+        run: >
+          node scripts/aggregate-scalp-universe.mjs
+          artifacts/scalp-universe
+          artifacts/scalp-universe-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scalp-universe-report
+          path: artifacts/scalp-universe-report
