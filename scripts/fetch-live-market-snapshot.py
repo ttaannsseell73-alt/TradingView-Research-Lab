@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
 BASE="https://fapi.binance.com"
 
@@ -17,10 +18,20 @@ def get_json(path, params=None, retries=4):
             req=Request(url, headers={"User-Agent":"TradingView-Research-Lab/1.0"})
             with urlopen(req, timeout=20) as r:
                 return json.loads(r.read().decode("utf-8"))
+        except HTTPError as e:
+            try:
+                body=e.read().decode("utf-8","replace")[:300]
+            except Exception:
+                body=""
+            last=RuntimeError(f"HTTP {e.code}: {body}")
+            if attempt+1<retries:
+                retry_after=e.headers.get("Retry-After")
+                wait=float(retry_after) if retry_after and retry_after.replace(".","",1).isdigit() else 2.0*(attempt+1)
+                time.sleep(min(wait,15.0))
         except Exception as e:
             last=e
             if attempt+1<retries:
-                time.sleep(1.5*(attempt+1))
+                time.sleep(2.0*(attempt+1))
     raise RuntimeError(f"GET {url} failed: {last}")
 
 def depth_notional(levels, mid, side, max_bps):
@@ -66,7 +77,7 @@ def main():
 
     rows=[]
     failures=[]
-    workers=max(1,min(6,len(symbols)))
+    workers=max(1,min(3,len(symbols)))
     with ThreadPoolExecutor(max_workers=workers) as pool:
         future_map={pool.submit(fetch_symbol,symbol):symbol for symbol in symbols}
         for future in as_completed(future_map):
@@ -82,13 +93,19 @@ def main():
         "snapshotAt":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "source":"Binance USDⓈ-M Futures public REST",
         "requestedContracts":len(symbols),
+        "dataAvailable":len(rows)>0,
+        "allFailed":len(symbols)>0 and len(rows)==0,
         "contracts":rows,
         "failures":failures
     }
     out.write_text(json.dumps(payload,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
-    print(json.dumps({"requested":len(symbols),"ok":len(rows),"failed":len(failures)}))
+    print(json.dumps({
+        "requested":len(symbols),"ok":len(rows),"failed":len(failures),
+        "allFailed":len(symbols)>0 and len(rows)==0,
+        "failureSample":failures[:3]
+    },ensure_ascii=False))
     if not rows:
-        raise SystemExit("No market snapshot rows fetched")
+        print("Market snapshot unavailable; downstream will carry forward previous shadow state.",file=sys.stderr)
 
 if __name__=="__main__":
     main()
