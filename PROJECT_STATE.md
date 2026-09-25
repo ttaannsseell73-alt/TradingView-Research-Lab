@@ -60,3 +60,51 @@ Kıvanç's five strategies are the first implemented pack. The program is now au
 Primary product output is a profitability-first **Top-5 per strategy/timeframe** plus a cross-strategy Opportunity Board. Risk metrics are surfaced for decision-making; they are not used to redefine the objective as a zero-risk search.
 
 Main `binance-bot` remains untouched until explicit promotion.
+
+
+## Canonical multi-timeframe checkpoint — 2026-09-25
+
+Completed evidence run: `35999372964` — SUCCESS.
+
+Scope:
+- 559 comparable Binance USDⓈ-M Futures symbols.
+- 9 implemented strategy adapters.
+- 5m / 1h / 4h / 1d.
+- 20,124 strategy × coin × timeframe combinations.
+- Cost-aware: 14 bps canonical round-trip, 15 bps stress.
+- Closed candle -> next-bar-open execution.
+- REVERSAL and TARGET_POSITION execution modes.
+- Indicator warm-up separated from the 90-day trade window.
+
+Evidence PASS totals:
+- 5m: 185 / 5,031 combinations.
+- 1h: 961 / 5,031 combinations.
+- 4h: 1,006 / 5,031 combinations.
+- 1d: 519 / 5,031 combinations.
+
+Broadest strategy by PASS rate per timeframe:
+- 5m: TOTT (~21.65%).
+- 1h: MavilimW (~35.78%).
+- 4h: SSL Hybrid + QQE (~40.43%).
+- 1d: UT Bot QuantNomad (~29.87%).
+
+Interpretation:
+- 4h currently has the broadest evidence surface.
+- 1h remains a strong secondary operating timeframe.
+- 5m is strongly cost-sensitive and useful only on selected strategy/coin matches.
+- 1d is sparse and should be treated as confirmation / lower-frequency evidence, not directly compared with intraday trade counts.
+
+Cross-timeframe management layer:
+- Profitability-first Top-5 remains canonical.
+- A separate management/deployment layer now rewards evidence repeated across multiple timeframes and independent strategy families.
+- High-return/high-drawdown cases remain visible as REVIEW instead of being hidden.
+- Current recurring evidence candidates include 1000BONK, UNI, ZEC, ALCH, RVN, AAVE, ARB, BICO and MINA families; this is a research shortlist, not an automatic live order list.
+
+Next promotion gate:
+1. Cross-timeframe board.
+2. Tradability/liquidity check.
+3. Current-signal check.
+4. Paper/shadow management.
+5. Only then small-capital real execution.
+
+Main `binance-bot` remains untouched until explicit promotion.
