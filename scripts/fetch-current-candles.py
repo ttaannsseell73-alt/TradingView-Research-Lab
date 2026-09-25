@@ -47,9 +47,15 @@ def main():
         try:
             raw=get_json("/fapi/v1/klines",{"symbol":symbol,"interval":tf,"limit":LIMIT})
             closed=[]
+            current_bar=None
             for k in raw:
                 open_t=int(k[0]); close_t=int(k[6])
                 if close_t >= now_ms:
+                    current_bar={
+                        "t":open_t,
+                        "o":float(k[1]),"h":float(k[2]),"l":float(k[3]),"c":float(k[4]),"v":float(k[5]),
+                        "closeTime":close_t
+                    }
                     continue
                 closed.append({
                     "t":open_t,
@@ -57,8 +63,14 @@ def main():
                     "closeTime":close_t
                 })
             p=out/f"{symbol}__{tf}.json"
-            p.write_text(json.dumps({"symbol":symbol,"timeframe":tf,"snapshotAtMs":now_ms,"candles":closed},separators=(",",":"))+"\n",encoding="utf-8")
-            manifest.append({"symbol":symbol,"timeframe":tf,"bars":len(closed),"path":p.name})
+            p.write_text(json.dumps({
+                "symbol":symbol,"timeframe":tf,"snapshotAtMs":now_ms,
+                "candles":closed,"currentBar":current_bar
+            },separators=(",",":"))+"\n",encoding="utf-8")
+            manifest.append({
+                "symbol":symbol,"timeframe":tf,"bars":len(closed),
+                "hasCurrentBar":current_bar is not None,"path":p.name
+            })
         except Exception as e:
             failures.append({"symbol":symbol,"timeframe":tf,"error":str(e)})
         if i%10==0:
