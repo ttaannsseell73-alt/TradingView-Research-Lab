@@ -67,7 +67,7 @@ for(const ex of execution.candidates??[]){
         executionStatus:ex.executionStatus,
         evidenceContract:combo.contract,
         strategy,timeframe,
-        status:'NO_CANDLES',
+        status:['BLOCK','NO_MARKET_SNAPSHOT'].includes(ex.executionStatus)?'BLOCKED':'NO_CANDLES',
         evidence:{net:combo.net,pf:combo.pf,dd:combo.dd,trades:combo.trades}
       });
       continue;
