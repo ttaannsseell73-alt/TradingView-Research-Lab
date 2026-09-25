@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { STRATEGIES, evaluateStrategies } from '../research/strategy_engine_v2.mjs';
+import { STRATEGIES, evaluateStrategies, evaluateCurrentSignals } from '../research/strategy_engine_v2.mjs';
 
 function synthetic(count=720) {
   const out=[];
@@ -83,4 +83,37 @@ test('Chandelier ZLSMA uses target-position execution and remains finite',()=>{
   assert.ok(r);
   assert.equal(r.mode,'TARGET_POSITION');
   for(const k of ['net','dd','exp','sh','net15','net6']) assert.ok(Number.isFinite(r[k]),k);
+});
+
+
+test('current signal state is deterministic and closed-candle only',()=>{
+  const candles=synthetic(900);
+  const intervalMs=3600000;
+  const last=candles.at(-1);
+  const asOf=last.t+Math.floor(intervalMs/2); // final candle is still open
+  const a=evaluateCurrentSignals(candles,{asOf,intervalMs});
+  const b=evaluateCurrentSignals(candles.slice(0,-1),{asOf,intervalMs});
+  assert.deepEqual(a,b);
+  assert.equal(a.length,STRATEGIES.length);
+  for(const r of a){
+    assert.ok(['LONG','SHORT','FLAT'].includes(r.direction));
+    assert.ok(['ENTER_LONG','ENTER_SHORT','HOLD_LONG','HOLD_SHORT','EXIT_TO_FLAT','FLAT'].includes(r.action));
+    assert.equal(r.lastClosedBarTime,candles.at(-2).t);
+    assert.ok(r.signalAgeBars===null||Number.isInteger(r.signalAgeBars));
+  }
+});
+
+test('current signal supports strategy filtering and target-position flat state',()=>{
+  const candles=synthetic(1800);
+  const asOf=candles.at(-1).t+3600000;
+  const r=evaluateCurrentSignals(candles,{
+    asOf,
+    intervalMs:3600000,
+    strategyIds:['chandelier_zlsma']
+  });
+  assert.equal(r.length,1);
+  assert.equal(r[0].id,'chandelier_zlsma');
+  assert.equal(r[0].mode,'TARGET_POSITION');
+  assert.ok(['LONG','SHORT','FLAT'].includes(r[0].direction));
+  assert.ok(Number.isInteger(r[0].barsUsed)&&r[0].barsUsed>0);
 });
