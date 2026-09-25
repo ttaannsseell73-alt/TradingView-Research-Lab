@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-25T22:23:00Z",
+  "purpose": "Canonical scalp v1 historical smoke baseline; diagnostic only, not promotion evidence.",
+  "source": "data.binance.vision",
+  "barsPerSymbol": {
+    "oneMinute": 10000,
+    "fiveMinute": 3000
+  },
+  "assumptions": {
+    "leverage": 5,
+    "feePctPerSide": 0.04,
+    "slippagePctPerSide": 0.02,
+    "estimatedRoundTripCostRoePct": 0.6,
+    "activationNetRoePct": 1,
+    "hardRealiseNetRoePct": 5,
+    "stopNetRoePct": -2.5,
+    "maxHoldBars": 12
+  },
+  "status": "NO_PROMOTABLE_SETUP",
+  "symbols": {
+    "BTCUSDT": [
+      {
+        "setup": "breakout_retest",
+        "trades": 112,
+        "expectancyNetRoePct": -0.4902972377,
+        "profitFactor": 0.339392872,
+        "netPct": -42.76879009,
+        "maxDrawdownPct": 44.86639785,
+        "holdoutPF": 0.2680030097,
+        "holdoutNetPct": -13.09520787,
+        "winRate": 0.2142857143,
+        "status": "REJECT"
+      },
+      {
+        "setup": "bos_choch",
+        "trades": 534,
+        "expectancyNetRoePct": -0.6058040633,
+        "profitFactor": 0.1799678035,
+        "netPct": -96.19074934,
+        "maxDrawdownPct": 96.19074934,
+        "holdoutPF": 0.2606277205,
+        "holdoutNetPct": -44.97925751,
+        "winRate": 0.1947565543,
+        "status": "REJECT"
+      },
+      {
+        "setup": "liquidity_sweep_reclaim",
+        "trades": 159,
+        "expectancyNetRoePct": -0.6075576282,
+        "profitFactor": 0.1813371965,
+        "netPct": -62.32424442,
+        "maxDrawdownPct": 62.32424442,
+        "holdoutPF": 0.0727789334,
+        "holdoutNetPct": -25.12784655,
+        "winRate": 0.2201257862,
+        "status": "REJECT"
+      },
+      {
+        "setup": "compression_expansion",
+        "trades": 96,
+        "expectancyNetRoePct": -0.6213831429,
+        "profitFactor": 0.1528174419,
+        "netPct": -45.20294802,
+        "maxDrawdownPct": 45.8188939,
+        "holdoutPF": 0.0826668877,
+        "holdoutNetPct": -16.44496368,
+        "winRate": 0.1770833333,
+        "status": "REJECT"
+      }
+    ],
+    "ETHUSDT": [
+      {
+        "setup": "bos_choch",
+        "trades": 531,
+        "expectancyNetRoePct": -0.5842391019,
+        "profitFactor": 0.2890074576,
+        "netPct": -95.70762599,
+        "maxDrawdownPct": 95.70762599,
+        "holdoutPF": 0.31501523,
+        "holdoutNetPct": -42.11672419,
+        "winRate": 0.286252354,
+        "status": "REJECT"
+      },
+      {
+        "setup": "breakout_retest",
+        "trades": 135,
+        "expectancyNetRoePct": -0.5898091845,
+        "profitFactor": 0.331437959,
+        "netPct": -55.49437424,
+        "maxDrawdownPct": 56.2248756,
+        "holdoutPF": 0.3572477018,
+        "holdoutNetPct": -11.82843005,
+        "winRate": 0.2740740741,
+        "status": "REJECT"
+      },
+      {
+        "setup": "liquidity_sweep_reclaim",
+        "trades": 182,
+        "expectancyNetRoePct": -0.6160156161,
+        "profitFactor": 0.2868548337,
+        "netPct": -67.99899367,
+        "maxDrawdownPct": 68.43156913,
+        "holdoutPF": 0.2767685477,
+        "holdoutNetPct": -26.07498648,
+        "winRate": 0.2747252747,
+        "status": "REJECT"
+      },
+      {
+        "setup": "compression_expansion",
+        "trades": 65,
+        "expectancyNetRoePct": -0.7972054861,
+        "profitFactor": 0.1641290219,
+        "netPct": -40.79291536,
+        "maxDrawdownPct": 40.79291536,
+        "holdoutPF": 0.2211665601,
+        "holdoutNetPct": -7.268675079,
+        "winRate": 0.1692307692,
+        "status": "REJECT"
+      }
+    ],
+    "SOLUSDT": [
+      {
+        "setup": "compression_expansion",
+        "trades": 32,
+        "expectancyNetRoePct": -0.4980279809,
+        "profitFactor": 0.4658901902,
+        "netPct": -15.08288707,
+        "maxDrawdownPct": 15.67510826,
+        "validationPF": 1.093667474,
+        "validationNetPct": 0.2844716373,
+        "holdoutPF": 0.0999769408,
+        "holdoutNetPct": -3.453781266,
+        "winRate": 0.4375,
+        "status": "REJECT",
+        "note": "Least-bad diagnostic case only; negative holdout and thin sample."
+      },
+      {
+        "setup": "liquidity_sweep_reclaim",
+        "trades": 178,
+        "expectancyNetRoePct": -0.6176150056,
+        "profitFactor": 0.3234194877,
+        "netPct": -67.31015785,
+        "maxDrawdownPct": 67.80818042,
+        "holdoutPF": 0.1875442073,
+        "holdoutNetPct": -24.54419479,
+        "winRate": 0.3539325843,
+        "status": "REJECT"
+      },
+      {
+        "setup": "bos_choch",
+        "trades": 542,
+        "expectancyNetRoePct": -0.6224286019,
+        "profitFactor": 0.3131955361,
+        "netPct": -96.76075279,
+        "maxDrawdownPct": 96.76280093,
+        "holdoutPF": 0.5621311698,
+        "holdoutNetPct": -26.86186812,
+        "winRate": 0.3468634686,
+        "status": "REJECT"
+      },
+      {
+        "setup": "breakout_retest",
+        "trades": 139,
+        "expectancyNetRoePct": -0.674751346,
+        "profitFactor": 0.2994287247,
+        "netPct": -61.44396915,
+        "maxDrawdownPct": 62.94099182,
+        "holdoutPF": 0.1731240998,
+        "holdoutNetPct": -26.22034796,
+        "winRate": 0.3309352518,
+        "status": "REJECT"
+      }
+    ]
+  },
+  "nextResearch": [
+    "Record gross edge before costs plus MFE/MAE and holding-time distributions.",
+    "Run true multi-cost maker/taker and slippage stress matrices.",
+    "Sweep exit horizons and profit-lock/stop parameters using train-only optimization.",
+    "Split BOS vs CHOCH, long vs short, and context-aligned vs reversal evidence.",
+    "Add liquidity/relative-volume/displacement quality filters before expanding to the full futures universe.",
+    "Promote candle-level candidates to hftbacktest only after gross and holdout edge exists."
+  ]
+}
