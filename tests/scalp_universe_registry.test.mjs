@@ -9,7 +9,7 @@ import {
 
 test("scalp universe registry contains all currently executable native and adapter systems", () => {
   const ids = executableSystemIds();
-  assert.equal(ids.length, 15);
+  assert.equal(ids.length, 22);
   assert.equal(new Set(ids).size, ids.length);
 
   for (const id of [
@@ -28,6 +28,13 @@ test("scalp universe registry contains all currently executable native and adapt
     "chandelier_zlsma",
     "squeeze_momentum",
     "qqe_ssl_wae",
+    "turtle_trade_channels",
+    "isolated_peak_bottom",
+    "volume_coloured_bars",
+    "follow_line",
+    "squeeze_momentum_v2",
+    "progressive_trend_tracker",
+    "turtle_vhf_filtered",
   ]) {
     assert.ok(ids.includes(id), id);
   }
