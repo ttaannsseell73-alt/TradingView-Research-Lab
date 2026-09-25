@@ -153,5 +153,9 @@
       "markPrice": 0.041435,
       "supportCount": 1
     }
-  ]
+  ],
+  "reapply": {
+    "at": "2026-09-26T00:55:00+03:00",
+    "reason": "Re-publish reconciled state after preventing stale data-unavailable monitor artifacts from superseding it."
+  }
 }
