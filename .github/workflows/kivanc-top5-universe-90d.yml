@@ -15,12 +15,15 @@ on:
       - 'scripts/fetch-current-candles.py'
       - 'scripts/build-execution-watchlist.mjs'
       - 'scripts/build-current-signal-watchlist.mjs'
+      - 'scripts/build-shadow-journal.mjs'
       - 'research/tradability_policy.json'
       - 'tests/strategy_engine_v2.test.mjs'
+      - 'tests/shadow_journal.test.mjs'
       - '.github/workflows/kivanc-top5-universe-90d.yml'
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   research:
@@ -312,7 +315,19 @@ jobs:
           python -m py_compile scripts/fetch-current-candles.py
           node --check scripts/build-execution-watchlist.mjs
           node --check scripts/build-current-signal-watchlist.mjs
+          node --check scripts/build-shadow-journal.mjs
           node --test tests/strategy_engine_v2.test.mjs
+      - name: Restore previous shadow state
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/shadow-previous
+          ARTIFACT_ID=$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=strategy-selector-shadow-state&per_page=20" --jq '.artifacts | map(select(.expired == false)) | .[0].id // empty')
+          if [ -n "$ARTIFACT_ID" ]; then
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > /tmp/shadow-state.zip
+            unzip -q -o /tmp/shadow-state.zip -d artifacts/shadow-previous
+          fi
       - name: Build live execution and current-signal watchlist
         continue-on-error: true
         run: |
@@ -333,6 +348,14 @@ jobs:
             artifacts/execution-watchlist/EXECUTION_WATCHLIST.json \
             artifacts/live-inputs/candles \
             artifacts/current-signal
+          PREV_STATE="-"
+          if [ -f artifacts/shadow-previous/SHADOW_STATE.json ]; then
+            PREV_STATE="artifacts/shadow-previous/SHADOW_STATE.json"
+          fi
+          node scripts/build-shadow-journal.mjs \
+            artifacts/current-signal/CURRENT_SIGNAL_WATCHLIST.json \
+            "$PREV_STATE" \
+            artifacts/shadow-journal
       - uses: actions/upload-artifact@v4
         with:
           name: strategy-selector-cross-timeframe-final
@@ -341,5 +364,14 @@ jobs:
             artifacts/execution-watchlist/
             artifacts/current-signal/
             artifacts/live-inputs/
+            artifacts/shadow-journal/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Upload persistent shadow state
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-shadow-state
+          path: artifacts/shadow-journal/SHADOW_STATE.json
+          if-no-files-found: ignore
+          retention-days: 90
