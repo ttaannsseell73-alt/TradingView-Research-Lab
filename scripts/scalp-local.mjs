@@ -12,7 +12,7 @@ fs.mkdirSync(outDir, { recursive: true });
 
 const one = path.join(outDir, `${symbol}-1m.csv`);
 const five = path.join(outDir, `${symbol}-5m.csv`);
-const result = path.join(outDir, `${symbol}-SCALP.json`);
+const result = path.join(outDir, `${symbol}-SCALP.json`);\nconst diagnostics = path.join(outDir, `${symbol}-DIAGNOSTICS.json`);
 
 function run(args) {
   const x = spawnSync(process.execPath, args, {
