@@ -7,6 +7,7 @@ on:
     paths:
       - "research/scalp_universe_registry.mjs"
       - "research/scalp_strategy_replay.mjs"
+      - "research/strategy_engine_v2.mjs"
       - "scripts/discover-binance-futures-universe.mjs"
       - "scripts/run-scalp-universe-shard.mjs"
       - "scripts/aggregate-scalp-universe.mjs"
