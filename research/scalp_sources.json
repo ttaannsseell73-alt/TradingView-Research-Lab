@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "updated": "2026-09-26",
+  "policy": "reference_and_benchmark_only_no_blind_copy",
+  "sources": [
+    {
+      "id": "hftbacktest",
+      "repository": "nkaz001/hftbacktest",
+      "role": [
+        "tick_replay",
+        "latency_model",
+        "queue_position",
+        "binance_futures_reference"
+      ],
+      "priority": "P0",
+      "status": "ACTIVE_REFERENCE"
+    },
+    {
+      "id": "freqtrade",
+      "repository": "freqtrade/freqtrade",
+      "role": [
+        "control_backtest",
+        "dry_run_reference",
+        "futures_strategy_harness"
+      ],
+      "priority": "P1",
+      "status": "ACTIVE_REFERENCE"
+    },
+    {
+      "id": "jodi_orderflow",
+      "repository": "JODI96/Trader",
+      "role": [
+        "orderflow_feature_reference",
+        "cvd",
+        "orderbook_imbalance",
+        "15s_microstructure"
+      ],
+      "priority": "P2",
+      "status": "REFERENCE_ONLY",
+      "note": "Previously removed as a main candidate; retain only for feature comparison."
+    },
+    {
+      "id": "internal_tradingview_pack",
+      "repository": "ttaannsseell73-alt/TradingView-Research-Lab",
+      "role": [
+        "liquidity_sweep_reclaim",
+        "bos_choch",
+        "breakout_retest",
+        "compression_expansion",
+        "kivanc_adapters"
+      ],
+      "priority": "P0",
+      "status": "ACTIVE_INTERNAL"
+    }
+  ],
+  "rejected_or_frozen": [
+    {
+      "id": "sonar_scalp_v1_v4",
+      "status": "FROZEN_NEGATIVE_EVIDENCE",
+      "note": "Earlier 1m/5m Sonar variants failed promotion/robustness gates; do not recycle unchanged."
+    },
+    {
+      "id": "generic_ready_scalp_strategies",
+      "status": "FROZEN_NEGATIVE_EVIDENCE",
+      "note": "Prior smoke tests were mostly cost-negative; use only as benchmark controls."
+    }
+  ]
+}

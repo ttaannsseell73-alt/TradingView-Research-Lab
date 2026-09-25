@@ -22,7 +22,7 @@ function synthetic(count=720) {
 test('generic strategy engine exposes implemented catalog',()=>{
   assert.deepEqual(
     STRATEGIES.map(x=>x.id),
-    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad','chandelier_zlsma']
+    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad','chandelier_zlsma','squeeze_momentum','qqe_ssl_wae','turtle_trade_channels','isolated_peak_bottom','volume_coloured_bars','follow_line','squeeze_momentum_v2','progressive_trend_tracker','turtle_vhf_filtered']
   );
   assert.equal(new Set(STRATEGIES.map(x=>x.id)).size,STRATEGIES.length);
 });
