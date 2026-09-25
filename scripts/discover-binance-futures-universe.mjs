@@ -107,13 +107,29 @@ async function filterConcurrent(items, limit, fn) {
 }
 
 let source = "fapi_exchangeInfo";
-let symbols;
+let symbols = [];
 try {
   symbols = await fromExchangeInfo();
 } catch {
-  source = "data.binance.vision_folder_plus_recent_archive";
-  const folders = await fromVisionFolders();
-  symbols = await filterConcurrent(folders, 24, recentArchiveExists);
+  const snapshotPath = "research/binance_usdm_perpetual_symbols_2026-09-26.json";
+  if (fs.existsSync(snapshotPath)) {
+    const snapshot = JSON.parse(fs.readFileSync(snapshotPath, "utf8"));
+    symbols = Array.isArray(snapshot.symbols) ? snapshot.symbols : [];
+    source = "repository_snapshot_from_binance_connector";
+  } else {
+    source = "data.binance.vision_folder_plus_recent_archive";
+    const folders = await fromVisionFolders();
+    symbols = await filterConcurrent(folders, 24, recentArchiveExists);
+  }
+}
+
+if (!symbols.length) {
+  const snapshotPath = "research/binance_usdm_perpetual_symbols_2026-09-26.json";
+  if (fs.existsSync(snapshotPath)) {
+    const snapshot = JSON.parse(fs.readFileSync(snapshotPath, "utf8"));
+    symbols = Array.isArray(snapshot.symbols) ? snapshot.symbols : [];
+    source = "repository_snapshot_from_binance_connector_zero_recovery";
+  }
 }
 
 const payload = {
