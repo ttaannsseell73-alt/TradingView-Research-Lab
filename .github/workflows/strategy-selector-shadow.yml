@@ -122,6 +122,13 @@ jobs:
             "$PREV_STATE" \
             artifacts/shadow-journal
 
+      - name: Detect live data state
+        id: live-data-state
+        run: |
+          AVAILABLE=$(node -e "const fs=require('fs'); const p='artifacts/current-signal/CURRENT_SIGNAL_WATCHLIST.json'; const d=JSON.parse(fs.readFileSync(p,'utf8')); process.stdout.write(d.dataAvailable===true?'true':'false')")
+          echo "available=$AVAILABLE" >> "$GITHUB_OUTPUT"
+          echo "LIVE_DATA_AVAILABLE=$AVAILABLE"
+
       - name: Upload shadow monitor evidence
         uses: actions/upload-artifact@v4
         with:
@@ -134,6 +141,7 @@ jobs:
           retention-days: 30
 
       - name: Upload persistent shadow state
+        if: steps.live-data-state.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: strategy-selector-shadow-state
