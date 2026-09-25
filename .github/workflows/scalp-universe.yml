@@ -1,6 +1,16 @@
 name: scalp-universe
 
 on:
+  push:
+    branches:
+      - "research/scalp-canonical-v1"
+    paths:
+      - "research/scalp_universe_registry.mjs"
+      - "research/scalp_strategy_replay.mjs"
+      - "scripts/discover-binance-futures-universe.mjs"
+      - "scripts/run-scalp-universe-shard.mjs"
+      - "scripts/aggregate-scalp-universe.mjs"
+      - ".github/workflows/scalp-universe.yml"
   workflow_dispatch:
     inputs:
       bars_1m:
@@ -91,8 +101,8 @@ jobs:
           artifacts/scalp-universe/universe.json
           ${{ matrix.shard }}
           32
-          ${{ inputs.bars_1m }}
-          ${{ inputs.bars_5m }}
+          ${{ inputs.bars_1m || '10000' }}
+          ${{ inputs.bars_5m || '3000' }}
           artifacts/scalp-universe/shard-${{ matrix.shard }}
       - uses: actions/upload-artifact@v4
         if: always()
@@ -117,7 +127,6 @@ jobs:
         with:
           pattern: scalp-universe-shard-*
           path: artifacts/scalp-universe
-          merge-multiple: true
       - name: Aggregate universe reports
         run: >
           node scripts/aggregate-scalp-universe.mjs
