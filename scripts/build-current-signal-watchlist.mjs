@@ -25,10 +25,19 @@ function readCandles(symbol,timeframe){
   const doc=JSON.parse(fs.readFileSync(p,'utf8'));
   return {doc,candles:doc.candles??[]};
 }
-function actionStatus(execStatus,sig,evidenceContract,executionContract){
+function evidenceFlags(combo){
+  const f=[];
+  if(Number(combo.trades??0)<10) f.push('THIN_SAMPLE');
+  if(Number(combo.pf??0)>8) f.push('EXTREME_PF');
+  if(Number(combo.dd??0)>0.45) f.push('HIGH_DD');
+  if(Number(combo.net??0)>5) f.push('EXTREME_COMPOUNDING');
+  return f;
+}
+function actionStatus(execStatus,sig,flags){
   if(execStatus==='BLOCK'||execStatus==='NO_MARKET_SNAPSHOT') return 'BLOCKED';
   if(!sig||sig.direction==='FLAT') return 'FLAT';
   if(execStatus==='REVIEW') return 'OBSERVE_ONLY';
+  if(flags.length) return 'EVIDENCE_REVIEW';
   if(sig.signalAgeBars===0) return 'FRESH_ENTRY';
   if(sig.signalAgeBars!=null&&sig.signalAgeBars<=2) return 'RECENT_SIGNAL';
   return 'ACTIVE_TREND';
@@ -69,6 +78,7 @@ for(const ex of execution.candidates??[]){
       intervalMs:intervalMs[timeframe],
       strategyIds:[strategy]
     })[0]??null;
+    const flags=evidenceFlags(combo);
     rows.push({
       underlying:ex.underlying,
       executionContract,
@@ -76,7 +86,9 @@ for(const ex of execution.candidates??[]){
       evidenceContract:combo.contract,
       contractTransfer:combo.contract!==executionContract,
       strategy,timeframe,
-      status:actionStatus(ex.executionStatus,signal,combo.contract,executionContract),
+      status:actionStatus(ex.executionStatus,signal,flags),
+      evidenceFlags:flags,
+      directionConflict:false,
       direction:signal?.direction??'UNKNOWN',
       action:signal?.action??'UNKNOWN',
       fresh:signal?.fresh??false,
@@ -90,6 +102,20 @@ for(const ex of execution.candidates??[]){
   }
 }
 
+const freshDirections=new Map();
+for(const x of rows){
+  if(x.signalAgeBars!==0||!['LONG','SHORT'].includes(x.direction)) continue;
+  if(!freshDirections.has(x.underlying)) freshDirections.set(x.underlying,new Set());
+  freshDirections.get(x.underlying).add(x.direction);
+}
+for(const x of rows){
+  const dirs=freshDirections.get(x.underlying);
+  if(dirs&&dirs.size>1){
+    x.directionConflict=true;
+    if(['FRESH_ENTRY','RECENT_SIGNAL'].includes(x.status)) x.status='DIRECTION_CONFLICT';
+  }
+}
+
 rows.sort((a,b)=>
   (b.status==='FRESH_ENTRY')-(a.status==='FRESH_ENTRY')||
   (b.status==='RECENT_SIGNAL')-(a.status==='RECENT_SIGNAL')||
@@ -97,9 +123,11 @@ rows.sort((a,b)=>
   (b.evidence?.net??-Infinity)-(a.evidence?.net??-Infinity)
 );
 
-const freshEntryCandidates=rows.filter(x=>x.status==='FRESH_ENTRY');
+const freshSignals=rows.filter(x=>x.signalAgeBars===0&&['LONG','SHORT'].includes(x.direction));
+const paperEntryQueue=rows.filter(x=>x.status==='FRESH_ENTRY'&&!x.directionConflict);
 const recentSignalCandidates=rows.filter(x=>x.status==='RECENT_SIGNAL');
-const activeWatch=rows.filter(x=>['FRESH_ENTRY','RECENT_SIGNAL','ACTIVE_TREND','OBSERVE_ONLY'].includes(x.status)&&x.direction!=='FLAT');
+const reviewSignals=rows.filter(x=>['EVIDENCE_REVIEW','DIRECTION_CONFLICT','OBSERVE_ONLY'].includes(x.status)&&x.direction!=='FLAT');
+const activeWatch=rows.filter(x=>['FRESH_ENTRY','RECENT_SIGNAL','ACTIVE_TREND','OBSERVE_ONLY','EVIDENCE_REVIEW','DIRECTION_CONFLICT'].includes(x.status)&&x.direction!=='FLAT');
 const flat=rows.filter(x=>x.status==='FLAT');
 
 const out={
@@ -111,18 +139,25 @@ const out={
     execution:'signal on closed candle; next-bar-open remains canonical execution assumption',
     fresh:'signalAgeBars = 0',
     recent:'signalAgeBars <= 2; informational, not equivalent to fresh entry',
-    paper:'FRESH_ENTRY on STRONG/TRADEABLE contracts is the paper-entry queue; no real orders are placed'
+    paper:'FRESH_ENTRY requires STRONG/TRADEABLE execution, no evidence review flags and no conflicting fresh direction; no real orders are placed',
+    evidenceReview:'THIN_SAMPLE (<10 trades), EXTREME_PF (>8), HIGH_DD (>45%) or EXTREME_COMPOUNDING (>500%) remain visible but are excluded from paper-entry queue',
+    directionConflict:'Opposing fresh LONG/SHORT signals on the same underlying are visible but excluded from paper-entry queue'
   },
   counts:{
     evaluated:rows.length,
-    freshEntry:freshEntryCandidates.length,
+    freshSignals:freshSignals.length,
+    paperEntry:paperEntryQueue.length,
     recentSignal:recentSignalCandidates.length,
+    reviewSignals:reviewSignals.length,
+    directionConflicts:rows.filter(x=>x.directionConflict).length,
     active:activeWatch.length,
     flat:flat.length,
     missingCandles:rows.filter(x=>x.status==='NO_CANDLES').length
   },
-  freshEntryCandidates,
+  paperEntryQueue,
+  freshSignals,
   recentSignalCandidates,
+  reviewSignals,
   activeWatch,
   rows
 };
@@ -134,12 +169,18 @@ const pc=x=>x==null?'':(100*Number(x)).toFixed(2)+'%';
 const lines=[
   '# Current Signal / Paper Shadow Watchlist','',
   'Closed-candle only. FRESH_ENTRY means the strategy changed direction on the latest confirmed candle. No real orders are placed.','',
-  '## Fresh paper entries','',
+  '## Paper entry queue','',
   '| Underlying | Contract | Strategy | TF | Dir | Exec | Net | PF | DD | Contract transfer |',
   '|---|---|---|---|---|---|---:|---:|---:|---|'
 ];
-for(const x of freshEntryCandidates){
+for(const x of paperEntryQueue){
   lines.push(`| ${x.underlying} | ${x.executionContract} | ${x.strategy} | ${x.timeframe} | ${x.direction} | ${x.executionStatus} | ${pc(x.evidence.net)} | ${Number(x.evidence.pf).toFixed(2)} | ${pc(x.evidence.dd)} | ${x.contractTransfer?'YES':'NO'} |`);
+}
+lines.push('','## Fresh signals under review','',
+  '| Underlying | Contract | Strategy | TF | Dir | State | Evidence flags | Conflict | Exec |',
+  '|---|---|---|---|---|---|---|---|---|');
+for(const x of freshSignals.filter(x=>x.status!=='FRESH_ENTRY')){
+  lines.push(`| ${x.underlying} | ${x.executionContract} | ${x.strategy} | ${x.timeframe} | ${x.direction} | ${x.status} | ${(x.evidenceFlags??[]).join(', ')} | ${x.directionConflict?'YES':'NO'} | ${x.executionStatus} |`);
 }
 lines.push('','## Active / recent watch','',
   '| Underlying | Contract | Strategy | TF | Dir | Age bars | State | Exec |',
