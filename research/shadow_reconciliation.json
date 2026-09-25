@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-26T00:32:00+03:00",
+  "observedAtMs": 1790371920000,
+  "source": "Binance public market connector + canonical strategy_engine_v2 closed-candle evaluation",
+  "note": "Manual reconciliation while GitHub-hosted runners receive Binance Futures HTTP 451. Only already-open shadow positions are marked; ATOM and KMNO reversals are applied from their lead strategy's latest confirmed direction change.",
+  "marks": [
+    {
+      "underlying": "FET",
+      "executionContract": "FETUSDT",
+      "markPrice": 0.2401,
+      "direction": "LONG",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "BCH",
+      "executionContract": "BCHUSDT",
+      "markPrice": 340.18,
+      "direction": "SHORT",
+      "strategy": "ut_bot_quantnomad",
+      "timeframe": "4h"
+    },
+    {
+      "underlying": "AAVE",
+      "executionContract": "AAVEUSDT",
+      "markPrice": 151.02,
+      "direction": "LONG",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "WLD",
+      "executionContract": "WLDUSDT",
+      "markPrice": 0.4721,
+      "direction": "LONG",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "1000PEPE",
+      "executionContract": "1000PEPEUSDT",
+      "markPrice": 0.0044394,
+      "direction": "LONG",
+      "strategy": "alphatrend",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "DOT",
+      "executionContract": "DOTUSDT",
+      "markPrice": 1.1905,
+      "direction": "LONG",
+      "strategy": "ott",
+      "timeframe": "4h"
+    },
+    {
+      "underlying": "RIVER",
+      "executionContract": "RIVERUSDT",
+      "markPrice": 1.257,
+      "direction": "SHORT",
+      "strategy": "ssl_hybrid_flip",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "KITE",
+      "executionContract": "KITEUSDT",
+      "markPrice": 0.13247,
+      "direction": "LONG",
+      "strategy": "ott",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "ZETA",
+      "executionContract": "ZETAUSDT",
+      "markPrice": 0.05417,
+      "direction": "LONG",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "ATOM",
+      "executionContract": "ATOMUSDT",
+      "markPrice": 1.7695,
+      "direction": "SHORT",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "1h"
+    },
+    {
+      "underlying": "AERO",
+      "executionContract": "AEROUSDT",
+      "markPrice": 0.8476,
+      "direction": "LONG",
+      "strategy": "ott",
+      "timeframe": "4h"
+    },
+    {
+      "underlying": "FF",
+      "executionContract": "FFUSDT",
+      "markPrice": 0.13389,
+      "direction": "LONG",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "4h"
+    },
+    {
+      "underlying": "S",
+      "executionContract": "SUSDT",
+      "markPrice": 0.04066,
+      "direction": "SHORT",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "4h"
+    },
+    {
+      "underlying": "XTZ",
+      "executionContract": "XTZUSDT",
+      "markPrice": 0.3274,
+      "direction": "SHORT",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "4h"
+    },
+    {
+      "underlying": "KMNO",
+      "executionContract": "KMNOUSDT",
+      "markPrice": 0.041435,
+      "direction": "SHORT",
+      "strategy": "ott",
+      "timeframe": "1h"
+    }
+  ],
+  "reversals": [
+    {
+      "underlying": "ATOM",
+      "executionContract": "ATOMUSDT",
+      "newDirection": "SHORT",
+      "executionStatus": "TRADEABLE",
+      "strategy": "ssl_hybrid_qqe_flip",
+      "timeframe": "1h",
+      "signalTime": 1790366400000,
+      "entryTime": 1790370000000,
+      "entryPrice": 1.784,
+      "markPrice": 1.7695,
+      "supportCount": 1
+    },
+    {
+      "underlying": "KMNO",
+      "executionContract": "KMNOUSDT",
+      "newDirection": "SHORT",
+      "executionStatus": "TRADEABLE",
+      "strategy": "ott",
+      "timeframe": "1h",
+      "signalTime": 1790352000000,
+      "entryTime": 1790355600000,
+      "entryPrice": 0.04219,
+      "markPrice": 0.041435,
+      "supportCount": 1
+    }
+  ]
+}
