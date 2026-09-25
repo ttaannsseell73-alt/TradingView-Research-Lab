@@ -114,6 +114,18 @@ const managementWatchlist=coinMatrix.filter(x=>
   x.cleanCombinations>=2
 ).slice(0,50);
 
+const deploymentCandidates=coinMatrix.filter(x=>
+  x.evidenceTimeframeCount>=3&&
+  x.evidenceFamilyCount>=2&&
+  x.cleanCombinations>=4&&
+  x.medianEvidenceDD!=null&&x.medianEvidenceDD<=0.35
+).sort((a,b)=>
+  b.cleanCombinations-a.cleanCombinations||
+  b.evidenceTimeframeCount-a.evidenceTimeframeCount||
+  b.evidenceFamilyCount-a.evidenceFamilyCount||
+  (b.bestEvidenceNet??-Infinity)-(a.bestEvidenceNet??-Infinity)
+).slice(0,50);
+
 const highProfitReview=[...candidates]
   .filter(r=>r.reviewFlags.length)
   .sort((a,b)=>b.net-a.net)
@@ -153,6 +165,7 @@ const out={
   timeframeSummary,
   top5ByStrategyTimeframe,
   managementWatchlist,
+  deploymentCandidates,
   highProfitReview,
   coinMatrix
 };
@@ -180,6 +193,12 @@ lines.push('','## Management watchlist','',
 managementWatchlist.slice(0,30).forEach((x,i)=>lines.push(
   `| ${i+1} | ${x.symbol} | ${x.evidenceTimeframeCount} | ${x.evidenceFamilyCount} | ${x.evidenceCombinations} | ${x.cleanCombinations} | ${pc(x.bestEvidenceNet)} | ${pc(x.medianEvidenceDD)} |`
 ));
+lines.push('','## Deployment candidates','',
+  '| # | Coin | TF count | Families | Evidence combos | Clean combos | Best evidence net | Median DD |',
+  '|---:|---|---:|---:|---:|---:|---:|---:|');
+deploymentCandidates.slice(0,30).forEach((x,i)=>lines.push(
+  `| ${i+1} | ${x.symbol} | ${x.evidenceTimeframeCount} | ${x.evidenceFamilyCount} | ${x.evidenceCombinations} | ${x.cleanCombinations} | ${pc(x.bestEvidenceNet)} | ${pc(x.medianEvidenceDD)} |`
+));
 lines.push('','## Highest-profit REVIEW cases','',
   '| # | Coin | Strategy | TF | Net | PF | DD | Trades | Flags |',
   '|---:|---|---|---|---:|---:|---:|---:|---|');
@@ -193,6 +212,7 @@ console.log(JSON.stringify({
   combinations:normalized.length,
   rankable:candidates.length,
   evidencePass:evidence.length,
+  deployment:deploymentCandidates.slice(0,20).map(x=>({symbol:x.symbol,tf:x.evidenceTimeframes,families:x.evidenceFamilyCount,evidence:x.evidenceCombinations,clean:x.cleanCombinations,bestNet:x.bestEvidenceNet,medianDD:x.medianEvidenceDD})),
   watchlist:managementWatchlist.slice(0,20).map(x=>({
     symbol:x.symbol,tf:x.evidenceTimeframes,families:x.evidenceFamilyCount,
     evidence:x.evidenceCombinations,clean:x.cleanCombinations,bestNet:x.bestEvidenceNet,
