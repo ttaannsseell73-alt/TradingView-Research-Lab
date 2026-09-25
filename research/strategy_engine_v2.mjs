@@ -584,7 +584,7 @@ function signalsVolumeBasedColouredBars(c){
 }
 
 function signalsFollowLine(c){
-  const close=c.map(b=>b.c),basis=sma(close,21),dev=rollingStdPopulation(close,21),a=atr(c,5);
+  const close=c.map(b=>b.c),basis=sma(close,21),dev=rollingStdPopulation(close,21),a=rma(trueRange(c),5);
   const n=c.length,follow=Array(n).fill(NaN),trend=Array(n).fill(0),sig=Array(n).fill(0);
   let bbSignal=0;
   for(let i=0;i<n;i++){
