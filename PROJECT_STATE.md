@@ -143,3 +143,49 @@ Manual live sanity snapshot after implementation:
 - KITEUSDT 1h LONG: entry 0.13031; price 0.13174; modeled net if closed approximately +0.96%.
 
 The manual figures above are a time-stamped sanity check only. Canonical shadow evidence comes from persisted workflow artifacts across repeated runs.
+
+
+## Canonical main shadow monitor — 2026-09-25
+
+PR #12 was merged to `main`.
+- Merge commit: `48cc3e2801c753a8a340fbedd233105845d72a0c`.
+- Shadow monitor main push validation run: `36131145129` — SUCCESS.
+- Main CI run: `36131145148` — SUCCESS.
+- Persistent artifacts:
+  - `strategy-selector-shadow-monitor`
+  - `strategy-selector-shadow-state`
+- The lightweight shadow workflow is scheduled every 15 minutes on the default branch.
+- No real orders are sent and `binance-bot` remains untouched.
+
+First canonical main shadow snapshot:
+- 63 execution contracts requested; 63 market snapshots succeeded.
+- 118 candle series requested; 118 succeeded.
+- 250 strategy/coin/timeframe live states evaluated.
+- 28 fresh signals.
+- 17 individually eligible fresh signals.
+- 15 underlying-level paper position intents.
+- 10 direction-conflict rows excluded from paper entry.
+- 0 missing candle series.
+- 15 open normalized paper positions.
+- 0 closed trades.
+- Normalized open reference exposure: 15,000 USDT (15 independent × 1,000 reference units).
+- Unrealized normalized PnL: +157.45 USDT.
+- Unrealized return on open reference exposure: approximately +1.05% at that snapshot.
+
+Open paper positions in the first canonical main snapshot:
+- LONG: FET, AAVE, WLD, 1000PEPE, DOT, KITE, ZETA, ATOM, AERO, FF, KMNO.
+- SHORT: BCH, RIVER, S, XTZ.
+- BCH SHORT had support from two same-direction 4h strategies and still produced exactly one position intent.
+
+The first snapshot is not a profitability conclusion. Promotion decisions require accumulated shadow evidence with realized closes/reversals, not only unrealized PnL.
+
+Data-outage behavior:
+- Temporary Binance API failure cannot erase or force-close existing shadow positions.
+- If market/candle data is unavailable, the last successful `SHADOW_STATE.json` is carried forward and the successful snapshot timestamp is not advanced.
+- Synthetic/unit coverage validates outage carry-forward and scheduler catch-up behavior.
+
+Next canonical objective:
+1. Accumulate 15-minute shadow observations.
+2. Record realized closes, reversals, win rate and PnL after modeled costs.
+3. Compare live shadow behavior against the 90-day evidence profile.
+4. Do not promote to real capital solely from early unrealized performance.
