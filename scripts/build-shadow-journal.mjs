@@ -64,12 +64,13 @@ export function updateShadowState(current,previous=null,{
 
   const catchupGroups=new Map();
   if(previousSnapshot!=null){
-    for(const r of current?.recentSignalCandidates??[]){
+    for(const r of current?.rows??[]){
       if(!['LONG','SHORT'].includes(r?.direction)) continue;
       if(!finite(r?.canonicalEntryPrice)||!finite(r?.canonicalEntryTime)) continue;
       if(Number(r.canonicalEntryTime)<=previousSnapshot) continue;
       if(!['STRONG','TRADEABLE'].includes(r?.executionStatus)) continue;
       if((r?.evidenceFlags??[]).length||r?.directionConflict) continue;
+      if(['BLOCKED','OBSERVE_ONLY','EVIDENCE_REVIEW','DIRECTION_CONFLICT','NO_CANDLES'].includes(r?.status)) continue;
       if(!catchupGroups.has(r.underlying)) catchupGroups.set(r.underlying,[]);
       catchupGroups.get(r.underlying).push(r);
     }
@@ -282,7 +283,7 @@ export function updateShadowState(current,previous=null,{
     modeledRoundTripCost:prev.modeledRoundTripCost,
     semantics:{
       capital:'Reference notional is normalized per independent paper trade; it is not a live allocation recommendation.',
-      entry:'Fresh eligible signals enter at the actual next-bar open. Scheduler-delayed recent signals may be catch-up entered only when their canonical entry occurred after the previous shadow snapshot.',
+      entry:'Fresh eligible signals enter at the actual next-bar open. After an outage or scheduler gap, the latest eligible direction change may be reconstructed from any current row whose canonical entry occurred after the previous successful shadow snapshot.',
       mark:'Open positions are marked at current futures mid/last price.',
       exit:'Opposite eligible fresh intent reverses; target-position lead strategy can exit to flat; hard tradability block forces paper exit.',
       cost:'Net returns subtract the same modeled round-trip cost used by the research baseline.'
