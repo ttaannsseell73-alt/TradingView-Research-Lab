@@ -189,3 +189,46 @@ Next canonical objective:
 2. Record realized closes, reversals, win rate and PnL after modeled costs.
 3. Compare live shadow behavior against the 90-day evidence profile.
 4. Do not promote to real capital solely from early unrealized performance.
+
+
+## Shadow reconciliation checkpoint — 2026-09-26
+
+GitHub-hosted Binance Futures connectivity:
+- `fapi.binance.com` returns HTTP 451 from GitHub-hosted runners.
+- `fapi1` through `fapi4` are also unusable from the hosted runner path.
+- This is treated as a data-availability condition, not a strategy failure.
+
+State-safety hardening:
+- Hosted monitor probes Futures hosts once per run.
+- If no Futures host is reachable, the monitor carries the last successful shadow state forward.
+- Data-unavailable monitor runs no longer publish a new `strategy-selector-shadow-state` artifact, preventing stale-state races.
+- Full universe runs likewise publish persistent shadow state only when live data is actually available.
+- Long scheduler/API gaps recover eligible post-snapshot direction changes using canonical next-bar-open entries rather than a fixed recent-bar age.
+- CI PASS after the catch-up and stale-state fixes.
+
+External reconciliation path:
+- `scripts/apply-shadow-reconciliation.mjs` can apply trusted external Binance observations to the persisted journal without changing the research engine.
+- `research/shadow_reconciliation.json` records the current reconciliation evidence.
+- `.github/workflows/shadow-reconciliation.yml` restores the latest persistent state, applies reconciliation, and republishes the canonical `strategy-selector-shadow-state` artifact.
+- Latest reconciliation run `36194068297`: SUCCESS.
+- Data-unavailable shadow run `36194038002`: SUCCESS and intentionally did not publish a persistent state artifact.
+
+Current canonical realized evidence:
+- Open shadow positions: 15.
+- Closed trades: 2.
+- Realized wins/losses: 1 / 1.
+- Realized normalized PnL: +83.18 USDT on 2 × 1,000 USDT reference trades.
+- ATOM LONG closed/reversed SHORT at 1.784: approximately -4.19 USDT normalized net.
+- KMNO LONG closed/reversed SHORT at 0.04219: approximately +87.37 USDT normalized net.
+- Reconciled unrealized normalized PnL: approximately +260.09 USDT across 15 open × 1,000 USDT reference positions at the reconciliation snapshot.
+- ATOM and KMNO replacement SHORT positions are marked in the reconciled state.
+
+Important:
+- These are paper/shadow normalized measurements, not real capital or profit claims.
+- No real orders are sent.
+- `binance-bot` remains untouched.
+
+Next canonical objective:
+1. Move continuous live shadow data acquisition to an eligible self-hosted/local runner or equivalent authorized network path.
+2. Keep GitHub-hosted monitor as fail-safe/state-preservation only while HTTP 451 persists.
+3. Continue accumulating realized closes/reversals before any real-capital promotion.
