@@ -11,6 +11,12 @@ on:
       - 'research/strategy_engine_v2.mjs'
       - 'scripts/build-opportunity-board.mjs'
       - 'scripts/build-cross-timeframe-board.mjs'
+      - 'scripts/fetch-live-market-snapshot.py'
+      - 'scripts/fetch-current-candles.py'
+      - 'scripts/build-execution-watchlist.mjs'
+      - 'scripts/build-current-signal-watchlist.mjs'
+      - 'research/tradability_policy.json'
+      - 'tests/strategy_engine_v2.test.mjs'
       - '.github/workflows/kivanc-top5-universe-90d.yml'
 
 permissions:
@@ -300,9 +306,40 @@ jobs:
           node scripts/build-cross-timeframe-board.mjs \
             artifacts/all-timeframes \
             artifacts/cross-timeframe
+      - name: Validate live watchlist scripts
+        run: |
+          python -m py_compile scripts/fetch-live-market-snapshot.py
+          python -m py_compile scripts/fetch-current-candles.py
+          node --check scripts/build-execution-watchlist.mjs
+          node --check scripts/build-current-signal-watchlist.mjs
+          node --test tests/strategy_engine_v2.test.mjs
+      - name: Build live execution and current-signal watchlist
+        continue-on-error: true
+        run: |
+          python scripts/fetch-live-market-snapshot.py \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/live-inputs/MARKET_SNAPSHOT.json
+          node scripts/build-execution-watchlist.mjs \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/live-inputs/MARKET_SNAPSHOT.json \
+            research/tradability_policy.json \
+            artifacts/execution-watchlist
+          python scripts/fetch-current-candles.py \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/execution-watchlist/EXECUTION_WATCHLIST.json \
+            artifacts/live-inputs/candles
+          node scripts/build-current-signal-watchlist.mjs \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/execution-watchlist/EXECUTION_WATCHLIST.json \
+            artifacts/live-inputs/candles \
+            artifacts/current-signal
       - uses: actions/upload-artifact@v4
         with:
           name: strategy-selector-cross-timeframe-final
-          path: artifacts/cross-timeframe/
+          path: |
+            artifacts/cross-timeframe/
+            artifacts/execution-watchlist/
+            artifacts/current-signal/
+            artifacts/live-inputs/
           if-no-files-found: error
           retention-days: 30
