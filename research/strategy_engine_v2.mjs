@@ -442,6 +442,110 @@ function targetsChandelierZLSMA(c) {
   return target;
 }
 
+
+/*
+Squeeze Momentum (LazyBear/Kivanc lineage) research adapter.
+Ported from the already-tested CoinStrategyLab implementation:
+OHLC4 BB/KC squeeze state, 20-bar linear-regression momentum,
+type2 zero-side turn, and squeeze-release requirement.
+*/
+function signalsSqueezeMomentum(c) {
+  const n=c.length;
+  const src=c.map(b=>(b.o+b.h+b.l+b.c)/4);
+  const bbBasis=sma(src,20);
+  const bbStd=rollingStdPopulation(src,20);
+  const kcMid=sma(src,20);
+  const rangeMa=sma(c.map(b=>b.h-b.l),20);
+  const hl2=c.map(b=>(b.h+b.l)/2);
+  const hl2Ma=sma(hl2,20);
+  const center=Array(n).fill(NaN);
+  const sqzOff=Array(n).fill(false);
+
+  for(let i=19;i<n;i++){
+    let hi=-Infinity,lo=Infinity;
+    for(let k=i-19;k<=i;k++){
+      hi=Math.max(hi,c[k].h);
+      lo=Math.min(lo,c[k].l);
+    }
+    center[i]=(((hi+lo)/2)+hl2Ma[i])/2;
+    const upperBB=bbBasis[i]+2*bbStd[i];
+    const lowerBB=bbBasis[i]-2*bbStd[i];
+    const upperKC=kcMid[i]+1.5*rangeMa[i];
+    const lowerKC=kcMid[i]-1.5*rangeMa[i];
+    sqzOff[i]=lowerBB<lowerKC&&upperBB>upperKC;
+  }
+
+  const raw=src.map((v,i)=>finite(center[i])?v-center[i]:NaN);
+  const val=rollingLinReg(raw,20,0);
+  const sig=Array(n).fill(0);
+  for(let i=2;i<n;i++){
+    if(![val[i],val[i-1],val[i-2]].every(finite)||!sqzOff[i]) continue;
+    const risingTurn=val[i]>val[i-1]&&val[i-1]<=val[i-2]&&val[i]<0;
+    const fallingTurn=val[i]<val[i-1]&&val[i-1]>=val[i-2]&&val[i]>0;
+    if(risingTurn) sig[i]=1;
+    else if(fallingTurn) sig[i]=-1;
+  }
+  return sig;
+}
+
+/*
+QQE MOD + SSL Hybrid + Waddah Attar Explosion adapter.
+Ported from the CoinStrategyLab implementation that produced the legacy
+EXECUTION_PASS evidence. Entry is an event: new QQE color state AND
+SSL directional filter AND WAE explosion filter on the same closed bar.
+*/
+function signalsQQESSLWAE(c) {
+  const close=c.map(b=>b.c);
+  const n=c.length;
+
+  const q1=qqeTrack(close,{rsiPeriod:6,smoothing:6,factor:3});
+  const q=q1.fast.map(v=>finite(v)?v-50:NaN);
+  const basis=rollingMeanFinite(q,50);
+  const dev=rollingStdPopulation(q,50);
+  const upper=basis.map((v,i)=>finite(v)&&finite(dev[i])?v+0.35*dev[i]:NaN);
+  const lower=basis.map((v,i)=>finite(v)&&finite(dev[i])?v-0.35*dev[i]:NaN);
+
+  const rsi2Ma=ema(rsi(close,6),5);
+  const qqeGreen=Array(n).fill(false);
+  const qqeRed=Array(n).fill(false);
+  for(let i=0;i<n;i++){
+    if(![q1.rsiMa[i],rsi2Ma[i],upper[i],lower[i]].every(finite)) continue;
+    qqeGreen[i]=(rsi2Ma[i]-50)>3&&(q1.rsiMa[i]-50)>upper[i];
+    qqeRed[i]=(rsi2Ma[i]-50)<-3&&(q1.rsiMa[i]-50)<lower[i];
+  }
+
+  const bbmc=hma(close,60);
+  const rangeMa=ema(trueRange(c),60);
+  const macdFast=ema(close,20);
+  const macdSlow=ema(close,40);
+  const explosionStd=rollingStdPopulation(close,20);
+  const sig=Array(n).fill(0);
+
+  for(let i=1;i<n;i++){
+    if(![bbmc[i],rangeMa[i],macdFast[i],macdSlow[i],macdFast[i-1],macdSlow[i-1],explosionStd[i]].every(finite)) continue;
+    const upperK=bbmc[i]+rangeMa[i]*0.2;
+    const lowerK=bbmc[i]-rangeMa[i]*0.2;
+    const sslBuy=close[i]>upperK&&close[i]>bbmc[i];
+    const sslSell=close[i]<lowerK&&close[i]<bbmc[i];
+
+    const macdNow=macdFast[i]-macdSlow[i];
+    const macdPrev=macdFast[i-1]-macdSlow[i-1];
+    const t1=(macdNow-macdPrev)*180;
+    const trendUp=Math.max(t1,0);
+    const trendDown=Math.max(-t1,0);
+    const explosion=explosionStd[i]*4;
+    const waeBuy=trendUp>0&&trendUp>explosion;
+    const waeSell=trendDown>0&&trendDown>explosion;
+
+    const qqeBuy=qqeGreen[i]&&!qqeGreen[i-1];
+    const qqeSell=qqeRed[i]&&!qqeRed[i-1];
+
+    if(qqeBuy&&sslBuy&&waeBuy) sig[i]=1;
+    else if(qqeSell&&sslSell&&waeSell) sig[i]=-1;
+  }
+  return sig;
+}
+
 export const STRATEGIES = [
   {id:'pmax',name:'PMax Explorer',family:'trend_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsPMax},
   {id:'alphatrend',name:'AlphaTrend',family:'trend_volume_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsAlphaTrend},
@@ -451,7 +555,9 @@ export const STRATEGIES = [
   {id:'ssl_hybrid_flip',name:'SSL Hybrid — Flip Mode',family:'baseline_trend',version:'tv-open-v1',mode:'REVERSAL',signal:signalsSSLHybridFlip},
   {id:'ssl_hybrid_qqe_flip',name:'SSL Hybrid + QQE — Flip Mode',family:'trend_momentum_filter',version:'tv-open-v1',mode:'REVERSAL',signal:signalsSSLHybridQQEFlip},
   {id:'ut_bot_quantnomad',name:'UT Bot Strategy — QuantNomad',family:'atr_trailing_stop',version:'tv-open-v1',mode:'REVERSAL',signal:signalsUTBotQuantNomad},
-  {id:'chandelier_zlsma',name:'Chandelier Exit ZLSMA Strategy',family:'trend_breakout_filter',version:'tv-open-v1',mode:'TARGET_POSITION',signal:targetsChandelierZLSMA}
+  {id:'chandelier_zlsma',name:'Chandelier Exit ZLSMA Strategy',family:'trend_breakout_filter',version:'tv-open-v1',mode:'TARGET_POSITION',signal:targetsChandelierZLSMA},
+  {id:'squeeze_momentum',name:'Squeeze Momentum',family:'compression_momentum',version:'coin-strategy-lab-v1',mode:'REVERSAL',signal:signalsSqueezeMomentum},
+  {id:'qqe_ssl_wae',name:'QQE MOD + SSL Hybrid + WAE',family:'momentum_trend_explosion',version:'coin-strategy-lab-v1',mode:'REVERSAL',signal:signalsQQESSLWAE}
 ];
 
 function backtest(c,signals,tradeStart=-Infinity) {
