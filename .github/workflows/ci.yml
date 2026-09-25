@@ -26,4 +26,5 @@ jobs:
           node --check scripts/build-cross-timeframe-board.mjs
           node --check scripts/build-execution-watchlist.mjs
           node --check scripts/build-current-signal-watchlist.mjs
+          node --check scripts/build-shadow-journal.mjs
           node --check research/strategy_engine_v2.mjs
