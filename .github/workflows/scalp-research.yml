@@ -6,7 +6,7 @@ on:
       - 'research/scalp_*.mjs'
       - 'research/scalp_sources.json'
       - 'scripts/scalp-*.mjs'
-      - 'scripts/run-scalp-replay.mjs'
+      - 'scripts/run-scalp-replay.mjs'\n      - 'scripts/run-scalp-diagnostics.mjs'
       - 'tests/scalp_*.test.mjs'
       - 'docs/SCALP_CANONICAL.md'
       - '.github/workflows/scalp-research.yml'
@@ -35,4 +35,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: scalp-${{ matrix.symbol }}
-          path: artifacts/scalp-${{ matrix.symbol }}/${{ matrix.symbol }}-SCALP.json
+          path: artifacts/scalp-${{ matrix.symbol }}/*.json
