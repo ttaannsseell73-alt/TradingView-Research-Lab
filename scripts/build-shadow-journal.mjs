@@ -64,7 +64,16 @@ export function updateShadowState(current,previous=null,{
 
   const catchupGroups=new Map();
   if(previousSnapshot!=null){
-    for(const r of current?.rows??[]){
+    const catchupRows=[...(current?.rows??[])];
+    const seenCatchup=new Set(catchupRows.map(r=>`${r.underlying}::${r.strategy}::${r.timeframe}::${r.canonicalEntryTime}`));
+    for(const r of current?.recentSignalCandidates??[]){
+      const k=`${r.underlying}::${r.strategy}::${r.timeframe}::${r.canonicalEntryTime}`;
+      if(!seenCatchup.has(k)){
+        catchupRows.push(r);
+        seenCatchup.add(k);
+      }
+    }
+    for(const r of catchupRows){
       if(!['LONG','SHORT'].includes(r?.direction)) continue;
       if(!finite(r?.canonicalEntryPrice)||!finite(r?.canonicalEntryTime)) continue;
       if(Number(r.canonicalEntryTime)<=previousSnapshot) continue;
