@@ -58,6 +58,8 @@ test('opposite fresh intent closes and reverses exactly once',()=>{
   assert.equal(second.positions.length,1);
   assert.equal(second.positions[0].direction,'SHORT');
   assert.equal(second.positions[0].entryPrice,110);
+  assert.equal(second.positions[0].markPrice,109);
+  assert.ok(Number.isFinite(second.positions[0].unrealizedNetIfClosed));
   assert.equal(second.closedTrades.length,1);
   assert.equal(second.closedTrades[0].direction,'LONG');
   assert.equal(second.closedTrades[0].exitReason,'REVERSE_SIGNAL');
