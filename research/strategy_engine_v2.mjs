@@ -546,6 +546,144 @@ function signalsQQESSLWAE(c) {
   return sig;
 }
 
+
+function signalsTurtleTradeChannels(c){
+  const n=c.length,sig=Array(n).fill(0),len=20;
+  for(let i=len;i<n;i++){
+    let hi=-Infinity,lo=Infinity;
+    for(let k=i-len;k<i;k++){ hi=Math.max(hi,c[k].h); lo=Math.min(lo,c[k].l); }
+    const long=c[i].v>0&&c[i].h>=hi;
+    const short=c[i].v>0&&c[i].l<=lo;
+    if(long&&!short)sig[i]=1; else if(short&&!long)sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsIsolatedPeakBottom(c){
+  const n=c.length,sig=Array(n).fill(0);
+  for(let i=4;i<n;i++){
+    const h=j=>c[i-j].h,l=j=>c[i-j].l;
+    const peak2=h(2)>h(0)&&h(2)>=h(1)&&h(2)>h(3)&&h(2)>h(4)&&l(1)>Math.min(l(3),l(2))&&l(0)<Math.min(l(3),l(2));
+    const peak1=h(1)>h(0)&&h(1)>h(2)&&h(1)>h(3)&&l(0)<Math.min(l(2),l(1));
+    const bottom2=l(2)<l(0)&&l(2)<l(1)&&l(2)<l(3)&&l(2)<l(4)&&h(1)<Math.max(h(3),h(2))&&h(0)>Math.max(h(3),h(2));
+    const bottom1=l(1)<l(0)&&l(1)<l(2)&&l(1)<l(3)&&h(0)>Math.max(h(2),h(1));
+    const long=c[i].v>0&&(bottom1||bottom2);
+    const short=c[i].v>0&&(peak1||peak2);
+    if(long&&!short)sig[i]=1; else if(short&&!long)sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsVolumeBasedColouredBars(c){
+  const vols=c.map(b=>b.v),avg=sma(vols,30),sig=Array(c.length).fill(0);
+  for(let i=29;i<c.length;i++){
+    if(!finite(avg[i])||!(c[i].v>avg[i]*1.5))continue;
+    if(c[i].c>c[i].o)sig[i]=1; else if(c[i].c<c[i].o)sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsFollowLine(c){
+  const close=c.map(b=>b.c),basis=sma(close,21),dev=rollingStdPopulation(close,21),a=atr(c,5);
+  const n=c.length,follow=Array(n).fill(NaN),trend=Array(n).fill(0),sig=Array(n).fill(0);
+  let bbSignal=0;
+  for(let i=0;i<n;i++){
+    const upper=finite(basis[i])&&finite(dev[i])?basis[i]+dev[i]:NaN;
+    const lower=finite(basis[i])&&finite(dev[i])?basis[i]-dev[i]:NaN;
+    if(finite(upper)&&close[i]>upper)bbSignal=1;
+    else if(finite(lower)&&close[i]<lower)bbSignal=-1;
+    const prev=i>0&&finite(follow[i-1])?follow[i-1]:0;
+    if(bbSignal===1&&finite(a[i])) follow[i]=Math.max(c[i].l-a[i],prev);
+    else if(bbSignal===-1&&finite(a[i])) follow[i]=Math.min(c[i].h+a[i],prev);
+    else if(i>0) follow[i]=follow[i-1];
+    const cur=finite(follow[i])?follow[i]:0;
+    const prv=i>0&&finite(follow[i-1])?follow[i-1]:0;
+    if(cur>prv)trend[i]=1; else if(cur<prv)trend[i]=-1; else if(i>0)trend[i]=trend[i-1];
+    if(i>0&&c[i].v>0){
+      if(trend[i-1]===-1&&trend[i]===1)sig[i]=1;
+      else if(trend[i-1]===1&&trend[i]===-1)sig[i]=-1;
+    }
+  }
+  return sig;
+}
+
+function signalsSqueezeMomentumV2(c){
+  const n=c.length,close=c.map(b=>b.c),closeMa=sma(close,20),raw=Array(n).fill(NaN),sig=Array(n).fill(0);
+  for(let i=19;i<n;i++){
+    let hi=-Infinity,lo=Infinity;
+    for(let k=i-19;k<=i;k++){hi=Math.max(hi,c[k].h);lo=Math.min(lo,c[k].l);}
+    const midpoint=(((hi+lo)/2)+closeMa[i])/2;
+    raw[i]=close[i]-midpoint;
+  }
+  const val=rollingLinReg(raw,20,0),line=sma(val,5);
+  for(let i=1;i<n;i++){
+    if(![val[i],val[i-1],line[i],line[i-1]].every(finite)||!(c[i].v>0))continue;
+    if(val[i]>line[i]&&val[i-1]<=line[i-1])sig[i]=1;
+    else if(val[i]<line[i]&&val[i-1]>=line[i-1])sig[i]=-1;
+  }
+  return sig;
+}
+
+function vidya(source,length){
+  const n=source.length,out=Array(n).fill(NaN),alpha=2/(length+1);
+  const up=Array(n).fill(0),down=Array(n).fill(0);
+  for(let i=1;i<n;i++){const d=source[i]-source[i-1];up[i]=Math.max(d,0);down[i]=Math.max(-d,0);}
+  for(let i=0;i<n;i++){
+    let su=0,sd=0;
+    if(i>=8){for(let k=i-8;k<=i;k++){su+=up[k];sd+=down[k];}}
+    const denom=su+sd,cmo=denom>0?Math.abs((su-sd)/denom):0;
+    const prev=i>0&&finite(out[i-1])?out[i-1]:0,w=alpha*cmo;
+    out[i]=w*source[i]+(1-w)*prev;
+  }
+  return out;
+}
+
+function signalsProgressiveTrendTracker(c){
+  const n=c.length,hhv=Array(n).fill(NaN),llv=Array(n).fill(NaN);
+  for(let i=4;i<n;i++){
+    let hi=-Infinity,lo=Infinity;for(let k=i-4;k<=i;k++){hi=Math.max(hi,c[k].h);lo=Math.min(lo,c[k].l);}
+    hhv[i]=hi;llv[i]=lo;
+  }
+  const hhvP=Array(n).fill(NaN),llvP=Array(n).fill(NaN);
+  for(let i=8;i<n;i++){
+    let hi=-Infinity,lo=Infinity;for(let k=i-4;k<=i;k++){if(finite(hhv[k]))hi=Math.max(hi,hhv[k]);if(finite(llv[k]))lo=Math.min(lo,llv[k]);}
+    if(hi>-Infinity)hhvP[i]=hi;if(lo<Infinity)llvP[i]=lo;
+  }
+  const upperMa=vidya(hhvP.map(v=>finite(v)?v:0),2),lowerMa=vidya(llvP.map(v=>finite(v)?v:0),2);
+  const upperStd=rollingStdPopulation(hhvP,2),lowerStd=rollingStdPopulation(llvP,2);
+  const upperBand=upperMa.map((v,i)=>finite(hhvP[i])&&finite(upperStd[i])?v+2*upperStd[i]:NaN);
+  const lowerBand=lowerMa.map((v,i)=>finite(llvP[i])&&finite(lowerStd[i])?v-2*lowerStd[i]:NaN);
+  const pttUpper=Array(n).fill(NaN),pttLower=Array(n).fill(NaN),sig=Array(n).fill(0);
+  for(let i=9;i<n;i++){
+    const us=upperBand.slice(i-9,i+1).filter(finite),ls=lowerBand.slice(i-9,i+1).filter(finite);
+    if(us.length===10)pttUpper[i]=Math.min(...us);
+    if(ls.length===10)pttLower[i]=Math.max(...ls);
+    if(i>0&&c[i].v>0){
+      const long=finite(pttLower[i])&&finite(pttLower[i-1])&&c[i].c>pttLower[i]&&c[i-1].c<=pttLower[i-1];
+      const short=finite(pttUpper[i])&&finite(pttUpper[i-1])&&c[i].c<pttUpper[i]&&c[i-1].c>=pttUpper[i-1];
+      if(long&&!short)sig[i]=1;else if(short&&!long)sig[i]=-1;
+    }
+  }
+  return sig;
+}
+
+function signalsTurtleVhfFiltered(c){
+  const n=c.length,close=c.map(b=>b.c),vhf=Array(n).fill(NaN),sig=Array(n).fill(0);
+  for(let i=17;i<n;i++){
+    const win=close.slice(i-17,i+1),num=Math.max(...win)-Math.min(...win);
+    let den=0;for(let k=i-16;k<=i;k++)den+=Math.abs(close[k]-close[k-1]);
+    if(den>0)vhf[i]=num/den;
+  }
+  const vhfEma=ema(vhf.map(v=>finite(v)?v:NaN),14);
+  for(let i=20;i<n;i++){
+    if(![vhf[i],vhf[i-1],vhfEma[i]].every(finite)||!(vhf[i]>vhfEma[i]&&vhf[i]>vhf[i-1])||!(c[i].v>0))continue;
+    let hi=-Infinity,lo=Infinity;for(let k=i-20;k<i;k++){hi=Math.max(hi,c[k].h);lo=Math.min(lo,c[k].l);}
+    const long=c[i].h>=hi,short=c[i].l<=lo;
+    if(long&&!short)sig[i]=1;else if(short&&!long)sig[i]=-1;
+  }
+  return sig;
+}
+
 export const STRATEGIES = [
   {id:'pmax',name:'PMax Explorer',family:'trend_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsPMax},
   {id:'alphatrend',name:'AlphaTrend',family:'trend_volume_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsAlphaTrend},
@@ -557,7 +695,14 @@ export const STRATEGIES = [
   {id:'ut_bot_quantnomad',name:'UT Bot Strategy — QuantNomad',family:'atr_trailing_stop',version:'tv-open-v1',mode:'REVERSAL',signal:signalsUTBotQuantNomad},
   {id:'chandelier_zlsma',name:'Chandelier Exit ZLSMA Strategy',family:'trend_breakout_filter',version:'tv-open-v1',mode:'TARGET_POSITION',signal:targetsChandelierZLSMA},
   {id:'squeeze_momentum',name:'Squeeze Momentum',family:'compression_momentum',version:'coin-strategy-lab-v1',mode:'REVERSAL',signal:signalsSqueezeMomentum},
-  {id:'qqe_ssl_wae',name:'QQE MOD + SSL Hybrid + WAE',family:'momentum_trend_explosion',version:'coin-strategy-lab-v1',mode:'REVERSAL',signal:signalsQQESSLWAE}
+  {id:'qqe_ssl_wae',name:'QQE MOD + SSL Hybrid + WAE',family:'momentum_trend_explosion',version:'coin-strategy-lab-v1',mode:'REVERSAL',signal:signalsQQESSLWAE},
+  {id:'turtle_trade_channels',name:'Turtle Trade Channels Scalp',family:'breakout',version:'freqtrade-research-v1',mode:'REVERSAL',signal:signalsTurtleTradeChannels},
+  {id:'isolated_peak_bottom',name:'Isolated Peak Bottom Scalp',family:'reversal_structure',version:'freqtrade-research-v1',mode:'REVERSAL',signal:signalsIsolatedPeakBottom},
+  {id:'volume_coloured_bars',name:'Volume Based Coloured Bars Scalp',family:'volume_momentum',version:'freqtrade-research-v1',mode:'REVERSAL',signal:signalsVolumeBasedColouredBars},
+  {id:'follow_line',name:'Follow Line Scalp',family:'trend_following',version:'freqtrade-research-v1',mode:'REVERSAL',signal:signalsFollowLine},
+  {id:'squeeze_momentum_v2',name:'Squeeze Momentum V2 Scalp',family:'compression_momentum',version:'freqtrade-research-v1',mode:'REVERSAL',signal:signalsSqueezeMomentumV2},
+  {id:'progressive_trend_tracker',name:'Progressive Trend Tracker Scalp',family:'trend_tracker',version:'freqtrade-research-v1',mode:'REVERSAL',signal:signalsProgressiveTrendTracker},
+  {id:'turtle_vhf_filtered',name:'Turtle VHF Filtered Scalp',family:'breakout_regime',version:'freqtrade-research-v1',mode:'REVERSAL',signal:signalsTurtleVhfFiltered}
 ];
 
 function backtest(c,signals,tradeStart=-Infinity) {
