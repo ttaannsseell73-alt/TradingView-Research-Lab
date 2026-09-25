@@ -2,6 +2,19 @@ name: strategy-selector-shadow-monitor
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/strategy-selector-shadow.yml'
+      - 'research/strategy_engine_v2.mjs'
+      - 'research/tradability_policy.json'
+      - 'scripts/fetch-live-market-snapshot.py'
+      - 'scripts/build-execution-watchlist.mjs'
+      - 'scripts/fetch-current-candles.py'
+      - 'scripts/build-current-signal-watchlist.mjs'
+      - 'scripts/build-shadow-journal.mjs'
+      - 'tests/strategy_engine_v2.test.mjs'
+      - 'tests/shadow_journal.test.mjs'
   schedule:
     - cron: '*/15 * * * *'
   pull_request:
