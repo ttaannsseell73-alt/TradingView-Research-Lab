@@ -125,6 +125,39 @@ rows.sort((a,b)=>
 
 const freshSignals=rows.filter(x=>x.signalAgeBars===0&&['LONG','SHORT'].includes(x.direction));
 const paperEntryQueue=rows.filter(x=>x.status==='FRESH_ENTRY'&&!x.directionConflict);
+const paperIntentMap=new Map();
+for(const x of paperEntryQueue){
+  if(!paperIntentMap.has(x.underlying)) paperIntentMap.set(x.underlying,[]);
+  paperIntentMap.get(x.underlying).push(x);
+}
+const paperIntents=[...paperIntentMap.entries()].map(([underlying,xs])=>{
+  const directions=[...new Set(xs.map(x=>x.direction))];
+  if(directions.length!==1) return null;
+  const sorted=[...xs].sort((a,b)=>
+    (rank[b.executionStatus]??-9)-(rank[a.executionStatus]??-9)||
+    Number(b.evidence?.trades??0)-Number(a.evidence?.trades??0)||
+    Number(b.evidence?.net??-Infinity)-Number(a.evidence?.net??-Infinity)
+  );
+  const lead=sorted[0];
+  return {
+    underlying,
+    executionContract:lead.executionContract,
+    direction:directions[0],
+    executionStatus:lead.executionStatus,
+    supportCount:xs.length,
+    leadStrategy:lead.strategy,
+    leadTimeframe:lead.timeframe,
+    supportingSignals:xs.map(x=>({
+      strategy:x.strategy,timeframe:x.timeframe,
+      evidence:x.evidence,contractTransfer:x.contractTransfer
+    })),
+    market:lead.market
+  };
+}).filter(Boolean).sort((a,b)=>
+  b.supportCount-a.supportCount||
+  (rank[b.executionStatus]??-9)-(rank[a.executionStatus]??-9)||
+  Number(b.supportingSignals?.[0]?.evidence?.trades??0)-Number(a.supportingSignals?.[0]?.evidence?.trades??0)
+);
 const recentSignalCandidates=rows.filter(x=>x.status==='RECENT_SIGNAL');
 const reviewSignals=rows.filter(x=>['EVIDENCE_REVIEW','DIRECTION_CONFLICT','OBSERVE_ONLY'].includes(x.status)&&x.direction!=='FLAT');
 const activeWatch=rows.filter(x=>['FRESH_ENTRY','RECENT_SIGNAL','ACTIVE_TREND','OBSERVE_ONLY','EVIDENCE_REVIEW','DIRECTION_CONFLICT'].includes(x.status)&&x.direction!=='FLAT');
@@ -146,7 +179,8 @@ const out={
   counts:{
     evaluated:rows.length,
     freshSignals:freshSignals.length,
-    paperEntry:paperEntryQueue.length,
+    paperEntrySignals:paperEntryQueue.length,
+    paperIntents:paperIntents.length,
     recentSignal:recentSignalCandidates.length,
     reviewSignals:reviewSignals.length,
     directionConflicts:rows.filter(x=>x.directionConflict).length,
@@ -154,6 +188,7 @@ const out={
     flat:flat.length,
     missingCandles:rows.filter(x=>x.status==='NO_CANDLES').length
   },
+  paperIntents,
   paperEntryQueue,
   freshSignals,
   recentSignalCandidates,
@@ -169,10 +204,16 @@ const pc=x=>x==null?'':(100*Number(x)).toFixed(2)+'%';
 const lines=[
   '# Current Signal / Paper Shadow Watchlist','',
   'Closed-candle only. FRESH_ENTRY means the strategy changed direction on the latest confirmed candle. No real orders are placed.','',
-  '## Paper entry queue','',
-  '| Underlying | Contract | Strategy | TF | Dir | Exec | Net | PF | DD | Contract transfer |',
-  '|---|---|---|---|---|---|---:|---:|---:|---|'
+  '## Paper position intents','',
+  '| Underlying | Contract | Dir | Exec | Support | Lead strategy | Lead TF |',
+  '|---|---|---|---|---:|---|---|'
 ];
+for(const x of paperIntents){
+  lines.push(`| ${x.underlying} | ${x.executionContract} | ${x.direction} | ${x.executionStatus} | ${x.supportCount} | ${x.leadStrategy} | ${x.leadTimeframe} |`);
+}
+lines.push('','## Eligible fresh signals','',
+  '| Underlying | Contract | Strategy | TF | Dir | Exec | Net | PF | DD | Contract transfer |',
+  '|---|---|---|---|---|---|---:|---:|---:|---|');
 for(const x of paperEntryQueue){
   lines.push(`| ${x.underlying} | ${x.executionContract} | ${x.strategy} | ${x.timeframe} | ${x.direction} | ${x.executionStatus} | ${pc(x.evidence.net)} | ${Number(x.evidence.pf).toFixed(2)} | ${pc(x.evidence.dd)} | ${x.contractTransfer?'YES':'NO'} |`);
 }
