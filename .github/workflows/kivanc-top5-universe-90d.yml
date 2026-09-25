@@ -356,6 +356,17 @@ jobs:
             artifacts/current-signal/CURRENT_SIGNAL_WATCHLIST.json \
             "$PREV_STATE" \
             artifacts/shadow-journal
+      - name: Detect full-run live data state
+        id: full-live-data-state
+        if: always()
+        run: |
+          if [ -f artifacts/current-signal/CURRENT_SIGNAL_WATCHLIST.json ]; then
+            AVAILABLE=$(node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('artifacts/current-signal/CURRENT_SIGNAL_WATCHLIST.json','utf8')); process.stdout.write(d.dataAvailable===true?'true':'false')")
+          else
+            AVAILABLE=false
+          fi
+          echo "available=$AVAILABLE" >> "$GITHUB_OUTPUT"
+          echo "LIVE_DATA_AVAILABLE=$AVAILABLE"
       - uses: actions/upload-artifact@v4
         with:
           name: strategy-selector-cross-timeframe-final
@@ -369,6 +380,7 @@ jobs:
           retention-days: 30
 
       - name: Upload persistent shadow state
+        if: steps.full-live-data-state.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: strategy-selector-shadow-state
