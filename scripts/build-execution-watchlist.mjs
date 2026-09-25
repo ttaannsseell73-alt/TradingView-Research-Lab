@@ -80,6 +80,8 @@ const out={
   schemaVersion:1,
   generatedAt:new Date().toISOString(),
   marketSnapshotAt:market.snapshotAt??null,
+  marketDataAvailable:market.dataAvailable!==false&&(market.contracts??[]).length>0,
+  marketAllFailed:Boolean(market.allFailed),
   policy:policyPath,
   counts:{
     candidates:rows.length,
