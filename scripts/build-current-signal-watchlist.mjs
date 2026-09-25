@@ -33,13 +33,14 @@ function evidenceFlags(combo){
   if(Number(combo.net??0)>5) f.push('EXTREME_COMPOUNDING');
   return f;
 }
-function actionStatus(execStatus,sig,flags){
+function actionStatus(execStatus,sig,flags,timeframe){
   if(execStatus==='BLOCK'||execStatus==='NO_MARKET_SNAPSHOT') return 'BLOCKED';
   if(!sig||sig.direction==='FLAT') return 'FLAT';
   if(execStatus==='REVIEW') return 'OBSERVE_ONLY';
   if(flags.length) return 'EVIDENCE_REVIEW';
   if(sig.signalAgeBars===0) return 'FRESH_ENTRY';
-  if(sig.signalAgeBars!=null&&sig.signalAgeBars<=2) return 'RECENT_SIGNAL';
+  const recentLimit=timeframe==='5m'?3:1;
+  if(sig.signalAgeBars!=null&&sig.signalAgeBars<=recentLimit) return 'RECENT_SIGNAL';
   return 'ACTIVE_TREND';
 }
 
@@ -103,7 +104,7 @@ for(const ex of execution.candidates??[]){
       evidenceContract:combo.contract,
       contractTransfer:combo.contract!==executionContract,
       strategy,timeframe,
-      status:actionStatus(ex.executionStatus,signal,flags),
+      status:actionStatus(ex.executionStatus,signal,flags,timeframe),
       evidenceFlags:flags,
       directionConflict:false,
       direction:signal?.direction??'UNKNOWN',
@@ -201,7 +202,7 @@ const out={
     candle:'confirmed closed candle only',
     execution:'signal on closed candle; next-bar-open remains canonical execution assumption',
     fresh:'signalAgeBars = 0',
-    recent:'signalAgeBars <= 2; informational, not equivalent to fresh entry',
+    recent:'5m: signalAgeBars <= 3; higher timeframes: <= 1. Recent is primarily for scheduler catch-up and is not equivalent to a fresh live entry.',
     paper:'FRESH_ENTRY requires STRONG/TRADEABLE execution, no evidence review flags and no conflicting fresh direction; no real orders are placed',
     evidenceReview:'THIN_SAMPLE (<10 trades), EXTREME_PF (>8), HIGH_DD (>45%) or EXTREME_COMPOUNDING (>500%) remain visible but are excluded from paper-entry queue',
     directionConflict:'Opposing fresh LONG/SHORT signals on the same underlying are visible but excluded from paper-entry queue'
