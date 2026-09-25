@@ -1,0 +1,38 @@
+name: scalp-research
+
+on:
+  pull_request:
+    paths:
+      - 'research/scalp_*.mjs'
+      - 'research/scalp_sources.json'
+      - 'scripts/scalp-*.mjs'
+      - 'scripts/run-scalp-replay.mjs'
+      - 'tests/scalp_*.test.mjs'
+      - 'docs/SCALP_CANONICAL.md'
+      - '.github/workflows/scalp-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  historical-smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        symbol: [BTCUSDT, ETHUSDT, SOLUSDT]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Historical scalp smoke
+        run: node scripts/scalp-local.mjs ${{ matrix.symbol }} 10000 3000 artifacts/scalp-${{ matrix.symbol }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scalp-${{ matrix.symbol }}
+          path: artifacts/scalp-${{ matrix.symbol }}/${{ matrix.symbol }}-SCALP.json
