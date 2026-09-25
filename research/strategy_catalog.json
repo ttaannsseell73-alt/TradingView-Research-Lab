@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Extensible TradingView strategy discovery and Binance Futures coin-ranking catalog",
+  "selectionPrinciples": {
+    "primaryUnit": "strategy x coin x timeframe",
+    "rankingPrimary": "netReturnAfterCosts",
+    "topN": 5,
+    "executionModel": "confirmed closed candle -> next bar open unless the published rules explicitly require otherwise",
+    "costAware": true,
+    "noLookahead": true,
+    "repaintingBlocked": true,
+    "copyrightPolicy": "Store metadata and original reimplementations from public rules; do not copy third-party Pine source verbatim."
+  },
+  "timeframes": [
+    "1m",
+    "5m",
+    "1h",
+    "4h",
+    "1d"
+  ],
+  "packs": [
+    {
+      "id": "kivanc_core",
+      "status": "IMPLEMENTED",
+      "strategies": [
+        {
+          "id": "pmax",
+          "name": "PMax Explorer",
+          "family": "trend_atr",
+          "status": "IMPLEMENTED"
+        },
+        {
+          "id": "alphatrend",
+          "name": "AlphaTrend",
+          "family": "trend_volume_atr",
+          "status": "IMPLEMENTED"
+        },
+        {
+          "id": "ott",
+          "name": "Optimized Trend Tracker",
+          "family": "adaptive_trend",
+          "status": "IMPLEMENTED"
+        },
+        {
+          "id": "tott",
+          "name": "Twin Optimized Trend Tracker",
+          "family": "adaptive_trend",
+          "status": "IMPLEMENTED"
+        },
+        {
+          "id": "mavilimw",
+          "name": "MavilimW",
+          "family": "smoothed_trend",
+          "status": "IMPLEMENTED"
+        }
+      ]
+    },
+    {
+      "id": "tradingview_open_source_wave_1",
+      "status": "DISCOVERY_QUEUE",
+      "strategies": [
+        {
+          "id": "ssl_hybrid_flip",
+          "name": "SSL Hybrid — Flip Mode",
+          "family": "baseline_trend_atr",
+          "status": "IMPLEMENTED",
+          "source": "https://www.tradingview.com/script/2it69GUx-SSL-Hybrid-Strategy/",
+          "notes": "Independent research adapter using published HMA(60) SSL1 defaults and the published flip-only exit mode.",
+          "implementation": "research/strategy_engine_v2.mjs",
+          "executionVariant": "TP/SL disabled; SSL1 flip drives reversal; closed candle -> next bar open"
+        },
+        {
+          "id": "ssl_hybrid_qqe_flip",
+          "name": "SSL Hybrid + QQE — Flip Mode",
+          "family": "trend_momentum_filter",
+          "status": "IMPLEMENTED",
+          "source": "https://www.tradingview.com/script/fl8CV2N0-SSL-Hybrid-QQE-Strategy/",
+          "notes": "Independent research adapter using published QQE defaults and SSL1 HMA(60) defaults.",
+          "implementation": "research/strategy_engine_v2.mjs",
+          "executionVariant": "Published SSL+QQE entry filter with TP/SL disabled; opposite qualified state reverses; closed candle -> next bar open"
+        },
+        {
+          "id": "supertrend_base",
+          "name": "SuperTrend Strategy",
+          "family": "atr_trend",
+          "status": "QUEUED_FOR_RULE_REIMPLEMENTATION",
+          "source": "https://www.tradingview.com/script/VLRj2sG9-SuperTrend-STRATEGY/",
+          "notes": "ATR-based trend flips; canonical baseline candidate."
+        },
+        {
+          "id": "heiken_ashi_supertrend",
+          "name": "Heiken Ashi & Super Trend",
+          "family": "synthetic_candle_atr_trend",
+          "status": "QUEUED_FOR_RULE_REIMPLEMENTATION",
+          "source": "https://www.tradingview.com/script/KkA3sgXM/",
+          "notes": "1h crypto-oriented Heiken Ashi + SuperTrend rules; requires exact non-lookahead synthetic-candle handling."
+        },
+        {
+          "id": "supertrend_elite",
+          "name": "Supertrend Elite Trend System",
+          "family": "multi_factor_vote",
+          "status": "DISCOVERY_REVIEW",
+          "source": "https://www.tradingview.com/script/CMNxymM9-Supertrend-Elite-Trend-System/",
+          "notes": "Recent multi-factor voting system; only promote to implementation after rules are independently reproducible."
+        },
+        {
+          "id": "ut_bot_quantnomad",
+          "name": "UT Bot Strategy — QuantNomad",
+          "family": "atr_trailing_stop",
+          "status": "IMPLEMENTED",
+          "source": "https://www.tradingview.com/script/VKMgZdYr-UT-Bot-Strategy/",
+          "implementation": "research/strategy_engine_v2.mjs",
+          "defaults": {
+            "keyValue": 1,
+            "atrPeriod": 10,
+            "heikinAshi": false
+          },
+          "executionVariant": "Confirmed UT trailing-stop reversal; closed candle -> next bar open",
+          "notes": "Independent implementation from public rules/defaults. Regular-candle source is canonical."
+        },
+        {
+          "id": "chandelier_exit_strategy",
+          "name": "Chandelier Exit — Strategy",
+          "family": "atr_trailing_stop",
+          "status": "DISCOVERY_REVIEW",
+          "source": "https://www.tradingview.com/script/yca6gmSk-Chandelier-Exit-Strategy/",
+          "notes": "Long/short Chandelier Exit strategy; verify exact entry/exit defaults before implementation."
+        },
+        {
+          "id": "chandelier_zlsma",
+          "name": "Chandelier Exit ZLSMA Strategy",
+          "family": "trend_breakout_filter",
+          "status": "IMPLEMENTED",
+          "source": "https://www.tradingview.com/script/njG2EVJ0-Chandelier-Exit-ZLSMA-Strategy/",
+          "notes": "Independent implementation of published CE+ZLSMA rules. Public strategy recommends 5m; engine preserves flat exits and re-entry state.",
+          "implementation": "research/strategy_engine_v2.mjs",
+          "defaults": {
+            "atrPeriod": 1,
+            "atrMultiplier": 2,
+            "zlsmaLength": 50,
+            "offset": 0
+          },
+          "executionMode": "TARGET_POSITION",
+          "timeframePriority": [
+            "5m",
+            "1h"
+          ]
+        },
+        {
+          "id": "lorentzian_classification_strategy",
+          "name": "Lorentzian Classification Strategy",
+          "family": "ml_distance_classifier",
+          "status": "DISCOVERY_REVIEW",
+          "source": "https://www.tradingview.com/script/SfyBCHIJ/",
+          "notes": "Complex ML-style classifier; only implement after no-lookahead and reproducibility audit."
+        }
+      ]
+    }
+  ]
+}

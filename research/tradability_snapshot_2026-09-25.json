@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "snapshotAt": "2026-09-25T09:51:41Z",
+  "scope": "Initial deployment-candidate tradability sample",
+  "source": "Binance USDⓈ-M Futures public market data",
+  "contracts": [
+    {"symbol":"1000BONKUSDT","quoteVolume24h":44236056.061801,"trades24h":355495,"spreadBps":2.7016074564,"bidDepth10bps":25888.788092,"askDepth10bps":9477.722172,"bidDepth25bps":75573.661176,"askDepth25bps":65638.809151,"openInterestNotional":17242710.449668},
+    {"symbol":"UNIUSDT","quoteVolume24h":365979248.989,"trades24h":1203650,"spreadBps":1.0674067353,"bidDepth10bps":70110.549,"askDepth10bps":88427.242,"bidDepth25bps":223645.585,"askDepth25bps":305040.535,"openInterestNotional":254769958.8145},
+    {"symbol":"ZECUSDT","quoteVolume24h":2041658040.66,"trades24h":5800590,"spreadBps":0.0630328243,"bidDepth10bps":248641.40477,"askDepth10bps":163004.34721,"bidDepth25bps":248641.40477,"askDepth25bps":163004.34721,"openInterestNotional":730579503.295125},
+    {"symbol":"BCHUSDT","quoteVolume24h":280623240.68,"trades24h":1609271,"spreadBps":0.2951811674,"bidDepth10bps":84440.80084,"askDepth10bps":98999.48532,"bidDepth25bps":372374.52952,"askDepth25bps":320889.21621,"openInterestNotional":154658600.32905},
+    {"symbol":"DOTUSDT","quoteVolume24h":74905424.57208,"trades24h":779860,"spreadBps":0.8532787235,"bidDepth10bps":33561.4541,"askDepth10bps":52273.25261,"bidDepth25bps":353122.77668,"askDepth25bps":161481.24697,"openInterestNotional":38854620.05217},
+    {"symbol":"AAVEUSDT","quoteVolume24h":128232503.297,"trades24h":787342,"spreadBps":0.6837373081,"bidDepth10bps":60658.511,"askDepth10bps":55085.929,"bidDepth25bps":236699.707,"askDepth25bps":190732.022,"openInterestNotional":66328836.325},
+    {"symbol":"ARBUSDT","quoteVolume24h":159391772.629828,"trades24h":1496707,"spreadBps":0.4514570777,"bidDepth10bps":37060.537087,"askDepth10bps":37729.805486,"bidDepth25bps":134460.476881,"askDepth25bps":122556.995479,"openInterestNotional":62505579.428762},
+    {"symbol":"BICOUSDT","quoteVolume24h":4574344.80344,"trades24h":72003,"spreadBps":4.425757911,"bidDepth10bps":3422.08206,"askDepth10bps":1800.39828,"bidDepth25bps":18764.85184,"askDepth25bps":19480.76747,"openInterestNotional":3655656.93497},
+    {"symbol":"MINAUSDT","quoteVolume24h":15119151.30774,"trades24h":345062,"spreadBps":2.1215657155,"bidDepth10bps":2451.40398,"askDepth10bps":2140.92556,"bidDepth25bps":10728.00742,"askDepth25bps":9484.86994,"openInterestNotional":4874824.53381},
+    {"symbol":"ALCHUSDT","quoteVolume24h":2452190.59799,"trades24h":54175,"spreadBps":13.0804447351,"bidDepth10bps":298.86555,"askDepth10bps":254.05062,"bidDepth25bps":2192.51005,"askDepth25bps":1803.50283,"openInterestNotional":5908040.58768},
+    {"symbol":"RVNUSDT","quoteVolume24h":3544758.524357,"trades24h":53001,"spreadBps":4.1330853482,"bidDepth10bps":4022.985052,"askDepth10bps":1022.450868,"bidDepth25bps":27807.241615,"askDepth25bps":10267.996472,"openInterestNotional":2261599.495893},
+    {"symbol":"KITEUSDT","quoteVolume24h":5720421.80372,"trades24h":139358,"spreadBps":0.7631548823,"bidDepth10bps":5897.09245,"askDepth10bps":1080.90827,"bidDepth25bps":19369.28168,"askDepth25bps":22296.70437,"openInterestNotional":21961051.798365}
+  ],
+  "expectedPolicyClassification": {
+    "STRONG": ["UNIUSDT","ZECUSDT","BCHUSDT","DOTUSDT","AAVEUSDT","ARBUSDT"],
+    "TRADEABLE": ["1000BONKUSDT","BICOUSDT","MINAUSDT","RVNUSDT","KITEUSDT"],
+    "REVIEW": ["ALCHUSDT"],
+    "BLOCK": []
+  },
+  "notes": [
+    "This is a time-stamped market snapshot, not a permanent liquidity assumption.",
+    "USDT was preferred for duplicated underlyings in this sample because current liquidity was materially better than USDC.",
+    "The future panel must refresh these fields before execution."
+  ]
+}

@@ -1,0 +1,377 @@
+name: strategy-selector-universe-90d
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/fetch-kivanc-vision-shard.py'
+      - 'scripts/run-kivanc-offline-shard.mjs'
+      - 'scripts/combine-kivanc-shards.mjs'
+      - 'research/kivanc_symbols_2026-09-24.json'
+      - 'research/strategy_engine_v2.mjs'
+      - 'scripts/build-opportunity-board.mjs'
+      - 'scripts/build-cross-timeframe-board.mjs'
+      - 'scripts/fetch-live-market-snapshot.py'
+      - 'scripts/fetch-current-candles.py'
+      - 'scripts/build-execution-watchlist.mjs'
+      - 'scripts/build-current-signal-watchlist.mjs'
+      - 'scripts/build-shadow-journal.mjs'
+      - 'research/tradability_policy.json'
+      - 'tests/strategy_engine_v2.test.mjs'
+      - 'tests/shadow_journal.test.mjs'
+      - '.github/workflows/kivanc-top5-universe-90d.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  research:
+    name: ${{ matrix.timeframe }}-shard-${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        include:
+          - timeframe: 1h
+            shard: 0
+            shards: 12
+          - timeframe: 1h
+            shard: 1
+            shards: 12
+          - timeframe: 1h
+            shard: 2
+            shards: 12
+          - timeframe: 1h
+            shard: 3
+            shards: 12
+          - timeframe: 1h
+            shard: 4
+            shards: 12
+          - timeframe: 1h
+            shard: 5
+            shards: 12
+          - timeframe: 1h
+            shard: 6
+            shards: 12
+          - timeframe: 1h
+            shard: 7
+            shards: 12
+          - timeframe: 1h
+            shard: 8
+            shards: 12
+          - timeframe: 1h
+            shard: 9
+            shards: 12
+          - timeframe: 1h
+            shard: 10
+            shards: 12
+          - timeframe: 1h
+            shard: 11
+            shards: 12
+          - timeframe: 4h
+            shard: 0
+            shards: 12
+          - timeframe: 4h
+            shard: 1
+            shards: 12
+          - timeframe: 4h
+            shard: 2
+            shards: 12
+          - timeframe: 4h
+            shard: 3
+            shards: 12
+          - timeframe: 4h
+            shard: 4
+            shards: 12
+          - timeframe: 4h
+            shard: 5
+            shards: 12
+          - timeframe: 4h
+            shard: 6
+            shards: 12
+          - timeframe: 4h
+            shard: 7
+            shards: 12
+          - timeframe: 4h
+            shard: 8
+            shards: 12
+          - timeframe: 4h
+            shard: 9
+            shards: 12
+          - timeframe: 4h
+            shard: 10
+            shards: 12
+          - timeframe: 4h
+            shard: 11
+            shards: 12
+          - timeframe: 1d
+            shard: 0
+            shards: 12
+          - timeframe: 1d
+            shard: 1
+            shards: 12
+          - timeframe: 1d
+            shard: 2
+            shards: 12
+          - timeframe: 1d
+            shard: 3
+            shards: 12
+          - timeframe: 1d
+            shard: 4
+            shards: 12
+          - timeframe: 1d
+            shard: 5
+            shards: 12
+          - timeframe: 1d
+            shard: 6
+            shards: 12
+          - timeframe: 1d
+            shard: 7
+            shards: 12
+          - timeframe: 1d
+            shard: 8
+            shards: 12
+          - timeframe: 1d
+            shard: 9
+            shards: 12
+          - timeframe: 1d
+            shard: 10
+            shards: 12
+          - timeframe: 1d
+            shard: 11
+            shards: 12
+          - timeframe: 5m
+            shard: 0
+            shards: 24
+          - timeframe: 5m
+            shard: 1
+            shards: 24
+          - timeframe: 5m
+            shard: 2
+            shards: 24
+          - timeframe: 5m
+            shard: 3
+            shards: 24
+          - timeframe: 5m
+            shard: 4
+            shards: 24
+          - timeframe: 5m
+            shard: 5
+            shards: 24
+          - timeframe: 5m
+            shard: 6
+            shards: 24
+          - timeframe: 5m
+            shard: 7
+            shards: 24
+          - timeframe: 5m
+            shard: 8
+            shards: 24
+          - timeframe: 5m
+            shard: 9
+            shards: 24
+          - timeframe: 5m
+            shard: 10
+            shards: 24
+          - timeframe: 5m
+            shard: 11
+            shards: 24
+          - timeframe: 5m
+            shard: 12
+            shards: 24
+          - timeframe: 5m
+            shard: 13
+            shards: 24
+          - timeframe: 5m
+            shard: 14
+            shards: 24
+          - timeframe: 5m
+            shard: 15
+            shards: 24
+          - timeframe: 5m
+            shard: 16
+            shards: 24
+          - timeframe: 5m
+            shard: 17
+            shards: 24
+          - timeframe: 5m
+            shard: 18
+            shards: 24
+          - timeframe: 5m
+            shard: 19
+            shards: 24
+          - timeframe: 5m
+            shard: 20
+            shards: 24
+          - timeframe: 5m
+            shard: 21
+            shards: 24
+          - timeframe: 5m
+            shard: 22
+            shards: 24
+          - timeframe: 5m
+            shard: 23
+            shards: 24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate scripts
+        run: |
+          python -m py_compile scripts/fetch-kivanc-vision-shard.py
+          node --check scripts/run-kivanc-offline-shard.mjs
+          node --check scripts/combine-kivanc-shards.mjs
+          node --check scripts/build-opportunity-board.mjs
+          node --check scripts/build-cross-timeframe-board.mjs
+          node --check research/strategy_engine_v2.mjs
+      - name: Download Binance Vision candles with warmup
+        run: |
+          python scripts/fetch-kivanc-vision-shard.py \
+            --shard ${{ matrix.shard }} \
+            --shards ${{ matrix.shards }} \
+            --timeframe ${{ matrix.timeframe }} \
+            --warmup-bars 200 \
+            --out .tmp/strategy-${{ matrix.timeframe }}-${{ matrix.shard }}
+      - name: Evaluate strategy catalog
+        run: |
+          node scripts/run-kivanc-offline-shard.mjs \
+            ${{ matrix.shard }} \
+            .tmp/strategy-${{ matrix.timeframe }}-${{ matrix.shard }} \
+            artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json \
+            ${{ matrix.timeframe }}
+      - name: Upload shard evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategy-shard-${{ matrix.timeframe }}-${{ matrix.shard }}
+          path: artifacts/strategy-shards/results-shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    needs: research
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        timeframe: [1h, 4h, 1d, 5m]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: strategy-shard-${{ matrix.timeframe }}-*
+          path: artifacts/strategy-shards
+          merge-multiple: true
+      - name: Combine strategy results
+        run: |
+          node scripts/combine-kivanc-shards.mjs \
+            artifacts/strategy-shards \
+            artifacts/strategy-final \
+            ${{ matrix.timeframe }}
+      - name: Build profitability-first opportunity board
+        run: |
+          TF_UP=$(echo "${{ matrix.timeframe }}" | tr '[:lower:]' '[:upper:]')
+          node scripts/build-opportunity-board.mjs \
+            "artifacts/strategy-final/STRATEGY_SELECTOR_90D_${TF_UP}.json" \
+            artifacts/opportunity-board
+      - uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-universe-90d-${{ matrix.timeframe }}-final
+          path: |
+            artifacts/strategy-final/
+            artifacts/opportunity-board/
+          if-no-files-found: error
+          retention-days: 30
+
+
+  cross-timeframe:
+    needs: aggregate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: strategy-selector-universe-90d-*-final
+          path: artifacts/all-timeframes
+      - name: Build cross-timeframe management board
+        run: |
+          node scripts/build-cross-timeframe-board.mjs \
+            artifacts/all-timeframes \
+            artifacts/cross-timeframe
+      - name: Validate live watchlist scripts
+        run: |
+          python -m py_compile scripts/fetch-live-market-snapshot.py
+          python -m py_compile scripts/fetch-current-candles.py
+          node --check scripts/build-execution-watchlist.mjs
+          node --check scripts/build-current-signal-watchlist.mjs
+          node --check scripts/build-shadow-journal.mjs
+          node --test tests/strategy_engine_v2.test.mjs
+      - name: Restore previous shadow state
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/shadow-previous
+          ARTIFACT_ID=$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=strategy-selector-shadow-state&per_page=20" --jq '.artifacts | map(select(.expired == false)) | .[0].id // empty')
+          if [ -n "$ARTIFACT_ID" ]; then
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > /tmp/shadow-state.zip
+            unzip -q -o /tmp/shadow-state.zip -d artifacts/shadow-previous
+          fi
+      - name: Build live execution and current-signal watchlist
+        continue-on-error: true
+        run: |
+          python scripts/fetch-live-market-snapshot.py \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/live-inputs/MARKET_SNAPSHOT.json
+          node scripts/build-execution-watchlist.mjs \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/live-inputs/MARKET_SNAPSHOT.json \
+            research/tradability_policy.json \
+            artifacts/execution-watchlist
+          python scripts/fetch-current-candles.py \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/execution-watchlist/EXECUTION_WATCHLIST.json \
+            artifacts/live-inputs/candles
+          node scripts/build-current-signal-watchlist.mjs \
+            artifacts/cross-timeframe/CROSS_TIMEFRAME_BOARD.json \
+            artifacts/execution-watchlist/EXECUTION_WATCHLIST.json \
+            artifacts/live-inputs/candles \
+            artifacts/current-signal
+          PREV_STATE="-"
+          if [ -f artifacts/shadow-previous/SHADOW_STATE.json ]; then
+            PREV_STATE="artifacts/shadow-previous/SHADOW_STATE.json"
+          fi
+          node scripts/build-shadow-journal.mjs \
+            artifacts/current-signal/CURRENT_SIGNAL_WATCHLIST.json \
+            "$PREV_STATE" \
+            artifacts/shadow-journal
+      - uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-cross-timeframe-final
+          path: |
+            artifacts/cross-timeframe/
+            artifacts/execution-watchlist/
+            artifacts/current-signal/
+            artifacts/live-inputs/
+            artifacts/shadow-journal/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload persistent shadow state
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-shadow-state
+          path: artifacts/shadow-journal/SHADOW_STATE.json
+          if-no-files-found: ignore
+          retention-days: 90

@@ -1,0 +1,129 @@
+name: strategy-selector-shadow-monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/strategy-selector-shadow.yml'
+      - 'research/strategy_engine_v2.mjs'
+      - 'research/tradability_policy.json'
+      - 'scripts/fetch-live-market-snapshot.py'
+      - 'scripts/build-execution-watchlist.mjs'
+      - 'scripts/fetch-current-candles.py'
+      - 'scripts/build-current-signal-watchlist.mjs'
+      - 'scripts/build-shadow-journal.mjs'
+      - 'tests/strategy_engine_v2.test.mjs'
+      - 'tests/shadow_journal.test.mjs'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: strategy-selector-shadow-monitor
+  cancel-in-progress: true
+
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate monitor code
+        run: |
+          python -m py_compile scripts/fetch-live-market-snapshot.py
+          python -m py_compile scripts/fetch-current-candles.py
+          node --check research/strategy_engine_v2.mjs
+          node --check scripts/build-execution-watchlist.mjs
+          node --check scripts/build-current-signal-watchlist.mjs
+          node --check scripts/build-shadow-journal.mjs
+          node --test tests/strategy_engine_v2.test.mjs tests/shadow_journal.test.mjs
+
+      - name: Restore latest cross-timeframe baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/baseline
+          BASE_ID=$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=strategy-selector-cross-timeframe-final&per_page=20" --jq '.artifacts | map(select(.expired == false)) | .[0].id // empty')
+          if [ -z "$BASE_ID" ]; then
+            echo "No cross-timeframe baseline artifact is available."
+            exit 1
+          fi
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${BASE_ID}/zip" > /tmp/cross-baseline.zip
+          unzip -q -o /tmp/cross-baseline.zip -d artifacts/baseline
+          BOARD=$(find artifacts/baseline -name CROSS_TIMEFRAME_BOARD.json -print -quit)
+          if [ -z "$BOARD" ]; then
+            echo "CROSS_TIMEFRAME_BOARD.json not found in baseline artifact."
+            exit 1
+          fi
+          echo "BOARD=$BOARD" >> "$GITHUB_ENV"
+
+      - name: Restore previous shadow state
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/shadow-previous
+          STATE_ID=$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=strategy-selector-shadow-state&per_page=20" --jq '.artifacts | map(select(.expired == false)) | .[0].id // empty')
+          if [ -n "$STATE_ID" ]; then
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${STATE_ID}/zip" > /tmp/shadow-state.zip
+            unzip -q -o /tmp/shadow-state.zip -d artifacts/shadow-previous
+          fi
+
+      - name: Refresh live futures market
+        run: |
+          python scripts/fetch-live-market-snapshot.py \
+            "$BOARD" \
+            artifacts/live-inputs/MARKET_SNAPSHOT.json
+          node scripts/build-execution-watchlist.mjs \
+            "$BOARD" \
+            artifacts/live-inputs/MARKET_SNAPSHOT.json \
+            research/tradability_policy.json \
+            artifacts/execution-watchlist
+          python scripts/fetch-current-candles.py \
+            "$BOARD" \
+            artifacts/execution-watchlist/EXECUTION_WATCHLIST.json \
+            artifacts/live-inputs/candles
+          node scripts/build-current-signal-watchlist.mjs \
+            "$BOARD" \
+            artifacts/execution-watchlist/EXECUTION_WATCHLIST.json \
+            artifacts/live-inputs/candles \
+            artifacts/current-signal
+
+      - name: Update persistent paper shadow journal
+        run: |
+          PREV_STATE="-"
+          if [ -f artifacts/shadow-previous/SHADOW_STATE.json ]; then
+            PREV_STATE="artifacts/shadow-previous/SHADOW_STATE.json"
+          fi
+          node scripts/build-shadow-journal.mjs \
+            artifacts/current-signal/CURRENT_SIGNAL_WATCHLIST.json \
+            "$PREV_STATE" \
+            artifacts/shadow-journal
+
+      - name: Upload shadow monitor evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-shadow-monitor
+          path: |
+            artifacts/execution-watchlist/
+            artifacts/current-signal/
+            artifacts/shadow-journal/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload persistent shadow state
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategy-selector-shadow-state
+          path: artifacts/shadow-journal/SHADOW_STATE.json
+          if-no-files-found: error
+          retention-days: 90
