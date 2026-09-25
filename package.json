@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "node --test tests/*.test.mjs",
-    "check:scripts": "node --check scripts/fetch-binance.mjs && node --check scripts/run-research.mjs && node --check scripts/run-acceptance.mjs && node --check scripts/final-local.mjs && node --check scripts/run-scalp-replay.mjs && node --check scripts/scalp-local.mjs && node --check scripts/run-scalp-diagnostics.mjs",
+    "check:scripts": "node --check scripts/fetch-binance.mjs && node --check scripts/run-research.mjs && node --check scripts/run-acceptance.mjs && node --check scripts/final-local.mjs && node --check scripts/run-scalp-replay.mjs && node --check scripts/scalp-local.mjs && node --check scripts/run-scalp-diagnostics.mjs && node --check scripts/discover-binance-futures-universe.mjs && node --check scripts/run-scalp-universe-shard.mjs && node --check scripts/aggregate-scalp-universe.mjs",
     "check": "npm run build && npm run check:scripts && npm test",
     "research": "npm run build && node scripts/run-research.mjs",
     "acceptance": "npm run build && node scripts/run-acceptance.mjs",
@@ -14,7 +14,9 @@
     "final:local": "npm run build && node scripts/final-local.mjs",
     "final:local:publish": "npm run build && node scripts/final-local.mjs --publish",
     "evidence:publish": "node scripts/publish-evidence.mjs",
-    "scalp:smoke": "node scripts/scalp-local.mjs BTCUSDT 10000 3000 artifacts/scalp-smoke"
+    "scalp:smoke": "node scripts/scalp-local.mjs BTCUSDT 10000 3000 artifacts/scalp-smoke",
+    "scalp:universe:discover": "node scripts/discover-binance-futures-universe.mjs artifacts/scalp-universe/universe.json",
+    "scalp:universe:aggregate": "node scripts/aggregate-scalp-universe.mjs artifacts/scalp-universe artifacts/scalp-universe-report"
   },
   "devDependencies": {
     "typescript": "5.8.3"
