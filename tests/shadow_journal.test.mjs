@@ -76,3 +76,45 @@ test('hard tradability block force-closes at current mark',()=>{
   assert.equal(second.closedTrades[0].exitReason,'TRADABILITY_BLOCK');
   assert.equal(second.closedTrades[0].exitPrice,90);
 });
+
+
+test('recent signal after previous snapshot is catch-up entered once',()=>{
+  const previous={
+    schemaVersion:1,
+    createdAt:new Date(1000).toISOString(),
+    updatedAt:new Date(1000).toISOString(),
+    snapshotAtMs:1000,
+    referenceNotional:1000,
+    modeledRoundTripCost:0.0014,
+    positions:[],
+    closedTrades:[],
+    events:[]
+  };
+  const current={
+    snapshotAtMs:5000,
+    paperIntents:[],
+    recentSignalCandidates:[{
+      underlying:'TEST',
+      executionContract:'TESTUSDT',
+      executionStatus:'STRONG',
+      strategy:'ott',
+      timeframe:'5m',
+      direction:'LONG',
+      canonicalEntryPrice:101,
+      canonicalEntryTime:2000,
+      lastSignalTime:1500,
+      evidenceFlags:[],
+      directionConflict:false,
+      evidence:{trades:30,net:0.2,pf:1.4,dd:0.1},
+      market:{mid:103,last:103}
+    }],
+    rows:[{underlying:'TEST',executionStatus:'STRONG',market:{mid:103,last:103}}]
+  };
+  const s=updateShadowState(current,previous);
+  assert.equal(s.positions.length,1);
+  assert.equal(s.positions[0].entryPrice,101);
+  assert.equal(s.positions[0].intentSource,'CATCHUP_RECENT');
+  const again=updateShadowState({...current,snapshotAtMs:6000},s);
+  assert.equal(again.positions.length,1);
+  assert.equal(again.summary.closedTrades,0);
+});
