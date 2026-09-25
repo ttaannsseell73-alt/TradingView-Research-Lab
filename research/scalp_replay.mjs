@@ -21,15 +21,19 @@ function priceForGrossRoe(entry, grossRoePctValue, side, leverage) {
     : entry * (1 - move);
 }
 
-function summarize(trades) {
+export function summarizeScalpTrades(trades) {
   if (!trades.length) {
     return {
       trades: 0,
       netExpectancyPct: 0,
+      grossExpectancyPct: 0,
       profitFactor: 0,
       netPct: 0,
       maxDrawdownPct: 0,
       winRate: 0,
+      avgMfeGrossRoePct: 0,
+      avgMaeGrossRoePct: 0,
+      avgHoldingBars: 0,
     };
   }
 
@@ -40,10 +44,18 @@ function summarize(trades) {
   let peak = 1;
   let dd = 0;
   let sum = 0;
+  let grossSum = 0;
+  let mfeSum = 0;
+  let maeSum = 0;
+  let holdingSum = 0;
 
   for (const t of trades) {
     const r = Number(t.netRoePct);
     sum += r;
+    grossSum += Number(t.grossRoePct ?? 0);
+    mfeSum += Number(t.mfeGrossRoePct ?? 0);
+    maeSum += Number(t.maeGrossRoePct ?? 0);
+    holdingSum += Number(t.holdingBars ?? 0);
     if (r > 0) {
       wins++;
       pos += r;
@@ -59,10 +71,14 @@ function summarize(trades) {
   return {
     trades: trades.length,
     netExpectancyPct: sum / trades.length,
+    grossExpectancyPct: grossSum / trades.length,
     profitFactor: neg < 0 ? pos / Math.abs(neg) : pos > 0 ? 999 : 0,
     netPct: (equity - 1) * 100,
     maxDrawdownPct: dd * 100,
     winRate: wins / trades.length,
+    avgMfeGrossRoePct: mfeSum / trades.length,
+    avgMaeGrossRoePct: maeSum / trades.length,
+    avgHoldingBars: holdingSum / trades.length,
   };
 }
 
@@ -93,6 +109,8 @@ function simulateExit(candles, entryIndex, side, {
 }) {
   const entry = Number(candles[entryIndex].o);
   let peakGross = -Infinity;
+  let maxFavorableGross = -Infinity;
+  let minAdverseGross = Infinity;
   let exitIndex = Math.min(candles.length - 1, entryIndex + maxHoldBars - 1);
   let exitPrice = Number(candles[exitIndex].c);
   let reason = "TIME_EXIT";
@@ -106,6 +124,10 @@ function simulateExit(candles, entryIndex, side, {
     const b = candles[j];
     const favorablePrice = side === "LONG" ? Number(b.h) : Number(b.l);
     const adversePrice = side === "LONG" ? Number(b.l) : Number(b.h);
+    const favorableGross = grossRoePct(entry, favorablePrice, side, leverage);
+    const adverseGross = grossRoePct(entry, adversePrice, side, leverage);
+    maxFavorableGross = Math.max(maxFavorableGross, favorableGross);
+    minAdverseGross = Math.min(minAdverseGross, adverseGross);
 
     const previousPeakGross = peakGross;
     const previousPeakNet = previousPeakGross - estimatedCostRoePct;
@@ -154,10 +176,7 @@ function simulateExit(candles, entryIndex, side, {
       break;
     }
 
-    peakGross = Math.max(
-      peakGross,
-      grossRoePct(entry, favorablePrice, side, leverage),
-    );
+    peakGross = Math.max(peakGross, favorableGross);
   }
 
   const gross = grossRoePct(entry, exitPrice, side, leverage);
@@ -167,6 +186,9 @@ function simulateExit(candles, entryIndex, side, {
     exitIndex,
     grossRoePct: gross,
     netRoePct: gross - estimatedCostRoePct,
+    mfeGrossRoePct: Number.isFinite(maxFavorableGross) ? maxFavorableGross : gross,
+    maeGrossRoePct: Number.isFinite(minAdverseGross) ? minAdverseGross : gross,
+    holdingBars: exitIndex - entryIndex + 1,
     exitReason: reason,
   };
 }
@@ -236,6 +258,8 @@ export function replayScalpSetup({
       side: signal.direction,
       contextBias: signal.contextBias,
       reversal: signal.reversal,
+      eventType: signal.eventType ?? null,
+      contextAligned: signal.contextAligned,
       signalTime: signal.signalTime,
       entryTime: Number(candles1m[entryIndex].t),
       exitTime: Number(candles1m[sim.exitIndex].t),
@@ -245,10 +269,10 @@ export function replayScalpSetup({
   }
 
   const split = splitByTime(trades);
-  const train = summarize(split.train);
-  const validation = summarize(split.validation);
-  const holdout = summarize(split.holdout);
-  const all = summarize(trades);
+  const train = summarizeScalpTrades(split.train);
+  const validation = summarizeScalpTrades(split.validation);
+  const holdout = summarizeScalpTrades(split.holdout);
+  const all = summarizeScalpTrades(trades);
 
   const candidate = classifyScalpCandidate({
     trades: all.trades,
