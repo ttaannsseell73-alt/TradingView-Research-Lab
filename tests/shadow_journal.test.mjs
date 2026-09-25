@@ -118,3 +118,24 @@ test('recent signal after previous snapshot is catch-up entered once',()=>{
   assert.equal(again.positions.length,1);
   assert.equal(again.summary.closedTrades,0);
 });
+
+
+test('data outage carries state forward without advancing snapshot',()=>{
+  const first=updateShadowState({
+    snapshotAtMs:2000,
+    dataAvailable:true,
+    paperIntents:[intent('LONG',100,1500)],
+    rows:[{underlying:'TEST',executionStatus:'STRONG',market:{mid:102,last:102}}]
+  },null);
+  const second=updateShadowState({
+    snapshotAtMs:9000,
+    dataAvailable:false,
+    paperIntents:[],
+    rows:[]
+  },first);
+  assert.equal(second.positions.length,1);
+  assert.equal(second.positions[0].entryPrice,100);
+  assert.equal(second.snapshotAtMs,first.snapshotAtMs);
+  assert.equal(second.lastAttemptStatus,'MARKET_DATA_UNAVAILABLE');
+  assert.equal(second.summary.closedTrades,0);
+});
