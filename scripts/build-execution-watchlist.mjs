@@ -53,6 +53,12 @@ for(const candidate of source){
     executionStatus:classify(chosen),
     executionContract:chosen.symbol,
     market:{
+      last:Number(chosen.last??NaN),
+      bid:Number(chosen.bid??NaN),
+      ask:Number(chosen.ask??NaN),
+      mid:Number.isFinite(Number(chosen.bid))&&Number.isFinite(Number(chosen.ask))
+        ?(Number(chosen.bid)+Number(chosen.ask))/2
+        :Number(chosen.last??NaN),
       quoteVolume24h:Number(chosen.quoteVolume24h??0),
       trades24h:Number(chosen.trades24h??0),
       spreadBps:Number(chosen.spreadBps??Infinity),
