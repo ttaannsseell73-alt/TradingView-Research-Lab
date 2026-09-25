@@ -37,7 +37,56 @@ export function updateShadowState(current,previous=null,{
   prev.modeledRoundTripCost=Number(prev.modeledRoundTripCost??roundTripCost);
 
   const rows=current?.rows??[];
-  const intents=current?.paperIntents??[];
+  const freshIntents=current?.paperIntents??[];
+  const previousSnapshot=previous&&finite(previous.snapshotAtMs)?Number(previous.snapshotAtMs):null;
+
+  const catchupGroups=new Map();
+  if(previousSnapshot!=null){
+    for(const r of current?.recentSignalCandidates??[]){
+      if(!['LONG','SHORT'].includes(r?.direction)) continue;
+      if(!finite(r?.canonicalEntryPrice)||!finite(r?.canonicalEntryTime)) continue;
+      if(Number(r.canonicalEntryTime)<=previousSnapshot) continue;
+      if(!['STRONG','TRADEABLE'].includes(r?.executionStatus)) continue;
+      if((r?.evidenceFlags??[]).length||r?.directionConflict) continue;
+      if(!catchupGroups.has(r.underlying)) catchupGroups.set(r.underlying,[]);
+      catchupGroups.get(r.underlying).push(r);
+    }
+  }
+  const catchupIntents=[];
+  for(const [underlying,xs] of catchupGroups){
+    const latestTime=Math.max(...xs.map(x=>Number(x.canonicalEntryTime)));
+    const latest=xs.filter(x=>Number(x.canonicalEntryTime)===latestTime);
+    const dirs=[...new Set(latest.map(x=>x.direction))];
+    if(dirs.length!==1) continue;
+    const lead=[...latest].sort((a,b)=>
+      Number(b.evidence?.trades??0)-Number(a.evidence?.trades??0)||
+      Number(b.evidence?.net??-Infinity)-Number(a.evidence?.net??-Infinity)
+    )[0];
+    catchupIntents.push({
+      underlying,
+      executionContract:lead.executionContract,
+      direction:dirs[0],
+      executionStatus:lead.executionStatus,
+      supportCount:latest.length,
+      leadStrategy:lead.strategy,
+      leadTimeframe:lead.timeframe,
+      signalTime:lead.lastSignalTime,
+      entryPrice:Number(lead.canonicalEntryPrice),
+      entryTime:Number(lead.canonicalEntryTime),
+      entryReady:true,
+      source:'CATCHUP_RECENT',
+      supportingSignals:latest.map(x=>({
+        strategy:x.strategy,timeframe:x.timeframe,signalTime:x.lastSignalTime,
+        evidence:x.evidence,contractTransfer:x.contractTransfer
+      })),
+      market:lead.market
+    });
+  }
+  const freshByUnder=new Map(freshIntents.map(x=>[x.underlying,{...x,source:'FRESH'}]));
+  for(const x of catchupIntents){
+    if(!freshByUnder.has(x.underlying)) freshByUnder.set(x.underlying,x);
+  }
+  const intents=[...freshByUnder.values()];
   const marketByUnderlying=new Map();
   const execStatusByUnderlying=new Map();
   for(const r of rows){
@@ -99,7 +148,8 @@ export function updateShadowState(current,previous=null,{
       leadStrategy:intent.leadStrategy,
       leadTimeframe:intent.leadTimeframe,
       supportingSignals:intent.supportingSignals??[],
-      modeledRoundTripCost:prev.modeledRoundTripCost
+      modeledRoundTripCost:prev.modeledRoundTripCost,
+      intentSource:intent.source??'FRESH'
     };
     events.push({
       type:'OPEN',
@@ -109,7 +159,8 @@ export function updateShadowState(current,previous=null,{
       price:p.entryPrice,
       supportCount:p.supportCount,
       leadStrategy:p.leadStrategy,
-      leadTimeframe:p.leadTimeframe
+      leadTimeframe:p.leadTimeframe,
+      source:p.intentSource
     });
     return p;
   }
@@ -120,7 +171,9 @@ export function updateShadowState(current,previous=null,{
     const mark=pxOfMarket(market);
     const execStatus=execStatusByUnderlying.get(pos.underlying)??pos.executionStatus;
     const leadRow=rowsByKey.get(`${pos.underlying}::${pos.leadStrategy}::${pos.leadTimeframe}`);
-    const flatExit=leadRow?.fresh&&leadRow?.action==='EXIT_TO_FLAT'&&finite(leadRow?.nextBarOpen)&&finite(leadRow?.nextBarOpenTime);
+    const flatExit=leadRow?.action==='EXIT_TO_FLAT'&&
+      finite(leadRow?.canonicalEntryPrice)&&finite(leadRow?.canonicalEntryTime)&&
+      (previousSnapshot==null?leadRow?.fresh:Number(leadRow.canonicalEntryTime)>previousSnapshot);
 
     if(intent&&intent.direction!==pos.direction&&finite(intent.entryPrice)&&finite(intent.entryTime)){
       closePosition(pos,intent.entryPrice,intent.entryTime,'REVERSE_SIGNAL');
@@ -130,7 +183,7 @@ export function updateShadowState(current,previous=null,{
       continue;
     }
     if(flatExit){
-      closePosition(pos,leadRow.nextBarOpen,leadRow.nextBarOpenTime,'TARGET_FLAT');
+      closePosition(pos,leadRow.canonicalEntryPrice,leadRow.canonicalEntryTime,'TARGET_FLAT');
       handled.add(pos.underlying);
       continue;
     }
@@ -199,7 +252,7 @@ export function updateShadowState(current,previous=null,{
     modeledRoundTripCost:prev.modeledRoundTripCost,
     semantics:{
       capital:'Reference notional is normalized per independent paper trade; it is not a live allocation recommendation.',
-      entry:'Fresh eligible signal enters at the actual next-bar open captured from Binance Futures.',
+      entry:'Fresh eligible signals enter at the actual next-bar open. Scheduler-delayed recent signals may be catch-up entered only when their canonical entry occurred after the previous shadow snapshot.',
       mark:'Open positions are marked at current futures mid/last price.',
       exit:'Opposite eligible fresh intent reverses; target-position lead strategy can exit to flat; hard tradability block forces paper exit.',
       cost:'Net returns subtract the same modeled round-trip cost used by the research baseline.'
