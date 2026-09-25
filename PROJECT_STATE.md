@@ -108,3 +108,38 @@ Next promotion gate:
 5. Only then small-capital real execution.
 
 Main `binance-bot` remains untouched until explicit promotion.
+
+
+## Current-signal and shadow checkpoint — 2026-09-25
+
+Implemented on the canonical Strategy Selector branch:
+
+- `evaluateCurrentSignals` reuses the same 9 strategy adapters as the research engine; no second decision engine exists.
+- Only confirmed closed candles can create strategy-state changes.
+- REVERSAL adapters expose current LONG/SHORT state and signal age.
+- TARGET_POSITION adapters expose LONG/SHORT/FLAT and explicit exit-to-flat transitions.
+- Live Binance USDⓈ-M candle snapshots retain the still-open next bar only for canonical next-bar-open paper fill pricing; the open bar is never fed into signal generation.
+- Current-signal output separates FRESH_ENTRY, RECENT_SIGNAL, ACTIVE_TREND, EVIDENCE_REVIEW, DIRECTION_CONFLICT and OBSERVE_ONLY.
+- Paper eligibility requires STRONG/TRADEABLE execution, no evidence-review flags and no conflicting fresh direction.
+- Multiple fresh same-direction strategies on one underlying aggregate into one paper position intent; they do not create duplicate positions.
+- USDT/USDC remain underlying-deduplicated and the chosen execution contract carries live bid/ask/mid/last fields.
+- Persistent `SHADOW_STATE.json` is carried between workflow runs via GitHub Actions artifacts.
+- Shadow journal tracks open positions, reversals, target-position exits, tradability-block exits, realized return and mark-to-market unrealized return.
+- Shadow entry uses the actual next-bar open captured from Binance Futures.
+- Shadow results subtract the same 14 bps modeled round-trip cost used by the research baseline.
+- PnL is reported against a normalized 1,000 USDT reference notional per independent paper trade; this is a measurement unit, not a live allocation rule.
+- No real orders are sent.
+
+Validation:
+- Current-signal closed-candle determinism tests added.
+- Shadow journal tests cover open, same-direction hold, opposite-direction reverse and hard tradability-block exit.
+- Normal CI PASS at commit `86606563d77279801256a759dc21ca36d5ef3aa1`.
+
+Manual live sanity snapshot after implementation:
+- BCHUSDT 4h SHORT paper intent: entry 331.98; current spot-check price 337.48; modeled net if closed approximately -1.77%.
+- AAVEUSDT 1h LONG: entry 145.87; price 148.22; modeled net if closed approximately +1.47%.
+- DOTUSDT 4h LONG: entry 1.1579; price 1.1815; modeled net if closed approximately +1.90%.
+- RVNUSDT 4h LONG: entry 0.002398; price 0.002440; modeled net if closed approximately +1.61%.
+- KITEUSDT 1h LONG: entry 0.13031; price 0.13174; modeled net if closed approximately +0.96%.
+
+The manual figures above are a time-stamped sanity check only. Canonical shadow evidence comes from persisted workflow artifacts across repeated runs.
