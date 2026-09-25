@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
 BASE="https://fapi.binance.com"
 LIMIT=350
@@ -18,10 +19,20 @@ def get_json(path, params=None, retries=4):
             req=Request(url, headers={"User-Agent":"TradingView-Research-Lab/1.0"})
             with urlopen(req, timeout=25) as r:
                 return json.loads(r.read().decode("utf-8"))
+        except HTTPError as e:
+            try:
+                body=e.read().decode("utf-8","replace")[:300]
+            except Exception:
+                body=""
+            last=RuntimeError(f"HTTP {e.code}: {body}")
+            if attempt+1<retries:
+                retry_after=e.headers.get("Retry-After")
+                wait=float(retry_after) if retry_after and retry_after.replace(".","",1).isdigit() else 2.0*(attempt+1)
+                time.sleep(min(wait,15.0))
         except Exception as e:
             last=e
             if attempt+1<retries:
-                time.sleep(1.5*(attempt+1))
+                time.sleep(2.0*(attempt+1))
     raise RuntimeError(f"GET {url} failed: {last}")
 
 def main():
@@ -66,7 +77,7 @@ def main():
         return symbol,tf,closed,current_bar
 
     reqs=sorted(requests)
-    workers=max(1,min(8,len(reqs)))
+    workers=max(1,min(4,len(reqs)))
     with ThreadPoolExecutor(max_workers=workers) as pool:
         future_map={pool.submit(fetch_series,symbol,tf):(symbol,tf) for symbol,tf in reqs}
         for future in as_completed(future_map):
@@ -88,11 +99,16 @@ def main():
     failures.sort(key=lambda x:(x["symbol"],x["timeframe"]))
     (out/"manifest.json").write_text(json.dumps({
         "schemaVersion":1,"snapshotAtMs":now_ms,"requested":len(requests),
+        "dataAvailable":len(manifest)>0,
         "series":manifest,"failures":failures
     },indent=2)+"\n",encoding="utf-8")
-    print(json.dumps({"requested":len(requests),"ok":len(manifest),"failed":len(failures)}))
+    print(json.dumps({
+        "requested":len(requests),"ok":len(manifest),"failed":len(failures),
+        "dataAvailable":len(manifest)>0,
+        "failureSample":failures[:3]
+    },ensure_ascii=False))
     if not manifest:
-        raise SystemExit("No candle series fetched")
+        print("No fresh candle series; downstream will preserve shadow state.",file=sys.stderr)
 
 if __name__=="__main__":
     main()
