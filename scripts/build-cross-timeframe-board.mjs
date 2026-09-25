@@ -274,9 +274,9 @@ console.log(JSON.stringify({
   combinations:normalized.length,
   rankable:candidates.length,
   evidencePass:evidence.length,
-  deployment:deploymentCandidates.slice(0,20).map(x=>({symbol:x.symbol,tf:x.evidenceTimeframes,families:x.evidenceFamilyCount,evidence:x.evidenceCombinations,clean:x.cleanCombinations,bestNet:x.bestEvidenceNet,medianDD:x.medianEvidenceDD})),
+  deployment:deploymentCandidates.slice(0,20).map(x=>({underlying:x.underlying,contracts:x.contracts,tf:x.evidenceTimeframes,families:x.evidenceFamilyCount,evidence:x.evidenceCombinations,clean:x.cleanCombinations,bestNet:x.bestEvidenceNet,medianDD:x.medianEvidenceDD})),
   watchlist:managementWatchlist.slice(0,20).map(x=>({
-    symbol:x.symbol,tf:x.evidenceTimeframes,families:x.evidenceFamilyCount,
+    underlying:x.underlying,contracts:x.contracts,tf:x.evidenceTimeframes,families:x.evidenceFamilyCount,
     evidence:x.evidenceCombinations,clean:x.cleanCombinations,bestNet:x.bestEvidenceNet,
     medianDD:x.medianEvidenceDD
   }))
