@@ -139,3 +139,43 @@ test('data outage carries state forward without advancing snapshot',()=>{
   assert.equal(second.lastAttemptStatus,'MARKET_DATA_UNAVAILABLE');
   assert.equal(second.summary.closedTrades,0);
 });
+
+
+test('long outage recovers latest post-snapshot reversal from current rows',()=>{
+  const first=updateShadowState({
+    snapshotAtMs:1000,
+    dataAvailable:true,
+    paperIntents:[intent('LONG',100,900)],
+    rows:[{underlying:'TEST',executionStatus:'STRONG',market:{mid:101,last:101}}]
+  },null);
+  const current={
+    snapshotAtMs:10000,
+    dataAvailable:true,
+    paperIntents:[],
+    recentSignalCandidates:[],
+    rows:[{
+      underlying:'TEST',
+      executionContract:'TESTUSDT',
+      executionStatus:'STRONG',
+      strategy:'ott',
+      timeframe:'1h',
+      direction:'SHORT',
+      status:'ACTIVE_TREND',
+      canonicalEntryPrice:95,
+      canonicalEntryTime:4000,
+      lastSignalTime:3000,
+      evidenceFlags:[],
+      directionConflict:false,
+      evidence:{trades:30,net:0.2,pf:1.4,dd:0.1},
+      market:{mid:94,last:94}
+    }]
+  };
+  const second=updateShadowState(current,first);
+  assert.equal(second.closedTrades.length,1);
+  assert.equal(second.closedTrades[0].exitReason,'REVERSE_SIGNAL');
+  assert.equal(second.closedTrades[0].exitPrice,95);
+  assert.equal(second.positions.length,1);
+  assert.equal(second.positions[0].direction,'SHORT');
+  assert.equal(second.positions[0].entryPrice,95);
+  assert.equal(second.positions[0].intentSource,'CATCHUP_RECENT');
+});
