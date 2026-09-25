@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json, sys, time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -43,38 +44,48 @@ def main():
     failures=[]
     manifest=[]
     now_ms=int(time.time()*1000)
-    for i,(symbol,tf) in enumerate(sorted(requests),1):
-        try:
-            raw=get_json("/fapi/v1/klines",{"symbol":symbol,"interval":tf,"limit":LIMIT})
-            closed=[]
-            current_bar=None
-            for k in raw:
-                open_t=int(k[0]); close_t=int(k[6])
-                if close_t >= now_ms:
-                    current_bar={
-                        "t":open_t,
-                        "o":float(k[1]),"h":float(k[2]),"l":float(k[3]),"c":float(k[4]),"v":float(k[5]),
-                        "closeTime":close_t
-                    }
-                    continue
-                closed.append({
+
+    def fetch_series(symbol,tf):
+        raw=get_json("/fapi/v1/klines",{"symbol":symbol,"interval":tf,"limit":LIMIT})
+        closed=[]
+        current_bar=None
+        for k in raw:
+            open_t=int(k[0]); close_t=int(k[6])
+            if close_t >= now_ms:
+                current_bar={
                     "t":open_t,
                     "o":float(k[1]),"h":float(k[2]),"l":float(k[3]),"c":float(k[4]),"v":float(k[5]),
                     "closeTime":close_t
-                })
-            p=out/f"{symbol}__{tf}.json"
-            p.write_text(json.dumps({
-                "symbol":symbol,"timeframe":tf,"snapshotAtMs":now_ms,
-                "candles":closed,"currentBar":current_bar
-            },separators=(",",":"))+"\n",encoding="utf-8")
-            manifest.append({
-                "symbol":symbol,"timeframe":tf,"bars":len(closed),
-                "hasCurrentBar":current_bar is not None,"path":p.name
+                }
+                continue
+            closed.append({
+                "t":open_t,
+                "o":float(k[1]),"h":float(k[2]),"l":float(k[3]),"c":float(k[4]),"v":float(k[5]),
+                "closeTime":close_t
             })
-        except Exception as e:
-            failures.append({"symbol":symbol,"timeframe":tf,"error":str(e)})
-        if i%10==0:
-            time.sleep(0.2)
+        return symbol,tf,closed,current_bar
+
+    reqs=sorted(requests)
+    workers=max(1,min(8,len(reqs)))
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        future_map={pool.submit(fetch_series,symbol,tf):(symbol,tf) for symbol,tf in reqs}
+        for future in as_completed(future_map):
+            symbol,tf=future_map[future]
+            try:
+                symbol,tf,closed,current_bar=future.result()
+                p=out/f"{symbol}__{tf}.json"
+                p.write_text(json.dumps({
+                    "symbol":symbol,"timeframe":tf,"snapshotAtMs":now_ms,
+                    "candles":closed,"currentBar":current_bar
+                },separators=(",",":"))+"\n",encoding="utf-8")
+                manifest.append({
+                    "symbol":symbol,"timeframe":tf,"bars":len(closed),
+                    "hasCurrentBar":current_bar is not None,"path":p.name
+                })
+            except Exception as e:
+                failures.append({"symbol":symbol,"timeframe":tf,"error":str(e)})
+    manifest.sort(key=lambda x:(x["symbol"],x["timeframe"]))
+    failures.sort(key=lambda x:(x["symbol"],x["timeframe"]))
     (out/"manifest.json").write_text(json.dumps({
         "schemaVersion":1,"snapshotAtMs":now_ms,"requested":len(requests),
         "series":manifest,"failures":failures
