@@ -528,6 +528,73 @@ function stats(trades,cost,start,end) {
   };
 }
 
+function directionLabel(x){
+  return x>0?'LONG':x<0?'SHORT':'FLAT';
+}
+
+export function evaluateCurrentSignals(candles, {
+  asOf=Infinity,
+  intervalMs=null,
+  strategyIds=null
+}={}) {
+  const ids=strategyIds?new Set(strategyIds):null;
+  const usable=(intervalMs&&Number.isFinite(asOf))
+    ? candles.filter(b=>Number.isFinite(b.t)&&b.t+intervalMs<=asOf)
+    : candles.slice();
+  if(!usable.length) return [];
+
+  const lastIndex=usable.length-1;
+  return STRATEGIES
+    .filter(s=>!ids||ids.has(s.id))
+    .map(s=>{
+      const raw=s.signal(usable);
+      let state=0;
+      let lastSignalIndex=-1;
+
+      if((s.mode??'REVERSAL')==='TARGET_POSITION'){
+        state=[-1,0,1].includes(raw[lastIndex])?raw[lastIndex]:0;
+        for(let i=lastIndex;i>=1;i--){
+          if(raw[i]!==raw[i-1]){
+            lastSignalIndex=i;
+            break;
+          }
+        }
+        if(lastSignalIndex<0&&raw[0]!==0) lastSignalIndex=0;
+      } else {
+        for(let i=0;i<=lastIndex;i++){
+          if(raw[i]===1||raw[i]===-1){
+            state=raw[i];
+            lastSignalIndex=i;
+          }
+        }
+      }
+
+      const lastSignalTime=lastSignalIndex>=0?usable[lastSignalIndex].t:null;
+      const signalAgeBars=lastSignalIndex>=0?lastIndex-lastSignalIndex:null;
+      const fresh=signalAgeBars===0;
+      let action='FLAT';
+      if(state===1) action=fresh?'ENTER_LONG':'HOLD_LONG';
+      else if(state===-1) action=fresh?'ENTER_SHORT':'HOLD_SHORT';
+      else if((s.mode??'REVERSAL')==='TARGET_POSITION'&&fresh) action='EXIT_TO_FLAT';
+
+      return {
+        id:s.id,
+        name:s.name,
+        family:s.family,
+        version:s.version,
+        mode:s.mode??'REVERSAL',
+        direction:directionLabel(state),
+        targetPosition:state,
+        action,
+        fresh,
+        signalAgeBars,
+        lastSignalTime,
+        lastClosedBarTime:usable[lastIndex].t,
+        barsUsed:usable.length
+      };
+    });
+}
+
 export function evaluateStrategies(candles, {
   cost=0.0014,
   stressCost=0.0015,
