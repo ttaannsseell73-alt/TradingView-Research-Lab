@@ -92,8 +92,8 @@ function fetchCsv({ root, symbol, timeframe, start, end, output }) {
 const planFile = process.argv[2];
 if (!planFile) fail('Usage: node scripts/run-datahub-plan.mjs PLAN.json [SHARD_INDEX] [SHARD_COUNT]');
 
-const shardIndex = Number(process.argv[3] ?? 0);
-const shardCount = Number(process.argv[4] ?? 1);
+const shardIndex = Number(process.argv[3] ?? process.env.SHARD_INDEX ?? 0);
+const shardCount = Number(process.argv[4] ?? process.env.SHARD_COUNT ?? 1);
 if (!Number.isInteger(shardIndex) || !Number.isInteger(shardCount) || shardCount < 1 || shardIndex < 0 || shardIndex >= shardCount) {
   fail('Invalid shard index/count');
 }
