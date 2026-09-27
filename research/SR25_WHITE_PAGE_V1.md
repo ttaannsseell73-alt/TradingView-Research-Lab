@@ -1,6 +1,6 @@
 # SR25 White-Page Candidate Catalog v1
 
-Status: RESEARCH CANDIDATES ONLY. No strategy is promoted until it passes our own 9-month continuity and cost/stress tests.
+Status: IMPLEMENTED RESEARCH ADAPTERS. All 25 candidates are executable as `sr25-v1`; none is promoted until it passes our own 9-month continuity and cost/stress tests.
 
 Canonical research question:
 > Which Coin × ONE Strategy pair stayed profitable most consistently over the last 9 months, and among those persistent pairs which produced the highest return with acceptable PF/DD/trade count?
@@ -175,3 +175,36 @@ GitHub:
 - kayasolomon/anchored-vwap
 - pedrobraiti/volume-profile-trading
 - public ICT order-block backtesting implementations
+
+
+## Executable SR25 IDs
+
+All 25 are implemented in `research/sr25_strategies.mjs` and wired into `strategy_engine_v2.mjs`.
+
+1. `sr25_fractal_cluster_rejection`
+2. `sr25_confirmed_pivot_breakout`
+3. `sr25_breakout_retest`
+4. `sr25_role_reversal_flip`
+5. `sr25_wick_confirmed_zone`
+6. `sr25_liquidity_sweep_reclaim`
+7. `sr25_liquidity_absorption`
+8. `sr25_previous_day_sweep`
+9. `sr25_week_month_sweep`
+10. `sr25_lsob`
+11. `sr25_impulse_ob_retest`
+12. `sr25_fvg_first_touch`
+13. `sr25_inverse_fvg`
+14. `sr25_pdh_fvg_mss`
+15. `sr25_supply_demand_retest`
+16. `sr25_kernel_supply_demand`
+17. `sr25_camarilla_h3_l3`
+18. `sr25_camarilla_h4_l4`
+19. `sr25_narrow_cpr_breakout`
+20. `sr25_poc_mean_reversion`
+21. `sr25_value_area_80`
+22. `sr25_naked_poc_revisit`
+23. `sr25_swing_anchored_vwap`
+24. `sr25_trendline_breakout`
+25. `sr25_donchian_breakout`
+
+Implementation note: these are deterministic independent research adapters based on the catalog rules. They do not copy external Pine/GitHub source code. Closed-bar execution and no-look-ahead are enforced by tests.
