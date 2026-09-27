@@ -236,7 +236,8 @@ for (const task of selectedTasks) {
       minTrades,
       start: plan.startMs,
       end: plan.endMs,
-    }).filter((row) => plan.strategyIds.includes(row.id));
+      strategyIds: plan.strategyIds,
+    });
 
     for (const row of evaluated) {
       results.push({
@@ -275,7 +276,8 @@ for (const task of selectedTasks) {
           minTrades: monthlyMinTrades,
           start: window.start,
           end: window.end,
-        }).filter((row) => plan.strategyIds.includes(row.id));
+          strategyIds: plan.strategyIds,
+        });
 
         for (const row of monthEvaluated) {
           monthlyResults.push({
