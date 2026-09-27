@@ -85,12 +85,14 @@ for(const [symbol,id] of targetCombos){
   for(const tf of Object.keys(TF_MS)){
     const file=path.join(root,symbol+'-'+tf+'.csv');
     if(!fs.existsSync(file)){
+      deterministicFailures++;
       determinism.push({symbol,timeframe:tf,id,status:'MISSING_CSV'});
       continue;
     }
     const candles=parseCsv(file);
     const usable=candles.filter(b=>b.t>=start&&b.t<end);
     if(!usable.length){
+      deterministicFailures++;
       determinism.push({symbol,timeframe:tf,id,status:'NO_DATA'});
       continue;
     }
@@ -110,6 +112,7 @@ let causalityFailures=0;
 for(const symbol of ['QUSDT','FHEUSDT']){
   const file=path.join(root,symbol+'-15m.csv');
   if(!fs.existsSync(file)){
+    causalityFailures++;
     causality.push({symbol,timeframe:'15m',status:'MISSING_CSV'});
     continue;
   }
