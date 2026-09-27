@@ -244,6 +244,8 @@ jobs:
     env:
       PLAN_B64: ${{ needs.prepare.outputs.plan_b64 }}
       DATAHUB_ROOT: ${{ vars.DATAHUB_LOCAL_ROOT || 'D:/Futures-Research-Data' }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
       RESEARCH_BACKEND: local
       RESEARCH_OUT_DIR: artifacts/hybrid-research
       SHARD_INDEX: ${{ needs.prepare.outputs.local_index }}
