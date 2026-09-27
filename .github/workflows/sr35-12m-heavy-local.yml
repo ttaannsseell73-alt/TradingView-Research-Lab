@@ -1,0 +1,130 @@
+name: SR35 12M Heavy Local
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[SR35 12M HEAVY RUN]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 480
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: local
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      SHARD_INDEX: 0
+      SHARD_COUNT: 1
+      REUSE_EXISTING_CSV: 0
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build exact 725-symbol 12M SR35 plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-15m-futures.feather"
+          $files = Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*-15m-futures.feather" -File | Sort-Object Name
+          $symbols = @()
+          foreach ($f in $files) {
+            if ($f.Name.EndsWith($suffix)) {
+              $base = $f.Name.Substring(0, $f.Name.Length - $suffix.Length)
+              $symbols += (($base -replace "_","") + "USDT")
+            }
+          }
+          $symbols = @($symbols | Sort-Object -Unique)
+          if ($symbols.Count -ne 725) { throw "Expected exact universe of 725 symbols, found $($symbols.Count)." }
+
+          $plan = [ordered]@{
+            backend = "local"
+            cloudShards = 1
+            symbols = $symbols
+            timeframes = @("1m","5m","15m","1h","4h")
+            start = "2025-09-20T00:00:00Z"
+            end = "2026-09-20T00:00:00Z"
+            strategies = @(
+              "sr_pivot_bounce","sr_pivot_breakout","sr_break_retest","sr_wick_rejection",
+              "sr_liquidity_sweep","sr_range_edge","sr_prior_day_sweep","sr_level_flip",
+              "sr_compression_breakout","sr_volume_breakout",
+              "sr25_fractal_cluster_rejection","sr25_confirmed_pivot_breakout","sr25_breakout_retest",
+              "sr25_role_reversal_flip","sr25_wick_confirmed_zone","sr25_liquidity_sweep_reclaim",
+              "sr25_liquidity_absorption","sr25_previous_day_sweep","sr25_week_month_sweep","sr25_lsob",
+              "sr25_impulse_ob_retest","sr25_fvg_first_touch","sr25_inverse_fvg","sr25_pdh_fvg_mss",
+              "sr25_supply_demand_retest","sr25_kernel_supply_demand","sr25_camarilla_h3_l3",
+              "sr25_camarilla_h4_l4","sr25_narrow_cpr_breakout","sr25_poc_mean_reversion",
+              "sr25_value_area_80","sr25_naked_poc_revisit","sr25_swing_anchored_vwap",
+              "sr25_trendline_breakout","sr25_donchian_breakout"
+            )
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "1m"=50; "5m"=30; "15m"=25; "1h"=20; "4h"=10 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 10
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.10
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "sr35-12m-plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+          Write-Host "SR35-12M SYMBOLS=$($symbols.Count) TASKS=$($symbols.Count * 5) STRATEGIES=35"
+
+      - name: Run SR35 full universe 5TF for 12 months
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/sr35-12m-heavy
+          RESEARCH_CSV_DIR: artifacts/sr35-12m-heavy/csv
+          REUSE_EXISTING_CSV: 0
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs sr35-12m-plan.json
+
+      - name: Audit deterministic repeat and future-data leakage
+        shell: powershell
+        env:
+          RESEARCH_CSV_DIR: artifacts/sr35-12m-heavy/csv
+          AUDIT_OUT_DIR: artifacts/sr35-12m-integrity
+          AUDIT_START: 2025-09-20T00:00:00Z
+          AUDIT_END: 2026-09-20T00:00:00Z
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/audit-sr35-integrity.mjs
+
+      - name: Build all-months and one-miss robustness report
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/sr35-12m-heavy
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/summarize-sr35-12m.mjs
+
+      - name: Upload SR35 12M heavy result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sr35-12m-heavy-result
+          path: |
+            artifacts/sr35-12m-heavy/summary-*.json
+            artifacts/sr35-12m-heavy/top-*.csv
+            artifacts/sr35-12m-heavy/results-*.ndjson
+            artifacts/sr35-12m-heavy/monthly-*.ndjson
+            artifacts/sr35-12m-heavy/failures-*.ndjson
+            artifacts/sr35-12m-heavy/accepted-all-months-one-miss.csv
+            artifacts/sr35-12m-heavy/accepted-summary.json
+            artifacts/sr35-12m-integrity/*.json
+          if-no-files-found: warn
+          compression-level: 6
