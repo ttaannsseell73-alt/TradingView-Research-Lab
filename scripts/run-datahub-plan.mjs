@@ -114,6 +114,26 @@ function fetchCsv({ root, symbol, timeframe, start, end, output }) {
   if (run.status !== 0) throw new Error(`DataHub fetch failed for ${symbol} ${timeframe}`);
 }
 
+function fetchLocalFeather({ root, symbol, timeframe, start, end, output }) {
+  const python = process.env.DATAHUB_PYTHON
+    ?? process.env.SYSTEM_PYTHON
+    ?? (process.platform === 'win32' ? 'python.exe' : 'python3');
+  const bridge = path.resolve('scripts/export-freqtrade-feather.py');
+  const args = [
+    bridge,
+    '--root', root,
+    '--symbol', symbol,
+    '--timeframe', timeframe,
+    '--start', start,
+    '--end', end,
+    '--output', output,
+  ];
+  const run = spawnSync(python, args, { encoding: 'utf8' });
+  if (run.stdout) process.stdout.write(run.stdout);
+  if (run.stderr) process.stderr.write(run.stderr);
+  if (run.status !== 0) throw new Error(`Local Feather data unavailable for ${symbol} ${timeframe}`);
+}
+
 const planFile = process.argv[2];
 if (!planFile) fail('Usage: node scripts/run-datahub-plan.mjs PLAN.json [SHARD_INDEX] [SHARD_COUNT]');
 
@@ -173,14 +193,29 @@ let processedTasks = 0;
 for (const task of selectedTasks) {
   const csvFile = path.join(csvDir, `${task.symbol}-${task.timeframe}.csv`);
   try {
-    fetchCsv({
-      root: dataRoot,
-      symbol: task.symbol,
-      timeframe: task.timeframe,
-      start: plan.start,
-      end: plan.end,
-      output: csvFile,
-    });
+    const localFeatherRoot = process.env.FREQTRADE_FUTURES_ROOT;
+    const strictLocal = String(process.env.LOCAL_DATA_MODE ?? '').toLowerCase() === 'strict';
+    if (localFeatherRoot) {
+      fetchLocalFeather({
+        root: localFeatherRoot,
+        symbol: task.symbol,
+        timeframe: task.timeframe,
+        start: plan.start,
+        end: plan.end,
+        output: csvFile,
+      });
+    } else if (strictLocal) {
+      throw new Error(`LOCAL_DATA_MISSING: FREQTRADE_FUTURES_ROOT is not configured for ${task.symbol} ${task.timeframe}`);
+    } else {
+      fetchCsv({
+        root: dataRoot,
+        symbol: task.symbol,
+        timeframe: task.timeframe,
+        start: plan.start,
+        end: plan.end,
+        output: csvFile,
+      });
+    }
     const candles = parseCsv(csvFile);
     const expected = Math.floor((plan.endMs - plan.startMs) / TF_MS[task.timeframe]);
     const coverage = expected ? candles.length / expected : 0;
