@@ -3,7 +3,9 @@ $ErrorActionPreference = "Stop"
 $Repo = "ttaannsseell73-alt/TradingView-Research-Lab"
 $RepoUrl = "https://github.com/$Repo"
 $RunnerRoot = "C:\actions-runner-datahub"
-$DataRoot = "D:\Futures-Research-Data"
+$PreferredDataRoot = "D:\Futures-Research-Data"
+$FallbackDataRoot = "C:\Futures-Research-Data"
+$DataRoot = if (Test-Path "D:\") { $PreferredDataRoot } else { $FallbackDataRoot }
 $RunnerName = "TANSEL-DATAHUB"
 
 Write-Host "== DataHub local runner setup =="
@@ -19,6 +21,13 @@ if ($LASTEXITCODE -ne 0) {
 
 New-Item -ItemType Directory -Force -Path $DataRoot | Out-Null
 New-Item -ItemType Directory -Force -Path $RunnerRoot | Out-Null
+
+# Keep the GitHub Actions local workflow aligned with the actual machine path.
+gh variable set DATAHUB_LOCAL_ROOT --body ($DataRoot -replace '\\','/') --repo $Repo | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    throw "Could not set DATAHUB_LOCAL_ROOT repository variable."
+}
+Write-Host "Configured DATAHUB_LOCAL_ROOT=$DataRoot"
 
 $runnerConfig = Join-Path $RunnerRoot ".runner"
 if (Test-Path $runnerConfig) {
