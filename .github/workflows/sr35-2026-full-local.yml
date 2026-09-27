@@ -1,0 +1,184 @@
+name: SR35 2026 Full Local
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[SR35 2026 FULL RUN]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 480
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: local
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      SHARD_INDEX: 0
+      SHARD_COUNT: 1
+      REUSE_EXISTING_CSV: 1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build legacy January 15m parity plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $plan = [ordered]@{
+            backend = "local"
+            cloudShards = 1
+            symbols = @("FHEUSDT","BULLAUSDT","PIPPINUSDT","TANSSIUSDT","QUSDT")
+            timeframes = @("15m")
+            start = "2026-01-01T00:00:00Z"
+            end = "2026-02-01T00:00:00Z"
+            strategies = @(
+              "sr_pivot_bounce","sr_pivot_breakout","sr_break_retest","sr_wick_rejection",
+              "sr_liquidity_sweep","sr_range_edge","sr_prior_day_sweep","sr_level_flip",
+              "sr_compression_breakout","sr_volume_breakout"
+            )
+            minCoverage = 0.98
+            minHistoryDays = 25
+            minTrades = 10
+            monthlyBreakdown = $false
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "parity-plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+
+      - name: Re-run old 10 on original January 15m window
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/sr35-parity-current
+          RESEARCH_CSV_DIR: artifacts/sr35-parity-current/csv
+          REUSE_EXISTING_CSV: 0
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs parity-plan.json
+
+      - name: Compare against archived original 15m results
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path artifacts/legacy-sr15m | Out-Null
+          $headers = @{
+            Authorization = "Bearer $env:GH_TOKEN"
+            Accept = "application/vnd.github+json"
+            "X-GitHub-Api-Version" = "2022-11-28"
+          }
+          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/10919009751/zip" -OutFile artifacts/legacy-sr15m.zip
+          Expand-Archive -Path artifacts/legacy-sr15m.zip -DestinationPath artifacts/legacy-sr15m -Force
+          node scripts/compare-legacy-sr15m-parity.mjs artifacts/legacy-sr15m artifacts/sr35-parity-current artifacts/sr35-integrity/legacy-15m-parity.json
+
+      - name: Build exact 725-symbol SR35 plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-15m-futures.feather"
+          $files = Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*-15m-futures.feather" -File | Sort-Object Name
+          $symbols = @()
+          foreach ($f in $files) {
+            if ($f.Name.EndsWith($suffix)) {
+              $base = $f.Name.Substring(0, $f.Name.Length - $suffix.Length)
+              $symbols += (($base -replace "_","") + "USDT")
+            }
+          }
+          $symbols = @($symbols | Sort-Object -Unique)
+          if ($symbols.Count -ne 725) { throw "Expected exact universe of 725 symbols, found $($symbols.Count)." }
+
+          $plan = [ordered]@{
+            backend = "local"
+            cloudShards = 1
+            symbols = $symbols
+            timeframes = @("1m","5m","15m","1h","4h")
+            start = "2026-01-01T00:00:00Z"
+            end = "2026-09-20T00:00:00Z"
+            strategies = @(
+              "sr_pivot_bounce","sr_pivot_breakout","sr_break_retest","sr_wick_rejection",
+              "sr_liquidity_sweep","sr_range_edge","sr_prior_day_sweep","sr_level_flip",
+              "sr_compression_breakout","sr_volume_breakout",
+              "sr25_fractal_cluster_rejection","sr25_confirmed_pivot_breakout","sr25_breakout_retest",
+              "sr25_role_reversal_flip","sr25_wick_confirmed_zone","sr25_liquidity_sweep_reclaim",
+              "sr25_liquidity_absorption","sr25_previous_day_sweep","sr25_week_month_sweep","sr25_lsob",
+              "sr25_impulse_ob_retest","sr25_fvg_first_touch","sr25_inverse_fvg","sr25_pdh_fvg_mss",
+              "sr25_supply_demand_retest","sr25_kernel_supply_demand","sr25_camarilla_h3_l3",
+              "sr25_camarilla_h4_l4","sr25_narrow_cpr_breakout","sr25_poc_mean_reversion",
+              "sr25_value_area_80","sr25_naked_poc_revisit","sr25_swing_anchored_vwap",
+              "sr25_trendline_breakout","sr25_donchian_breakout"
+            )
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "1m"=50; "5m"=30; "15m"=25; "1h"=20; "4h"=10 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 10
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.10
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "sr35-plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+          Write-Host "SR35 SYMBOLS=$($symbols.Count) TASKS=$($symbols.Count * 5) STRATEGIES=35"
+
+      - name: Run SR35 full universe 5TF
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/sr35-2026-full
+          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
+          REUSE_EXISTING_CSV: 1
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs sr35-plan.json
+
+      - name: Audit deterministic repeat and future-data leakage
+        shell: powershell
+        env:
+          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
+          AUDIT_OUT_DIR: artifacts/sr35-integrity
+          AUDIT_START: 2026-01-01T00:00:00Z
+          AUDIT_END: 2026-09-20T00:00:00Z
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/audit-sr35-integrity.mjs
+
+      - name: Build 9-of-9 and 8-of-9 accepted report
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/sr35-2026-full
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/summarize-sr35.mjs
+
+      - name: Upload SR35 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sr35-2026-full-result
+          path: |
+            artifacts/sr35-2026-full/summary-*.json
+            artifacts/sr35-2026-full/top-*.csv
+            artifacts/sr35-2026-full/results-*.ndjson
+            artifacts/sr35-2026-full/monthly-*.ndjson
+            artifacts/sr35-2026-full/failures-*.ndjson
+            artifacts/sr35-2026-full/accepted-9of9-8of9.csv
+            artifacts/sr35-2026-full/accepted-summary.json
+            artifacts/sr35-integrity/*.json
+            artifacts/sr35-parity-current/summary-*.json
+            artifacts/sr35-parity-current/results-*.ndjson
+          if-no-files-found: warn
+          compression-level: 6
