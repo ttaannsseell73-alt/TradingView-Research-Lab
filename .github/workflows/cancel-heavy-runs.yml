@@ -21,11 +21,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
         shell: bash
         run: |
           set -euo pipefail
+          mapfile -t run_ids < <(printf '%s\n' "$ISSUE_BODY" | grep -Eo '[0-9]{8,}' | sort -u)
+          if [ "${#run_ids[@]}" -eq 0 ]; then
+            echo "No run IDs found in issue body."
+            exit 2
+          fi
           failed=0
-          for run_id in 36286322714; do
+          for run_id in "${run_ids[@]}"; do
             status="$(gh api "repos/$REPO/actions/runs/$run_id" --jq '.status')"
             if [ "$status" = "completed" ]; then
               echo "$run_id already completed"
