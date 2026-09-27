@@ -22,7 +22,7 @@ function synthetic(count=720) {
 test('generic strategy engine exposes implemented catalog',()=>{
   assert.deepEqual(
     STRATEGIES.map(x=>x.id),
-    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad','chandelier_zlsma']
+    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad','chandelier_zlsma','sr_pivot_bounce','sr_pivot_breakout','sr_break_retest','sr_wick_rejection','sr_liquidity_sweep','sr_range_edge','sr_prior_day_sweep','sr_level_flip','sr_compression_breakout','sr_volume_breakout']
   );
   assert.equal(new Set(STRATEGIES.map(x=>x.id)).size,STRATEGIES.length);
 });
@@ -116,4 +116,26 @@ test('current signal supports strategy filtering and target-position flat state'
   assert.equal(r[0].mode,'TARGET_POSITION');
   assert.ok(['LONG','SHORT','FLAT'].includes(r[0].direction));
   assert.ok(Number.isInteger(r[0].barsUsed)&&r[0].barsUsed>0);
+});
+
+
+test('support resistance family exposes ten deterministic non-lookahead adapters',()=>{
+  const sr=STRATEGIES.filter(x=>x.family==='support_resistance');
+  assert.equal(sr.length,10);
+  assert.equal(new Set(sr.map(x=>x.id)).size,10);
+
+  const candles=synthetic(1800);
+  const start=candles[0].t;
+  const end=candles.at(-1).t+3600000;
+  const a=evaluateStrategies(candles,{start,end,minTrades:1})
+    .filter(x=>x.family==='support_resistance');
+  const b=evaluateStrategies(candles,{start,end,minTrades:1})
+    .filter(x=>x.family==='support_resistance');
+
+  assert.deepEqual(a,b);
+  assert.equal(a.length,10);
+  for(const r of a){
+    assert.equal(r.version,'sr-v1');
+    for(const k of ['net','dd','exp','sh','net15','net6']) assert.ok(Number.isFinite(r[k]),`${r.id} ${k}`);
+  }
 });
