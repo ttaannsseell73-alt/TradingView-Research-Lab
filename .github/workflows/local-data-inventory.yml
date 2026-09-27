@@ -29,63 +29,56 @@ jobs:
             "C:\Users\TANSEL\Desktop\SCALPING_LAB\freqtrade\user_data\data\binance\futures"
           )
 
-          $lines = New-Object System.Collections.Generic.List[string]
-          $lines.Add("<!-- LOCAL_DATA_INVENTORY -->")
-          $lines.Add("## Local market-data inventory")
-          $lines.Add("")
-          $lines.Add("Generated on runner: `$env:COMPUTERNAME`")
-          $lines.Add("")
+          $out = New-Object System.Collections.Generic.List[string]
+          $out.Add("LOCAL DATA INVENTORY")
+          $out.Add("Runner: " + $env:COMPUTERNAME)
+          $out.Add("")
 
           foreach ($p in $paths) {
-            $lines.Add("### `$p`")
-            if (-not (Test-Path $p)) {
-              $lines.Add("- exists: **NO**")
-              $lines.Add("")
+            $out.Add("PATH: " + $p)
+
+            if (-not (Test-Path -LiteralPath $p)) {
+              $out.Add("EXISTS: NO")
+              $out.Add("")
               continue
             }
 
-            $files = @(Get-ChildItem -Path $p -File -Recurse -ErrorAction SilentlyContinue)
+            $files = @(Get-ChildItem -LiteralPath $p -File -Recurse -ErrorAction SilentlyContinue)
             $count = $files.Count
-            $bytes = ($files | Measure-Object -Property Length -Sum).Sum
-            if ($null -eq $bytes) { $bytes = 0 }
-            $gb = [math]::Round($bytes / 1GB, 3)
-            $latest = ($files | Sort-Object LastWriteTime -Descending | Select-Object -First 1)
+            $sum = ($files | Measure-Object -Property Length -Sum).Sum
+            if ($null -eq $sum) { $sum = 0 }
+            $gb = [math]::Round(($sum / 1GB), 3)
 
-            $lines.Add("- exists: **YES**")
-            $lines.Add("- files: **$count**")
-            $lines.Add("- size: **$gb GB**")
+            $out.Add("EXISTS: YES")
+            $out.Add("FILES: " + $count)
+            $out.Add("SIZE_GB: " + $gb)
+
+            $latest = $files | Sort-Object LastWriteTime -Descending | Select-Object -First 1
             if ($latest) {
-              $lines.Add("- latest file: `$($latest.FullName)`")
-              $lines.Add("- latest modified: **$($latest.LastWriteTime.ToString("s"))**")
+              $out.Add("LATEST_FILE: " + $latest.FullName)
+              $out.Add("LATEST_MODIFIED: " + $latest.LastWriteTime.ToString("s"))
             }
 
-            $extGroups = $files |
-              Group-Object Extension |
-              Sort-Object Count -Descending |
-              Select-Object -First 10
-            if ($extGroups) {
-              $extText = ($extGroups | ForEach-Object { "`$($_.Name)`=$($_.Count)" }) -join ", "
-              $lines.Add("- extensions: $extText")
+            $groups = $files | Group-Object Extension | Sort-Object Count -Descending | Select-Object -First 10
+            foreach ($g in $groups) {
+              $out.Add("EXT " + $g.Name + ": " + $g.Count)
             }
 
             foreach ($tf in @("1m","5m","15m","1h","4h")) {
-              $tfCount = @($files | Where-Object {
-                $_.Name -match "(?i)(^|[-_.])$([regex]::Escape($tf))([-_.]|$)"
-              }).Count
-              $lines.Add("- timeframe filename hits `$tf`: **$tfCount**")
+              $pattern = "(?i)(^|[-_.])" + [regex]::Escape($tf) + "([-_.]|$)"
+              $tfCount = @($files | Where-Object { $_.Name -match $pattern }).Count
+              $out.Add("TF " + $tf + ": " + $tfCount)
             }
 
-            $samples = $files | Select-Object -First 8
-            if ($samples) {
-              $lines.Add("- sample files:")
-              foreach ($s in $samples) {
-                $lines.Add("  - `$($s.FullName)`")
-              }
+            $out.Add("SAMPLES:")
+            foreach ($s in ($files | Select-Object -First 8)) {
+              $out.Add($s.FullName)
             }
-            $lines.Add("")
+
+            $out.Add("")
           }
 
-          $body = $lines -join [Environment]::NewLine
-          $tmp = Join-Path $env:RUNNER_TEMP "local-data-inventory.md"
-          Set-Content -Path $tmp -Value $body -Encoding UTF8
+          $tmp = Join-Path $env:RUNNER_TEMP "local-data-inventory.txt"
+          $out | Set-Content -LiteralPath $tmp -Encoding UTF8
+          Get-Content -LiteralPath $tmp
           gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file $tmp
