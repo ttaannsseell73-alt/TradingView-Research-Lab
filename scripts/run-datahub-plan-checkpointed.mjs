@@ -287,7 +287,7 @@ for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
       }
     }
 
-    const candles = parseCsv(csvFile);
+    const candles = parseCsv(csvFile).filter((bar) => bar.t >= plan.startMs && bar.t < plan.endMs);
     const firstBarMs = candles.length ? candles[0].t : NaN;
     const lastBarMs = candles.length ? candles[candles.length - 1].t : NaN;
     const effectiveStartMs = Number.isFinite(firstBarMs) ? Math.max(plan.startMs, firstBarMs) : plan.startMs;
