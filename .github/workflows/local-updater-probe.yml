@@ -1,0 +1,71 @@
+name: Local Updater Probe
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[LOCAL UPDATER PROBE]')
+    runs-on: [self-hosted, datahub-local]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FT_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade
+    steps:
+      - name: Probe existing Freqtrade installation
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Continue"
+          $o = New-Object System.Collections.Generic.List[string]
+          $o.Add("LOCAL UPDATER PROBE")
+          $o.Add("FT_ROOT=" + $env:FT_ROOT)
+          $o.Add("ROOT_EXISTS=" + (Test-Path $env:FT_ROOT))
+          $o.Add("")
+
+          $o.Add("FREQTRADE_CMD:")
+          $ft = Get-Command freqtrade -ErrorAction SilentlyContinue
+          if ($ft) { $o.Add($ft.Source) } else { $o.Add("NOT_FOUND") }
+
+          $o.Add("")
+          $o.Add("DOCKER:")
+          try { $o.Add((docker --version | Out-String).Trim()) } catch { $o.Add("NOT_FOUND") }
+
+          $o.Add("")
+          $o.Add("PYTHON_CANDIDATES:")
+          foreach ($p in @(
+            "$env:FT_ROOT\.venv\Scripts\python.exe",
+            "$env:FT_ROOT\venv\Scripts\python.exe",
+            "C:\actions-runner-datahub\.venv-datahub\Scripts\python.exe"
+          )) {
+            $o.Add($p + " => " + (Test-Path $p))
+          }
+
+          $o.Add("")
+          $o.Add("CONFIG_FILES:")
+          if (Test-Path $env:FT_ROOT) {
+            Get-ChildItem -Path $env:FT_ROOT -File -Recurse -Include "config*.json","config*.jsonc","docker-compose*.yml","docker-compose*.yaml" -ErrorAction SilentlyContinue |
+              Select-Object -First 40 |
+              ForEach-Object { $o.Add($_.FullName) }
+          }
+
+          $o.Add("")
+          $o.Add("USER_DATA_TOP:")
+          $ud = Join-Path $env:FT_ROOT "user_data"
+          if (Test-Path $ud) {
+            Get-ChildItem -Path $ud -Force -ErrorAction SilentlyContinue |
+              Select-Object -First 80 |
+              ForEach-Object { $o.Add($_.FullName) }
+          }
+
+          $tmp = Join-Path $env:RUNNER_TEMP "local-updater-probe.txt"
+          $o | Set-Content -LiteralPath $tmp -Encoding UTF8
+          Get-Content -LiteralPath $tmp
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file $tmp
