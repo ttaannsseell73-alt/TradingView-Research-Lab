@@ -40,7 +40,9 @@ jobs:
 
           update_comment() {
             local pct="$1" state="$2" done_count="$3" running_count="$4" failed_count="$5"
-            local filled=$(( pct / 5 )) empty=$(( 20 - filled )) bar="" i
+            local filled=$(( pct / 5 ))
+            local empty=$(( 20 - filled ))
+            local bar="" i
             for ((i=0;i<filled;i++)); do bar="${bar}█"; done
             for ((i=0;i<empty;i++)); do bar="${bar}░"; done
             local body
