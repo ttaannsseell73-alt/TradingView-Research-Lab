@@ -177,7 +177,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PLAN_B64: ${{ needs.prepare.outputs.plan_b64 }}
-      DATAHUB_ROOT: ${{ github.workspace }}/../datahub-cache
       RESEARCH_BACKEND: cloud
       RESEARCH_OUT_DIR: artifacts/hybrid-research
       SHARD_INDEX: ${{ matrix.shard }}
@@ -207,7 +206,7 @@ jobs:
       - name: Restore persistent DataHub cache
         uses: actions/cache@v4
         with:
-          path: ${{ env.DATAHUB_ROOT }}
+          path: ${{ runner.temp }}/datahub-cache
           key: datahub-v3-${{ runner.os }}-shard-${{ matrix.shard }}-${{ github.run_id }}
           restore-keys: |
             datahub-v3-${{ runner.os }}-shard-${{ matrix.shard }}-
@@ -216,6 +215,8 @@ jobs:
         run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
 
       - name: Run cloud shard
+        env:
+          DATAHUB_ROOT: ${{ runner.temp }}/datahub-cache
         run: node scripts/run-datahub-plan.mjs plan.json
 
       - name: Upload cloud result
