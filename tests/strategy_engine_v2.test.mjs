@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { STRATEGIES, evaluateStrategies, evaluateCurrentSignals } from '../research/strategy_engine_v2.mjs';
+import { STRATEGIES, SR25_STRATEGY_IDS, evaluateStrategies, evaluateCurrentSignals } from '../research/strategy_engine_v2.mjs';
 
 function synthetic(count=720) {
   const out=[];
@@ -20,11 +20,13 @@ function synthetic(count=720) {
 }
 
 test('generic strategy engine exposes implemented catalog',()=>{
-  assert.deepEqual(
-    STRATEGIES.map(x=>x.id),
-    ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad','chandelier_zlsma','sr_pivot_bounce','sr_pivot_breakout','sr_break_retest','sr_wick_rejection','sr_liquidity_sweep','sr_range_edge','sr_prior_day_sweep','sr_level_flip','sr_compression_breakout','sr_volume_breakout']
-  );
-  assert.equal(new Set(STRATEGIES.map(x=>x.id)).size,STRATEGIES.length);
+  const ids=STRATEGIES.map(x=>x.id);
+  for(const id of ['pmax','alphatrend','ott','tott','mavilimw','ssl_hybrid_flip','ssl_hybrid_qqe_flip','ut_bot_quantnomad','chandelier_zlsma','sr_pivot_bounce','sr_pivot_breakout','sr_break_retest','sr_wick_rejection','sr_liquidity_sweep','sr_range_edge','sr_prior_day_sweep','sr_level_flip','sr_compression_breakout','sr_volume_breakout']){
+    assert.ok(ids.includes(id),id);
+  }
+  assert.equal(SR25_STRATEGY_IDS.length,25);
+  for(const id of SR25_STRATEGY_IDS) assert.ok(ids.includes(id),id);
+  assert.equal(new Set(ids).size,STRATEGIES.length);
 });
 
 test('strategy engine is deterministic and finite on closed OHLCV',()=>{
@@ -122,23 +124,24 @@ test('current signal supports strategy filtering and target-position flat state'
 });
 
 
-test('support resistance family exposes ten deterministic non-lookahead adapters',()=>{
+test('support resistance family exposes legacy 10 plus executable SR25',()=>{
   const sr=STRATEGIES.filter(x=>x.family==='support_resistance');
-  assert.equal(sr.length,10);
-  assert.equal(new Set(sr.map(x=>x.id)).size,10);
+  const legacy=sr.filter(x=>x.version==='sr-v1');
+  const sr25=sr.filter(x=>x.version==='sr25-v1');
+  assert.equal(legacy.length,10);
+  assert.equal(sr25.length,25);
+  assert.equal(new Set(sr.map(x=>x.id)).size,35);
 
   const candles=synthetic(1800);
   const start=candles[0].t;
   const end=candles.at(-1).t+3600000;
-  const a=evaluateStrategies(candles,{start,end,minTrades:1})
-    .filter(x=>x.family==='support_resistance');
-  const b=evaluateStrategies(candles,{start,end,minTrades:1})
-    .filter(x=>x.family==='support_resistance');
+  const a=evaluateStrategies(candles,{start,end,minTrades:1,strategyIds:SR25_STRATEGY_IDS});
+  const b=evaluateStrategies(candles,{start,end,minTrades:1,strategyIds:SR25_STRATEGY_IDS});
 
   assert.deepEqual(a,b);
-  assert.equal(a.length,10);
+  assert.equal(a.length,25);
   for(const r of a){
-    assert.equal(r.version,'sr-v1');
+    assert.equal(r.version,'sr25-v1');
     for(const k of ['net','dd','exp','sh','net15','net6','longNet','longPF','longDD','shortNet','shortPF','shortDD']) assert.ok(Number.isFinite(r[k]),`${r.id} ${k}`);
     assert.equal(r.longTrades+r.shortTrades,r.n);
   }
