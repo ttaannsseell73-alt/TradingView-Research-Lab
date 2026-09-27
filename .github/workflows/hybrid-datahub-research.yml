@@ -102,7 +102,7 @@ jobs:
           if [ -z "$comment_id" ]; then
             comment_id="$(gh api --method POST "repos/$REPO/issues/$ISSUE_NUMBER/comments" -f body="$marker
           **Canlı ilerleme**
-          `░░░░░░░░░░░░░░░░░░░░ 0%`
+          **░░░░░░░░░░░░░░░░░░░░ 0%**
           Hazırlanıyor…" --jq '.id')"
           fi
 
@@ -121,7 +121,7 @@ jobs:
             local body
             body="$marker
           **Canlı ilerleme**
-          `${bar} ${pct}%`
+          **${bar} ${pct}%**
 
           Shard: **${done_count}/${TOTAL_SHARDS} tamamlandı** · Çalışan: **${running_count}** · Hatalı: **${failed_count}**
           Durum: **${state}**
