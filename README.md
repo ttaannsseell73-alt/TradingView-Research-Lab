@@ -72,3 +72,33 @@ extensible TradingView strategy catalog
 ```
 
 See `docs/STRATEGY_SELECTOR.md` and `research/strategy_catalog.json`.
+
+## Hybrid DataHub execution
+
+Canonical execution has one shared data layer and two execution backends:
+
+```text
+ChatGPT / phone
+  -> GitHub research job
+     -> cloud: GitHub-hosted runners
+     -> local: Windows self-hosted runner + D:\Futures-Research-Data cache
+     -> hybrid: local runner + parallel cloud shards
+  -> merged JSON research result
+```
+
+`Futures-Research-DataHub` is a strategy-free data engine, not a server. Render, MinIO, a web API,
+and paid persistent services are not part of this path.
+
+The research plan selects `backend: cloud | local | hybrid`. Cloud jobs automatically shard
+symbol × timeframe tasks across up to four runners by default; `cloudShards` can request 1–8.
+All strategies assigned to the same symbol/timeframe reuse one prepared DataHub dataset.
+
+One-time Windows runner setup:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\setup-datahub-local-runner.ps1
+```
+
+The local runner uses `D:\Futures-Research-Data` by default. Verified DataHub daily checkpoints
+are reused, so repeated research on the same historical range does not redownload that data.
+
