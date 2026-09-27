@@ -174,7 +174,7 @@ jobs:
 
   merge:
     needs: [prepare, cloud, local]
-    if: always() && needs.prepare.result == 'success' && (needs.cloud.result == 'success' || needs.local.result == 'success')
+    if: always() && needs.prepare.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
