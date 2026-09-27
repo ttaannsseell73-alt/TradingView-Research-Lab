@@ -32,7 +32,15 @@ function readPlan(file) {
   if (!Array.isArray(plan.timeframes) || !plan.timeframes.length) fail('timeframes must be a nonempty array');
 
   for (const symbol of plan.symbols) {
-    if (!/^[A-Z0-9]{3,30}$/.test(symbol)) fail(`Unsafe symbol: ${symbol}`);
+    if (
+      typeof symbol !== 'string'
+      || symbol.length < 1
+      || symbol.length > 100
+      || symbol === '.'
+      || symbol === '..'
+      || /[\\/<>:"|?*\u0000-\u001F\u007F]/u.test(symbol)
+      || /[. ]$/u.test(symbol)
+    ) fail(`Unsafe symbol: ${symbol}`);
   }
   for (const tf of plan.timeframes) {
     if (!TF_MS[tf]) fail(`Unsupported timeframe: ${tf}`);
