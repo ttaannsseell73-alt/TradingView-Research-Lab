@@ -28,6 +28,7 @@ jobs:
       cloud_matrix: ${{ steps.plan.outputs.cloud_matrix }}
       total_shards: ${{ steps.plan.outputs.total_shards }}
       local_index: ${{ steps.plan.outputs.local_index }}
+      total_tasks: ${{ steps.plan.outputs.total_tasks }}
     steps:
       - name: Validate and encode plan
         id: plan
@@ -78,6 +79,7 @@ jobs:
               fh.write(f"cloud_matrix={cloud_matrix}\n")
               fh.write(f"total_shards={total_shards}\n")
               fh.write(f"local_index={local_index}\n")
+              fh.write(f"total_tasks={tasks}\n")
           PY
 
   progress:
@@ -91,6 +93,7 @@ jobs:
       ISSUE_NUMBER: ${{ github.event.issue.number }}
       RUN_ID: ${{ github.run_id }}
       TOTAL_SHARDS: ${{ needs.prepare.outputs.total_shards }}
+      TOTAL_TASKS: ${{ needs.prepare.outputs.total_tasks }}
     steps:
       - name: Live progress bar
         shell: bash
@@ -112,6 +115,7 @@ jobs:
             local done_count="$3"
             local running_count="$4"
             local failed_count="$5"
+            local processed_tasks="$6"
             local filled=$(( pct / 5 ))
             local empty=$(( 20 - filled ))
             local bar=""
@@ -123,12 +127,13 @@ jobs:
           **Canlı ilerleme**
           **${bar} ${pct}%**
 
-          Shard: **${done_count}/${TOTAL_SHARDS} tamamlandı** · Çalışan: **${running_count}** · Hatalı: **${failed_count}**
+          Coin: **${processed_tasks}/${TOTAL_TASKS} işlendi** · Shard: **${done_count}/${TOTAL_SHARDS} tamamlandı**
+          Çalışan: **${running_count}** · Hatalı: **${failed_count}**
           Durum: **${state}**
 
           [Workflow'u aç](https://github.com/$REPO/actions/runs/$RUN_ID)
 
-          _Otomatik güncellenir._"
+          _Yaklaşık 15 saniyede bir otomatik güncellenir._"
             gh api --method PATCH "repos/$REPO/issues/comments/$comment_id" -f body="$body" >/dev/null
           }
 
@@ -139,21 +144,24 @@ jobs:
             failed_count="$(jq '[.jobs[] | select((.name | startswith("cloud")) or .name=="local") | select(.conclusion=="failure")] | length' <<<"$jobs")"
             merge_status="$(jq -r '[.jobs[] | select(.name=="merge")][0].status // "absent"' <<<"$jobs")"
             merge_conclusion="$(jq -r '[.jobs[] | select(.name=="merge")][0].conclusion // ""' <<<"$jobs")"
+            comments="$(gh api "repos/$REPO/issues/$ISSUE_NUMBER/comments?per_page=100")"
+            processed_tasks="$(jq -r '[.[].body | capture("SHARD_PROGRESS [0-9]+ (?<done>[0-9]+) [0-9]+")? | select(.) | (.done|tonumber)] | add // 0' <<<"$comments")"
 
             if [ "$merge_status" = "completed" ]; then
               if [ "$merge_conclusion" = "success" ]; then
-                update_comment 100 "BİTTİ" "$done_count" "$running_count" "$failed_count"
+                update_comment 100 "BİTTİ" "$done_count" "$running_count" "$failed_count" "$TOTAL_TASKS"
               else
-                update_comment 100 "BİTTİ — sonuçta hata/kısmi veri var" "$done_count" "$running_count" "$failed_count"
+                update_comment 100 "BİTTİ — sonuçta hata/kısmi veri var" "$done_count" "$running_count" "$failed_count" "$processed_tasks"
               fi
               break
             fi
 
             if [ "$done_count" -ge "$TOTAL_SHARDS" ]; then
-              update_comment 95 "Sonuçlar birleştiriliyor" "$done_count" "$running_count" "$failed_count"
+              update_comment 95 "Sonuçlar birleştiriliyor" "$done_count" "$running_count" "$failed_count" "$processed_tasks"
             else
-              pct=$(( done_count * 90 / TOTAL_SHARDS ))
-              update_comment "$pct" "Testler çalışıyor" "$done_count" "$running_count" "$failed_count"
+              pct=$(( processed_tasks * 95 / TOTAL_TASKS ))
+              if [ "$pct" -gt 94 ]; then pct=94; fi
+              update_comment "$pct" "Testler çalışıyor" "$done_count" "$running_count" "$failed_count" "$processed_tasks"
             fi
             sleep 15
           done
@@ -172,6 +180,8 @@ jobs:
       RESEARCH_OUT_DIR: artifacts/hybrid-research
       SHARD_INDEX: ${{ matrix.shard }}
       SHARD_COUNT: ${{ needs.prepare.outputs.total_shards }}
+      GH_TOKEN: ${{ github.token }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
     steps:
       - uses: actions/checkout@v4
 
