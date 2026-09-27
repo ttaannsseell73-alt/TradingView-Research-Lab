@@ -195,3 +195,7 @@ console.log(JSON.stringify({
   passing: output.passing,
   failures: failures.length,
 }));
+
+if (failures.some((failure) => failure.reason === 'ERROR')) {
+  process.exitCode = 1;
+}
