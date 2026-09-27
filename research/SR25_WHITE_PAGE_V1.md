@@ -140,6 +140,7 @@ These are retained for a second SR wave if the first 25 do not dominate:
 - Same cost/stress model across candidates.
 - Monthly breakdown is mandatory.
 - Canonical timeframes: 1m, 5m, 15m, 1h (60m), 4h.
+- Canonical SR25 promotion/research runs MUST include all five timeframes. Single-timeframe runs are diagnostics/smoke only and are never promotion evidence.
 - Promotion unit is Coin × ONE Strategy × ONE Timeframe.
 - Continuity first, then return; PF/DD/trades are quality controls.
 - Strategy-family quotas are forbidden in the final global ranking.
