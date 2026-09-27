@@ -202,16 +202,28 @@ jobs:
           repository: ttaannsseell73-alt/Futures-Research-DataHub
           path: datahub
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Verify local runtime
+        shell: powershell
+        run: |
+          python --version
+          node --version
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+      - name: Prepare persistent local DataHub runtime
+        shell: powershell
+        run: |
+          $venv = "C:\actions-runner-datahub\.venv-datahub"
+          if (-not (Test-Path "$venv\Scripts\python.exe")) {
+            python -m venv $venv
+          }
+          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check -e ./datahub
+          "DATAHUB_PYTHON=$venv\Scripts\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "$venv\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Install DataHub
-        run: python -m pip install -e ./datahub
+      - name: Verify DataHub runtime
+        shell: powershell
+        run: |
+          & $env:DATAHUB_PYTHON --version
+          datahub --help | Select-Object -First 5
 
       - name: Restore persistent DataHub cache
         uses: actions/cache@v4
@@ -248,6 +260,8 @@ jobs:
       RESEARCH_OUT_DIR: artifacts/hybrid-research
       SHARD_INDEX: ${{ needs.prepare.outputs.local_index }}
       SHARD_COUNT: ${{ needs.prepare.outputs.total_shards }}
+      GH_TOKEN: ${{ github.token }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
     steps:
       - uses: actions/checkout@v4
 
