@@ -1,0 +1,91 @@
+name: GUA Trendline 1Y DataHub Local
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[GUA 1Y DATAHUB RUN]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: datahub-local
+      RESEARCH_OUT_DIR: artifacts/gua-trendline-1y-datahub
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      SHARD_INDEX: 0
+      SHARD_COUNT: 1
+      REUSE_EXISTING_CSV: 1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build lifetime-aware 15m universe from DataHub local archive
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-15m-futures.feather"
+          $files = Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*-15m-futures.feather" -File | Sort-Object Name
+          $symbols = @()
+          foreach ($f in $files) {
+            if ($f.Name.EndsWith($suffix)) {
+              $base = $f.Name.Substring(0, $f.Name.Length - $suffix.Length)
+              $symbols += (($base -replace "_","") + "USDT")
+            }
+          }
+          $symbols = @($symbols | Sort-Object -Unique)
+          if ($symbols.Count -lt 500) { throw "15m DataHub universe unexpectedly small: $($symbols.Count)" }
+
+          $plan = [ordered]@{
+            backend = "local"
+            cloudShards = 1
+            symbols = $symbols
+            timeframes = @("15m")
+            start = "2025-09-28T00:00:00Z"
+            end = "2026-09-28T00:00:00Z"
+            strategies = @("sr25_trendline_breakout")
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "15m" = 25 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 5
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.10
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+          Write-Host "DATAHUB_UNIVERSE=$($symbols.Count) TASKS=$($symbols.Count)"
+
+      - name: Run GUA trendline 1Y scan from ready local archive
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs plan.json
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gua-trendline-1y-datahub-result
+          path: |
+            artifacts/gua-trendline-1y-datahub/summary-*.json
+            artifacts/gua-trendline-1y-datahub/top-*.csv
+            artifacts/gua-trendline-1y-datahub/results-*.ndjson
+            artifacts/gua-trendline-1y-datahub/monthly-*.ndjson
+            artifacts/gua-trendline-1y-datahub/failures-*.ndjson
+          if-no-files-found: warn
