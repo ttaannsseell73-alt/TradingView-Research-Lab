@@ -1,3 +1,5 @@
+import { SR25_STRATEGIES, SR25_STRATEGY_IDS } from './sr25_strategies.mjs';
+
 const finite = Number.isFinite;
 
 function mean(xs) {
@@ -663,8 +665,11 @@ export const STRATEGIES = [
   {id:'sr_prior_day_sweep',name:'SR Prior-Day High/Low Sweep',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRPriorDaySweep},
   {id:'sr_level_flip',name:'SR Breakout Level Flip',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRLevelFlip},
   {id:'sr_compression_breakout',name:'SR Compression Breakout',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRCompressionBreakout},
-  {id:'sr_volume_breakout',name:'SR Volume-Confirmed Breakout',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRVolumeBreakout}
+  {id:'sr_volume_breakout',name:'SR Volume-Confirmed Breakout',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRVolumeBreakout},
+  ...SR25_STRATEGIES
 ];
+
+export { SR25_STRATEGY_IDS };
 
 function backtest(c,signals,tradeStart=-Infinity) {
   const trades=[];
@@ -813,10 +818,12 @@ export function evaluateStrategies(candles, {
   lowCost=0.0006,
   minTrades=20,
   start,
-  end
+  end,
+  strategyIds=null
 }={}) {
   if(!Number.isFinite(start)||!Number.isFinite(end)) throw new Error('evaluateStrategies requires finite start/end');
-  return STRATEGIES.map(s=>{
+  const ids=strategyIds?new Set(strategyIds):null;
+  return STRATEGIES.filter(s=>!ids||ids.has(s.id)).map(s=>{
     const raw=s.signal(candles);
     const trades=s.mode==='TARGET_POSITION'?backtestTargetPosition(candles,raw,start):backtest(candles,raw,start);
     const base=stats(trades,cost,start,end);
