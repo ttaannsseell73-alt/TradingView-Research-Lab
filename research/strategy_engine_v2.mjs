@@ -442,6 +442,208 @@ function targetsChandelierZLSMA(c) {
   return target;
 }
 
+
+function confirmedPivotLevels(c,left=3,right=3) {
+  const support=Array(c.length).fill(NaN);
+  const resistance=Array(c.length).fill(NaN);
+  let s=NaN,r=NaN;
+  for(let i=0;i<c.length;i++){
+    if(i>=left+right){
+      const p=i-right;
+      let pivotHigh=true,pivotLow=true;
+      for(let j=p-left;j<=p+right;j++){
+        if(j===p) continue;
+        if(c[j].h>=c[p].h) pivotHigh=false;
+        if(c[j].l<=c[p].l) pivotLow=false;
+      }
+      if(pivotHigh) r=c[p].h;
+      if(pivotLow) s=c[p].l;
+    }
+    support[i]=s;
+    resistance[i]=r;
+  }
+  return {support,resistance};
+}
+
+function previousRange(c,period) {
+  const high=Array(c.length).fill(NaN),low=Array(c.length).fill(NaN);
+  for(let i=period;i<c.length;i++){
+    let h=-Infinity,l=Infinity;
+    for(let j=i-period;j<i;j++){
+      h=Math.max(h,c[j].h);
+      l=Math.min(l,c[j].l);
+    }
+    high[i]=h;low[i]=l;
+  }
+  return {high,low};
+}
+
+function priorUtcDayLevels(c) {
+  const high=Array(c.length).fill(NaN),low=Array(c.length).fill(NaN);
+  let day=null,dayHigh=-Infinity,dayLow=Infinity,prevHigh=NaN,prevLow=NaN;
+  for(let i=0;i<c.length;i++){
+    const d=Math.floor(c[i].t/86400000);
+    if(day===null) day=d;
+    if(d!==day){
+      prevHigh=dayHigh;prevLow=dayLow;
+      day=d;dayHigh=-Infinity;dayLow=Infinity;
+    }
+    high[i]=prevHigh;low[i]=prevLow;
+    dayHigh=Math.max(dayHigh,c[i].h);
+    dayLow=Math.min(dayLow,c[i].l);
+  }
+  return {high,low};
+}
+
+function signalsSRPivotBounce(c) {
+  const {support,resistance}=confirmedPivotLevels(c,3,3);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  for(let i=1;i<c.length;i++){
+    const a=atr[i],s=support[i],r=resistance[i];
+    if(!finite(a)||a<=0) continue;
+    const longTouch=finite(s)&&c[i].l<=s+0.20*a&&c[i].c>s&&c[i].c>c[i].o;
+    const shortTouch=finite(r)&&c[i].h>=r-0.20*a&&c[i].c<r&&c[i].c<c[i].o;
+    if(longTouch) sig[i]=1;
+    else if(shortTouch) sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsSRPivotBreakout(c) {
+  const {support,resistance}=confirmedPivotLevels(c,3,3);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  for(let i=1;i<c.length;i++){
+    const a=atr[i],s=support[i],r=resistance[i];
+    if(!finite(a)||a<=0) continue;
+    if(finite(r)&&c[i-1].c<=r&&c[i].c>r+0.10*a) sig[i]=1;
+    else if(finite(s)&&c[i-1].c>=s&&c[i].c<s-0.10*a) sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsSRBreakRetest(c) {
+  const {support,resistance}=confirmedPivotLevels(c,3,3);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  let pendingDir=0,level=NaN,expires=-1;
+  for(let i=1;i<c.length;i++){
+    const a=atr[i],s=support[i],r=resistance[i];
+    if(!finite(a)||a<=0) continue;
+    if(finite(r)&&c[i-1].c<=r&&c[i].c>r+0.10*a){
+      pendingDir=1;level=r;expires=i+12;continue;
+    }
+    if(finite(s)&&c[i-1].c>=s&&c[i].c<s-0.10*a){
+      pendingDir=-1;level=s;expires=i+12;continue;
+    }
+    if(i>expires){pendingDir=0;level=NaN;continue;}
+    if(pendingDir===1&&c[i].l<=level+0.15*a&&c[i].l>=level-0.35*a&&c[i].c>level&&c[i].c>c[i].o){
+      sig[i]=1;pendingDir=0;
+    } else if(pendingDir===-1&&c[i].h>=level-0.15*a&&c[i].h<=level+0.35*a&&c[i].c<level&&c[i].c<c[i].o){
+      sig[i]=-1;pendingDir=0;
+    }
+  }
+  return sig;
+}
+
+function signalsSRWickRejection(c) {
+  const {high,low}=previousRange(c,48);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  for(let i=48;i<c.length;i++){
+    const a=atr[i];
+    if(!finite(a)||a<=0) continue;
+    const body=Math.max(Math.abs(c[i].c-c[i].o),0.02*a);
+    const lower=Math.min(c[i].o,c[i].c)-c[i].l;
+    const upper=c[i].h-Math.max(c[i].o,c[i].c);
+    if(c[i].l<=low[i]+0.10*a&&c[i].c>low[i]&&lower>1.5*body&&lower>0.20*a) sig[i]=1;
+    else if(c[i].h>=high[i]-0.10*a&&c[i].c<high[i]&&upper>1.5*body&&upper>0.20*a) sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsSRLiquiditySweep(c) {
+  const {high,low}=previousRange(c,24);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  for(let i=24;i<c.length;i++){
+    const a=atr[i];
+    if(!finite(a)||a<=0) continue;
+    if(c[i].l<low[i]-0.05*a&&c[i].c>low[i]) sig[i]=1;
+    else if(c[i].h>high[i]+0.05*a&&c[i].c<high[i]) sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsSRRangeEdge(c) {
+  const {high,low}=previousRange(c,72);
+  const sig=Array(c.length).fill(0);
+  for(let i=72;i<c.length;i++){
+    const width=high[i]-low[i];
+    if(!finite(width)||width<=0) continue;
+    const lo=low[i]+0.15*width,hi=high[i]-0.15*width;
+    if(c[i].l<=lo&&c[i].c>c[i].o&&c[i].c>c[i-1].c) sig[i]=1;
+    else if(c[i].h>=hi&&c[i].c<c[i].o&&c[i].c<c[i-1].c) sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsSRPriorDaySweep(c) {
+  const {high,low}=priorUtcDayLevels(c);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  for(let i=1;i<c.length;i++){
+    const a=atr[i];
+    if(!finite(a)||a<=0) continue;
+    if(finite(low[i])&&c[i].l<low[i]-0.05*a&&c[i].c>low[i]) sig[i]=1;
+    else if(finite(high[i])&&c[i].h>high[i]+0.05*a&&c[i].c<high[i]) sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsSRLevelFlip(c) {
+  const {support,resistance}=confirmedPivotLevels(c,3,3);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  let dir=0,level=NaN,expires=-1;
+  for(let i=1;i<c.length;i++){
+    const a=atr[i],s=support[i],r=resistance[i];
+    if(!finite(a)||a<=0) continue;
+    if(finite(r)&&c[i-1].c<=r&&c[i].c>r+0.08*a){
+      dir=1;level=r;expires=i+10;continue;
+    }
+    if(finite(s)&&c[i-1].c>=s&&c[i].c<s-0.08*a){
+      dir=-1;level=s;expires=i+10;continue;
+    }
+    if(i>expires){dir=0;continue;}
+    if(dir===1&&c[i].l<=level+0.12*a&&c[i].c>level+0.03*a){
+      sig[i]=1;dir=0;
+    } else if(dir===-1&&c[i].h>=level-0.12*a&&c[i].c<level-0.03*a){
+      sig[i]=-1;dir=0;
+    }
+  }
+  return sig;
+}
+
+function signalsSRCompressionBreakout(c) {
+  const {high,low}=previousRange(c,24);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  for(let i=24;i<c.length;i++){
+    const a=atr[i],width=high[i]-low[i];
+    if(!finite(a)||a<=0||!finite(width)||width>7*a) continue;
+    if(c[i].c>high[i]+0.05*a) sig[i]=1;
+    else if(c[i].c<low[i]-0.05*a) sig[i]=-1;
+  }
+  return sig;
+}
+
+function signalsSRVolumeBreakout(c) {
+  const {high,low}=previousRange(c,50);
+  const vol=sma(c.map(b=>b.v),20);
+  const atr=rma(trueRange(c),14),sig=Array(c.length).fill(0);
+  for(let i=50;i<c.length;i++){
+    const a=atr[i],v=vol[i];
+    if(!finite(a)||a<=0||!finite(v)||v<=0||c[i].v<1.20*v) continue;
+    if(c[i].c>high[i]+0.05*a) sig[i]=1;
+    else if(c[i].c<low[i]-0.05*a) sig[i]=-1;
+  }
+  return sig;
+}
+
 export const STRATEGIES = [
   {id:'pmax',name:'PMax Explorer',family:'trend_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsPMax},
   {id:'alphatrend',name:'AlphaTrend',family:'trend_volume_atr',version:'kivanc-core-v1',mode:'REVERSAL',signal:signalsAlphaTrend},
@@ -451,7 +653,17 @@ export const STRATEGIES = [
   {id:'ssl_hybrid_flip',name:'SSL Hybrid — Flip Mode',family:'baseline_trend',version:'tv-open-v1',mode:'REVERSAL',signal:signalsSSLHybridFlip},
   {id:'ssl_hybrid_qqe_flip',name:'SSL Hybrid + QQE — Flip Mode',family:'trend_momentum_filter',version:'tv-open-v1',mode:'REVERSAL',signal:signalsSSLHybridQQEFlip},
   {id:'ut_bot_quantnomad',name:'UT Bot Strategy — QuantNomad',family:'atr_trailing_stop',version:'tv-open-v1',mode:'REVERSAL',signal:signalsUTBotQuantNomad},
-  {id:'chandelier_zlsma',name:'Chandelier Exit ZLSMA Strategy',family:'trend_breakout_filter',version:'tv-open-v1',mode:'TARGET_POSITION',signal:targetsChandelierZLSMA}
+  {id:'chandelier_zlsma',name:'Chandelier Exit ZLSMA Strategy',family:'trend_breakout_filter',version:'tv-open-v1',mode:'TARGET_POSITION',signal:targetsChandelierZLSMA},
+  {id:'sr_pivot_bounce',name:'SR Pivot Bounce',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRPivotBounce},
+  {id:'sr_pivot_breakout',name:'SR Pivot Breakout',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRPivotBreakout},
+  {id:'sr_break_retest',name:'SR Break + Retest',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRBreakRetest},
+  {id:'sr_wick_rejection',name:'SR Wick Rejection',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRWickRejection},
+  {id:'sr_liquidity_sweep',name:'SR Liquidity Sweep + Reclaim',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRLiquiditySweep},
+  {id:'sr_range_edge',name:'SR Range Edge Rejection',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRRangeEdge},
+  {id:'sr_prior_day_sweep',name:'SR Prior-Day High/Low Sweep',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRPriorDaySweep},
+  {id:'sr_level_flip',name:'SR Breakout Level Flip',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRLevelFlip},
+  {id:'sr_compression_breakout',name:'SR Compression Breakout',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRCompressionBreakout},
+  {id:'sr_volume_breakout',name:'SR Volume-Confirmed Breakout',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRVolumeBreakout}
 ];
 
 function backtest(c,signals,tradeStart=-Infinity) {
