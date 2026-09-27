@@ -168,6 +168,7 @@ jobs:
             sleep 15
           done
   cloud:
+    cache-mode: write
     needs: prepare
     if: needs.prepare.outputs.backend == 'cloud' || needs.prepare.outputs.backend == 'hybrid'
     strategy:
