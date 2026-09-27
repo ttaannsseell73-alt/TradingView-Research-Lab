@@ -1,0 +1,42 @@
+name: Cancel Heavy Research Runs
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  issues: write
+  contents: read
+
+jobs:
+  cancel:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[CANCEL HEAVY RUNS]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel target runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          for run_id in 36283667492 36283805799; do
+            status="$(gh api "repos/$REPO/actions/runs/$run_id" --jq '.status')"
+            if [ "$status" = "completed" ]; then
+              echo "$run_id already completed"
+              continue
+            fi
+            if gh api --method POST "repos/$REPO/actions/runs/$run_id/cancel" >/dev/null; then
+              echo "cancel requested: $run_id"
+            else
+              echo "cancel failed: $run_id"
+              failed=1
+            fi
+          done
+          gh api --method PATCH "repos/$REPO/issues/$ISSUE_NUMBER" -f state=closed >/dev/null
+          exit "$failed"
