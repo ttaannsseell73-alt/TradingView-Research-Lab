@@ -161,7 +161,7 @@ const dataRoot = process.env.DATAHUB_ROOT
   ?? process.env.DATAHUB_LOCAL_ROOT
   ?? (process.platform === 'win32' ? 'D:/Futures-Research-Data' : path.resolve('.datahub-cloud'));
 const outDir = path.resolve(process.env.RESEARCH_OUT_DIR ?? 'artifacts/hybrid-research');
-const csvDir = path.join(outDir, 'csv');
+const csvDir = path.resolve(process.env.RESEARCH_CSV_DIR ?? path.join(outDir, 'csv'));
 const checkpointDir = path.join(outDir, 'checkpoints-' + shardIndex + '-of-' + shardCount);
 fs.mkdirSync(csvDir, { recursive: true });
 fs.mkdirSync(checkpointDir, { recursive: true });
@@ -288,11 +288,39 @@ for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
     }
 
     const candles = parseCsv(csvFile);
-    const expected = Math.floor((plan.endMs - plan.startMs) / TF_MS[task.timeframe]);
-    const coverage = expected ? candles.length / expected : 0;
+    const firstBarMs = candles.length ? candles[0].t : NaN;
+    const lastBarMs = candles.length ? candles[candles.length - 1].t : NaN;
+    const effectiveStartMs = Number.isFinite(firstBarMs) ? Math.max(plan.startMs, firstBarMs) : plan.startMs;
+    const expected = Math.max(0, Math.floor((plan.endMs - effectiveStartMs) / TF_MS[task.timeframe]));
+    const coverage = expected ? Math.min(1, candles.length / expected) : 0;
+    const historyDays = Number.isFinite(firstBarMs) && Number.isFinite(lastBarMs)
+      ? (lastBarMs - firstBarMs + TF_MS[task.timeframe]) / 86_400_000
+      : 0;
+    const minHistoryDays = Number(plan.minHistoryDays ?? 30);
 
-    if (coverage < Number(plan.minCoverage ?? 0.98)) {
-      checkpoint.failure = { ...task, reason: 'PARTIAL_COVERAGE', rows: candles.length, expected, coverage };
+    if (historyDays < minHistoryDays) {
+      checkpoint.failure = {
+        ...task,
+        reason: 'TOO_SHORT_HISTORY',
+        rows: candles.length,
+        expected,
+        coverage,
+        historyDays,
+        minHistoryDays,
+        firstBar: Number.isFinite(firstBarMs) ? new Date(firstBarMs).toISOString() : null,
+        lastBar: Number.isFinite(lastBarMs) ? new Date(lastBarMs).toISOString() : null,
+      };
+    } else if (coverage < Number(plan.minCoverage ?? 0.98)) {
+      checkpoint.failure = {
+        ...task,
+        reason: 'PARTIAL_LIFETIME_COVERAGE',
+        rows: candles.length,
+        expected,
+        coverage,
+        historyDays,
+        firstBar: Number.isFinite(firstBarMs) ? new Date(firstBarMs).toISOString() : null,
+        lastBar: Number.isFinite(lastBarMs) ? new Date(lastBarMs).toISOString() : null,
+      };
     } else {
       const minTrades = Number(
         typeof plan.minTrades === 'number'
@@ -305,23 +333,27 @@ for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
         stressCost: plan.stressCost,
         lowCost: plan.lowCost,
         minTrades,
-        start: plan.startMs,
+        start: effectiveStartMs,
         end: plan.endMs,
         strategyIds: plan.strategyIds,
       });
 
       checkpoint.results = evaluated.map((row) => ({
         ...task,
-        start: plan.start,
+        start: new Date(effectiveStartMs).toISOString(),
+        requestedStart: plan.start,
         end: plan.end,
         rows: candles.length,
         coverage,
+        historyDays,
+        firstBar: Number.isFinite(firstBarMs) ? new Date(firstBarMs).toISOString() : null,
+        lastBar: Number.isFinite(lastBarMs) ? new Date(lastBarMs).toISOString() : null,
         ...row,
       }));
 
       if (plan.monthlyBreakdown) {
         const monthlyMinTrades = Number(plan.monthlyMinTrades ?? minTrades);
-        for (const window of monthWindows(plan.startMs, plan.endMs)) {
+        for (const window of monthWindows(effectiveStartMs, plan.endMs)) {
           const monthCandles = candles.filter((bar) => bar.t >= window.start && bar.t < window.end);
           const expectedMonth = Math.floor((window.end - window.start) / TF_MS[task.timeframe]);
           const monthCoverage = expectedMonth ? monthCandles.length / expectedMonth : 0;
@@ -358,6 +390,24 @@ for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
             coverage: monthCoverage,
             ...row,
           })));
+        }
+
+        for (const row of checkpoint.results) {
+          const months = checkpoint.monthlyResults.filter((m) => m.id === row.id);
+          const eligibleMonths = months.length;
+          const passMonths = months.filter((m) => m.pass).length;
+          const positiveMonths = months.filter((m) => Number(m.net) > 0).length;
+          const stressPositiveMonths = months.filter((m) => Number(m.net15) > 0).length;
+          let monthlyGrade = 'REVIEW';
+          if (eligibleMonths >= 9 && passMonths >= 9) monthlyGrade = 'A_9_OF_9';
+          else if (eligibleMonths >= 9 && passMonths >= 8) monthlyGrade = 'B_8_OF_9';
+          else if (eligibleMonths >= 6 && passMonths / eligibleMonths >= 0.80) monthlyGrade = 'C_80PCT_SHORTER';
+          row.monthlyEligibleMonths = eligibleMonths;
+          row.monthlyPassMonths = passMonths;
+          row.monthlyPositiveMonths = positiveMonths;
+          row.monthlyStressPositiveMonths = stressPositiveMonths;
+          row.monthlyPassRatio = eligibleMonths ? passMonths / eligibleMonths : 0;
+          row.monthlyGrade = monthlyGrade;
         }
       }
     }
