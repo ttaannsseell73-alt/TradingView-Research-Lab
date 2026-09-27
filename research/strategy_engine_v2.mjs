@@ -822,6 +822,8 @@ export function evaluateStrategies(candles, {
     const base=stats(trades,cost,start,end);
     const stress=stats(trades,stressCost,start,end);
     const low=stats(trades,lowCost,start,end);
+    const longBase=stats(trades.filter(t=>t.side===1),cost,start,end);
+    const shortBase=stats(trades.filter(t=>t.side===-1),cost,start,end);
     const pass=base.n>=minTrades&&base.net>0&&base.exp>0&&base.pf>1.05&&base.posseg>=2&&stress.net>0;
     return {
       id:s.id,
@@ -833,6 +835,18 @@ export function evaluateStrategies(candles, {
       ...base,
       net15:stress.net,
       net6:low.net,
+      longTrades:longBase.n,
+      longWinRate:longBase.wr,
+      longNet:longBase.net,
+      longPF:longBase.pf,
+      longDD:longBase.dd,
+      longExpectancy:longBase.exp,
+      shortTrades:shortBase.n,
+      shortWinRate:shortBase.wr,
+      shortNet:shortBase.net,
+      shortPF:shortBase.pf,
+      shortDD:shortBase.dd,
+      shortExpectancy:shortBase.exp,
       pass
     };
   });
