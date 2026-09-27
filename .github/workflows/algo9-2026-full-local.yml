@@ -1,0 +1,110 @@
+name: ALGO9 2026 Full Local
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[ALGO9 2026 FULL RUN]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 480
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: local
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      SHARD_INDEX: 0
+      SHARD_COUNT: 1
+      REUSE_EXISTING_CSV: 1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build exact 725-symbol ALGO9 plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-15m-futures.feather"
+          $files = Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*-15m-futures.feather" -File | Sort-Object Name
+          $symbols = @()
+          foreach ($f in $files) {
+            if ($f.Name.EndsWith($suffix)) {
+              $base = $f.Name.Substring(0, $f.Name.Length - $suffix.Length)
+              $symbols += (($base -replace "_","") + "USDT")
+            }
+          }
+          $symbols = @($symbols | Sort-Object -Unique)
+          if ($symbols.Count -ne 725) { throw "Expected exact universe of 725 symbols, found $($symbols.Count)." }
+
+          $plan = [ordered]@{
+            backend = "local"
+            cloudShards = 1
+            symbols = $symbols
+            timeframes = @("1m","5m","15m","1h","4h")
+            start = "2026-01-01T00:00:00Z"
+            end = "2026-09-20T00:00:00Z"
+            strategies = @(
+              "pmax","alphatrend","ott","tott","mavilimw",
+              "ssl_hybrid_flip","ssl_hybrid_qqe_flip",
+              "ut_bot_quantnomad","chandelier_zlsma"
+            )
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "1m"=50; "5m"=30; "15m"=25; "1h"=20; "4h"=10 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 10
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.10
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "algo9-plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+          Write-Host "ALGO9 SYMBOLS=$($symbols.Count) TASKS=$($symbols.Count * 5) STRATEGIES=9"
+
+      - name: Run ALGO9 full universe 5TF
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/algo9-2026-full
+          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
+          REUSE_EXISTING_CSV: 1
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs algo9-plan.json
+
+      - name: Build ALGO9 9-of-9 and 8-of-9 report
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/algo9-2026-full
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/summarize-sr35.mjs
+
+      - name: Upload ALGO9 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: algo9-2026-full-result
+          path: |
+            artifacts/algo9-2026-full/summary-*.json
+            artifacts/algo9-2026-full/top-*.csv
+            artifacts/algo9-2026-full/results-*.ndjson
+            artifacts/algo9-2026-full/monthly-*.ndjson
+            artifacts/algo9-2026-full/failures-*.ndjson
+            artifacts/algo9-2026-full/accepted-9of9-8of9.csv
+            artifacts/algo9-2026-full/accepted-summary.json
+          if-no-files-found: warn
+          compression-level: 6
