@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PLAN_B64: ${{ needs.prepare.outputs.plan_b64 }}
-      DATAHUB_ROOT: ${{ github.workspace }}/.datahub-cloud
+      DATAHUB_ROOT: ${{ runner.temp }}/datahub-cache
       RESEARCH_BACKEND: cloud
       RESEARCH_OUT_DIR: artifacts/hybrid-research
       SHARD_COUNT: ${{ needs.prepare.outputs.backend == 'hybrid' && '2' || '1' }}
@@ -76,7 +76,7 @@ jobs:
       - name: Restore cloud DataHub cache
         uses: actions/cache@v4
         with:
-          path: .datahub-cloud
+          path: ${{ runner.temp }}/datahub-cache
           key: datahub-cloud-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             datahub-cloud-${{ runner.os }}-
@@ -88,9 +88,10 @@ jobs:
         run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
 
       - name: Run cloud shard
-        run: node scripts/run-datahub-plan.mjs plan.json 0 "${SHARD_COUNT}"
+        run: node scripts/run-datahub-plan.mjs plan.json
 
       - name: Upload cloud result
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: datahub-cloud-result
@@ -132,9 +133,10 @@ jobs:
         run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
 
       - name: Run local shard
-        run: node scripts/run-datahub-plan.mjs plan.json "${SHARD_INDEX}" "${SHARD_COUNT}"
+        run: node scripts/run-datahub-plan.mjs plan.json
 
       - name: Upload local result
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: datahub-local-result
