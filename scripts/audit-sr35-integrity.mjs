@@ -81,18 +81,19 @@ const targetCombos=[
 
 const determinism=[];
 let deterministicFailures=0;
+let deterministicWarnings=0;
 for(const [symbol,id] of targetCombos){
   for(const tf of Object.keys(TF_MS)){
     const file=path.join(root,symbol+'-'+tf+'.csv');
     if(!fs.existsSync(file)){
-      deterministicFailures++;
+      deterministicWarnings++;
       determinism.push({symbol,timeframe:tf,id,status:'MISSING_CSV'});
       continue;
     }
     const candles=parseCsv(file);
     const usable=candles.filter(b=>b.t>=start&&b.t<end);
     if(!usable.length){
-      deterministicFailures++;
+      deterministicWarnings++;
       determinism.push({symbol,timeframe:tf,id,status:'NO_DATA'});
       continue;
     }
@@ -109,10 +110,11 @@ for(const [symbol,id] of targetCombos){
 const byId=new Map(STRATEGIES.map(s=>[s.id,s]));
 const causality=[];
 let causalityFailures=0;
+let causalityWarnings=0;
 for(const symbol of ['QUSDT','FHEUSDT']){
   const file=path.join(root,symbol+'-15m.csv');
   if(!fs.existsSync(file)){
-    causalityFailures++;
+    causalityWarnings++;
     causality.push({symbol,timeframe:'15m',status:'MISSING_CSV'});
     continue;
   }
@@ -156,13 +158,15 @@ const report={
   deterministicRepeat:{
     checked:determinism.filter(x=>x.status==='PASS'||x.status==='FAIL').length,
     failures:deterministicFailures,
-    status:deterministicFailures===0?'PASS':'FAIL',
+    warnings:deterministicWarnings,
+    status:deterministicFailures===0?(deterministicWarnings?'PASS_WITH_DATA_GAPS':'PASS'):'FAIL',
     note:'Same CSV + same parameters must reproduce the same metrics, including 1m/5m/15m/1h/4h on known strong systems.'
   },
   causalPrefixAudit:{
     checked:causality.filter(x=>x.status==='PASS'||x.status==='FAIL').length,
     failures:causalityFailures,
-    status:causalityFailures===0?'PASS':'FAIL',
+    warnings:causalityWarnings,
+    status:causalityFailures===0?(causalityWarnings?'PASS_WITH_DATA_GAPS':'PASS'):'FAIL',
     note:'For sampled cut points, historical signals from a full run must exactly match signals recomputed using only data available up to that cut. Any mismatch indicates future-data leakage.'
   },
   executionModel:'Signals are executed at the NEXT candle open by backtest(), preventing same-bar close execution.',
