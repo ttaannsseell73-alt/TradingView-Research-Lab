@@ -1,0 +1,62 @@
+name: Local Futures Dataset Update
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  update:
+    if: >-
+      github.event_name != 'issues' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       startsWith(github.event.issue.title, '[LOCAL DATA BACKFILL]'))
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 720
+    env:
+      DATA_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      PYTHON_EXE: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update local Futures dataset
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & $env:PYTHON_EXE scripts/update-local-futures-dataset.py --root $env:DATA_ROOT --start 2024-09-19 --workers 8 --report dataset-update-report.json
+
+      - name: Publish update report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-futures-dataset-update
+          path: dataset-update-report.json
+          if-no-files-found: warn
+
+      - name: Comment summary
+        if: always() && github.event_name == 'issues'
+        shell: powershell
+        run: |
+          if (Test-Path dataset-update-report.json) {
+            $r = Get-Content dataset-update-report.json -Raw | ConvertFrom-Json
+            $body = @(
+              "<!-- LOCAL_DATA_BACKFILL_PROGRESS -->",
+              "Dataset update finished.",
+              "Symbols: $($r.symbols)",
+              "Updated: $($r.updated)",
+              "Current: $($r.current)",
+              "Errors: $($r.errors)",
+              "Target start: $($r.target_start)",
+              "Target end (exclusive): $($r.target_end_exclusive)"
+            ) -join [Environment]::NewLine
+            gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body $body
+          }
