@@ -12,6 +12,8 @@ on:
 
 permissions:
   contents: read
+  actions: read
+  issues: write
 
 jobs:
   prepare:
@@ -78,6 +80,83 @@ jobs:
               fh.write(f"local_index={local_index}\n")
           PY
 
+  progress:
+    needs: prepare
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      RUN_ID: ${{ github.run_id }}
+      TOTAL_SHARDS: ${{ needs.prepare.outputs.total_shards }}
+    steps:
+      - name: Live progress bar
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker='<!-- DATAHUB_LIVE_PROGRESS -->'
+
+          comment_id="$(gh api "repos/$REPO/issues/$ISSUE_NUMBER/comments?per_page=100" --jq '.[] | select(.body | contains("DATAHUB_LIVE_PROGRESS")) | .id' | head -n 1 || true)"
+          if [ -z "$comment_id" ]; then
+            comment_id="$(gh api --method POST "repos/$REPO/issues/$ISSUE_NUMBER/comments" -f body="$marker
+          **Canlı ilerleme**
+          `░░░░░░░░░░░░░░░░░░░░ 0%`
+          Hazırlanıyor…" --jq '.id')"
+          fi
+
+          update_comment() {
+            local pct="$1"
+            local state="$2"
+            local done_count="$3"
+            local running_count="$4"
+            local failed_count="$5"
+            local filled=$(( pct / 5 ))
+            local empty=$(( 20 - filled ))
+            local bar=""
+            local i
+            for ((i=0;i<filled;i++)); do bar="${bar}█"; done
+            for ((i=0;i<empty;i++)); do bar="${bar}░"; done
+            local body
+            body="$marker
+          **Canlı ilerleme**
+          `${bar} ${pct}%`
+
+          Shard: **${done_count}/${TOTAL_SHARDS} tamamlandı** · Çalışan: **${running_count}** · Hatalı: **${failed_count}**
+          Durum: **${state}**
+
+          [Workflow'u aç](https://github.com/$REPO/actions/runs/$RUN_ID)
+
+          _Otomatik güncellenir._"
+            gh api --method PATCH "repos/$REPO/issues/comments/$comment_id" -f body="$body" >/dev/null
+          }
+
+          while true; do
+            jobs="$(gh api "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100")"
+            done_count="$(jq '[.jobs[] | select((.name | startswith("cloud")) or .name=="local") | select(.conclusion != null and .conclusion != "skipped")] | length' <<<"$jobs")"
+            running_count="$(jq '[.jobs[] | select((.name | startswith("cloud")) or .name=="local") | select(.status=="in_progress")] | length' <<<"$jobs")"
+            failed_count="$(jq '[.jobs[] | select((.name | startswith("cloud")) or .name=="local") | select(.conclusion=="failure")] | length' <<<"$jobs")"
+            merge_status="$(jq -r '[.jobs[] | select(.name=="merge")][0].status // "absent"' <<<"$jobs")"
+            merge_conclusion="$(jq -r '[.jobs[] | select(.name=="merge")][0].conclusion // ""' <<<"$jobs")"
+
+            if [ "$merge_status" = "completed" ]; then
+              if [ "$merge_conclusion" = "success" ]; then
+                update_comment 100 "BİTTİ" "$done_count" "$running_count" "$failed_count"
+              else
+                update_comment 100 "BİTTİ — sonuçta hata/kısmi veri var" "$done_count" "$running_count" "$failed_count"
+              fi
+              break
+            fi
+
+            if [ "$done_count" -ge "$TOTAL_SHARDS" ]; then
+              update_comment 95 "Sonuçlar birleştiriliyor" "$done_count" "$running_count" "$failed_count"
+            else
+              pct=$(( done_count * 90 / TOTAL_SHARDS ))
+              update_comment "$pct" "Testler çalışıyor" "$done_count" "$running_count" "$failed_count"
+            fi
+            sleep 15
+          done
   cloud:
     needs: prepare
     if: needs.prepare.outputs.backend == 'cloud' || needs.prepare.outputs.backend == 'hybrid'
