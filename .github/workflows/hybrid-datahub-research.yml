@@ -202,28 +202,16 @@ jobs:
           repository: ttaannsseell73-alt/Futures-Research-DataHub
           path: datahub
 
-      - name: Verify local runtime
-        shell: powershell
-        run: |
-          python --version
-          node --version
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-      - name: Prepare persistent local DataHub runtime
-        shell: powershell
-        run: |
-          $venv = "C:\actions-runner-datahub\.venv-datahub"
-          if (-not (Test-Path "$venv\Scripts\python.exe")) {
-            python -m venv $venv
-          }
-          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check -e ./datahub
-          "DATAHUB_PYTHON=$venv\Scripts\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "$venv\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-      - name: Verify DataHub runtime
-        shell: powershell
-        run: |
-          & $env:DATAHUB_PYTHON --version
-          datahub --help | Select-Object -First 5
+      - name: Install DataHub
+        run: python -m pip install -e ./datahub
 
       - name: Restore persistent DataHub cache
         uses: actions/cache@v4
@@ -271,16 +259,28 @@ jobs:
           repository: ttaannsseell73-alt/Futures-Research-DataHub
           path: datahub
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Verify local Python and Node
+        shell: powershell
+        run: |
+          python --version
+          node --version
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+      - name: Prepare persistent DataHub venv
+        shell: powershell
+        run: |
+          $venv = "C:\actions-runner-datahub\.venv-datahub"
+          if (-not (Test-Path "$venv\Scripts\python.exe")) {
+            python -m venv $venv
+          }
+          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check -e ./datahub
+          "DATAHUB_PYTHON=$venv\Scripts\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "$venv\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Install DataHub
-        run: python -m pip install -e ./datahub
+      - name: Verify DataHub CLI
+        shell: powershell
+        run: |
+          & $env:DATAHUB_PYTHON --version
+          datahub --help | Select-Object -First 5
 
       - name: Decode plan
         run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
