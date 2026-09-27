@@ -259,18 +259,49 @@ jobs:
           repository: ttaannsseell73-alt/Futures-Research-DataHub
           path: datahub
 
-      - name: Verify local Python and Node
+      - name: Detect local Python and Node
         shell: powershell
         run: |
-          python --version
+          $ErrorActionPreference = "Stop"
           node --version
+
+          $python = $null
+          if (Get-Command py.exe -ErrorAction SilentlyContinue) {
+            try {
+              $candidate = (& py -3.12 -c "import sys; print(sys.executable)" 2>$null | Select-Object -Last 1).Trim()
+              if ($candidate -and (Test-Path $candidate)) { $python = $candidate }
+            } catch {}
+          }
+
+          if (-not $python) {
+            $candidates = @(
+              "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe",
+              "$env:ProgramFiles\Python312\python.exe",
+              "$env:ProgramFiles\Python\Python312\python.exe",
+              "C:\Python312\python.exe"
+            )
+            foreach ($candidate in $candidates) {
+              if (Test-Path $candidate) { $python = $candidate; break }
+            }
+          }
+
+          if (-not $python) {
+            throw "Python 3.12 executable not found. Checked py launcher and standard Python312 locations."
+          }
+
+          & $python --version
+          "SYSTEM_PYTHON=$python" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Prepare persistent DataHub venv
         shell: powershell
         run: |
+          $ErrorActionPreference = "Stop"
           $venv = "C:\actions-runner-datahub\.venv-datahub"
+          if ((Test-Path $venv) -and -not (Test-Path "$venv\Scripts\python.exe")) {
+            Remove-Item -Recurse -Force $venv
+          }
           if (-not (Test-Path "$venv\Scripts\python.exe")) {
-            python -m venv $venv
+            & $env:SYSTEM_PYTHON -m venv $venv
           }
           & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check -e ./datahub
           "DATAHUB_PYTHON=$venv\Scripts\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
