@@ -1,0 +1,5 @@
+queue=2026-09-28-night-1
+order=ALGO9_RUNNING -> SWEEP20 -> VISUAL28
+window=2026-01-01..2026-09-20
+universe=725
+timeframes=1m,5m,15m,1h,4h
