@@ -108,24 +108,34 @@ def main() -> int:
     args = ap.parse_args()
 
     root = Path(args.root)
-    exact = candidate_path(root, args.symbol, args.timeframe)
-    source = exact
-    derived = False
-
-    if exact.exists():
-        df = normalize_frame(pl.read_ipc(exact))
-    elif args.timeframe == "1h":
-        source = candidate_path(root, args.symbol, "15m")
-        if not source.exists():
-            raise FileNotFoundError(f"LOCAL_DATA_MISSING: {exact} and 15m source {source}")
-        df = resample_1h(normalize_frame(pl.read_ipc(source)))
-        derived = True
-    else:
-        raise FileNotFoundError(f"LOCAL_DATA_MISSING: {exact}")
+    source = candidate_path(root, args.symbol, "1m")
+    if not source.exists():
+        raise FileNotFoundError(f"LOCAL_DATA_MISSING: canonical 1m source {source}")
 
     start_ms = iso_ms(args.start)
     end_ms = iso_ms(args.end)
-    df = df.filter((pl.col("t") >= start_ms) & (pl.col("t") < end_ms))
+
+    base = normalize_frame(pl.read_ipc(source))
+    base = base.filter((pl.col("t") >= start_ms) & (pl.col("t") < end_ms))
+
+    derived = args.timeframe != "1m"
+    if args.timeframe == "1m":
+        df = base
+    else:
+        bucket = TF_MS[args.timeframe]
+        df = (
+            base.with_columns(((pl.col("t") // bucket) * bucket).alias("_bucket"))
+            .group_by("_bucket", maintain_order=True)
+            .agg(
+                pl.col("o").first().alias("o"),
+                pl.col("h").max().alias("h"),
+                pl.col("l").min().alias("l"),
+                pl.col("c").last().alias("c"),
+                pl.col("v").sum().alias("v"),
+            )
+            .rename({"_bucket": "t"})
+            .sort("t")
+        )
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
