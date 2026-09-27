@@ -317,8 +317,10 @@ jobs:
       - name: Verify DataHub CLI
         shell: powershell
         run: |
+          $ErrorActionPreference = "Stop"
           & $env:DATAHUB_PYTHON --version
-          datahub --help | Select-Object -First 5
+          datahub --help
+          if ($LASTEXITCODE -ne 0) { throw "DataHub CLI verification failed." }
 
       - name: Decode plan
         run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
