@@ -1,0 +1,167 @@
+name: Night Queue Sweep Visual
+
+on:
+  push:
+    paths:
+      - '.night-queue-trigger'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  night:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 600
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: local
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      SHARD_INDEX: 0
+      SHARD_COUNT: 1
+      REUSE_EXISTING_CSV: 1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Preflight strategy modules
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --check research/sweep_strategies.mjs
+          node --check research/visual_strategies.mjs
+          node --check research/strategy_engine_v2.mjs
+
+      - name: Build exact 725-symbol plans
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-15m-futures.feather"
+          $files = Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*-15m-futures.feather" -File | Sort-Object Name
+          $symbols = @()
+          foreach ($f in $files) {
+            if ($f.Name.EndsWith($suffix)) {
+              $base = $f.Name.Substring(0, $f.Name.Length - $suffix.Length)
+              $symbols += (($base -replace "_","") + "USDT")
+            }
+          }
+          $symbols = @($symbols | Sort-Object -Unique)
+          if ($symbols.Count -ne 725) { throw "Expected exact universe of 725 symbols, found $($symbols.Count)." }
+
+          $common = [ordered]@{
+            backend = "local"
+            cloudShards = 1
+            symbols = $symbols
+            timeframes = @("1m","5m","15m","1h","4h")
+            start = "2026-01-01T00:00:00Z"
+            end = "2026-09-20T00:00:00Z"
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "1m"=50; "5m"=30; "15m"=25; "1h"=20; "4h"=10 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 10
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.10
+          }
+
+          $sweep = [ordered]@{}
+          foreach ($k in $common.Keys) { $sweep[$k] = $common[$k] }
+          $sweep.strategies = @(
+            "swp_range12_reclaim","swp_range24_reclaim","swp_range48_reclaim","swp_range96_reclaim",
+            "swp_prior_day","swp_prior_week","swp_prior_month",
+            "swp_pivot_sfp","swp_pivot_sfp_body","swp_volume_absorption",
+            "swp_atr_expansion","swp_ema50_filter","swp_rsi_exhaustion","swp_wick_sfp",
+            "swp_compression_reclaim","swp_mss_confirm","swp_fvg_after",
+            "swp_failed_breakout","swp_asia_range","swp_opening_range"
+          )
+
+          $visual = [ordered]@{}
+          foreach ($k in $common.Keys) { $visual[$k] = $common[$k] }
+          $visual.strategies = @(
+            "vis_bollinger_rsi_double","vis_macd_sma200","vis_supertrend_10_3","vis_macd_rsi",
+            "vis_hull_suite","vis_ema_cross_9_21","vis_golden_cross_50_200","vis_fractal_breakout",
+            "vis_macd_stoch","vis_ema_slope_cross","vis_squeeze_momentum","vis_adx_di",
+            "vis_coppock","vis_rsi_entries","vis_bb_mean_reversion","vis_vixfix_reversal",
+            "vis_sr_breaks","vis_high_volume_box","vis_auto_range_breakout","vis_fibonacci_bb",
+            "vis_ichimoku_hull","vis_open_close_cross","vis_candlestick_reversal","vis_tma_overlay",
+            "vis_super_scalper","vis_nadaraya_watson","vis_volume_delta_pivot","vis_structure_vwap"
+          )
+
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "night-sweep-plan.json"), ($sweep | ConvertTo-Json -Depth 8 -Compress), (New-Object System.Text.UTF8Encoding($false)))
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "night-visual-plan.json"), ($visual | ConvertTo-Json -Depth 8 -Compress), (New-Object System.Text.UTF8Encoding($false)))
+          Write-Host "NIGHT QUEUE: 725 symbols x 5 TF | SWEEP20 then VISUAL28"
+
+      - name: Run SWEEP20 full universe
+        continue-on-error: true
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/sweep20-2026-full
+          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs night-sweep-plan.json
+
+      - name: Summarize SWEEP20 9-of-9 and 8-of-9
+        continue-on-error: true
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/sweep20-2026-full
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/summarize-sr35.mjs
+
+      - name: Upload SWEEP20 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sweep20-2026-full-result
+          path: |
+            artifacts/sweep20-2026-full/summary-*.json
+            artifacts/sweep20-2026-full/top-*.csv
+            artifacts/sweep20-2026-full/results-*.ndjson
+            artifacts/sweep20-2026-full/monthly-*.ndjson
+            artifacts/sweep20-2026-full/failures-*.ndjson
+            artifacts/sweep20-2026-full/accepted-9of9-8of9.csv
+            artifacts/sweep20-2026-full/accepted-summary.json
+          if-no-files-found: warn
+          compression-level: 6
+
+      - name: Run VISUAL28 full universe
+        continue-on-error: true
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/visual28-2026-full
+          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs night-visual-plan.json
+
+      - name: Summarize VISUAL28 9-of-9 and 8-of-9
+        continue-on-error: true
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/visual28-2026-full
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/summarize-sr35.mjs
+
+      - name: Upload VISUAL28 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual28-2026-full-result
+          path: |
+            artifacts/visual28-2026-full/summary-*.json
+            artifacts/visual28-2026-full/top-*.csv
+            artifacts/visual28-2026-full/results-*.ndjson
+            artifacts/visual28-2026-full/monthly-*.ndjson
+            artifacts/visual28-2026-full/failures-*.ndjson
+            artifacts/visual28-2026-full/accepted-9of9-8of9.csv
+            artifacts/visual28-2026-full/accepted-summary.json
+          if-no-files-found: warn
+          compression-level: 6
