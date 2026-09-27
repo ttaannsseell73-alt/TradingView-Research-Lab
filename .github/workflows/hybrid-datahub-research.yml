@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PLAN_B64: ${{ needs.prepare.outputs.plan_b64 }}
-      DATAHUB_ROOT: ${{ runner.temp }}/datahub-cache
+      DATAHUB_ROOT: ${{ github.workspace }}/../datahub-cache
       RESEARCH_BACKEND: cloud
       RESEARCH_OUT_DIR: artifacts/hybrid-research
       SHARD_COUNT: ${{ needs.prepare.outputs.backend == 'hybrid' && '2' || '1' }}
@@ -76,7 +76,7 @@ jobs:
       - name: Restore cloud DataHub cache
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/datahub-cache
+          path: ${{ github.workspace }}/../datahub-cache
           key: datahub-cloud-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             datahub-cloud-${{ runner.os }}-
