@@ -18,67 +18,89 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
       ISSUE_NUMBER: ${{ github.event.issue.number }}
+      DATA_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      PYTHON_EXE: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
     steps:
-      - name: Inventory local market-data stores
+      - uses: actions/checkout@v4
+
+      - name: Audit futures Feather coverage
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
+          @'
+          import json
+          import os
+          import re
+          from pathlib import Path
+          import polars as pl
 
-          $paths = @(
-            "C:\Futures-Research-Data",
-            "C:\Users\TANSEL\Desktop\SCALPING_LAB\freqtrade\user_data\data\binance\futures"
-          )
+          root = Path(os.environ["DATA_ROOT"])
+          tfs = ("1m","5m","15m","4h")
+          rx = re.compile(r"^(?P<sym>.+)_USDT_USDT-(?P<tf>1m|5m|15m|4h)-futures\.feather$", re.I)
 
-          $out = New-Object System.Collections.Generic.List[string]
-          $out.Add("LOCAL DATA INVENTORY")
-          $out.Add("Runner: " + $env:COMPUTERNAME)
-          $out.Add("")
+          out = {"root": str(root), "exists": root.exists(), "timeframes": {}, "overall": {}}
+          global_min = None
+          global_max = None
+          total = 0
 
-          foreach ($p in $paths) {
-            $out.Add("PATH: " + $p)
+          def time_col(df):
+              lower = {c.lower(): c for c in df.columns}
+              return next((lower[x] for x in ("date","timestamp","time","t") if x in lower), None)
 
-            if (-not (Test-Path -LiteralPath $p)) {
-              $out.Add("EXISTS: NO")
-              $out.Add("")
-              continue
-            }
+          for tf in tfs:
+              files = []
+              for p in root.glob(f"*-{tf}-futures.feather"):
+                  if rx.match(p.name):
+                      files.append(p)
+              mn = None
+              mx = None
+              good = 0
+              bad = 0
+              samples = []
+              for p in files:
+                  try:
+                      df = pl.read_ipc(p)
+                      tc = time_col(df)
+                      if not tc or df.height == 0:
+                          bad += 1
+                          continue
+                      s = df[tc]
+                      vals = s.cast(pl.Datetime("ms"), strict=False) if s.dtype != pl.Datetime else s
+                      vmin = vals.min()
+                      vmax = vals.max()
+                      if vmin is None or vmax is None:
+                          bad += 1
+                          continue
+                      # Convert to epoch ms robustly.
+                      ms = df.select(
+                          pl.col(tc).cast(pl.Datetime("ms"), strict=False).dt.epoch("ms").min().alias("mn"),
+                          pl.col(tc).cast(pl.Datetime("ms"), strict=False).dt.epoch("ms").max().alias("mx"),
+                      ).row(0)
+                      a,b = int(ms[0]), int(ms[1])
+                      mn = a if mn is None else min(mn,a)
+                      mx = b if mx is None else max(mx,b)
+                      good += 1
+                      if len(samples) < 3:
+                          samples.append({"file":p.name,"rows":df.height,"min_ms":a,"max_ms":b})
+                  except Exception:
+                      bad += 1
+              total += len(files)
+              if mn is not None:
+                  global_min = mn if global_min is None else min(global_min,mn)
+                  global_max = mx if global_max is None else max(global_max,mx)
+              out["timeframes"][tf] = {
+                  "files": len(files),
+                  "good": good,
+                  "bad": bad,
+                  "min_ms": mn,
+                  "max_ms": mx,
+                  "samples": samples,
+              }
 
-            $files = @(Get-ChildItem -LiteralPath $p -File -Recurse -ErrorAction SilentlyContinue)
-            $count = $files.Count
-            $sum = ($files | Measure-Object -Property Length -Sum).Sum
-            if ($null -eq $sum) { $sum = 0 }
-            $gb = [math]::Round(($sum / 1GB), 3)
+          out["overall"] = {"files": total, "min_ms": global_min, "max_ms": global_max}
+          print(json.dumps(out, indent=2))
+          Path("coverage-audit.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
+          '@ | Set-Content -Path audit_local_data.py -Encoding UTF8
 
-            $out.Add("EXISTS: YES")
-            $out.Add("FILES: " + $count)
-            $out.Add("SIZE_GB: " + $gb)
-
-            $latest = $files | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-            if ($latest) {
-              $out.Add("LATEST_FILE: " + $latest.FullName)
-              $out.Add("LATEST_MODIFIED: " + $latest.LastWriteTime.ToString("s"))
-            }
-
-            $groups = $files | Group-Object Extension | Sort-Object Count -Descending | Select-Object -First 10
-            foreach ($g in $groups) {
-              $out.Add("EXT " + $g.Name + ": " + $g.Count)
-            }
-
-            foreach ($tf in @("1m","5m","15m","1h","4h")) {
-              $pattern = "(?i)(^|[-_.])" + [regex]::Escape($tf) + "([-_.]|$)"
-              $tfCount = @($files | Where-Object { $_.Name -match $pattern }).Count
-              $out.Add("TF " + $tf + ": " + $tfCount)
-            }
-
-            $out.Add("SAMPLES:")
-            foreach ($s in ($files | Select-Object -First 8)) {
-              $out.Add($s.FullName)
-            }
-
-            $out.Add("")
-          }
-
-          $tmp = Join-Path $env:RUNNER_TEMP "local-data-inventory.txt"
-          $out | Set-Content -LiteralPath $tmp -Encoding UTF8
-          Get-Content -LiteralPath $tmp
-          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file $tmp
+          & $env:PYTHON_EXE audit_local_data.py | Tee-Object -FilePath audit-output.txt
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file audit-output.txt
