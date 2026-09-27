@@ -26,8 +26,11 @@ jobs:
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
       SHARD_INDEX: 0
       SHARD_COUNT: 1
+      REUSE_EXISTING_CSV: 1
     steps:
       - uses: actions/checkout@v4
+        with:
+          clean: false
 
       - name: Build exact 725-symbol plan from stable 15m universe
         shell: powershell
@@ -96,12 +99,17 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan.mjs plan.json
+          node scripts/run-datahub-plan-checkpointed.mjs plan.json
 
       - name: Upload result
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: sr25-2026-full-result
-          path: artifacts/sr25-2026-full/result-*.json
+          path: |
+            artifacts/sr25-2026-full/summary-*.json
+            artifacts/sr25-2026-full/top-*.csv
+            artifacts/sr25-2026-full/results-*.ndjson
+            artifacts/sr25-2026-full/monthly-*.ndjson
+            artifacts/sr25-2026-full/failures-*.ndjson
           if-no-files-found: warn
