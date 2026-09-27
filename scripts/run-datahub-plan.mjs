@@ -120,8 +120,38 @@ for (const symbol of [...new Set(plan.symbols)].sort()) {
 }
 const selectedTasks = tasks.filter((_, index) => index % shardCount === shardIndex);
 
+let progressCommentId = null;
+function reportShardProgress(done,total,force=false) {
+  const issue = process.env.PROGRESS_ISSUE_NUMBER;
+  const repo = process.env.GITHUB_REPOSITORY;
+  if (!issue || !repo || !process.env.GH_TOKEN) return;
+  if (!force && done !== total && done % 5 !== 0) return;
+
+  const marker = `DATAHUB_SHARD_PROGRESS:${shardIndex}`;
+  if (!progressCommentId) {
+    const found = spawnSync('gh', [
+      'api', `repos/${repo}/issues/${issue}/comments?per_page=100`,
+      '--jq', `.[] | select(.body | contains("${marker}")) | .id`
+    ], { encoding:'utf8', env:process.env });
+    if (found.status === 0) progressCommentId = String(found.stdout || '').trim().split(/\r?\n/).filter(Boolean)[0] ?? null;
+  }
+
+  const body = `<!-- ${marker} -->
+SHARD_PROGRESS ${shardIndex} ${done} ${total}
+Shard ${shardIndex + 1}/${shardCount}: **${done}/${total} coin tamamlandı**`;
+
+  const args = progressCommentId
+    ? ['api','--method','PATCH',`repos/${repo}/issues/comments/${progressCommentId}`,'-f',`body=${body}`]
+    : ['api','--method','POST',`repos/${repo}/issues/${issue}/comments`,'-f',`body=${body}`,'--jq','.id'];
+  const run = spawnSync('gh', args, { encoding:'utf8', env:process.env });
+  if (run.status === 0 && !progressCommentId) progressCommentId = String(run.stdout || '').trim() || null;
+}
+
+reportShardProgress(0, selectedTasks.length, true);
+
 const results = [];
 const failures = [];
+let processedTasks = 0;
 for (const task of selectedTasks) {
   const csvFile = path.join(csvDir, `${task.symbol}-${task.timeframe}.csv`);
   try {
@@ -167,6 +197,9 @@ for (const task of selectedTasks) {
     }
   } catch (error) {
     failures.push({ ...task, reason: 'ERROR', error: String(error?.message ?? error) });
+  } finally {
+    processedTasks += 1;
+    reportShardProgress(processedTasks, selectedTasks.length);
   }
 }
 
