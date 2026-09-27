@@ -29,6 +29,7 @@ jobs:
       total_shards: ${{ steps.plan.outputs.total_shards }}
       local_index: ${{ steps.plan.outputs.local_index }}
       total_tasks: ${{ steps.plan.outputs.total_tasks }}
+      cache_profile: ${{ steps.plan.outputs.cache_profile }}
     steps:
       - name: Validate and encode plan
         id: plan
@@ -38,6 +39,7 @@ jobs:
         run: |
           python - <<'PY'
           import base64
+          import hashlib
           import json
           import os
 
@@ -73,6 +75,12 @@ jobs:
 
           encoded = base64.b64encode(raw.encode()).decode()
           cloud_matrix = json.dumps(list(range(cloud_count)), separators=(",", ":"))
+          cache_basis = json.dumps(
+              {"symbols": symbols, "timeframes": timeframes},
+              sort_keys=True,
+              separators=(",", ":"),
+          ).encode()
+          cache_profile = hashlib.sha256(cache_basis).hexdigest()[:16]
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
               fh.write(f"backend={backend}\n")
               fh.write(f"plan_b64={encoded}\n")
@@ -80,6 +88,7 @@ jobs:
               fh.write(f"total_shards={total_shards}\n")
               fh.write(f"local_index={local_index}\n")
               fh.write(f"total_tasks={tasks}\n")
+              fh.write(f"cache_profile={cache_profile}\n")
           PY
 
   progress:
@@ -208,9 +217,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/datahub-cache
-          key: datahub-v3-${{ runner.os }}-shard-${{ matrix.shard }}-${{ github.run_id }}
+          key: datahub-v4-${{ runner.os }}-${{ needs.prepare.outputs.cache_profile }}-shard-${{ matrix.shard }}-${{ github.run_id }}
           restore-keys: |
-            datahub-v3-${{ runner.os }}-shard-${{ matrix.shard }}-
+            datahub-v4-${{ runner.os }}-${{ needs.prepare.outputs.cache_profile }}-shard-${{ matrix.shard }}-
 
       - name: Decode plan
         run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
