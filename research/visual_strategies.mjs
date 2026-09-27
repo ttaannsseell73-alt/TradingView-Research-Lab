@@ -153,7 +153,7 @@ function sigAdxDi(c){
   return sig;
 }
 function sigCoppock(c){
-  const close=c.map(b=>b.c),r=roc(close,14).map((v,i)=>finite(v)&&finite(roc(close,11)[i])?v+roc(close,11)[i]:NaN),cp=wma(r,10),sig=Array(c.length).fill(0);
+  const close=c.map(b=>b.c),r14=roc(close,14),r11=roc(close,11),r=r14.map((v,i)=>finite(v)&&finite(r11[i])?v+r11[i]:NaN),cp=wma(r,10),sig=Array(c.length).fill(0);
   for(let i=2;i<c.length;i++){if(![cp[i],cp[i-1],cp[i-2]].every(finite))continue;if(cp[i]>cp[i-1]&&cp[i-1]<=cp[i-2])sig[i]=1;else if(cp[i]<cp[i-1]&&cp[i-1]>=cp[i-2])sig[i]=-1;}
   return sig;
 }
