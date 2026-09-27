@@ -88,7 +88,8 @@ jobs:
             lowCost = 0.0006
             maxErrorRate = 0.10
           }
-          $plan | ConvertTo-Json -Depth 8 -Compress | Set-Content plan.json -Encoding UTF8
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
           Write-Host "SYMBOLS=$($symbols.Count) TASKS=$($symbols.Count * 5)"
 
       - name: Run SR25 2026 full universe
