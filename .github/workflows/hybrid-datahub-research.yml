@@ -110,14 +110,6 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Restore cloud DataHub cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ github.workspace }}/../datahub-cache
-          key: datahub-cloud-${{ runner.os }}-${{ matrix.shard }}-${{ github.run_id }}
-          restore-keys: |
-            datahub-cloud-${{ runner.os }}-${{ matrix.shard }}-
-
       - name: Install DataHub
         run: python -m pip install -e ./datahub
 
