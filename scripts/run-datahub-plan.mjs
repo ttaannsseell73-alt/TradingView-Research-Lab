@@ -80,6 +80,23 @@ function parseCsv(file) {
   }).filter((b) => [b.t, b.o, b.h, b.l, b.c, b.v].every(Number.isFinite));
 }
 
+function monthWindows(startMs, endMs) {
+  const windows = [];
+  let cursor = startMs;
+  while (cursor < endMs) {
+    const d = new Date(cursor);
+    const nextMonth = Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1);
+    const stop = Math.min(endMs, nextMonth > cursor ? nextMonth : endMs);
+    windows.push({
+      key: new Date(cursor).toISOString().slice(0, 7),
+      start: cursor,
+      end: stop,
+    });
+    cursor = stop;
+  }
+  return windows;
+}
+
 function fetchCsv({ root, symbol, timeframe, start, end, output }) {
   const args = [
     '--root', root,
@@ -150,6 +167,7 @@ Shard ${shardIndex + 1}/${shardCount}: **${done}/${total} coin tamamlandı**`;
 reportShardProgress(0, selectedTasks.length, true);
 
 const results = [];
+const monthlyResults = [];
 const failures = [];
 let processedTasks = 0;
 for (const task of selectedTasks) {
@@ -195,6 +213,48 @@ for (const task of selectedTasks) {
         ...row,
       });
     }
+
+    if (plan.monthlyBreakdown) {
+      const monthlyMinTrades = Number(plan.monthlyMinTrades ?? minTrades);
+      for (const window of monthWindows(plan.startMs, plan.endMs)) {
+        const monthCandles = candles.filter((bar) => bar.t >= window.start && bar.t < window.end);
+        const expectedMonth = Math.floor((window.end - window.start) / TF_MS[task.timeframe]);
+        const monthCoverage = expectedMonth ? monthCandles.length / expectedMonth : 0;
+        if (monthCoverage < Number(plan.minCoverage ?? 0.98)) {
+          monthlyResults.push({
+            ...task,
+            month: window.key,
+            start: new Date(window.start).toISOString(),
+            end: new Date(window.end).toISOString(),
+            rows: monthCandles.length,
+            coverage: monthCoverage,
+            status: 'PARTIAL_COVERAGE',
+          });
+          continue;
+        }
+
+        const monthEvaluated = evaluateStrategies(monthCandles, {
+          cost: plan.cost,
+          stressCost: plan.stressCost,
+          lowCost: plan.lowCost,
+          minTrades: monthlyMinTrades,
+          start: window.start,
+          end: window.end,
+        }).filter((row) => plan.strategyIds.includes(row.id));
+
+        for (const row of monthEvaluated) {
+          monthlyResults.push({
+            ...task,
+            month: window.key,
+            start: new Date(window.start).toISOString(),
+            end: new Date(window.end).toISOString(),
+            rows: monthCandles.length,
+            coverage: monthCoverage,
+            ...row,
+          });
+        }
+      }
+    }
   } catch (error) {
     failures.push({ ...task, reason: 'ERROR', error: String(error?.message ?? error) });
   } finally {
@@ -211,6 +271,13 @@ results.sort((a, b) =>
   || a.id.localeCompare(b.id)
 );
 
+monthlyResults.sort((a, b) =>
+  a.symbol.localeCompare(b.symbol)
+  || a.timeframe.localeCompare(b.timeframe)
+  || String(a.id ?? '').localeCompare(String(b.id ?? ''))
+  || String(a.month ?? '').localeCompare(String(b.month ?? ''))
+);
+
 const backend = process.env.RESEARCH_BACKEND ?? plan.backend;
 const output = {
   schemaVersion: 1,
@@ -224,8 +291,11 @@ const output = {
   tasks: selectedTasks.length,
   combinations: results.length,
   passing: results.filter((r) => r.pass).length,
+  monthlyBreakdown: Boolean(plan.monthlyBreakdown),
+  monthlyCombinations: monthlyResults.filter((r) => r.id).length,
   failures,
   results,
+  monthlyResults,
 };
 
 const resultFile = path.join(outDir, `result-${backend}-${shardIndex}-of-${shardCount}.json`);
@@ -238,6 +308,7 @@ console.log(JSON.stringify({
   tasks: selectedTasks.length,
   combinations: results.length,
   passing: output.passing,
+  monthlyCombinations: output.monthlyCombinations,
   failures: failures.length,
 }));
 
