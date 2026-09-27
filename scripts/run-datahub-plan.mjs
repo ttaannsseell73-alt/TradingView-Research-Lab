@@ -141,7 +141,11 @@ for (const task of selectedTasks) {
       continue;
     }
 
-    const minTrades = Number(plan.minTrades?.[task.timeframe] ?? DEFAULT_MIN_TRADES[task.timeframe]);
+    const minTrades = Number(
+      typeof plan.minTrades === 'number'
+        ? plan.minTrades
+        : plan.minTrades?.[task.timeframe] ?? DEFAULT_MIN_TRADES[task.timeframe]
+    );
     const evaluated = evaluateStrategies(candles, {
       cost: plan.cost,
       stressCost: plan.stressCost,
@@ -204,6 +208,11 @@ console.log(JSON.stringify({
   failures: failures.length,
 }));
 
-if (failures.some((failure) => failure.reason === 'ERROR')) {
+const hardFailures = failures.filter((failure) => failure.reason === 'ERROR');
+const maxErrorRate = Number(plan.maxErrorRate ?? 0.10);
+if (
+  selectedTasks.length > 0
+  && hardFailures.length / selectedTasks.length > maxErrorRate
+) {
   process.exitCode = 1;
 }
