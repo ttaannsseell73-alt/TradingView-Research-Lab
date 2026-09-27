@@ -175,7 +175,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PLAN_B64: ${{ needs.prepare.outputs.plan_b64 }}
-      DATAHUB_ROOT: ${{ runner.temp }}/datahub-cache
+      DATAHUB_ROOT: ${{ github.workspace }}/../datahub-cache
       RESEARCH_BACKEND: cloud
       RESEARCH_OUT_DIR: artifacts/hybrid-research
       SHARD_INDEX: ${{ matrix.shard }}
