@@ -37,7 +37,10 @@ test('strategy engine is deterministic and finite on closed OHLCV',()=>{
   assert.equal(a.length,STRATEGIES.length);
   for(const r of a){
     assert.ok(Number.isInteger(r.n)&&r.n>=0);
-    for(const k of ['net','dd','exp','sh','net15','net6']) assert.ok(Number.isFinite(r[k]),`${r.id} ${k}`);
+    for(const k of ['net','dd','exp','sh','net15','net6','longNet','longPF','longDD','longExpectancy','shortNet','shortPF','shortDD','shortExpectancy']) assert.ok(Number.isFinite(r[k]),`${r.id} ${k}`);
+    assert.equal(r.longTrades+r.shortTrades,r.n);
+    assert.ok(r.longWinRate>=0&&r.longWinRate<=1);
+    assert.ok(r.shortWinRate>=0&&r.shortWinRate<=1);
     assert.ok(r.dd>=0&&r.dd<=1);
     assert.ok(r.posseg>=0&&r.posseg<=3);
   }
@@ -136,6 +139,7 @@ test('support resistance family exposes ten deterministic non-lookahead adapters
   assert.equal(a.length,10);
   for(const r of a){
     assert.equal(r.version,'sr-v1');
-    for(const k of ['net','dd','exp','sh','net15','net6']) assert.ok(Number.isFinite(r[k]),`${r.id} ${k}`);
+    for(const k of ['net','dd','exp','sh','net15','net6','longNet','longPF','longDD','shortNet','shortPF','shortDD']) assert.ok(Number.isFinite(r[k]),`${r.id} ${k}`);
+    assert.equal(r.longTrades+r.shortTrades,r.n);
   }
 });
