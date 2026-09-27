@@ -23,6 +23,9 @@ jobs:
     outputs:
       backend: ${{ steps.plan.outputs.backend }}
       plan_b64: ${{ steps.plan.outputs.plan_b64 }}
+      cloud_matrix: ${{ steps.plan.outputs.cloud_matrix }}
+      total_shards: ${{ steps.plan.outputs.total_shards }}
+      local_index: ${{ steps.plan.outputs.local_index }}
     steps:
       - name: Validate and encode plan
         id: plan
@@ -40,22 +43,56 @@ jobs:
           backend = plan.get("backend")
           if backend not in {"cloud", "local", "hybrid"}:
               raise SystemExit("backend must be cloud|local|hybrid")
+
+          symbols = sorted(set(plan.get("symbols") or []))
+          timeframes = sorted(set(plan.get("timeframes") or []))
+          if not symbols or not timeframes:
+              raise SystemExit("symbols and timeframes must be nonempty arrays")
+          tasks = len(symbols) * len(timeframes)
+
+          default_cloud = 4 if backend == "cloud" else 2 if backend == "hybrid" else 1
+          requested_cloud = plan.get("cloudShards", default_cloud)
+          if not isinstance(requested_cloud, int) or not 1 <= requested_cloud <= 8:
+              raise SystemExit("cloudShards must be an integer from 1 to 8")
+
+          if backend == "cloud":
+              cloud_count = min(requested_cloud, tasks)
+              total_shards = cloud_count
+              local_index = 0
+          elif backend == "hybrid":
+              cloud_count = min(requested_cloud, max(1, tasks - 1))
+              total_shards = cloud_count + 1
+              local_index = cloud_count
+          else:
+              cloud_count = 1
+              total_shards = 1
+              local_index = 0
+
           encoded = base64.b64encode(raw.encode()).decode()
+          cloud_matrix = json.dumps(list(range(cloud_count)), separators=(",", ":"))
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
               fh.write(f"backend={backend}\n")
               fh.write(f"plan_b64={encoded}\n")
+              fh.write(f"cloud_matrix={cloud_matrix}\n")
+              fh.write(f"total_shards={total_shards}\n")
+              fh.write(f"local_index={local_index}\n")
           PY
 
   cloud:
     needs: prepare
     if: needs.prepare.outputs.backend == 'cloud' || needs.prepare.outputs.backend == 'hybrid'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.prepare.outputs.cloud_matrix) }}
     runs-on: ubuntu-latest
     env:
       PLAN_B64: ${{ needs.prepare.outputs.plan_b64 }}
       DATAHUB_ROOT: ${{ github.workspace }}/../datahub-cache
       RESEARCH_BACKEND: cloud
       RESEARCH_OUT_DIR: artifacts/hybrid-research
-      SHARD_COUNT: ${{ needs.prepare.outputs.backend == 'hybrid' && '2' || '1' }}
+      SHARD_INDEX: ${{ matrix.shard }}
+      SHARD_COUNT: ${{ needs.prepare.outputs.total_shards }}
     steps:
       - uses: actions/checkout@v4
 
@@ -77,9 +114,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ github.workspace }}/../datahub-cache
-          key: datahub-cloud-${{ runner.os }}-${{ github.run_id }}
+          key: datahub-cloud-${{ runner.os }}-${{ matrix.shard }}-${{ github.run_id }}
           restore-keys: |
-            datahub-cloud-${{ runner.os }}-
+            datahub-cloud-${{ runner.os }}-${{ matrix.shard }}-
 
       - name: Install DataHub
         run: python -m pip install -e ./datahub
@@ -94,7 +131,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: datahub-cloud-result
+          name: datahub-cloud-result-${{ matrix.shard }}
           path: artifacts/hybrid-research/result-*.json
           if-no-files-found: error
 
@@ -107,8 +144,8 @@ jobs:
       DATAHUB_ROOT: ${{ vars.DATAHUB_LOCAL_ROOT || 'D:/Futures-Research-Data' }}
       RESEARCH_BACKEND: local
       RESEARCH_OUT_DIR: artifacts/hybrid-research
-      SHARD_INDEX: ${{ needs.prepare.outputs.backend == 'hybrid' && '1' || '0' }}
-      SHARD_COUNT: ${{ needs.prepare.outputs.backend == 'hybrid' && '2' || '1' }}
+      SHARD_INDEX: ${{ needs.prepare.outputs.local_index }}
+      SHARD_COUNT: ${{ needs.prepare.outputs.total_shards }}
     steps:
       - uses: actions/checkout@v4
 
@@ -153,7 +190,7 @@ jobs:
       - name: Download shard results
         uses: actions/download-artifact@v4
         with:
-          pattern: datahub-*-result
+          pattern: datahub-*-result*
           path: artifacts/downloaded
           merge-multiple: false
 
