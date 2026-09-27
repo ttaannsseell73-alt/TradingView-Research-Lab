@@ -235,8 +235,6 @@ def update_symbol(path1m: Path, target_start: datetime, target_end: datetime, wo
 
     if changed:
         atomic_ipc(to_feather_frame(merged), path1m)
-        for tf in ("5m", "15m", "4h"):
-            atomic_ipc(to_feather_frame(resample(merged, tf)), file_for(root, base, tf))
 
     return {
         "symbol": symbol,
@@ -255,7 +253,8 @@ def main():
     ap.add_argument("--end", default=None, help="exclusive UTC day; default today UTC")
     ap.add_argument("--symbols", nargs="*", default=None)
     ap.add_argument("--limit", type=int, default=0)
-    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--workers", type=int, default=4, help="archive downloads per symbol")
+    ap.add_argument("--symbol-workers", type=int, default=8, help="symbols updated concurrently")
     ap.add_argument("--report", default="dataset-update-report.json")
     args = ap.parse_args()
 
@@ -280,17 +279,26 @@ def main():
     }
 
     errors = 0
-    for i, p in enumerate(files, 1):
-        try:
-            item = update_symbol(p, target_start, target_end, args.workers)
-        except Exception as exc:
-            errors += 1
-            item = {"symbol": p.name, "status": "ERROR", "error": str(exc)}
-        report["results"].append(item)
-        if i == 1 or i % 10 == 0 or i == len(files):
-            print(json.dumps({"progress": f"{i}/{len(files)}", "errors": errors, "last": item}), flush=True)
-        Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf-8")
+    completed = 0
+    with ThreadPoolExecutor(max_workers=max(1, args.symbol_workers)) as pool:
+        futures = {
+            pool.submit(update_symbol, p, target_start, target_end, args.workers): p
+            for p in files
+        }
+        for fut in as_completed(futures):
+            p = futures[fut]
+            try:
+                item = fut.result()
+            except Exception as exc:
+                errors += 1
+                item = {"symbol": p.name, "status": "ERROR", "error": str(exc)}
+            report["results"].append(item)
+            completed += 1
+            if completed == 1 or completed % 10 == 0 or completed == len(files):
+                print(json.dumps({"progress": f"{completed}/{len(files)}", "errors": errors, "last": item}), flush=True)
+                Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf-8")
 
+    report["results"].sort(key=lambda x: x.get("symbol", ""))
     report["finished_at"] = datetime.now(timezone.utc).isoformat()
     report["errors"] = errors
     report["updated"] = sum(1 for r in report["results"] if r.get("status") == "UPDATED")
