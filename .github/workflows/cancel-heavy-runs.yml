@@ -25,7 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           failed=0
-          for run_id in 36283667492 36283805799; do
+          for run_id in 36286322714; do
             status="$(gh api "repos/$REPO/actions/runs/$run_id" --jq '.status')"
             if [ "$status" = "completed" ]; then
               echo "$run_id already completed"
