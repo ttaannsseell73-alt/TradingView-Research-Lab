@@ -32,7 +32,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          & $env:PYTHON_EXE scripts/update-local-futures-dataset.py --root $env:DATA_ROOT --start 2024-09-19 --workers 8 --report dataset-update-report.json
+          & $env:PYTHON_EXE scripts/update-local-futures-dataset.py --root $env:DATA_ROOT --start 2024-09-19 --workers 4 --symbol-workers 8 --report dataset-update-report.json
 
       - name: Publish update report
         if: always()
