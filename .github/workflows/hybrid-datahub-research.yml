@@ -274,6 +274,13 @@ jobs:
           }
 
           if (-not $python) {
+            $runnerPython = Get-ChildItem "C:\actions-runner-datahub\_work\_tool\Python\3.12*\x64\python.exe" -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending |
+              Select-Object -First 1
+            if ($runnerPython) { $python = $runnerPython.FullName }
+          }
+
+          if (-not $python) {
             $candidates = @(
               "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe",
               "$env:ProgramFiles\Python312\python.exe",
