@@ -148,8 +148,10 @@ jobs:
             processed_tasks="$(jq -r '[.[].body | capture("SHARD_PROGRESS [0-9]+ (?<done>[0-9]+) [0-9]+")? | select(.) | (.done|tonumber)] | add // 0' <<<"$comments")"
 
             if [ "$merge_status" = "completed" ]; then
-              if [ "$merge_conclusion" = "success" ]; then
+              if [ "$merge_conclusion" = "success" ] && [ "$failed_count" -eq 0 ]; then
                 update_comment 100 "BİTTİ" "$done_count" "$running_count" "$failed_count" "$TOTAL_TASKS"
+              elif [ "$failed_count" -gt 0 ]; then
+                update_comment 100 "BİTTİ — GEÇERSİZ (${failed_count} shard hatalı)" "$done_count" "$running_count" "$failed_count" "$processed_tasks"
               else
                 update_comment 100 "BİTTİ — sonuçta hata/kısmi veri var" "$done_count" "$running_count" "$failed_count" "$processed_tasks"
               fi
