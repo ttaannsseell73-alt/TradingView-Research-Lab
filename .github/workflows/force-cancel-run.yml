@@ -1,0 +1,33 @@
+name: Force Cancel Requested Run
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  contents: read
+  issues: read
+
+jobs:
+  cancel:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[FORCE CANCEL RUN] ')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Force cancel run
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ github.event.issue.title }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          RUN_ID="${TITLE#'[FORCE CANCEL RUN] '}"
+          if ! [[ "$RUN_ID" =~ ^[0-9]+$ ]]; then
+            echo "Invalid run id: $RUN_ID"
+            exit 1
+          fi
+          gh api --method POST "repos/$REPO/actions/runs/$RUN_ID/force-cancel"
+          echo "FORCE_CANCEL_REQUESTED run=$RUN_ID"
