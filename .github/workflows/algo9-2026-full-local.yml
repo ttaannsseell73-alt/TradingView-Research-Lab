@@ -28,6 +28,7 @@ jobs:
       SHARD_COUNT: 1
       REUSE_EXISTING_CSV: 1
       BATCH_LOCAL_CACHE: 1
+      LOCAL_PARALLEL_SHARDS: 4
       RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
 
     steps:
@@ -83,7 +84,7 @@ jobs:
           RESEARCH_OUT_DIR: artifacts/algo9-2026-full
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs algo9-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs algo9-plan.json
 
       - name: Build ALGO9 9-of-9 and 8-of-9 report
         shell: powershell
