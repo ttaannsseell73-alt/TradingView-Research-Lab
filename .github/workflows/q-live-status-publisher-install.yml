@@ -14,6 +14,7 @@ permissions:
 # refresh: proximity preview deployed
 # refresh: dual side rollout verified
 # refresh: continuous proximity scale deployed
+# refresh: re-run after Q rate-limit fix
 jobs:
   install:
     runs-on: [self-hosted, datahub-local]
