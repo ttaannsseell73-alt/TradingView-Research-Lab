@@ -43,8 +43,10 @@ jobs:
           npm --version
           npm run build 2>&1 | Tee-Object "$env:RUNNER_TEMP\baseline-build.log"
           if ($LASTEXITCODE -ne 0) { throw "Baseline build failed" }
-          npm test -- --reporter=basic 2>&1 | Tee-Object "$env:RUNNER_TEMP\baseline-test.log"
-          if ($LASTEXITCODE -ne 0) { throw "Baseline tests failed" }
+          cmd /c "npm test -- --reporter=basic > \"%RUNNER_TEMP%\baseline-test.log\" 2>&1"
+          $testExit=$LASTEXITCODE
+          Get-Content "$env:RUNNER_TEMP\baseline-test.log"
+          if ($testExit -ne 0) { throw "Baseline tests failed with exit $testExit" }
           Pop-Location
 
       - name: Apply canonical Q patch
@@ -82,7 +84,20 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          docker rm -f $env:PG_CONTAINER 2>$null | Out-Null
+          cmd /c "docker info >nul 2>&1"
+          if ($LASTEXITCODE -ne 0) {
+            $desktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+            if (!(Test-Path $desktop)) { throw "Docker daemon unavailable and Docker Desktop executable not found" }
+            Start-Process $desktop
+            $dockerReady=$false
+            for($i=0;$i -lt 90;$i++){
+              Start-Sleep -Seconds 2
+              cmd /c "docker info >nul 2>&1"
+              if($LASTEXITCODE -eq 0){$dockerReady=$true;break}
+            }
+            if(!$dockerReady){throw "Docker Desktop did not become ready"}
+          }
+          cmd /c "docker rm -f %PG_CONTAINER% >nul 2>&1"
           docker run -d --name $env:PG_CONTAINER -e POSTGRES_PASSWORD=livebot_test_pw -e POSTGRES_DB=livebot_test -p "127.0.0.1:$($env:PG_PORT):5432" postgres:16-alpine | Out-Null
           if ($LASTEXITCODE -ne 0) { throw "PostgreSQL test container failed to start" }
           $ready=$false
@@ -101,8 +116,10 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           Push-Location $env:BOT_ROOT
-          npm test -- --reporter=verbose 2>&1 | Tee-Object "$env:RUNNER_TEMP\full-test.log"
-          if ($LASTEXITCODE -ne 0) { throw "Full canonical test suite failed" }
+          cmd /c "npm test -- --reporter=verbose > \"%RUNNER_TEMP%\full-test.log\" 2>&1"
+          $testExit=$LASTEXITCODE
+          Get-Content "$env:RUNNER_TEMP\full-test.log"
+          if ($testExit -ne 0) { throw "Full canonical test suite failed with exit $testExit" }
           Pop-Location
 
       - name: Export canonical Q 15m parity dataset
@@ -250,5 +267,5 @@ jobs:
         if: always()
         shell: powershell
         run: |
-          docker rm -f $env:PG_CONTAINER 2>$null | Out-Null
+          cmd /c "docker rm -f %PG_CONTAINER% >nul 2>&1"
           exit 0
