@@ -19,6 +19,7 @@ export interface QShadowReport {
   manifest: ReturnType<typeof qCanonicalManifest>;
   dataBarrier: ReturnType<CandleBarrier['validate']>;
   signal: ReturnType<Range48Strategy['evaluate']>;
+  proximity: ReturnType<Range48Strategy['proximityPreview']>;
   intent: ReturnType<IntentArbiter['aggregate']>;
   symbolStatus: string;
   spreadBps: number;
@@ -67,6 +68,24 @@ export class QShadowRuntime {
 
     const strategy = new Range48Strategy();
     const signal = strategy.evaluate(closed);
+
+    const previewRaw = raw
+      .filter(k => k.closeTime >= serverTime && k.t > (closed.at(-1)?.t ?? -Infinity))
+      .at(-1);
+    const previewCandles = previewRaw
+      ? [
+          ...closed,
+          {
+            t: previewRaw.t,
+            o: previewRaw.o,
+            h: previewRaw.h,
+            l: previewRaw.l,
+            c: previewRaw.c,
+            v: previewRaw.v,
+          },
+        ]
+      : closed;
+    const proximity = strategy.proximityPreview(previewCandles);
     const intent = new IntentArbiter().aggregate([signal]);
 
     const book = await this.adapter.depth('QUSDT', 20);
@@ -82,6 +101,7 @@ export class QShadowRuntime {
       manifest,
       dataBarrier: barrierResult,
       signal,
+      proximity,
       intent,
       symbolStatus: symbolInfo.status,
       spreadBps,
