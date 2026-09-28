@@ -16,6 +16,7 @@ jobs:
   # refresh: Range48 proximity preview
   # refresh: dual long-short proximity
   # refresh: continuous 3ATR proximity scale
+  # refresh: lightweight live window and preserve last successful snapshot
   install:
     runs-on: [self-hosted, datahub-local]
     timeout-minutes: 20
