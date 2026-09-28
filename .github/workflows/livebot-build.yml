@@ -43,7 +43,7 @@ jobs:
           npm --version
           npm run build 2>&1 | Tee-Object "$env:RUNNER_TEMP\baseline-build.log"
           if ($LASTEXITCODE -ne 0) { throw "Baseline build failed" }
-          cmd /c "npm test -- --reporter=basic > \"%RUNNER_TEMP%\baseline-test.log\" 2>&1"
+          cmd /c "npm test -- --reporter=basic > %RUNNER_TEMP%\baseline-test.log 2>&1"
           $testExit=$LASTEXITCODE
           Get-Content "$env:RUNNER_TEMP\baseline-test.log"
           if ($testExit -ne 0) { throw "Baseline tests failed with exit $testExit" }
@@ -116,7 +116,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           Push-Location $env:BOT_ROOT
-          cmd /c "npm test -- --reporter=verbose > \"%RUNNER_TEMP%\full-test.log\" 2>&1"
+          cmd /c "npm test -- --reporter=verbose > %RUNNER_TEMP%\full-test.log 2>&1"
           $testExit=$LASTEXITCODE
           Get-Content "$env:RUNNER_TEMP\full-test.log"
           if ($testExit -ne 0) { throw "Full canonical test suite failed with exit $testExit" }
