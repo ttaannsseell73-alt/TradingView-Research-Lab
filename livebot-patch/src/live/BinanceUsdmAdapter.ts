@@ -79,7 +79,7 @@ export class BinanceUsdmAdapter {
     params: Record<string, string | number | boolean | undefined> = {}
   ): Promise<T> {
     if (!this.apiKey || !this.apiSecret) throw new Error('BINANCE_SIGNED_CREDENTIALS_REQUIRED');
-    if (!this.governor?.canWrite() && method !== 'GET') throw new Error('RATE_LIMIT_GOVERNOR_BLOCKED');
+    if (this.governor && !this.governor.canWrite() && method !== 'GET') throw new Error('RATE_LIMIT_GOVERNOR_BLOCKED');
     const query = this.signedParams(params);
     try {
       const response = await this.http.request<T>({
