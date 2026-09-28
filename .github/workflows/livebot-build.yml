@@ -1,0 +1,254 @@
+name: Canonical Q LiveBot Build
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  build:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[LIVEBOT BUILD]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 45
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      DATA_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      PG_CONTAINER: canonical-live-pg-test
+      PG_PORT: 55439
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preflight and baseline
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $root = $env:BOT_ROOT
+          if (!(Test-Path "$root\.git")) { throw "Canonical local git repo missing: $root" }
+          Push-Location $root
+          $status = git status --porcelain
+          if ($status) { throw "Local binance-bot is not clean; refusing automatic patch. $status" }
+          $head = git rev-parse HEAD
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP\livebot-original-head.txt",$head,[Text.UTF8Encoding]::new($false))
+          node --version
+          npm --version
+          npm run build 2>&1 | Tee-Object "$env:RUNNER_TEMP\baseline-build.log"
+          if ($LASTEXITCODE -ne 0) { throw "Baseline build failed" }
+          npm test -- --reporter=basic 2>&1 | Tee-Object "$env:RUNNER_TEMP\baseline-test.log"
+          if ($LASTEXITCODE -ne 0) { throw "Baseline tests failed" }
+          Pop-Location
+
+      - name: Apply canonical Q patch
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $root = $env:BOT_ROOT
+          New-Item -ItemType Directory -Force "$root\src\live" | Out-Null
+          New-Item -ItemType Directory -Force "$root\src\tests\live" | Out-Null
+          New-Item -ItemType Directory -Force "$root\src\tools" | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\live\*.ts" "$root\src\live\" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tests\live\*.ts" "$root\src\tests\live\" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\runQShadow.ts" "$root\src\tools\runQShadow.ts" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\CANONICAL_LIVE_ENGINE_V1.md" "$root\CANONICAL_LIVE_ENGINE_V1.md" -Force
+
+          Push-Location $root
+          npm install pg@^8 --save
+          if ($LASTEXITCODE -ne 0) { throw "pg install failed" }
+          npm install -D @types/pg@^8
+          if ($LASTEXITCODE -ne 0) { throw "@types/pg install failed" }
+
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['q:shadow']='tsx src/tools/runQShadow.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
+          Pop-Location
+
+      - name: Compile patched engine
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Push-Location $env:BOT_ROOT
+          npm run build 2>&1 | Tee-Object "$env:RUNNER_TEMP\patched-build.log"
+          if ($LASTEXITCODE -ne 0) { throw "Patched TypeScript build failed" }
+          Pop-Location
+
+      - name: Start ephemeral PostgreSQL
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          docker rm -f $env:PG_CONTAINER 2>$null | Out-Null
+          docker run -d --name $env:PG_CONTAINER -e POSTGRES_PASSWORD=livebot_test_pw -e POSTGRES_DB=livebot_test -p "127.0.0.1:$($env:PG_PORT):5432" postgres:16-alpine | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "PostgreSQL test container failed to start" }
+          $ready=$false
+          for($i=0;$i -lt 30;$i++){
+            docker exec $env:PG_CONTAINER pg_isready -U postgres -d livebot_test 2>$null | Out-Null
+            if($LASTEXITCODE -eq 0){$ready=$true;break}
+            Start-Sleep -Seconds 1
+          }
+          if(!$ready){throw "PostgreSQL did not become ready"}
+
+      - name: Run full failure suite with PostgreSQL
+        shell: powershell
+        env:
+          LIVEBOT_TEST_PG_URL: postgres://postgres:livebot_test_pw@127.0.0.1:55439/livebot_test
+          NODE_ENV: test
+        run: |
+          $ErrorActionPreference = "Stop"
+          Push-Location $env:BOT_ROOT
+          npm test -- --reporter=verbose 2>&1 | Tee-Object "$env:RUNNER_TEMP\full-test.log"
+          if ($LASTEXITCODE -ne 0) { throw "Full canonical test suite failed" }
+          Pop-Location
+
+      - name: Export canonical Q 15m parity dataset
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          @'
+          from pathlib import Path
+          import polars as pl
+          from datetime import datetime, timezone
+
+          root=Path(r"C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures")
+          src=root/"Q_USDT_USDT-15m-futures.feather"
+          if not src.exists():
+              raise SystemExit(f"Missing Q 15m dataset: {src}")
+          df=pl.read_ipc(src)
+          lower={c.lower():c for c in df.columns}
+          tc=next((lower[x] for x in ("date","timestamp","time","t") if x in lower),None)
+          if not tc: raise SystemExit("No timestamp column in Q 15m dataset")
+          dtype=df.schema[tc]
+          if isinstance(dtype,pl.Datetime):
+              texpr=pl.col(tc).dt.epoch("ms")
+          elif dtype==pl.Date:
+              texpr=pl.col(tc).cast(pl.Datetime("ms")).dt.epoch("ms")
+          elif dtype.is_integer():
+              texpr=pl.col(tc).cast(pl.Int64)
+          else:
+              texpr=pl.col(tc).str.to_datetime(strict=False,time_zone="UTC").dt.epoch("ms")
+          out=df.select(
+              texpr.alias("t"),
+              pl.col(lower["open"]).cast(pl.Float64).alias("o"),
+              pl.col(lower["high"]).cast(pl.Float64).alias("h"),
+              pl.col(lower["low"]).cast(pl.Float64).alias("l"),
+              pl.col(lower["close"]).cast(pl.Float64).alias("c"),
+              pl.col(lower["volume"]).cast(pl.Float64).alias("v"),
+          ).drop_nulls().sort("t")
+          if out.height:
+              sample=int(out["t"][0])
+              if sample < 10_000_000_000: out=out.with_columns((pl.col("t")*1000).alias("t"))
+              elif sample > 10_000_000_000_000_000: out=out.with_columns((pl.col("t")//1_000_000).alias("t"))
+              elif sample > 10_000_000_000_000: out=out.with_columns((pl.col("t")//1000).alias("t"))
+          anchor=int(datetime(2025,12,29,tzinfo=timezone.utc).timestamp()*1000)
+          out=out.filter(pl.col("t")>=anchor)
+          if out.height < 1000: raise SystemExit(f"Q parity history too small: {out.height}")
+          out.write_csv(Path(r"__RUNNER_TEMP__")/"q-range48-parity.csv")
+          print({"rows":out.height,"first":int(out["t"][0]),"last":int(out["t"][-1])})
+          '@ | Set-Content "$env:RUNNER_TEMP\export-q-parity.py" -Encoding UTF8
+          $py = Get-Content "$env:RUNNER_TEMP\export-q-parity.py" -Raw
+          $tmp = ($env:RUNNER_TEMP -replace '\\','/')
+          $py = $py.Replace('__RUNNER_TEMP__',$tmp)
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP\export-q-parity.py",$py,[Text.UTF8Encoding]::new($false))
+          & $env:DATAHUB_PYTHON "$env:RUNNER_TEMP\export-q-parity.py"
+          if ($LASTEXITCODE -ne 0) { throw "Q parity export failed" }
+
+      - name: Verify exact research-to-live Range48 parity
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node "$env:GITHUB_WORKSPACE\livebot-patch\scripts\q-range48-parity.mjs" "$env:RUNNER_TEMP\q-range48-parity.csv" "$env:BOT_ROOT" 2>&1 | Tee-Object "$env:RUNNER_TEMP\parity.log"
+          if ($LASTEXITCODE -ne 0) { throw "Range48 research/live parity failed" }
+
+      - name: Run Q public-market shadow
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Push-Location $env:BOT_ROOT
+          Remove-Item Env:BINANCE_API_KEY -ErrorAction SilentlyContinue
+          Remove-Item Env:BINANCE_API_SECRET -ErrorAction SilentlyContinue
+          npm run q:shadow 2>&1 | Tee-Object "$env:RUNNER_TEMP\q-shadow.log"
+          if ($LASTEXITCODE -ne 0) { throw "Q shadow failed" }
+          if (!(Test-Path "artifacts\q-shadow-latest.json")) { throw "Q shadow report missing" }
+          Copy-Item "artifacts\q-shadow-latest.json" "$env:RUNNER_TEMP\q-shadow-latest.json" -Force
+          Remove-Item "artifacts\q-shadow-latest.json" -Force
+          Pop-Location
+
+      - name: Commit canonical engine locally
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Push-Location $env:BOT_ROOT
+          git add src/live src/tools/runQShadow.ts src/tests/live CANONICAL_LIVE_ENGINE_V1.md package.json package-lock.json dist
+          $changes = git status --porcelain
+          if (!$changes) { throw "No canonical changes to commit" }
+          git commit -m "feat: canonical Q Range48 live engine v1"
+          if ($LASTEXITCODE -ne 0) { throw "Local canonical commit failed" }
+          $head = git rev-parse HEAD
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP\livebot-final-head.txt",$head,[Text.UTF8Encoding]::new($false))
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP\livebot-build-success.flag","PASS",[Text.UTF8Encoding]::new($false))
+          Pop-Location
+
+      - name: Publish canonical result
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $head = Get-Content "$env:RUNNER_TEMP\livebot-final-head.txt" -Raw
+          $parity = Get-Content "$env:RUNNER_TEMP\parity.log" -Raw
+          $shadow = Get-Content "$env:RUNNER_TEMP\q-shadow-latest.json" -Raw | ConvertFrom-Json
+          $tests = Get-Content "$env:RUNNER_TEMP\full-test.log" -Raw
+          $summaryLines = @($tests -split "[\r\n]+" | Where-Object { $_ -match "Test Files|Tests\s|passed|failed" } | Select-Object -Last 8)
+          $body = @(
+            "## Canonical Q LiveBot build PASS",
+            "",
+            "Local commit: $($head.Trim())",
+            "Strategy: QUSDT / 15m / swp_range48_reclaim / sweep-v1",
+            "Mode: SHADOW (exchange writes disabled)",
+            "",
+            "### Parity",
+            $parity.Trim(),
+            "",
+            "### Current shadow",
+            "- generatedAt: $($shadow.generatedAt)",
+            "- barrier: $($shadow.dataBarrier.reason)",
+            "- action: $($shadow.signal.action)",
+            "- direction: $($shadow.signal.direction)",
+            "- fresh: $($shadow.signal.fresh)",
+            "- spreadBps: $([math]::Round([double]$shadow.spreadBps,4))",
+            "- bidDepth5Notional: $([math]::Round([double]$shadow.bidDepth5Notional,2))",
+            "- askDepth5Notional: $([math]::Round([double]$shadow.askDepth5Notional,2))",
+            "- closedBarsFromAnchor: $($shadow.closedBars)",
+            "",
+            "### Test summary",
+            ($summaryLines -join [Environment]::NewLine),
+            "",
+            "LIVE/CANARY writes remain disabled pending explicit approval and account-contract gate."
+          ) -join [Environment]::NewLine
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body $body
+
+      - name: Roll back local repo on failure
+        if: failure()
+        shell: powershell
+        run: |
+          $root=$env:BOT_ROOT
+          $headFile="$env:RUNNER_TEMP\livebot-original-head.txt"
+          if ((Test-Path "$root\.git") -and (Test-Path $headFile)) {
+            $original=(Get-Content $headFile -Raw).Trim()
+            if ($original) {
+              Push-Location $root
+              git reset --hard $original
+              git clean -fd
+              Pop-Location
+            }
+          }
+
+      - name: Cleanup PostgreSQL
+        if: always()
+        shell: powershell
+        run: |
+          docker rm -f $env:PG_CONTAINER 2>$null | Out-Null
+          exit 0
