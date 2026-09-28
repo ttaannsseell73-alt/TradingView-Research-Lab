@@ -185,6 +185,18 @@ export class PgEventJournal {
     return result.rows.map(r => String(r.intent_id));
   }
 
+  async hasIntentForCandle(symbol: string, candleOpenTime: number): Promise<boolean> {
+    const result = await this.pool.query(
+      `SELECT 1
+         FROM live_intents
+        WHERE symbol=$1
+          AND payload->>'candleOpenTime'=$2
+        LIMIT 1`,
+      [symbol, String(candleOpenTime)]
+    );
+    return (result.rowCount ?? 0) > 0;
+  }
+
   async knownProtectionIds(): Promise<string[]> {
     const result = await this.pool.query(
       `SELECT DISTINCT payload->>'clientAlgoId' AS id
