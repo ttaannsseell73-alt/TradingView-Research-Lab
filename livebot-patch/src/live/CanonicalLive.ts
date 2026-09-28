@@ -419,6 +419,7 @@ export interface DeploymentManifest {
   closedOnly: true;
   mode: DeploymentMode;
   strategyHash: string;
+  historyAnchor: '2025-12-29T00:00:00Z';
 }
 
 export function qCanonicalManifest(mode: DeploymentMode = 'SHADOW'): DeploymentManifest {
@@ -433,5 +434,6 @@ export function qCanonicalManifest(mode: DeploymentMode = 'SHADOW'): DeploymentM
     closedOnly: true,
     mode,
     strategyHash,
+    historyAnchor: '2025-12-29T00:00:00Z',
   };
 }
