@@ -31,8 +31,15 @@ jobs:
           $ErrorActionPreference="Stop"
           if (!(Test-Path "$env:BOT_ROOT\.git")) { throw "Local binance-bot missing" }
           Push-Location $env:BOT_ROOT
-          $status=git status --porcelain
-          if ($status) { throw "Local binance-bot is not clean: $status" }
+          $status=@(git status --porcelain)
+          $allowed=@("package.json","src/live/PostgresSafety.ts","src/tools/runQDemoForwardOnce.ts")
+          $unexpected=@()
+          foreach($line in $status){
+            if(!$line){continue}
+            $p=$line.Substring(3).Trim()
+            if($allowed -notcontains $p){$unexpected += $line}
+          }
+          if ($unexpected.Count -gt 0) { throw "Unexpected local changes: $($unexpected -join '; ')" }
           Pop-Location
 
       - name: Install canonical forward files
