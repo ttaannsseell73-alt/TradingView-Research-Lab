@@ -13,7 +13,8 @@
     "fetch:binance": "node scripts/fetch-binance.mjs",
     "final:local": "npm run build && node scripts/final-local.mjs",
     "final:local:publish": "npm run build && node scripts/final-local.mjs --publish",
-    "evidence:publish": "node scripts/publish-evidence.mjs"
+    "evidence:publish": "node scripts/publish-evidence.mjs",
+    "qclass:run": "node scripts/run-q-class-discovery-parallel.mjs"
   },
   "devDependencies": {
     "typescript": "5.8.3"

@@ -36,5 +36,8 @@ jobs:
           node --check scripts/run-pinets-turbo-local.mjs
           node --check scripts/build-turbo-cache-plan.mjs
           node --check scripts/run-datahub-plan-parallel-local.mjs
+          node --check research/q_class_engine.mjs
+          node --check scripts/run-q-class-discovery.mjs
+          node --check scripts/run-q-class-discovery-parallel.mjs
           node scripts/assert-turbo-workflows.mjs
           python -m py_compile scripts/build-recovery-matrix.py scripts/build-recovery-variants.py scripts/export-freqtrade-feather-batch.py
