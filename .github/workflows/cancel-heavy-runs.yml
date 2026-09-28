@@ -39,9 +39,24 @@ jobs:
             fi
             if gh api --method POST "repos/$REPO/actions/runs/$run_id/cancel" >/dev/null; then
               echo "cancel requested: $run_id"
+              sleep 3
+              status_after="$(gh api "repos/$REPO/actions/runs/$run_id" --jq '.status')"
+              if [ "$status_after" != "completed" ]; then
+                if gh api --method POST "repos/$REPO/actions/runs/$run_id/force-cancel" >/dev/null; then
+                  echo "force-cancel requested: $run_id"
+                else
+                  echo "force-cancel failed: $run_id"
+                  failed=1
+                fi
+              fi
             else
               echo "cancel failed: $run_id"
-              failed=1
+              if gh api --method POST "repos/$REPO/actions/runs/$run_id/force-cancel" >/dev/null; then
+                echo "force-cancel requested: $run_id"
+              else
+                echo "force-cancel failed: $run_id"
+                failed=1
+              fi
             fi
           done
           gh api --method PATCH "repos/$REPO/issues/$ISSUE_NUMBER" -f state=closed >/dev/null
