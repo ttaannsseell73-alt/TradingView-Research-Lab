@@ -42,6 +42,12 @@ for (const k of ['key', 'name', 'scriptIdPart', 'sourceSha256']) {
   if (!meta[k]) throw new Error(`missing required env: ${k}`);
 }
 
+const shardIndex = Number(process.env.SHARD_INDEX ?? 0);
+const shardCount = Number(process.env.SHARD_COUNT ?? 1);
+if (!Number.isInteger(shardIndex) || !Number.isInteger(shardCount) || shardCount < 1 || shardIndex < 0 || shardIndex >= shardCount) {
+  throw new Error(`invalid shard topology: ${shardIndex}/${shardCount}`);
+}
+
 const dataRoot = process.env.FREQTRADE_FUTURES_ROOT;
 if (!dataRoot) throw new Error('FREQTRADE_FUTURES_ROOT is required');
 
@@ -51,7 +57,7 @@ fs.mkdirSync(outDir, { recursive: true });
 const persistentCsv = path.resolve(process.env.EXACT_CSV_CACHE ?? 'C:/actions-runner-datahub/exact-source-csv-cache-2026');
 const persistentRoot = path.resolve(process.env.EXACT_CHECKPOINT_ROOT ?? 'C:/actions-runner-datahub/exact-source-checkpoints');
 const windowKey = `${new Date(START_MS).toISOString().slice(0,10)}_${new Date(END_MS).toISOString().slice(0,10)}_pinets-0.10.0`;
-const checkpointDir = path.join(persistentRoot, meta.sourceSha256, windowKey, 'tasks');
+const checkpointDir = path.join(persistentRoot, meta.sourceSha256, windowKey, `checkpoints-${shardIndex}-of-${shardCount}`);
 fs.mkdirSync(persistentCsv, { recursive: true });
 fs.mkdirSync(checkpointDir, { recursive: true });
 
@@ -63,22 +69,41 @@ function safeJsonWrite(file, value) {
 }
 
 async function fetchExactSource() {
-  const url = `https://pine-facade.tradingview.com/pine-facade/get/${encodeURIComponent(meta.scriptIdPart)}/last?no_4xx=true`;
-  const response = await fetch(url, {
-    headers: {
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154 Safari/537.36',
-      'accept': 'application/json',
-    },
-  });
-  if (!response.ok) throw new Error(`source fetch HTTP ${response.status}`);
-  const payload = await response.json();
-  const source = payload?.source;
-  if (typeof source !== 'string' || source.length === 0) throw new Error('source unavailable');
-  const hash = crypto.createHash('sha256').update(Buffer.from(source, 'utf8')).digest('hex');
-  if (hash !== meta.sourceSha256) {
-    throw new Error(`SOURCE_CHANGED expected=${meta.sourceSha256} actual=${hash}`);
+  const sourceFile = process.env.EXACT_SOURCE_FILE;
+  if (sourceFile) {
+    const source = fs.readFileSync(path.resolve(sourceFile), 'utf8');
+    const hash = crypto.createHash('sha256').update(Buffer.from(source, 'utf8')).digest('hex');
+    if (hash !== meta.sourceSha256) {
+      throw new Error(`SOURCE_CHANGED expected=${meta.sourceSha256} actual=${hash}`);
+    }
+    return { source, payload: { version: meta.pineVersion, scriptAccess: 'turbo_source_cache' } };
   }
-  return { source, payload };
+
+  const url = `https://pine-facade.tradingview.com/pine-facade/get/${encodeURIComponent(meta.scriptIdPart)}/last?no_4xx=true`;
+  let lastError = null;
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154 Safari/537.36',
+          'accept': 'application/json',
+        },
+      });
+      if (!response.ok) throw new Error(`source fetch HTTP ${response.status}`);
+      const payload = await response.json();
+      const source = payload?.source;
+      if (typeof source !== 'string' || source.length === 0) throw new Error('source unavailable');
+      const hash = crypto.createHash('sha256').update(Buffer.from(source, 'utf8')).digest('hex');
+      if (hash !== meta.sourceSha256) {
+        throw new Error(`SOURCE_CHANGED expected=${meta.sourceSha256} actual=${hash}`);
+      }
+      return { source, payload };
+    } catch (error) {
+      lastError = error;
+      if (attempt < 5) await new Promise((resolve) => setTimeout(resolve, 750 * (2 ** attempt)));
+    }
+  }
+  throw lastError ?? new Error('source fetch failed');
 }
 
 function universeFromFeather(root) {
@@ -114,6 +139,11 @@ function parseCsv(file) {
 function exportCsv(symbol, timeframe) {
   const file = path.join(persistentCsv, `${symbol}-${timeframe}.csv`);
   if (fs.existsSync(file) && fs.statSync(file).size > 32) return file;
+
+  const turboStrict = !['0', 'false', 'off'].includes(String(process.env.TURBO_STRICT_CACHE ?? '0').toLowerCase());
+  if (turboStrict) {
+    throw new Error(`TURBO_CACHE_MISS ${symbol} ${timeframe}: ${file}`);
+  }
 
   const reuseRoots = [
     process.env.EXACT_REUSE_CSV_ROOT,
@@ -330,12 +360,14 @@ async function main() {
     throw new Error(`exact universe guard failed: expected 725 symbols, found ${symbols.length}`);
   }
   const timeframes = ['1m', '5m', '15m', '1h', '4h'];
-  const totalTasks = symbols.length * timeframes.length;
+  const tasks = [];
+  for (const symbol of symbols) for (const timeframe of timeframes) tasks.push({ symbol, timeframe });
+  const selectedTasks = tasks.filter((_, index) => index % shardCount === shardIndex);
+  const totalTasks = selectedTasks.length;
   let done = 0;
   let failures = 0;
 
-  for (const symbol of symbols) {
-    for (const timeframe of timeframes) {
+  for (const { symbol, timeframe } of selectedTasks) {
       const checkpoint = taskFile(symbol, timeframe);
       if (fs.existsSync(checkpoint)) {
         done += 1;
@@ -420,16 +452,13 @@ async function main() {
           failures,
         }));
       }
-    }
   }
 
   const rows = [];
-  for (const symbol of symbols) {
-    for (const timeframe of timeframes) {
-      const file = taskFile(symbol, timeframe);
-      if (!fs.existsSync(file)) continue;
-      rows.push(JSON.parse(fs.readFileSync(file, 'utf8')));
-    }
+  for (const { symbol, timeframe } of selectedTasks) {
+    const file = taskFile(symbol, timeframe);
+    if (!fs.existsSync(file)) continue;
+    rows.push(JSON.parse(fs.readFileSync(file, 'utf8')));
   }
 
   const accepted = rows
@@ -475,6 +504,8 @@ async function main() {
       symbols: symbols.length,
       timeframes,
       tasks: rows.length,
+      shardIndex,
+      shardCount,
     },
     counts: {
       ok: rows.filter((r) => r.status === 'OK').length,
