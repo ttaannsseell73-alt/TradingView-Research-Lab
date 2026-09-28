@@ -1,0 +1,87 @@
+name: Q Demo Forward Monitor
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/q-demo-forward.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: q-demo-forward
+  cancel-in-progress: false
+
+jobs:
+  forward:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 4
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      PG_CONTAINER: canonical-q-demo-pg
+      LIVEBOT_PG_URL: postgres://postgres:q_demo_local_pw@127.0.0.1:55440/livebot_demo
+      LIVEBOT_CANARY_APPROVED: YES
+      BINANCE_PUBLIC_FUTURES_URL: https://fapi.binance.com
+
+    steps:
+      - name: Verify runner and journal
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          if (!(Test-Path "$env:BOT_ROOT\.git")) { throw "Local binance-bot missing" }
+          cmd /c "docker info >nul 2>&1"
+          if ($LASTEXITCODE -ne 0) { throw "Docker daemon unavailable" }
+          $running = docker ps --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
+          if (!$running) {
+            $exists = docker ps -a --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
+            if (!$exists) { throw "Q demo PostgreSQL container missing" }
+            docker start $env:PG_CONTAINER | Out-Null
+          }
+
+      - name: Run one canonical Q forward cycle
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          Push-Location $env:BOT_ROOT
+          npm run q:demo-forward-once
+          if ($LASTEXITCODE -ne 0) { throw "Q demo forward cycle failed" }
+          if (!(Test-Path "artifacts\q-demo-forward-latest.json")) { throw "Forward report missing" }
+          $report = Get-Content "artifacts\q-demo-forward-latest.json" -Raw
+          $report
+          Copy-Item "artifacts\q-demo-forward-latest.json" "$env:RUNNER_TEMP\q-demo-forward-latest.json" -Force
+          Pop-Location
+
+      - name: Publish cycle summary
+        if: always()
+        shell: powershell
+        run: |
+          $p="$env:RUNNER_TEMP\q-demo-forward-latest.json"
+          if(Test-Path $p){
+            $r=Get-Content $p -Raw | ConvertFrom-Json
+            @(
+              "## Q Demo Forward",
+              "",
+              "- generatedAt: $($r.generatedAt)",
+              "- result: $($r.result)",
+              "- action: $($r.action)",
+              "- fresh: $($r.market.signal.fresh)",
+              "- signalAction: $($r.market.signal.action)",
+              "- direction: $($r.market.signal.direction)",
+              "- positionBefore: $($r.positionBefore.positionAmt)",
+              "- leverage: $($r.leverage)",
+              "- marginType: $($r.marginType)"
+            ) -join [Environment]::NewLine | Add-Content $env:GITHUB_STEP_SUMMARY
+          }
+
+      - name: Upload cycle report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: q-demo-forward-\${{ github.run_id }}
+          path: \${{ runner.temp }}/q-demo-forward-latest.json
+          if-no-files-found: warn
+          retention-days: 14
