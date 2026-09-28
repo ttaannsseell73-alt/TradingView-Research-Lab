@@ -20,6 +20,9 @@ jobs:
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
       LOCAL_PARALLEL_SHARDS: 4
       REUSE_EXISTING_CSV: 1
+      BATCH_LOCAL_CACHE: 1
+      LOCAL_PARALLEL_SHARDS: 4
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
       RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
 
     steps:
