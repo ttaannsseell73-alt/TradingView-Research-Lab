@@ -185,6 +185,21 @@ async function writeReport(report: Record<string, unknown>): Promise<void> {
   );
 }
 
+async function writeFailureReport(report: Record<string, unknown>): Promise<void> {
+  const dir = path.join(process.cwd(), 'artifacts');
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(
+    path.join(dir, 'q-demo-forward-failure-latest.json'),
+    JSON.stringify(report, null, 2) + '\n',
+    'utf8'
+  );
+  fs.appendFileSync(
+    path.join(dir, 'q-demo-forward.jsonl'),
+    JSON.stringify(report) + '\n',
+    'utf8'
+  );
+}
+
 async function main(): Promise<void> {
   const testnetUrl = process.env.BINANCE_FUTURES_URL?.trim() ?? '';
   const publicUrl =
@@ -510,7 +525,9 @@ async function main(): Promise<void> {
         message: String(error?.message ?? error),
       });
     } catch {}
-    await writeReport(report);
+    // Preserve the last successful live snapshot. A transient failure must not
+    // erase position/proximity fields used by the status publisher.
+    await writeFailureReport(report);
     throw error;
   } finally {
     await leader.release().catch(() => undefined);
