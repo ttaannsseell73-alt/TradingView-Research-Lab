@@ -176,7 +176,12 @@ jobs:
           do {
             Start-Sleep -Seconds 5
             $body = gh issue view $env:STATUS_ISSUE --repo $env:STATUS_REPO --json body --jq .body
-            if ($LASTEXITCODE -eq 0 -and $body -match 'cycle_state: SUCCESS') {
+            if (
+              $LASTEXITCODE -eq 0 -and
+              $body -match 'cycle_state: SUCCESS' -and
+              $body -match 'proximity_score:\s*[0-9]+' -and
+              $body -match 'proximity_label:\s*(UZAK|ORTA|YAKIN|ACILMAYA_COK_YAKIN|TETIK_KOSULU_PREVIEW)'
+            ) {
               $body
               exit 0
             }
