@@ -34,10 +34,10 @@ describe('Canonical live safety extensions', () => {
     const adapter:any={
       getPositionMode:vi.fn().mockResolvedValue('ONE_WAY'),
       getAccountConfig:vi.fn().mockResolvedValue({multiAssetsMargin:false}),
-      getSymbolConfig:vi.fn().mockResolvedValue([{symbol:'QUSDT',marginType:'ISOLATED',leverage:2}]),
+      getSymbolConfig:vi.fn().mockResolvedValue([{symbol:'QUSDT',marginType:'ISOLATED',leverage:1}]),
       exchangeInfo:vi.fn().mockResolvedValue({symbols:[{symbol:'QUSDT',status:'TRADING'}]})
     };
-    const r=await new AccountContractVerifier(adapter).verify('QUSDT',2);
+    const r=await new AccountContractVerifier(adapter).verify('QUSDT',1);
     expect(r.ok).toBe(true);
   });
 
@@ -48,7 +48,7 @@ describe('Canonical live safety extensions', () => {
       getSymbolConfig:vi.fn().mockResolvedValue([{symbol:'QUSDT',marginType:'CROSSED',leverage:5}]),
       exchangeInfo:vi.fn().mockResolvedValue({symbols:[{symbol:'QUSDT',status:'TRADING'}]})
     };
-    const r=await new AccountContractVerifier(adapter).verify('QUSDT',2);
+    const r=await new AccountContractVerifier(adapter).verify('QUSDT',1);
     expect(r.ok).toBe(false);
     expect(r.reasons).toEqual(expect.arrayContaining([
       'POSITION_MODE_NOT_ONE_WAY','MARGIN_NOT_ISOLATED','MULTI_ASSETS_MUST_BE_OFF','LEVERAGE_MISMATCH'
