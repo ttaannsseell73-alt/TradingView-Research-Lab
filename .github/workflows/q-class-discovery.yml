@@ -1,0 +1,165 @@
+name: Q-Class Discovery Engine
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "smoke or full"
+        required: true
+        default: smoke
+        type: choice
+        options:
+          - smoke
+          - full
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  run:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.issue.author_association == 'OWNER' &&
+        (
+          startsWith(github.event.issue.title, '[QCLASS RUN]') ||
+          startsWith(github.event.issue.title, '[QCLASS SMOKE]')
+        )
+      )
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 600
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      QCLASS_CSV_DIR: D:/Futures-Research-Data/qclass-cache/2026-01-01__2026-09-28__15m
+      QCLASS_CHECKPOINT_ROOT: D:/Futures-Research-Data/qclass-checkpoints
+      QCLASS_OUT_DIR: artifacts/q-class-discovery
+      QCLASS_PARALLEL_SHARDS: 4
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build Q-Class plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $mode = "smoke"
+          if ("${{ github.event_name }}".ToString() -eq "workflow_dispatch") {
+            $mode = "${{ inputs.mode }}"
+          } elseif ("${{ github.event.issue.title }}".StartsWith("[QCLASS RUN]")) {
+            $mode = "full"
+          }
+
+          $suffix = "_USDT_USDT-1m-futures.feather"
+          if ($mode -eq "full") {
+            $symbols = @(
+              Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*$suffix" -File |
+              Sort-Object Name |
+              ForEach-Object {
+                $base = $_.Name.Substring(0, $_.Name.Length - $suffix.Length)
+                (($base -replace "_","") + "USDT")
+              } |
+              Sort-Object -Unique
+            )
+            if ($symbols.Count -ne 725) {
+              throw "Q-Class universe guard failed: expected 725 symbols, found $($symbols.Count)"
+            }
+          } else {
+            $symbols = @("QUSDT","BTCUSDT","ETHUSDT")
+          }
+
+          $plan = [ordered]@{
+            schemaVersion = 2
+            family = "range_reclaim"
+            mode = $mode
+            symbols = $symbols
+            timeframes = @("15m")
+            start = "2026-01-01T00:00:00Z"
+            end = "2026-09-28T00:00:00Z"
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            minCoverage = 0.98
+            minTrades = @{ "15m" = 25 }
+            monthlyMinTrades = 10
+            holdoutMonths = 2
+            range = [ordered]@{
+              lookbacks = @(24,36,48,64,96)
+              thresholdAtr = @(0.03,0.05,0.08,0.12)
+              bodyConfirm = @($false,$true)
+              wickRatio = @(0,1.5)
+              minBarRangeAtr = @(0)
+              directionModes = @("both")
+              atrPeriod = 14
+              baseline = [ordered]@{
+                lookback = 48
+                thresholdAtr = 0.05
+                bodyConfirm = $false
+                wickRatio = 0
+                minBarRangeAtr = 0
+                directionMode = "both"
+              }
+            }
+          }
+          $plan | ConvertTo-Json -Depth 12 -Compress | Set-Content -Encoding utf8 qclass-plan.json
+          Write-Host "QCLASS mode=$mode symbols=$($symbols.Count) variantsPerTask=80"
+
+      - name: Prepare persistent local cache once
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path "$env:QCLASS_CSV_DIR" | Out-Null
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py `
+            --root "$env:FREQTRADE_FUTURES_ROOT" `
+            --plan qclass-plan.json `
+            --output-dir "$env:QCLASS_CSV_DIR" `
+            --strict
+          if ($LASTEXITCODE -ne 0) { throw "Q-Class cache preparation failed." }
+
+      - name: Run Q-Class parallel discovery
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-q-class-discovery-parallel.mjs qclass-plan.json
+
+      - name: Publish compact issue result
+        if: github.event_name == 'issues'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $j = Get-Content "$env:QCLASS_OUT_DIR\q-class-summary.json" -Raw | ConvertFrom-Json
+          $body = @"
+          Q-Class Discovery tamamlandı.
+
+          - fingerprint: $($j.planFingerprint)
+          - tasks: $($j.completedTasks)
+          - variants: $($j.variantsInResults)
+          - new evaluations: $($j.evaluatedVariants)
+          - checkpoint hits: $($j.checkpointHits)
+          - full-pass variants: $($j.fullPass)
+          - recovery candidates: $($j.recoveryCandidates)
+          - validated recoveries: $($j.validatedRecoveries)
+          - elapsed ms: $($j.elapsedMs)
+          "@
+          gh issue comment "${{ github.event.issue.number }}" --body $body
+
+      - name: Upload compact Q-Class evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: q-class-discovery-${{ github.run_id }}
+          path: |
+            artifacts/q-class-discovery/q-class-summary.json
+            artifacts/q-class-discovery/q-class-results.csv
+            artifacts/q-class-discovery/q-class-results.ndjson
+            artifacts/q-class-discovery/shards/*/summary.json
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
