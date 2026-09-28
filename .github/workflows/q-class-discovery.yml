@@ -34,8 +34,8 @@ jobs:
     env:
       FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
-      QCLASS_CSV_DIR: D:/Futures-Research-Data/qclass-cache/2026-01-01__2026-09-28__15m
-      QCLASS_CHECKPOINT_ROOT: D:/Futures-Research-Data/qclass-checkpoints
+      QCLASS_CSV_DIR: C:/actions-runner-datahub/qclass-cache/2026-01-01__2026-09-28__15m
+      QCLASS_CHECKPOINT_ROOT: C:/actions-runner-datahub/qclass-checkpoints
       QCLASS_OUT_DIR: artifacts/q-class-discovery
       QCLASS_PARALLEL_SHARDS: 4
 

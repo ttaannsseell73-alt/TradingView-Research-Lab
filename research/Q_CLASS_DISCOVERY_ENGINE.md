@@ -38,8 +38,8 @@ npm run qclass:run -- qclass-plan.json
 
 Persistent locations on the self-hosted research runner:
 
-- CSV cache: `D:/Futures-Research-Data/qclass-cache/...`
-- checkpoint root: `D:/Futures-Research-Data/qclass-checkpoints`
+- CSV cache: `C:/actions-runner-datahub/qclass-cache/...`
+- checkpoint root: `C:/actions-runner-datahub/qclass-checkpoints`
 
 GitHub issue triggers:
 
