@@ -88,6 +88,20 @@ const cacheDir = path.resolve(
   process.env.RESEARCH_CSV_DIR
     ?? path.join(dataRoot, 'research-cache', localCacheKey(plan)),
 );
+const outDir = path.resolve(process.env.RESEARCH_OUT_DIR ?? 'artifacts/hybrid-research');
+fs.mkdirSync(outDir, { recursive: true });
+
+for (const name of fs.readdirSync(outDir)) {
+  const full = path.join(outDir, name);
+  const checkpointMatch = /^checkpoints-\d+-of-(\d+)$/u.exec(name);
+  if (checkpointMatch && Number(checkpointMatch[1]) !== shardCount) {
+    fs.rmSync(full, { recursive: true, force: true });
+    continue;
+  }
+  if (/^(?:summary|top|results|monthly|failures)-.*-(?:\d+)-of-(?:\d+)\.(?:json|csv|ndjson)$/u.test(name)) {
+    fs.rmSync(full, { force: true });
+  }
+}
 
 const started = Date.now();
 prepareBatchCache({ root, planFile, outputDir: cacheDir });
