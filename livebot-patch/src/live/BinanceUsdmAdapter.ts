@@ -165,6 +165,22 @@ export class BinanceUsdmAdapter {
     return response.data;
   }
 
+  async getAccount(): Promise<any> {
+    return this.signed('GET', '/fapi/v3/account');
+  }
+
+  async getBalance(): Promise<any> {
+    return this.signed('GET', '/fapi/v3/balance');
+  }
+
+  async getMarkPrice(symbol: string): Promise<number> {
+    const response = await this.http.get('/fapi/v1/premiumIndex', { params: { symbol } });
+    this.observe(response);
+    const value = Number((response.data as any)?.markPrice);
+    if (!(value > 0)) throw new Error('INVALID_MARK_PRICE');
+    return value;
+  }
+
   async getPositionMode(): Promise<'ONE_WAY' | 'HEDGE'> {
     const data: any = await this.signed('GET', '/fapi/v1/positionSide/dual');
     return data.dualSidePosition ? 'HEDGE' : 'ONE_WAY';
