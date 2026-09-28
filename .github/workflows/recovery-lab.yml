@@ -1,7 +1,17 @@
 name: Recovery Lab Forced Adapters
 
 on:
+  workflow_run:
+    workflows:
+      - Exact Source Screenshot + Sweep Queue
+    types:
+      - completed
   workflow_dispatch:
+    inputs:
+      exact_run_id:
+        description: "Exact Source workflow run ID"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -16,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download previous exact-source artifacts
+      - name: Download exact artifacts from completed Exact Source run
         if: github.event_name == 'workflow_run'
         uses: actions/download-artifact@v4
         with:
@@ -25,14 +35,18 @@ jobs:
           pattern: exact-*
           path: artifacts/exact-previous
 
+      - name: Download exact artifacts from requested Exact Source run
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.exact_run_id }}
+          github-token: ${{ github.token }}
+          pattern: exact-*
+          path: artifacts/exact-previous
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: Rebuild audit for manual dispatch
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          python scripts/resolve-tradingview-exact-sources.py research/exact_source_manifest.json --out-dir artifacts/exact-previous/exact-source-audit
 
       - name: Locate exact audit
         id: audit
