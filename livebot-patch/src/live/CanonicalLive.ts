@@ -22,6 +22,36 @@ export interface StrategySignal {
   barOpenTime: number | null;
 }
 
+export type QExecutionAction =
+  | 'HOLD'
+  | 'ENTER_LONG'
+  | 'ENTER_SHORT'
+  | 'REVERSE_TO_LONG'
+  | 'REVERSE_TO_SHORT'
+  | 'HALT_UNKNOWN_POSITION';
+
+export function resolveRange48ExecutionAction(
+  signal: StrategySignal,
+  positionAmt: number | null | undefined,
+  tolerance = 1e-12
+): QExecutionAction {
+  if (positionAmt === null || positionAmt === undefined || !Number.isFinite(positionAmt)) {
+    return 'HALT_UNKNOWN_POSITION';
+  }
+  if (!signal.fresh || (signal.direction !== 1 && signal.direction !== -1)) return 'HOLD';
+
+  const flat = Math.abs(positionAmt) <= tolerance;
+  if (signal.direction === 1) {
+    if (flat) return 'ENTER_LONG';
+    if (positionAmt > tolerance) return 'HOLD';
+    return 'REVERSE_TO_LONG';
+  }
+
+  if (flat) return 'ENTER_SHORT';
+  if (positionAmt < -tolerance) return 'HOLD';
+  return 'REVERSE_TO_SHORT';
+}
+
 export interface AggregatedIntent {
   decision: 'NO_TRADE' | 'LONG' | 'SHORT';
   supportCount: number;
