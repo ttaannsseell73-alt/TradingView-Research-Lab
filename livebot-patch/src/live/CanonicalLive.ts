@@ -194,14 +194,18 @@ export class CandleBarrier {
       if (b.t + this.intervalMs > asOfMs) {
         return { ok: false, reason: 'OPEN_BAR', expectedLastOpen: null, actualLastOpen: b.t };
       }
-      if (i > 0) {
-        const d = b.t - candles[i - 1].t;
-        if (d <= 0) {
-          return { ok: false, reason: 'OUT_OF_ORDER', expectedLastOpen: null, actualLastOpen: b.t };
-        }
-        if (d !== this.intervalMs) {
-          return { ok: false, reason: 'MISSING_BAR', expectedLastOpen: null, actualLastOpen: b.t };
-        }
+    }
+
+    // Detect ordering before gap classification so a swapped pair is never
+    // mislabeled as merely a missing bar.
+    for (let i = 1; i < candles.length; i++) {
+      if (candles[i].t <= candles[i - 1].t) {
+        return { ok: false, reason: 'OUT_OF_ORDER', expectedLastOpen: null, actualLastOpen: candles[i].t };
+      }
+    }
+    for (let i = 1; i < candles.length; i++) {
+      if (candles[i].t - candles[i - 1].t !== this.intervalMs) {
+        return { ok: false, reason: 'MISSING_BAR', expectedLastOpen: null, actualLastOpen: candles[i].t };
       }
     }
 
