@@ -258,8 +258,7 @@ jobs:
       LOCAL_DATA_MODE: strict
       RESEARCH_BACKEND: local
       RESEARCH_OUT_DIR: artifacts/hybrid-research
-      SHARD_INDEX: ${{ needs.prepare.outputs.local_index }}
-      SHARD_COUNT: ${{ needs.prepare.outputs.total_shards }}
+      LOCAL_PARALLEL_SHARDS: 4
       GH_TOKEN: ${{ github.token }}
       PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
     steps:
@@ -337,8 +336,8 @@ jobs:
       - name: Decode plan
         run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
 
-      - name: Run local shard
-        run: node scripts/run-datahub-plan.mjs plan.json
+      - name: Run local turbo shards
+        run: node scripts/run-datahub-plan-parallel-local.mjs plan.json
 
       - name: Upload local result
         if: always()
