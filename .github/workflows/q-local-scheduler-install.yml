@@ -1,0 +1,90 @@
+name: Install Local Q Scheduler
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/q-local-scheduler-install.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 10
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install local five minute scheduler
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          if (!(Test-Path "$env:BOT_ROOT\.git")) { throw "Local binance-bot missing" }
+
+          $runner = Join-Path $env:BOT_ROOT "scripts\run-q-demo-forward-scheduled.ps1"
+          New-Item -ItemType Directory -Force (Split-Path $runner) | Out-Null
+
+          $script = @'
+          $ErrorActionPreference = "Stop"
+          $root = "C:\Users\TANSEL\Desktop\binance-bot"
+          $log = Join-Path $root "artifacts\q-demo-forward-scheduler.log"
+          New-Item -ItemType Directory -Force (Split-Path $log) | Out-Null
+          try {
+            Set-Location $root
+            cmd /c "docker info >nul 2>&1"
+            if ($LASTEXITCODE -ne 0) {
+              $desktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+              if (Test-Path $desktop) {
+                Start-Process $desktop
+                $ready = $false
+                for ($i=0; $i -lt 60; $i++) {
+                  Start-Sleep -Seconds 2
+                  cmd /c "docker info >nul 2>&1"
+                  if ($LASTEXITCODE -eq 0) { $ready = $true; break }
+                }
+                if (!$ready) { throw "Docker unavailable" }
+              } else {
+                throw "Docker Desktop missing"
+              }
+            }
+
+            $running = docker ps --filter "name=^/canonical-q-demo-pg$" --format "{{.Names}}"
+            if (!$running) {
+              $exists = docker ps -a --filter "name=^/canonical-q-demo-pg$" --format "{{.Names}}"
+              if ($exists) { docker start canonical-q-demo-pg | Out-Null }
+            }
+
+            npm run q:demo-forward-once *>> $log
+            $code = $LASTEXITCODE
+            Add-Content $log "$(Get-Date -Format o) EXIT=$code"
+            exit $code
+          } catch {
+            Add-Content $log "$(Get-Date -Format o) ERROR=$($_.Exception.Message)"
+            exit 1
+          }
+          '@
+
+          [System.IO.File]::WriteAllText($runner, $script, (New-Object System.Text.UTF8Encoding($false)))
+
+          $taskName = "QDemoForwardMonitor"
+          Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
+
+          $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$runner`""
+          $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 5)
+          $principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Limited
+          Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Force | Out-Null
+
+          Start-ScheduledTask -TaskName $taskName
+          Start-Sleep -Seconds 20
+
+          Get-ScheduledTask -TaskName $taskName | Format-List TaskName,State
+          Get-ScheduledTaskInfo -TaskName $taskName | Format-List LastRunTime,LastTaskResult,NextRunTime
+
+          $report = Join-Path $env:BOT_ROOT "artifacts\q-demo-forward-latest.json"
+          if (!(Test-Path $report)) { throw "Q forward report missing after scheduler start" }
+          Get-Content $report
