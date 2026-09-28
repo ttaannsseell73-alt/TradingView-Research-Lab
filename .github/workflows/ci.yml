@@ -30,3 +30,6 @@ jobs:
           node --check research/strategy_engine_v2.mjs
           node --check research/sweep_strategies.mjs
           node --check research/visual_strategies.mjs
+          node --check scripts/select-recovery-variant.mjs
+          node --check scripts/run-pinets-recovered-strategy.mjs
+          python -m py_compile scripts/build-recovery-matrix.py scripts/build-recovery-variants.py
