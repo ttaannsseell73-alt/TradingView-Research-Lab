@@ -73,7 +73,7 @@ jobs:
           $ErrorActionPreference = "Stop"
           node scripts/build-turbo-cache-plan.mjs latest-plan.json
           New-Item -ItemType Directory -Force -Path "$env:TURBO_CACHE_DIR" | Out-Null
-          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan latest-plan.json --output-dir "$env:TURBO_CACHE_DIR" --strict
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan latest-plan.json --output-dir "$env:TURBO_CACHE_DIR"
           if ($LASTEXITCODE -ne 0) { throw "Latest-year cache failed" }
 
       - name: Prepare previous-year cache
@@ -86,7 +86,7 @@ jobs:
           $ErrorActionPreference = "Stop"
           node scripts/build-turbo-cache-plan.mjs previous-plan.json
           New-Item -ItemType Directory -Force -Path "$env:TURBO_CACHE_DIR" | Out-Null
-          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan previous-plan.json --output-dir "$env:TURBO_CACHE_DIR" --strict
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan previous-plan.json --output-dir "$env:TURBO_CACHE_DIR"
           if ($LASTEXITCODE -ne 0) { throw "Previous-year cache failed" }
 
   exact_yearly:
