@@ -1,0 +1,136 @@
+name: TLM 2Y Speed Benchmark
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[TLM 2Y SPEED BENCHMARK]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: local
+      REUSE_EXISTING_CSV: 1
+      SPEED_CACHE_DIR: D:/Futures-Research-Data/research-cache/tlm-2y-20240920-20260920
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build TLM 2Y plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $plan = [ordered]@{
+            backend = "local"
+            symbols = @("TLMUSDT")
+            timeframes = @("15m")
+            start = "2024-09-20T00:00:00Z"
+            end = "2026-09-20T00:00:00Z"
+            strategies = @("pmax","alphatrend","ott","tott","mavilimw","ssl_hybrid_flip","ssl_hybrid_qqe_flip","ut_bot_quantnomad","chandelier_zlsma")
+            minCoverage = 0.98
+            minHistoryDays = 700
+            minTrades = @{ "15m"=25 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 5
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.0
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "tlm-speed-plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+
+      - name: Prepare fast cache
+        id: prepare
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path "$env:SPEED_CACHE_DIR" | Out-Null
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan tlm-speed-plan.json --output-dir "$env:SPEED_CACHE_DIR" --strict
+          if ($LASTEXITCODE -ne 0) { throw "Batch cache prepare failed." }
+          $sw.Stop()
+          "prepare_seconds=$([math]::Round($sw.Elapsed.TotalSeconds,3))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          Write-Host "FAST_PREPARE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,3))"
+
+      - name: Verify byte parity with legacy exporter
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path "artifacts/tlm-speed/parity" | Out-Null
+          $legacy = "artifacts/tlm-speed/parity/TLMUSDT-15m-legacy.csv"
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather.py --root "$env:FREQTRADE_FUTURES_ROOT" --symbol TLMUSDT --timeframe 15m --start "2024-09-20T00:00:00Z" --end "2026-09-20T00:00:00Z" --output "$legacy"
+          if ($LASTEXITCODE -ne 0) { throw "Legacy exporter failed." }
+          $fast = Join-Path $env:SPEED_CACHE_DIR "TLMUSDT-15m.csv"
+          $legacyHash = (Get-FileHash $legacy -Algorithm SHA256).Hash
+          $fastHash = (Get-FileHash $fast -Algorithm SHA256).Hash
+          Write-Host "LEGACY_SHA256=$legacyHash"
+          Write-Host "FAST_SHA256=$fastHash"
+          if ($legacyHash -ne $fastHash) { throw "FAST_CACHE_PARITY_FAILED" }
+          Write-Host "FAST_CACHE_PARITY=PASS"
+
+      - name: Run TLM research from fast cache
+        id: engine
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/tlm-speed/run
+          RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/tlm-2y-20240920-20260920
+        run: |
+          $ErrorActionPreference = "Stop"
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()
+          node scripts/run-datahub-plan-checkpointed.mjs tlm-speed-plan.json
+          if ($LASTEXITCODE -ne 0) { throw "TLM benchmark failed." }
+          $sw.Stop()
+          "engine_seconds=$([math]::Round($sw.Elapsed.TotalSeconds,3))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          Write-Host "FAST_ENGINE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,3))"
+
+      - name: Warm-cache repeat
+        id: warm
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/tlm-speed/warm
+          RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/tlm-2y-20240920-20260920
+        run: |
+          $ErrorActionPreference = "Stop"
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()
+          node scripts/run-datahub-plan-checkpointed.mjs tlm-speed-plan.json
+          if ($LASTEXITCODE -ne 0) { throw "Warm TLM benchmark failed." }
+          $sw.Stop()
+          "warm_seconds=$([math]::Round($sw.Elapsed.TotalSeconds,3))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          Write-Host "WARM_ENGINE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,3))"
+
+      - name: Publish benchmark summary
+        if: always()
+        shell: powershell
+        run: |
+          $prepare = "${{ steps.prepare.outputs.prepare_seconds }}"
+          $engine = "${{ steps.engine.outputs.engine_seconds }}"
+          $warm = "${{ steps.warm.outputs.warm_seconds }}"
+          $body = "TLM 2Y speed benchmark`n`nFast cache prepare: $prepare s`nFirst engine pass: $engine s`nWarm-cache engine pass: $warm s`nData parity: workflow fails unless SHA-256 matches legacy exporter.`nDataset: TLMUSDT 15m, 2024-09-20 to 2026-09-20.`nStrategy pack: canonical ALGO9 (9 strategies)."
+          gh issue comment $env:PROGRESS_ISSUE_NUMBER --body $body
+
+      - name: Upload benchmark result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlm-2y-speed-benchmark
+          path: |
+            artifacts/tlm-speed/**
+          if-no-files-found: warn
+          compression-level: 6
