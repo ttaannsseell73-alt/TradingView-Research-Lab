@@ -34,7 +34,21 @@ jobs:
           $ErrorActionPreference="Stop"
           if (!(Test-Path "$env:BOT_ROOT\.git")) { throw "Local binance-bot missing" }
           cmd /c "docker info >nul 2>&1"
-          if ($LASTEXITCODE -ne 0) { throw "Docker daemon unavailable" }
+          if ($LASTEXITCODE -ne 0) {
+            $desktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+            if (!(Test-Path $desktop)) { throw "Docker Desktop executable not found" }
+            $tracking=$env:RUNNER_TRACKING_ID
+            Remove-Item Env:RUNNER_TRACKING_ID -ErrorAction SilentlyContinue
+            Start-Process $desktop
+            if($tracking){$env:RUNNER_TRACKING_ID=$tracking}
+            $dockerReady=$false
+            for($i=0;$i -lt 90;$i++){
+              Start-Sleep -Seconds 2
+              cmd /c "docker info >nul 2>&1"
+              if($LASTEXITCODE -eq 0){$dockerReady=$true;break}
+            }
+            if(!$dockerReady){throw "Docker Desktop did not become ready"}
+          }
           $running = docker ps --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
           if (!$running) {
             $exists = docker ps -a --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
