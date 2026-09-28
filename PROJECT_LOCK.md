@@ -76,3 +76,12 @@ Scoring rule:
 ÇYYM is not win probability and must never alter the strategy itself. It is an observability layer derived from the canonical strategy's real entry conditions. Open-candle information may be used only for preview/proximity; actual execution remains fresh closed-candle only.
 
 Reference implementation: QUSDT / swp_range48_reclaim.
+
+
+## QUSDT Range48 micro-confirmation branch — STOPPED 2026-09-29
+
+Decision:
+- Original `swp_range48_reclaim` remains canonical for QUSDT.
+- The tested micro-structure confirmation variants did not produce a sufficiently clear overall improvement to justify additional tuning/scanning time.
+- Do not continue P22/P33/MSS confirmation variant searches for QUSDT unless a future test shows a clearly material improvement in overall performance, not merely a fix for one recent trade.
+- Current live/demo Range48 logic remains unchanged.
