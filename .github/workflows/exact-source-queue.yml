@@ -43,9 +43,38 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-  exact_backtest:
+  turbo_cache:
     needs: prepare
     if: needs.prepare.outputs.ready_count != '0'
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 180
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      TURBO_CACHE_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
+      TURBO_START: 2026-01-01T00:00:00Z
+      TURBO_END: 2026-09-20T00:00:00Z
+      TURBO_TIMEFRAMES: 1m,5m,15m,1h,4h
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Build canonical turbo cache plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/build-turbo-cache-plan.mjs turbo-cache-plan.json
+      - name: Prepare canonical turbo cache once
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path "$env:TURBO_CACHE_DIR" | Out-Null
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan turbo-cache-plan.json --output-dir "$env:TURBO_CACHE_DIR" --strict
+          if ($LASTEXITCODE -ne 0) { throw "Turbo cache preparation failed." }
+
+  exact_backtest:
+    needs: [prepare, turbo_cache]
+    if: needs.prepare.outputs.ready_count != '0' && needs.turbo_cache.result == 'success'
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -55,9 +84,10 @@ jobs:
     env:
       FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
-      EXACT_CSV_CACHE: C:/actions-runner-datahub/exact-source-csv-cache-2026
+      EXACT_CSV_CACHE: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
       EXACT_CHECKPOINT_ROOT: C:/actions-runner-datahub/exact-source-checkpoints
-      EXACT_REUSE_CSV_ROOT: artifacts/sr25-2026-full/csv
+      LOCAL_PARALLEL_SHARDS: 4
+      PINE_SOURCE_CACHE: D:/Futures-Research-Data/pine-source-cache
       EXACT_START: 2026-01-01T00:00:00Z
       EXACT_END: 2026-09-20T00:00:00Z
       EXACT_MIN_COVERAGE: '0.98'
@@ -102,11 +132,12 @@ jobs:
           & $env:DATAHUB_PYTHON --version
           node --version
 
-      - name: Backtest exact source unchanged
+      - name: Turbo backtest exact source unchanged
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-pinets-exact-strategy.mjs
+          $env:TURBO_PINETS_MODE = "exact"
+          node scripts/run-pinets-turbo-local.mjs
 
       - name: Upload exact result
         if: always()
