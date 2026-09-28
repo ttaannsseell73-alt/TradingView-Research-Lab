@@ -1,0 +1,122 @@
+name: Sweep Family Yearly
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[SWEEP YEARLY]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 360
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      DATAHUB_ROOT: C:/actions-runner-datahub/sweep-yearly-datahub
+      LOCAL_PARALLEL_SHARDS: 8
+      LOCAL_DATA_MODE: strict
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build full Sweep-family yearly plans
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          @'
+          import fs from "node:fs";
+          import { SWEEP_STRATEGY_IDS } from "./research/sweep_strategies.mjs";
+
+          const root=process.env.FREQTRADE_FUTURES_ROOT;
+          const suffix="_USDT_USDT-1m-futures.feather";
+          const symbols=fs.readdirSync(root,{withFileTypes:true})
+            .filter(d=>d.isFile()&&d.name.endsWith(suffix))
+            .map(d=>d.name.slice(0,-suffix.length).replaceAll("_","")+"USDT")
+            .sort();
+
+          if(symbols.length<500) throw new Error("Universe guard failed: "+symbols.length);
+          if(SWEEP_STRATEGY_IDS.length!==20) throw new Error("Expected 20 Sweep strategies, found "+SWEEP_STRATEGY_IDS.length);
+
+          const base={
+            backend:"local",
+            symbols,
+            timeframes:["1m","5m","15m","1h","4h"],
+            strategies:SWEEP_STRATEGY_IDS,
+            lifetimeAware:true,
+            minCoverage:0.98,
+            minHistoryDays:30,
+            minTrades:{"1m":50,"5m":30,"15m":25,"1h":20,"4h":10},
+            monthlyBreakdown:true,
+            monthlyMinTrades:10,
+            cost:0.0014,
+            stressCost:0.0015,
+            lowCost:0.0006
+          };
+          fs.writeFileSync("sweep-latest.json",JSON.stringify({...base,start:"2025-09-28T00:00:00Z",end:"2026-09-28T00:00:00Z"}));
+          fs.writeFileSync("sweep-previous.json",JSON.stringify({...base,start:"2024-09-28T00:00:00Z",end:"2025-09-28T00:00:00Z"}));
+          console.log(JSON.stringify({symbols:symbols.length,timeframes:5,strategies:SWEEP_STRATEGY_IDS.length,combinationsPerYear:symbols.length*5*SWEEP_STRATEGY_IDS.length}));
+          '@ | Set-Content -Encoding utf8 build-sweep-plans.mjs
+          node build-sweep-plans.mjs
+
+      - name: Run latest 12 months FIRST
+        shell: powershell
+        env:
+          RESEARCH_CSV_DIR: C:/actions-runner-datahub/sweep-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h
+          RESEARCH_OUT_DIR: artifacts/sweep-yearly/latest
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-parallel-local.mjs sweep-latest.json
+          if ($LASTEXITCODE -ne 0) { throw "Latest Sweep run failed" }
+
+      - name: Run previous 12 months SECOND
+        shell: powershell
+        env:
+          RESEARCH_CSV_DIR: C:/actions-runner-datahub/sweep-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h
+          RESEARCH_OUT_DIR: artifacts/sweep-yearly/previous
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-parallel-local.mjs sweep-previous.json
+          if ($LASTEXITCODE -ne 0) { throw "Previous Sweep run failed" }
+
+      - name: Upload Sweep yearly evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sweep-yearly-${{ github.run_id }}
+          path: |
+            artifacts/sweep-yearly/latest/summary-*.json
+            artifacts/sweep-yearly/latest/results-*.ndjson
+            artifacts/sweep-yearly/latest/monthly-*.ndjson
+            artifacts/sweep-yearly/latest/failures-*.ndjson
+            artifacts/sweep-yearly/previous/summary-*.json
+            artifacts/sweep-yearly/previous/results-*.ndjson
+            artifacts/sweep-yearly/previous/monthly-*.ndjson
+            artifacts/sweep-yearly/previous/failures-*.ndjson
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish compact status
+        if: always()
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $body = @"
+          Sweep Family Yearly run sonlandı.
+
+          - Sweep ailesi: **20 strateji**
+          - evren: güncel local USD-M futures
+          - TF: **1m / 5m / 15m / 1h / 4h**
+          - latest: **2025-09-28 → 2026-09-28** (birincil)
+          - previous: **2024-09-28 → 2025-09-28** (doğrulama)
+          - LONG/SHORT metrikleri raw result satırlarında ayrı tutuldu.
+          "@
+          gh issue comment "${{ github.event.issue.number }}" --body $body
