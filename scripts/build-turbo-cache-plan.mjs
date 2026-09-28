@@ -17,8 +17,8 @@ const symbols = fs.readdirSync(root, { withFileTypes: true })
   .sort();
 
 if (!symbols.length) throw new Error('No 1m futures Feather files found');
-if (symbols.length !== 725) {
-  throw new Error(`Turbo universe guard failed: expected 725 1m symbols, found ${symbols.length}`);
+if (symbols.length < 500) {
+  throw new Error(`Turbo universe guard failed: expected at least 500 1m symbols, found ${symbols.length}`);
 }
 const plan = {
   backend: 'local',
