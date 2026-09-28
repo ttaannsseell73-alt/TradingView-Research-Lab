@@ -81,7 +81,13 @@ jobs:
                   "- positionAmt_before: $($r.positionBefore.positionAmt)",
                   "- entryPrice_before: $($r.positionBefore.entryPrice)",
                   "- markPrice_before: $($r.positionBefore.markPrice)",
-                  "- spreadBps: $($r.market.spreadBps)"
+                  "- spreadBps: $($r.market.spreadBps)",
+                  "- proximity_score: $($r.market.proximity.score)",
+                  "- proximity_label: $($r.market.proximity.label)",
+                  "- proximity_direction: $($r.market.proximity.direction)",
+                  "- proximity_sweepDone: $($r.market.proximity.sweepDone)",
+                  "- proximity_reclaimDone: $($r.market.proximity.reclaimDone)",
+                  "- proximity_remaining: $($r.market.proximity.remaining)"
                 )
                 if ($null -ne $r.positionAfter) {
                   $lines += "- positionAfter: $($r.positionAfter | ConvertTo-Json -Compress)"
