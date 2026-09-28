@@ -1,0 +1,125 @@
+name: Repair Local Q Scheduler
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/q-local-scheduler-repair.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repair:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 8
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Repair scheduler environment and verify fresh cycle
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $started = Get-Date
+          $installFile = Join-Path $env:GITHUB_WORKSPACE ".github\workflows\q-demo-forward-install.yml"
+          if (!(Test-Path $installFile)) { throw "Canonical Q install workflow missing" }
+
+          $installText = Get-Content $installFile -Raw
+          $pg = [regex]::Match($installText, '(?m)^\s*LIVEBOT_PG_URL:\s*(.+)\s*$').Groups[1].Value.Trim()
+          $canary = [regex]::Match($installText, '(?m)^\s*LIVEBOT_CANARY_APPROVED:\s*(.+)\s*$').Groups[1].Value.Trim()
+          if (!$pg) { throw "LIVEBOT_PG_URL not found in canonical install workflow" }
+          if ($canary -ne "YES") { throw "LIVEBOT_CANARY_APPROVED is not YES in canonical install workflow" }
+
+          $localEnv = Join-Path $env:BOT_ROOT ".q-forward.local.env"
+          @(
+            "LIVEBOT_PG_URL=$pg",
+            "LIVEBOT_CANARY_APPROVED=$canary"
+          ) | Set-Content -Path $localEnv -Encoding ascii
+
+          $runner = Join-Path $env:BOT_ROOT "scripts\run-q-demo-forward-scheduled.ps1"
+          $script = @'
+          $ErrorActionPreference = "Stop"
+          $root = "C:\Users\TANSEL\Desktop\binance-bot"
+          $log = Join-Path $root "artifacts\q-demo-forward-scheduler.log"
+          $localEnv = Join-Path $root ".q-forward.local.env"
+          New-Item -ItemType Directory -Force (Split-Path $log) | Out-Null
+          try {
+            Set-Location $root
+
+            if (!(Test-Path $localEnv)) { throw "Local Q environment file missing" }
+            foreach ($line in Get-Content $localEnv) {
+              if ($line -match '^([^#=]+)=(.*)$') {
+                [Environment]::SetEnvironmentVariable($matches[1], $matches[2], "Process")
+              }
+            }
+
+            cmd /c "docker info >nul 2>&1"
+            if ($LASTEXITCODE -ne 0) {
+              $desktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+              if (!(Test-Path $desktop)) { throw "Docker Desktop missing" }
+              Start-Process $desktop
+              $ready = $false
+              for ($i=0; $i -lt 60; $i++) {
+                Start-Sleep -Seconds 2
+                cmd /c "docker info >nul 2>&1"
+                if ($LASTEXITCODE -eq 0) { $ready = $true; break }
+              }
+              if (!$ready) { throw "Docker unavailable" }
+            }
+
+            $running = docker ps --filter "name=^/canonical-q-demo-pg$" --format "{{.Names}}"
+            if (!$running) {
+              $exists = docker ps -a --filter "name=^/canonical-q-demo-pg$" --format "{{.Names}}"
+              if (!$exists) { throw "Q demo PostgreSQL container missing" }
+              docker start canonical-q-demo-pg | Out-Null
+            }
+
+            npm run q:demo-forward-once *>> $log
+            $code = $LASTEXITCODE
+            Add-Content $log "$(Get-Date -Format o) EXIT=$code"
+            exit $code
+          } catch {
+            Add-Content $log "$(Get-Date -Format o) ERROR=$($_.Exception.Message)"
+            exit 1
+          }
+          '@
+          [System.IO.File]::WriteAllText($runner, $script, (New-Object System.Text.UTF8Encoding($false)))
+
+          Start-ScheduledTask -TaskName "QDemoForwardMonitor"
+          $deadline = (Get-Date).AddMinutes(3)
+          do {
+            Start-Sleep -Seconds 5
+            $info = Get-ScheduledTaskInfo -TaskName "QDemoForwardMonitor"
+            $state = (Get-ScheduledTask -TaskName "QDemoForwardMonitor").State
+            if ($state -ne "Running") { break }
+          } while ((Get-Date) -lt $deadline)
+
+          $info = Get-ScheduledTaskInfo -TaskName "QDemoForwardMonitor"
+          $report = Join-Path $env:BOT_ROOT "artifacts\q-demo-forward-latest.json"
+          if (!(Test-Path $report)) { throw "Q report missing" }
+          $item = Get-Item $report
+          if ($item.LastWriteTime -lt $started) { throw "Q report was not refreshed by repaired scheduler" }
+          if ($info.LastTaskResult -ne 0) {
+            $log = Join-Path $env:BOT_ROOT "artifacts\q-demo-forward-scheduler.log"
+            if (Test-Path $log) { Get-Content $log -Tail 100 }
+            throw "Q scheduler last result is $($info.LastTaskResult)"
+          }
+
+          Write-Host "Q_SCHEDULER_VERIFIED"
+          $info | Format-List LastRunTime,LastTaskResult,NextRunTime
+          $r = Get-Content $report -Raw | ConvertFrom-Json
+          [ordered]@{
+            generatedAt=$r.generatedAt
+            symbol=$r.symbol
+            result=$r.result
+            action=$r.action
+            fresh=$r.market.signal.fresh
+            direction=$r.market.signal.direction
+            positionAmt=$r.positionBefore.positionAmt
+            entryPrice=$r.positionBefore.entryPrice
+            positionAfter=$r.positionAfter
+          } | ConvertTo-Json -Depth 6 -Compress
