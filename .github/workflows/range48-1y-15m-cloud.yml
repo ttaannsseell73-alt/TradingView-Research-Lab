@@ -87,8 +87,8 @@ jobs:
       - name: Decode plan
         run: python -c "import os,base64;open('range48-cloud-plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
 
-      - name: Run cloud shard
-        run: node scripts/run-datahub-plan-checkpointed.mjs range48-cloud-plan.json
+      - name: Run cloud turbo shard
+        run: node scripts/run-datahub-plan.mjs range48-cloud-plan.json
 
       - name: Upload shard result
         if: always()
@@ -96,10 +96,7 @@ jobs:
         with:
           name: range48-cloud-shard-${{ matrix.shard }}
           path: |
-            artifacts/range48-cloud/results-cloud-*.ndjson
-            artifacts/range48-cloud/monthly-cloud-*.ndjson
-            artifacts/range48-cloud/failures-cloud-*.ndjson
-            artifacts/range48-cloud/summary-cloud-*.json
+            artifacts/range48-cloud/result-cloud-*.json
           if-no-files-found: warn
           compression-level: 6
 
