@@ -48,6 +48,39 @@ export class PgEventJournal {
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
 
+      CREATE TABLE IF NOT EXISTS live_fills (
+        fill_id TEXT PRIMARY KEY,
+        intent_id TEXT,
+        symbol TEXT NOT NULL,
+        side TEXT NOT NULL,
+        expected_price DOUBLE PRECISION,
+        fill_price DOUBLE PRECISION NOT NULL,
+        quantity DOUBLE PRECISION NOT NULL,
+        commission DOUBLE PRECISION NOT NULL DEFAULT 0,
+        commission_asset TEXT,
+        implementation_shortfall_bps DOUBLE PRECISION,
+        event_time BIGINT NOT NULL,
+        payload JSONB NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS live_position_snapshots (
+        id BIGSERIAL PRIMARY KEY,
+        symbol TEXT NOT NULL,
+        position_amt DOUBLE PRECISION NOT NULL,
+        entry_price DOUBLE PRECISION,
+        mark_price DOUBLE PRECISION,
+        liquidation_price DOUBLE PRECISION,
+        payload JSONB NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS live_risk_snapshots (
+        id BIGSERIAL PRIMARY KEY,
+        symbol TEXT,
+        payload JSONB NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
       CREATE TABLE IF NOT EXISTS live_fencing (
         lock_name TEXT PRIMARY KEY,
         generation BIGINT NOT NULL
@@ -147,6 +180,116 @@ export class PgEventJournal {
     );
   }
 
+  async knownIntentIds(): Promise<string[]> {
+    const result = await this.pool.query('SELECT intent_id FROM live_intents ORDER BY created_at');
+    return result.rows.map(r => String(r.intent_id));
+  }
+
+  async unresolvedOutbox(): Promise<Array<{ outboxId: string; intentId: string; status: string; payload: Record<string, unknown> }>> {
+    const result = await this.pool.query(
+      `SELECT outbox_id,intent_id,status,payload
+         FROM live_outbox
+        WHERE status IN ('PENDING','PROCESSING')
+        ORDER BY id`
+    );
+    return result.rows.map(r => ({
+      outboxId: String(r.outbox_id),
+      intentId: String(r.intent_id),
+      status: String(r.status),
+      payload: r.payload,
+    }));
+  }
+
+  async markOutboxUnknownResolved(outboxId: string, resolution: string, payload: Record<string, unknown>): Promise<void> {
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query(
+        `UPDATE live_outbox SET status='DONE',updated_at=NOW() WHERE outbox_id=$1`,
+        [outboxId]
+      );
+      await client.query(
+        `INSERT INTO live_events(event_type,entity_id,payload)
+         SELECT 'ORDER_UNKNOWN_RESOLVED', intent_id, $2::jsonb
+           FROM live_outbox WHERE outbox_id=$1`,
+        [outboxId, JSON.stringify({ resolution, ...payload })]
+      );
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK').catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async recordFill(args: {
+    fillId: string;
+    intentId?: string | null;
+    symbol: string;
+    side: string;
+    expectedPrice?: number | null;
+    fillPrice: number;
+    quantity: number;
+    commission?: number;
+    commissionAsset?: string | null;
+    eventTime: number;
+    payload: Record<string, unknown>;
+  }): Promise<boolean> {
+    const expected = args.expectedPrice ?? null;
+    const sideSign = args.side === 'BUY' ? 1 : args.side === 'SELL' ? -1 : 0;
+    const shortfall =
+      expected && expected > 0 && sideSign !== 0
+        ? sideSign * ((args.fillPrice - expected) / expected) * 10_000
+        : null;
+    const result = await this.pool.query(
+      `INSERT INTO live_fills(
+          fill_id,intent_id,symbol,side,expected_price,fill_price,quantity,
+          commission,commission_asset,implementation_shortfall_bps,event_time,payload
+        ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12::jsonb)
+        ON CONFLICT(fill_id) DO NOTHING`,
+      [
+        args.fillId,
+        args.intentId ?? null,
+        args.symbol,
+        args.side,
+        expected,
+        args.fillPrice,
+        args.quantity,
+        args.commission ?? 0,
+        args.commissionAsset ?? null,
+        shortfall,
+        args.eventTime,
+        JSON.stringify(args.payload),
+      ]
+    );
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async recordPositionSnapshot(symbol: string, snapshot: any): Promise<void> {
+    const row = Array.isArray(snapshot) ? snapshot.find((x: any) => x.symbol === symbol) ?? {} : snapshot ?? {};
+    await this.pool.query(
+      `INSERT INTO live_position_snapshots(
+        symbol,position_amt,entry_price,mark_price,liquidation_price,payload
+      ) VALUES($1,$2,$3,$4,$5,$6::jsonb)`,
+      [
+        symbol,
+        Number(row.positionAmt ?? 0),
+        Number(row.entryPrice ?? 0),
+        Number(row.markPrice ?? 0),
+        Number(row.liquidationPrice ?? 0),
+        JSON.stringify(snapshot ?? {}),
+      ]
+    );
+  }
+
+  async recordRiskSnapshot(symbol: string | null, payload: Record<string, unknown>): Promise<void> {
+    await this.pool.query(
+      'INSERT INTO live_risk_snapshots(symbol,payload) VALUES($1,$2::jsonb)',
+      [symbol, JSON.stringify(payload)]
+    );
+  }
+
   async counts(): Promise<{ intents: number; outbox: number; events: number }> {
     const [i, o, e] = await Promise.all([
       this.pool.query('SELECT COUNT(*)::int AS n FROM live_intents'),
@@ -158,7 +301,7 @@ export class PgEventJournal {
 
   async truncateForTesting(): Promise<void> {
     if (process.env.NODE_ENV === 'production') throw new Error('Refusing truncate in production');
-    await this.pool.query('TRUNCATE live_outbox, live_intents, live_events RESTART IDENTITY CASCADE');
+    await this.pool.query('TRUNCATE live_outbox, live_intents, live_events, live_fills, live_position_snapshots, live_risk_snapshots RESTART IDENTITY CASCADE');
   }
 
   async close(): Promise<void> {
