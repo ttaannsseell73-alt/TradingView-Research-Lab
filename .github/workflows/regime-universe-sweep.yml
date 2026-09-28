@@ -1,0 +1,136 @@
+name: Full-Universe Regime Sweep
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[REGIME UNIVERSE]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 360
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      DATAHUB_ROOT: C:/actions-runner-datahub/regime-universe-datahub
+      LOCAL_PARALLEL_SHARDS: 8
+      LOCAL_DATA_MODE: strict
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build full-universe plans
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-1m-futures.feather"
+          $symbols = @(
+            Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*$suffix" -File |
+            Sort-Object Name |
+            ForEach-Object {
+              $base = $_.Name.Substring(0, $_.Name.Length - $suffix.Length)
+              (($base -replace "_","") + "USDT")
+            } |
+            Sort-Object -Unique
+          )
+          if ($symbols.Count -lt 500) { throw "Universe guard failed: only $($symbols.Count) symbols found" }
+
+          $basePlan = [ordered]@{
+            backend = "local"
+            symbols = $symbols
+            timeframes = @("1m","5m","15m","1h","4h")
+            strategies = @(
+              "sr_range_edge",
+              "sr_liquidity_sweep",
+              "sr25_liquidity_absorption",
+              "sr25_camarilla_h3_l3",
+              "sr25_poc_mean_reversion",
+              "sr25_impulse_ob_retest",
+              "sr25_swing_anchored_vwap"
+            )
+            lifetimeAware = $true
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "1m"=50; "5m"=30; "15m"=25; "1h"=20; "4h"=10 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 10
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+          }
+
+          $y1 = [ordered]@{} + $basePlan
+          $y1.start = "2024-09-28T00:00:00Z"
+          $y1.end = "2025-09-28T00:00:00Z"
+
+          $y2 = [ordered]@{} + $basePlan
+          $y2.start = "2025-09-28T00:00:00Z"
+          $y2.end = "2026-09-28T00:00:00Z"
+
+          $y1 | ConvertTo-Json -Depth 12 -Compress | Set-Content -Encoding utf8 regime-y1-plan.json
+          $y2 | ConvertTo-Json -Depth 12 -Compress | Set-Content -Encoding utf8 regime-y2-plan.json
+
+          Write-Host "REGIME_UNIVERSE symbols=$($symbols.Count) TF=5 strategies=7 combosPerYear=$($symbols.Count*5*7)"
+
+      - name: Run Y1 full universe
+        shell: powershell
+        env:
+          RESEARCH_CSV_DIR: C:/actions-runner-datahub/regime-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h
+          RESEARCH_OUT_DIR: artifacts/regime-universe/y1
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-parallel-local.mjs regime-y1-plan.json
+          if ($LASTEXITCODE -ne 0) { throw "Y1 regime sweep failed" }
+
+      - name: Run Y2 full universe
+        shell: powershell
+        env:
+          RESEARCH_CSV_DIR: C:/actions-runner-datahub/regime-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h
+          RESEARCH_OUT_DIR: artifacts/regime-universe/y2
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-parallel-local.mjs regime-y2-plan.json
+          if ($LASTEXITCODE -ne 0) { throw "Y2 regime sweep failed" }
+
+      - name: Upload regime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regime-universe-${{ github.run_id }}
+          path: |
+            artifacts/regime-universe/y1/summary-*.json
+            artifacts/regime-universe/y1/results-*.ndjson
+            artifacts/regime-universe/y1/monthly-*.ndjson
+            artifacts/regime-universe/y1/failures-*.ndjson
+            artifacts/regime-universe/y2/summary-*.json
+            artifacts/regime-universe/y2/results-*.ndjson
+            artifacts/regime-universe/y2/monthly-*.ndjson
+            artifacts/regime-universe/y2/failures-*.ndjson
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish summary
+        if: always()
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Continue"
+          $body = @"
+          Full-Universe Regime Sweep tamamlandı/sonlandı.
+          - evren: local USD-M futures
+          - TF: 1m, 5m, 15m, 1h, 4h
+          - strateji çekirdeği: 7
+          - Y1: 2024-09-28 → 2025-09-28
+          - Y2: 2025-09-28 → 2026-09-28
+          - LONG/SHORT metrikleri result artifactlarında ayrı.
+          "@
+          gh issue comment "${{ github.event.issue.number }}" --body $body
