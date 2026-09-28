@@ -39,5 +39,6 @@ jobs:
           node --check research/q_class_engine.mjs
           node --check scripts/run-q-class-discovery.mjs
           node --check scripts/run-q-class-discovery-parallel.mjs
+          node --check scripts/summarize-nearpass-2y.mjs
           node scripts/assert-turbo-workflows.mjs
           python -m py_compile scripts/build-recovery-matrix.py scripts/build-recovery-variants.py scripts/export-freqtrade-feather-batch.py

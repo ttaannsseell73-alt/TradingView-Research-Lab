@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "runId": 36350416306,
+    "artifactId": 10944110430,
+    "period": "2026-01-01/2026-09-20",
+    "criterion": "8 of 9 monthly pass",
+    "rawRows": 39,
+    "deduplicatedSeeds": 33,
+    "duplicatePolicy": {
+      "sr25_previous_day_sweep": "sr_prior_day_sweep",
+      "sr25_liquidity_sweep_reclaim": "sr_liquidity_sweep"
+    }
+  },
+  "seeds": [
+    {
+      "symbol": "QUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr_range_edge",
+      "sourceNet": 435.9486928875862,
+      "sourcePF": 1.955325420300125,
+      "sourceDD": 0.47745615816292564,
+      "sourceFailMonth": "2026-02"
+    },
+    {
+      "symbol": "QUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr_prior_day_sweep",
+      "sourceNet": 309.6723507345784,
+      "sourcePF": 5.319078453008313,
+      "sourceDD": 0.4601319311371612,
+      "sourceFailMonth": "2026-05"
+    },
+    {
+      "symbol": "TRADOORUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_camarilla_h3_l3",
+      "sourceNet": 265.8753366003976,
+      "sourcePF": 4.259727043461195,
+      "sourceDD": 0.35393547743377785,
+      "sourceFailMonth": "2026-05"
+    },
+    {
+      "symbol": "ALLOUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_impulse_ob_retest",
+      "sourceNet": 160.86064731044374,
+      "sourcePF": 2.85120523443938,
+      "sourceDD": 0.4120669786495115,
+      "sourceFailMonth": "2026-04"
+    },
+    {
+      "symbol": "QUSDT",
+      "timeframe": "1m",
+      "strategyId": "sr_prior_day_sweep",
+      "sourceNet": 130.76148299244434,
+      "sourcePF": 4.0852926800804354,
+      "sourceDD": 0.4436176716798569,
+      "sourceFailMonth": "2026-05"
+    },
+    {
+      "symbol": "QUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr25_liquidity_absorption",
+      "sourceNet": 104.75357426856877,
+      "sourcePF": 1.6780165012061852,
+      "sourceDD": 0.39328371850602717,
+      "sourceFailMonth": "2026-02"
+    },
+    {
+      "symbol": "QUSDT",
+      "timeframe": "1m",
+      "strategyId": "sr25_value_area_80",
+      "sourceNet": 103.53255073830853,
+      "sourcePF": 3.0997753297223714,
+      "sourceDD": 0.44153269871173795,
+      "sourceFailMonth": "2026-05"
+    },
+    {
+      "symbol": "HANAUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr25_poc_mean_reversion",
+      "sourceNet": 27.969058517792217,
+      "sourcePF": 1.8332750476715318,
+      "sourceDD": 0.554224640130575,
+      "sourceFailMonth": "2026-05"
+    },
+    {
+      "symbol": "AGTUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr25_value_area_80",
+      "sourceNet": 21.713540480107184,
+      "sourcePF": 1.9853798088857681,
+      "sourceDD": 0.7560308792419791,
+      "sourceFailMonth": "2026-05"
+    },
+    {
+      "symbol": "XPINUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr_range_edge",
+      "sourceNet": 18.83741183896884,
+      "sourcePF": 1.4692350049700993,
+      "sourceDD": 0.543508578905166,
+      "sourceFailMonth": "2026-04"
+    },
+    {
+      "symbol": "AVAAIUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_liquidity_absorption",
+      "sourceNet": 11.439060978409282,
+      "sourcePF": 1.7219761653051102,
+      "sourceDD": 0.47263504507869913,
+      "sourceFailMonth": "2026-04"
+    },
+    {
+      "symbol": "FFUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr_range_edge",
+      "sourceNet": 9.810034967292856,
+      "sourcePF": 1.9538541589338532,
+      "sourceDD": 0.3733312532413158,
+      "sourceFailMonth": "2026-06"
+    },
+    {
+      "symbol": "EVAAUSDT",
+      "timeframe": "1h",
+      "strategyId": "sr25_donchian_breakout",
+      "sourceNet": 9.808328631370896,
+      "sourcePF": 2.009246334702479,
+      "sourceDD": 0.5133717232488964,
+      "sourceFailMonth": "2026-08"
+    },
+    {
+      "symbol": "XANUSDT",
+      "timeframe": "1h",
+      "strategyId": "sr_liquidity_sweep",
+      "sourceNet": 9.208068363517977,
+      "sourcePF": 1.932274801648928,
+      "sourceDD": 0.3577039664208733,
+      "sourceFailMonth": "2026-09"
+    },
+    {
+      "symbol": "FOLKSUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr25_camarilla_h3_l3",
+      "sourceNet": 8.994635240664977,
+      "sourcePF": 1.7101309177730677,
+      "sourceDD": 0.4686570521844009,
+      "sourceFailMonth": "2026-04"
+    },
+    {
+      "symbol": "ZECUSDT",
+      "timeframe": "4h",
+      "strategyId": "sr25_swing_anchored_vwap",
+      "sourceNet": 8.775745059562423,
+      "sourcePF": 1.674052080650633,
+      "sourceDD": 0.4113137791034178,
+      "sourceFailMonth": "2026-04"
+    },
+    {
+      "symbol": "TLMUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr25_camarilla_h3_l3",
+      "sourceNet": 7.3551231174083735,
+      "sourcePF": 2.0049430581636543,
+      "sourceDD": 0.35296250000000007,
+      "sourceFailMonth": "2026-01"
+    },
+    {
+      "symbol": "JELLYJELLYUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_poc_mean_reversion",
+      "sourceNet": 7.329344936702197,
+      "sourcePF": 1.710832181629225,
+      "sourceDD": 0.2995186254490576,
+      "sourceFailMonth": "2026-06"
+    },
+    {
+      "symbol": "AVAAIUSDT",
+      "timeframe": "1h",
+      "strategyId": "sr_liquidity_sweep",
+      "sourceNet": 7.066486692111194,
+      "sourcePF": 1.9100637978814208,
+      "sourceDD": 0.36400338007910826,
+      "sourceFailMonth": "2026-05"
+    },
+    {
+      "symbol": "HIVEUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr_range_edge",
+      "sourceNet": 4.550143312244553,
+      "sourcePF": 1.3961523479040845,
+      "sourceDD": 0.2550373705368575,
+      "sourceFailMonth": "2026-02"
+    },
+    {
+      "symbol": "IDOLUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_liquidity_absorption",
+      "sourceNet": 3.7521626964390222,
+      "sourcePF": 1.43943578045465,
+      "sourceDD": 0.4255573219365,
+      "sourceFailMonth": "2026-09"
+    },
+    {
+      "symbol": "AGLDUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_lsob",
+      "sourceNet": 3.4589964293836637,
+      "sourcePF": 1.6654650155958888,
+      "sourceDD": 0.4845289409856245,
+      "sourceFailMonth": "2026-01"
+    },
+    {
+      "symbol": "ARPAUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr25_camarilla_h3_l3",
+      "sourceNet": 3.3401914405864446,
+      "sourcePF": 1.858906289807747,
+      "sourceDD": 0.27633929376072286,
+      "sourceFailMonth": "2026-09"
+    },
+    {
+      "symbol": "STABLEUSDT",
+      "timeframe": "1m",
+      "strategyId": "sr25_camarilla_h3_l3",
+      "sourceNet": 3.084342017422683,
+      "sourcePF": 1.4902913260337056,
+      "sourceDD": 0.4216533791142576,
+      "sourceFailMonth": "2026-02"
+    },
+    {
+      "symbol": "DOLOUSDT",
+      "timeframe": "1h",
+      "strategyId": "sr25_fvg_first_touch",
+      "sourceNet": 3.004980076721412,
+      "sourcePF": 1.5348261496672588,
+      "sourceDD": 0.39425423166695683,
+      "sourceFailMonth": "2026-02"
+    },
+    {
+      "symbol": "GPSUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr_range_edge",
+      "sourceNet": 2.898852333024942,
+      "sourcePF": 1.4164036653333734,
+      "sourceDD": 0.42281707366719334,
+      "sourceFailMonth": "2026-06"
+    },
+    {
+      "symbol": "STABLEUSDT",
+      "timeframe": "1h",
+      "strategyId": "sr_liquidity_sweep",
+      "sourceNet": 2.7734274117688122,
+      "sourcePF": 1.7376960948298912,
+      "sourceDD": 0.6618583431423264,
+      "sourceFailMonth": "2026-02"
+    },
+    {
+      "symbol": "KAITOUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr25_impulse_ob_retest",
+      "sourceNet": 2.569664361700845,
+      "sourcePF": 1.279035854661145,
+      "sourceDD": 0.5164813054461057,
+      "sourceFailMonth": "2026-06"
+    },
+    {
+      "symbol": "MOVEUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_wick_confirmed_zone",
+      "sourceNet": 2.118103916814457,
+      "sourcePF": 1.3259951995128294,
+      "sourceDD": 0.27938013264856243,
+      "sourceFailMonth": "2026-06"
+    },
+    {
+      "symbol": "1000CATUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_donchian_breakout",
+      "sourceNet": 1.8573267779715925,
+      "sourcePF": 1.2645052477034406,
+      "sourceDD": 0.5398343895855925,
+      "sourceFailMonth": "2026-06"
+    },
+    {
+      "symbol": "SPXUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_lsob",
+      "sourceNet": 1.3167338703026465,
+      "sourcePF": 1.3638972273563932,
+      "sourceDD": 0.3590525508620771,
+      "sourceFailMonth": "2026-08"
+    },
+    {
+      "symbol": "BBUSDT",
+      "timeframe": "15m",
+      "strategyId": "sr25_liquidity_absorption",
+      "sourceNet": 0.689669268516323,
+      "sourcePF": 1.2126457094268261,
+      "sourceDD": 0.5264596658019154,
+      "sourceFailMonth": "2026-06"
+    },
+    {
+      "symbol": "TLMUSDT",
+      "timeframe": "5m",
+      "strategyId": "sr_liquidity_sweep",
+      "sourceNet": 0.6708413179517969,
+      "sourcePF": 1.1193953098399771,
+      "sourceDD": 0.6861086383146588,
+      "sourceFailMonth": "2026-07"
+    }
+  ]
+}
