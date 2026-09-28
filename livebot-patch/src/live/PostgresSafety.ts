@@ -185,6 +185,46 @@ export class PgEventJournal {
     return result.rows.map(r => String(r.intent_id));
   }
 
+  async knownProtectionIds(): Promise<string[]> {
+    const result = await this.pool.query(
+      `SELECT DISTINCT payload->>'clientAlgoId' AS id
+         FROM live_events
+        WHERE event_type='PROTECTION_ACK'
+          AND payload ? 'clientAlgoId'`
+    );
+    return result.rows.map(r => String(r.id)).filter(Boolean);
+  }
+
+  async expectedPriceForIntent(intentId: string): Promise<number | null> {
+    const result = await this.pool.query(
+      `SELECT payload->>'price' AS price
+         FROM live_outbox
+        WHERE intent_id=$1
+        ORDER BY id DESC
+        LIMIT 1`,
+      [intentId]
+    );
+    if (!result.rows.length) return null;
+    const value = Number(result.rows[0].price);
+    return Number.isFinite(value) && value > 0 ? value : null;
+  }
+
+  async expectedNetPosition(symbol: string): Promise<number> {
+    const result = await this.pool.query(
+      `SELECT COALESCE(SUM(
+          CASE
+            WHEN side='BUY' THEN quantity
+            WHEN side='SELL' THEN -quantity
+            ELSE 0
+          END
+        ),0)::float8 AS qty
+         FROM live_fills
+        WHERE symbol=$1`,
+      [symbol]
+    );
+    return Number(result.rows[0]?.qty ?? 0);
+  }
+
   async unresolvedOutbox(): Promise<Array<{ outboxId: string; intentId: string; status: string; payload: Record<string, unknown> }>> {
     const result = await this.pool.query(
       `SELECT outbox_id,intent_id,status,payload
