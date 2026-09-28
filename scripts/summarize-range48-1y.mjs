@@ -2,7 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const outDir=path.resolve(process.env.RESEARCH_OUT_DIR ?? 'artifacts/range48-1y-15m');
-const checkpointDir=path.join(outDir,'checkpoints-0-of-1');
+const checkpointDirs=fs.existsSync(outDir)
+  ? fs.readdirSync(outDir)
+      .filter(name=>/^checkpoints-\d+-of-\d+$/u.test(name))
+      .sort()
+      .map(name=>path.join(outDir,name))
+  : [];
 
 function esc(v){
   if(v==null) return '';
@@ -11,7 +16,7 @@ function esc(v){
 }
 
 const rows=[];
-if(fs.existsSync(checkpointDir)){
+for(const checkpointDir of checkpointDirs){
   for(const name of fs.readdirSync(checkpointDir).filter(x=>/^task-\d{6}\.json$/u.test(x)).sort()){
     const cp=JSON.parse(fs.readFileSync(path.join(checkpointDir,name),'utf8'));
     for(const r of cp.results??[]){
