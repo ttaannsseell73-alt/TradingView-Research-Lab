@@ -85,3 +85,29 @@ Decision:
 - The tested micro-structure confirmation variants did not produce a sufficiently clear overall improvement to justify additional tuning/scanning time.
 - Do not continue P22/P33/MSS confirmation variant searches for QUSDT unless a future test shows a clearly material improvement in overall performance, not merely a fix for one recent trade.
 - Current live/demo Range48 logic remains unchanged.
+
+
+## Q DURUM — CANONICAL LOOKUP CONTRACT
+
+Purpose: make `Q durum` work the same way across new chats; do not rely on chat-local context.
+
+When the user says `Q durum`:
+1. Read GitHub Issue #109 (`Q LIVE STATUS`) in this repository.
+2. Read current Binance USD-M Futures QUSDT price.
+3. If needed, read the latest QUSDT 15m candles to distinguish open-candle preview from closed-candle execution state.
+4. Report, at minimum:
+   - scheduler timestamp and age
+   - cycle_state
+   - actual open position from `positionAmt_before` (side, quantity, entry)
+   - leverage and margin type
+   - fresh / signal_action / action / result / decision
+   - current QUSDT price
+   - approximate unrealized PnL versus entry when a position exists
+   - ÇYYM LONG score/label/sweep/reclaim/missing condition
+   - ÇYYM SHORT score/label/sweep/reclaim/missing condition
+5. If Issue #109 is older than about 6 minutes or `cycle_state != SUCCESS`, mark status STALE and inspect the local Q scheduler before treating the status as current.
+6. `direction`, `HOLD_LONG`, or `HOLD_SHORT` alone do NOT prove an open position. Use `positionAmt_before` as the canonical position field.
+7. ÇYYM scores are proximity to mechanical conditions, not win probabilities.
+8. Open-candle preview is observability only; execution remains closed-candle/fresh-signal based.
+9. Do not change Q strategy logic merely to answer `Q durum`.
+10. Canonical Q strategy remains `swp_range48_reclaim`, 15m, x1, ISOLATED unless an explicit later lock changes it.
