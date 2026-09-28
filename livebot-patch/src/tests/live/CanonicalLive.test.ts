@@ -134,7 +134,7 @@ describe('Canonical Q live engine primitives', () => {
 
   it('PortfolioRiskEngine blocks daily loss', () => {
     const r=new PortfolioRiskEngine({
-      maxSymbolNotionalPct:.05,maxPortfolioNotionalPct:.25,maxEffectiveLeverage:2,maxOpenPositions:1,
+      maxSymbolNotionalPct:.05,maxPortfolioNotionalPct:.25,maxEffectiveLeverage:1,maxOpenPositions:1,
       maxDailyLossPct:.01,maxWeeklyLossPct:.03,maxDrawdownPct:.05
     });
     const d=r.evaluateEntry({equity:989,dayStartEquity:1000,weekStartEquity:1000,peakEquity:1000,portfolioNotional:0,symbolNotional:0,openPositions:0},10,'RUNNING');
@@ -144,7 +144,7 @@ describe('Canonical Q live engine primitives', () => {
 
   it('PortfolioRiskEngine blocks second open position', () => {
     const r=new PortfolioRiskEngine({
-      maxSymbolNotionalPct:.05,maxPortfolioNotionalPct:.25,maxEffectiveLeverage:2,maxOpenPositions:1,
+      maxSymbolNotionalPct:.05,maxPortfolioNotionalPct:.25,maxEffectiveLeverage:1,maxOpenPositions:1,
       maxDailyLossPct:.01,maxWeeklyLossPct:.03,maxDrawdownPct:.05
     });
     const d=r.evaluateEntry({equity:1000,dayStartEquity:1000,weekStartEquity:1000,peakEquity:1000,portfolioNotional:10,symbolNotional:0,openPositions:1},10,'RUNNING');
@@ -153,7 +153,7 @@ describe('Canonical Q live engine primitives', () => {
 
   it('Risk-reducing exits are never blocked by HALT_NEW_ENTRIES', () => {
     const r=new PortfolioRiskEngine({
-      maxSymbolNotionalPct:.05,maxPortfolioNotionalPct:.25,maxEffectiveLeverage:2,maxOpenPositions:1,
+      maxSymbolNotionalPct:.05,maxPortfolioNotionalPct:.25,maxEffectiveLeverage:1,maxOpenPositions:1,
       maxDailyLossPct:.01,maxWeeklyLossPct:.03,maxDrawdownPct:.05
     });
     expect(r.evaluateRiskReducingExit().allowed).toBe(true);
@@ -165,6 +165,8 @@ describe('Canonical Q live engine primitives', () => {
     expect(m.timeframe).toBe('15m');
     expect(m.strategyId).toBe('swp_range48_reclaim');
     expect(m.strategyVersion).toBe('sweep-v1');
+    expect(m.marginType).toBe('ISOLATED');
+    expect(m.leverage).toBe(1);
     expect(m.strategyHash).toMatch(/^[a-f0-9]{64}$/);
   });
 });
