@@ -1,0 +1,60 @@
+name: Diagnose Local Q Scheduler
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/q-local-scheduler-diagnose.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 5
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+    steps:
+      - name: Inspect scheduler and local report
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Continue"
+          Get-ScheduledTask -TaskName "QDemoForwardMonitor" | Format-List TaskName,State
+          Get-ScheduledTaskInfo -TaskName "QDemoForwardMonitor" | Format-List LastRunTime,LastTaskResult,NextRunTime
+
+          $log=Join-Path $env:BOT_ROOT "artifacts\q-demo-forward-scheduler.log"
+          if(Test-Path $log){
+            Write-Host "=== scheduler log tail ==="
+            Get-Content $log -Tail 120
+          } else {
+            Write-Host "SCHEDULER_LOG_MISSING"
+          }
+
+          $report=Join-Path $env:BOT_ROOT "artifacts\q-demo-forward-latest.json"
+          if(Test-Path $report){
+            Write-Host "=== report metadata ==="
+            Get-Item $report | Select-Object FullName,LastWriteTime,Length | Format-List
+            $r=Get-Content $report -Raw | ConvertFrom-Json
+            [ordered]@{
+              generatedAt=$r.generatedAt
+              symbol=$r.symbol
+              result=$r.result
+              action=$r.action
+              fresh=$r.market.signal.fresh
+              direction=$r.market.signal.direction
+              positionAmt=$r.positionBefore.positionAmt
+              entryPrice=$r.positionBefore.entryPrice
+            } | ConvertTo-Json -Compress
+          } else {
+            Write-Host "REPORT_MISSING"
+          }
+
+      - name: Check required local env presence
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          Push-Location $env:BOT_ROOT
+          node -e "require('dotenv').config(); const keys=['BINANCE_API_KEY','BINANCE_API_SECRET','BINANCE_FUTURES_URL','LIVEBOT_PG_URL','LIVEBOT_CANARY_APPROVED']; console.log(Object.fromEntries(keys.map(k=>[k,Boolean(process.env[k])])));"
+          Pop-Location
