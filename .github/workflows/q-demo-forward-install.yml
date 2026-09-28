@@ -14,6 +14,7 @@ jobs:
   # refresh: 100 USDT demo notional
   # refresh: idempotent Binance read retries
   # refresh: Range48 proximity preview
+  # refresh: dual long-short proximity
   install:
     runs-on: [self-hosted, datahub-local]
     timeout-minutes: 20
