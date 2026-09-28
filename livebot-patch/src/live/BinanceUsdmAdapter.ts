@@ -159,6 +159,29 @@ export class BinanceUsdmAdapter {
     return this.signed('GET', '/fapi/v3/positionRisk', { symbol });
   }
 
+  async getOrderByClientId(symbol: string, clientOrderId: string): Promise<any | null> {
+    try {
+      return await this.signed('GET', '/fapi/v1/order', {
+        symbol,
+        origClientOrderId: clientOrderId,
+      });
+    } catch (error: any) {
+      const code = Number(error?.response?.data?.code);
+      if (code === -2013) return null;
+      throw error;
+    }
+  }
+
+  async getAlgoOrder(clientAlgoId: string): Promise<any | null> {
+    try {
+      return await this.signed('GET', '/fapi/v1/algoOrder', { clientAlgoId });
+    } catch (error: any) {
+      const code = Number(error?.response?.data?.code);
+      if (code === -2013 || code === -2011) return null;
+      throw error;
+    }
+  }
+
   async getOpenOrders(symbol: string): Promise<any> {
     return this.signed('GET', '/fapi/v1/openOrders', { symbol });
   }
@@ -190,6 +213,38 @@ export class BinanceUsdmAdapter {
       price: params.price,
       newClientOrderId: params.clientOrderId,
       reduceOnly: params.reduceOnly ?? false,
+      newOrderRespType: 'RESULT',
+    });
+  }
+
+  async cancelOrder(symbol: string, clientOrderId: string): Promise<any> {
+    this.assertWriteAllowed();
+    return this.signed('DELETE', '/fapi/v1/order', {
+      symbol,
+      origClientOrderId: clientOrderId,
+    });
+  }
+
+  async cancelAlgoOrder(clientAlgoId: string): Promise<any> {
+    this.assertWriteAllowed();
+    return this.signed('DELETE', '/fapi/v1/algoOrder', { clientAlgoId });
+  }
+
+  async closePositionMarket(params: {
+    symbol: string;
+    side: 'BUY' | 'SELL';
+    quantity: string;
+    clientOrderId: string;
+  }): Promise<any> {
+    this.assertWriteAllowed();
+    return this.signed('POST', '/fapi/v1/order', {
+      symbol: params.symbol,
+      side: params.side,
+      positionSide: 'BOTH',
+      type: 'MARKET',
+      quantity: params.quantity,
+      newClientOrderId: params.clientOrderId,
+      reduceOnly: true,
       newOrderRespType: 'RESULT',
     });
   }
