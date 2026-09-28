@@ -50,7 +50,8 @@ fs.mkdirSync(outDir, { recursive: true });
 
 const persistentCsv = path.resolve(process.env.EXACT_CSV_CACHE ?? 'C:/actions-runner-datahub/exact-source-csv-cache-2026');
 const persistentRoot = path.resolve(process.env.EXACT_CHECKPOINT_ROOT ?? 'C:/actions-runner-datahub/exact-source-checkpoints');
-const checkpointDir = path.join(persistentRoot, meta.sourceSha256, 'tasks');
+const windowKey = `${new Date(START_MS).toISOString().slice(0,10)}_${new Date(END_MS).toISOString().slice(0,10)}_pinets-0.10.0`;
+const checkpointDir = path.join(persistentRoot, meta.sourceSha256, windowKey, 'tasks');
 fs.mkdirSync(persistentCsv, { recursive: true });
 fs.mkdirSync(checkpointDir, { recursive: true });
 
