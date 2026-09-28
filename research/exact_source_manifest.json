@@ -1,0 +1,718 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "mode": "EXACT_SOURCE_ONLY",
+    "sourceMutation": "FORBIDDEN",
+    "inputOverrides": "FORBIDDEN",
+    "strategyOverrides": "FORBIDDEN",
+    "indicatorToStrategyConversion": "FORBIDDEN",
+    "syntheticVariants": "EXCLUDED",
+    "onUnavailable": "SKIP",
+    "note": "Fetch original TradingView Pine source, hash it, execute unchanged. If source is unavailable, protected/invite-only, not a strategy, ambiguous, or runtime-unsupported, skip without reconstruction."
+  },
+  "screenshotsExpected": 82,
+  "screenshotItems": 82,
+  "sweepExactItems": 18,
+  "items": [
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Bollinger + RSI, Double Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/zopumZ8a-Bollinger-RSI-Double-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "MACD + SMA 200 Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/yMCa3XZD-MACD-SMA-200-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "SuperTrend STRATEGY",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/P5Gu6F8k/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "MACD Bull Crossover and RSI Oversold 5 Candles Ago-Long Strategy",
+      "author": "Trebor_Namor",
+      "url": "https://www.tradingview.com/script/iifAsfrq-MACD-Bull-Crossover-and-RSI-Oversold-5-Candles-Ago-Long-Strategy/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "PMax Explorer STRATEGY & SCREENER",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/nHGK4Qtp/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "3Commas Bot",
+      "author": "Bjorgum",
+      "url": "https://www.tradingview.com/script/MvlwAzSg-3Commas-Bot/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Hull Suite Strategy",
+      "author": "DashTrader",
+      "url": "https://www.tradingview.com/script/Q9OQye4C-Hull-Suite-Strategy/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Buy&Sell Strategy depends on AO+Stoch+RSI+ATR",
+      "author": "SerdarYILMAZ",
+      "url": "https://www.tradingview.com/script/RpYoQCVJ-Buy-Sell-Strategy-depends-on-AO-Stoch-RSI-ATR-by-SerdarYILMAZ/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Ultimate Strategy Template",
+      "author": "Daveatt",
+      "url": "https://www.tradingview.com/script/2lGyzYkC-Ultimate-Strategy-Template/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "BUY and SELL - Backtest single EMA cross - By che-trader",
+      "author": "Che_Trader",
+      "url": "https://www.tradingview.com/script/j9rq1wQq-BUY-and-SELL-Backtest-single-EMA-cross-By-che-trader/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Golden Cross, SMA 200 Moving Average Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/6ZReHYKn-Golden-Cross-SMA-200-Moving-Average-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Flawless Victory Strategy - 15min BTC",
+      "author": "Trebor_Namor",
+      "url": null
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Ichimoku + Daily-Candle_X + HULL-MA_X + MacD",
+      "author": "SeaSide420",
+      "url": "https://www.tradingview.com/script/RJBjyl2W-Ichimoku-Daily-Candle-X-HULL-MA-X-MacD/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "RSI Divergence Indicator strategy",
+      "author": "eemani123",
+      "url": "https://www.tradingview.com/script/qSLcZSyw-RSI-Divergence-Indicator-strategy/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Open Close Cross Strategy R5 revised by JustUncleL",
+      "author": "JustUncleL",
+      "url": "https://www.tradingview.com/script/vObmEraY-Open-Close-Cross-Strategy-R5-revised-by-JustUncleL/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Bjorgum Double Tap",
+      "author": "Bjorgum",
+      "url": null
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Bollinger + RSI, Double Strategy Long-Only by ChartArt v1.2",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/HDSdFMa3-Bollinger-RSI-Double-Strategy-Long-Only-by-ChartArt-v1-2/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Fractal Breakout Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/EjLwVtgp-Fractal-Breakout-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "UT Bot Strategy",
+      "author": "QuantNomad",
+      "url": "https://www.tradingview.com/script/VKMgZdYr-UT-Bot-Strategy/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Twin Optimized Trend Tracker Strategy TOTT",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/eENf7NpJ/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "ANN Strategy V2",
+      "author": "sirolf2009",
+      "url": "https://www.tradingview.com/script/oY725jQw-ANN-Strategy-v2/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "MACD + Stochastic, Double Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/G5ro3y87-MACD-Stochastic-Double-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "LongBuyLongSell 90% profit Excellent",
+      "author": "MarxBabu",
+      "url": null
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "EMA Slope + EMA Cross Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/XLGBqrZq-EMA-Slope-EMA-Cross-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "TradingView Alerts to MT4 MT5 + dynamic variables NON-REPAINTING",
+      "author": "Peter_O",
+      "url": "https://www.tradingview.com/script/9MJO3AgE-TradingView-Alerts-to-MT4-MT5-dynamic-variables-NON-REPAINTING/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "MACD ReLoaded STRATEGY",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/VO6DY8s1-MACD-ReLoaded-STRATEGY/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Moon Phases Strategy [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/yvDyq0pv-Moon-Phases-Strategy-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Super Scalper - 5 Min 15 Min",
+      "author": "VinayKumarKV",
+      "url": "https://www.tradingview.com/script/4ORGCiTh-Super-Scalper-5-Min-15-Min/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "Smart Money Concepts (SMC) [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/CnB3fSph-Smart-Money-Concepts-SMC-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "Squeeze Momentum Indicator [LazyBear]",
+      "author": "LazyBear",
+      "url": "https://www.tradingview.com/script/nqQ1DT5a-Squeeze-Momentum-Indicator-LazyBear/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "SuperTrend",
+      "author": "KivancOzbilgic",
+      "url": null
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "MacD Custom Indicator-Multiple Time Frame",
+      "author": "ChrisMoody",
+      "url": null
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "CM_Williams_Vix_Fix Finds Market Bottoms",
+      "author": "ChrisMoody",
+      "url": null
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "Support and Resistance Levels with Breaks [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/JDFoWQbL-Support-and-Resistance-Levels-with-Breaks-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "Market Structure Break & Order Block",
+      "author": "EmreKb",
+      "url": "https://www.tradingview.com/script/DkE7UniD/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "WaveTrend Oscillator [WT]",
+      "author": "LazyBear",
+      "url": null
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "UT Bot Alerts",
+      "author": "QuantNomad",
+      "url": "https://www.tradingview.com/script/n8ss8BID-UT-Bot-Alerts/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "ICT Killzones + Pivots [TFO]",
+      "author": "tradeforopp",
+      "url": "https://www.tradingview.com/script/nW5oGfdO-ICT-Killzones-Pivots-TFO/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "GainzAlgo Suite",
+      "author": "GainzAlgo",
+      "url": null
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "Trendlines with Breaks [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/IYL88A1N-Trendlines-with-Breaks-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "Support Resistance Channels",
+      "author": "LonesomeTheBlue",
+      "url": "https://www.tradingview.com/script/Ej53t8Wv-Support-Resistance-Channels/"
+    },
+    {
+      "origin": "screenshot_3",
+      "group": "screenshots",
+      "name": "ADX and DI",
+      "author": "BeikabuOyaji",
+      "url": "https://www.tradingview.com/script/VTPMMOrx-ADX-and-DI/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Swing high low support & resistance",
+      "author": "Patternsmart",
+      "url": "https://www.tradingview.com/script/RQnLfaNE-Swing-high-low-support-resistance/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "LuxAlgo® - Signals & Overlays™",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/fYHlrAoz-LuxAlgo-Signals-Overlays/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Support and Resistance (High Volume Boxes)",
+      "author": "ChartPrime",
+      "url": null
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Sessions [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/bkb6vZDz-Sessions-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Liquidity Swings [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/1S2VOnJP-Liquidity-Swings-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Order Block Finder (Experimental)",
+      "author": "wugamlo",
+      "url": null
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Order Block Detector [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/KvGhxGxY-Order-Block-Detector-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "CM_Ultimate_MA_MTF_V2",
+      "author": "ChrisMoody",
+      "url": null
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "TMA Overlay",
+      "author": "ArtyFXC",
+      "url": "https://www.tradingview.com/script/zX3fvduH-TMA-Overlay/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Machine Learning: Lorentzian Classification",
+      "author": "jdehorty",
+      "url": "https://www.tradingview.com/script/WhBzgfDu-Machine-Learning-Lorentzian-Classification/"
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "Ultimate Moving Average-Multi-TimeFrame",
+      "author": "ChrisMoody",
+      "url": null
+    },
+    {
+      "origin": "screenshot_4",
+      "group": "screenshots",
+      "name": "FVG (Nephew_Sam_)",
+      "author": "nephew_sam_",
+      "url": "https://www.tradingview.com/script/G8b8t2er-FVG-Nephew-Sam/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Nadaraya-Watson Envelope [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/Iko0E2kL-Nadaraya-Watson-Envelope-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Candlestick Patterns Identified (updated 3/11/15)",
+      "author": "repo32",
+      "url": "https://www.tradingview.com/script/vcsWo8mh-Candlestick-Patterns-Identified-updated-3-11-15/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Fibonacci Bollinger Bands",
+      "author": "Rashad",
+      "url": "https://www.tradingview.com/script/qIKR3tbN-Fibonacci-Bollinger-Bands/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "LuxAlgo® - Price Action Concepts™",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/ZGl2xWym-LuxAlgo-Price-Action-Concepts/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Breakout Probability (Expo)",
+      "author": "Zeiierman",
+      "url": "https://www.tradingview.com/script/Qt7fqntR-Breakout-Probability-Expo/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Smart Money Breakout Channels [AlgoAlpha]",
+      "author": "AlgoAlpha",
+      "url": "https://www.tradingview.com/script/Hvk5WzPi-Smart-Money-Breakout-Channels-AlgoAlpha/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Machine Learning Adaptive SuperTrend [AlgoAlpha]",
+      "author": "AlgoAlpha",
+      "url": "https://www.tradingview.com/script/CLk71Qgy-Machine-Learning-Adaptive-SuperTrend-AlgoAlpha/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "ICT Concepts [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/ib4uqBJx-ICT-Concepts-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Divergence for Many Indicators v4",
+      "author": "LonesomeTheBlue",
+      "url": "https://www.tradingview.com/script/n8AGnIZd-Divergence-for-Many-Indicators-v4/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "CM Sling Shot System",
+      "author": "ChrisMoody",
+      "url": "https://www.tradingview.com/script/GE7tSQK1-CM-Sling-Shot-System/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Buyside & Sellside Liquidity [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/Qk4vBbfL-Buyside-Sellside-Liquidity-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "SuperTrend AI (Clustering) [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/wP7WWjLL-SuperTrend-AI-Clustering-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Order Blocks & Breaker Blocks [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/piIbWMpY-Order-Blocks-Breaker-Blocks-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_5",
+      "group": "screenshots",
+      "name": "Market Structure BOS/CHOCH/MSB/FVG/OB/BB",
+      "author": "nephew_sam_",
+      "url": "https://www.tradingview.com/script/PmIP7HAZ-Market-Structure-BOS-CHOCH-MSB-FVG-OB-BB-Nephew-Sam/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Wyckoff [theUltimator5]",
+      "author": "TheUltimator5",
+      "url": "https://www.tradingview.com/script/tJzKloJn-Wyckoff-theUltimator5/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Reversal Probability Profile [AlgoAlpha]",
+      "author": "AlgoAlpha",
+      "url": "https://www.tradingview.com/script/ZWLdxZtM-Reversal-Probability-Profile-AlgoAlpha/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Structure-Anchored VWAP [WillyAlgoTrader]",
+      "author": "WillyAlgoTrader",
+      "url": "https://www.tradingview.com/script/E31jKiTS-Structure-Anchored-VWAP-WillyAlgoTrader/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Williams Variable A/D Pressure [MarkitTick]",
+      "author": "MarkitTick",
+      "url": "https://www.tradingview.com/script/g3P0iG3j-Williams-Variable-A-D-Pressure-MarkitTick/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Trend Target Ribbon [BOSWaves]",
+      "author": "BOSWaves",
+      "url": "https://www.tradingview.com/script/tnQ7FvvW-Trend-Target-Ribbon-BOSWaves/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Sweep Reversal Map+ [Herman]",
+      "author": "helmans13",
+      "url": "https://www.tradingview.com/script/kQTW8mzu-Sweep-Reversal-Map-Herman/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Pivot Channel TrendLines [BigBeluga]",
+      "author": "BigBeluga",
+      "url": "https://www.tradingview.com/script/GPTrj0bB-Pivot-Channel-TrendLines-BigBeluga/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Trinity Reversal Pattern [AlgoAlpha]",
+      "author": "AlgoAlpha",
+      "url": "https://www.tradingview.com/script/tpwLa60j-Trinity-Reversal-Pattern-AlgoAlpha/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "AMD Po3 with Live Edge Stats [WillyAlgoTrader]",
+      "author": "WillyAlgoTrader",
+      "url": "https://www.tradingview.com/script/hkKioUnL-AMD-Po3-with-Live-Edge-Stats-WillyAlgoTrader/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Coppock Curve Multi-Filter [MarkitTick]",
+      "author": "MarkitTick",
+      "url": "https://www.tradingview.com/script/Ua5pRxsd-Coppock-Curve-Multi-Filter-MarkitTick/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Auto Range Detector [QuantAlgo]",
+      "author": "QuantAlgo",
+      "url": "https://in.tradingview.com/script/tdmM2Xzb-Auto-Range-Detector-QuantAlgo/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "RSI Signals Entries",
+      "author": "Michael_Fx_Trader",
+      "url": "https://www.tradingview.com/script/MXaEHFCb-RSI-Signals-Entries/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Dynamic Grid Indicator [BigBeluga]",
+      "author": "BigBeluga",
+      "url": "https://in.tradingview.com/script/WKSKrMsu-Dynamic-Grid-Indicator-BigBeluga/"
+    },
+    {
+      "origin": "screenshot_6",
+      "group": "screenshots",
+      "name": "Volume Delta Pivot Matrix [BigBeluga]",
+      "author": "BigBeluga",
+      "url": null
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Turtle Soup Strategy with 1-Bar Confirmation",
+      "author": "Pridarasx",
+      "url": "https://www.tradingview.com/script/HxwwHIea-Turtle-Soup-Strategy-with-1-Bar-Confirmation/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Swing Failure Pattern Strategy Btc Only 5min",
+      "author": "Danish7421",
+      "url": "https://www.tradingview.com/script/Ma3rSidl-Swing-Failure-Pattern-Strategy-Btc-Only-5min/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Crypto Institutional Liquidity Sweep Strategy",
+      "author": "Danish7421",
+      "url": "https://www.tradingview.com/script/ZhJzjmAk-Crypto-Institutional-Liquidity-Sweep-Strategy/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "MNQ Liquidity Sweep Strategy ( KUSH )",
+      "author": "guptakush961",
+      "url": "https://www.tradingview.com/script/cnydr3fS-MNQ-Liquidity-Sweep-Strategy-KUSH/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Liquidity Sweep & RSI Divergence (Fixed $ Risk)",
+      "author": "riipperz",
+      "url": "https://www.tradingview.com/script/zCYYilCg-Liquidity-Sweep-RSI-Divergence-Fixed-Risk/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "FVG.MOTION",
+      "author": "EricAdjei",
+      "url": "https://www.tradingview.com/script/A4aVR9fB-FVG-MOTION/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Strategy_500 - Turtle Soup NY V5 M5 Sweep",
+      "author": "Fran_Pineda",
+      "url": "https://www.tradingview.com/script/XC77YPtV/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Liquidity Sweep Rider Institutional HFT Grabber",
+      "author": "uzair2join",
+      "url": "https://www.tradingview.com/script/Wys8loiZ-Liquidity-Sweep-Rider-Institutional-HFT-Grabber/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "13 EMA Breakout + Liquidity Sweep + BOS Confirmation (A / A+)",
+      "author": "dominiccaldwell13",
+      "url": "https://www.tradingview.com/script/iueqDnDD-13-EMA-Breakout-Liquidity-Sweep-BOS-Confirmation-A-A/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "ICT Daily Liquidity Sweep [PineGen AI]",
+      "author": "PinegenAI",
+      "url": "https://www.tradingview.com/script/SlWseGFp-ICT-Daily-Liquidity-Sweep-PineGen-AI/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Sweep & Reverse | Liquidity Sweep Reversal Strategy",
+      "author": "blitz_locked",
+      "url": "https://www.tradingview.com/script/GoeqO1ev-Sweep-Reverse-Liquidity-Sweep-Reversal-Strategy/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Market Structure Swing Strategy",
+      "author": "mreckeweg99",
+      "url": "https://www.tradingview.com/script/tevFM5BB-Market-Structure-Swing-Strategy/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "NQ 9:45-10:15 ICT Strategy - Complete",
+      "author": "uzair2join",
+      "url": "https://www.tradingview.com/script/8NHRB35j-NQ-9-45-10-15-ICT-Strategy-Complete/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "SMC Liquidity Grab Pro",
+      "author": "Ericem",
+      "url": "https://www.tradingview.com/script/WZ4s1MRC-SMC-Liquidity-Grab-Pro/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "El Jaguar SFP FVG Sweep [Artillery]",
+      "author": "ArtilleryTrades",
+      "url": "https://www.tradingview.com/script/hXaJJEYq-El-Jaguar-SFP-FVG-Sweep-Artillery/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Liquidity Sweeper",
+      "author": "Mejunda",
+      "url": "https://www.tradingview.com/script/5JUfuuqL-Liquidity-Sweeper/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Session Sweep Strategy V3",
+      "author": "johannesf_singer",
+      "url": "https://www.tradingview.com/script/beYPkfAY/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "TJR asia session sweep",
+      "author": "Leonardoxfrr",
+      "url": "https://www.tradingview.com/script/i5ANdaSG/"
+    }
+  ]
+}
