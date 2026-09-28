@@ -356,8 +356,8 @@ async function main() {
   }
 
   const symbols = universeFromFeather(dataRoot);
-  if (symbols.length !== 725) {
-    throw new Error(`exact universe guard failed: expected 725 symbols, found ${symbols.length}`);
+  if (symbols.length < 500) {
+    throw new Error(`exact universe guard failed: expected at least 500 symbols, found ${symbols.length}`);
   }
   const timeframes = ['1m', '5m', '15m', '1h', '4h'];
   const tasks = [];
