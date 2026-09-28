@@ -2,8 +2,8 @@ name: Range48 1Y 15m Cloud
 
 on:
   issues:
-    types: [opened]
-  workflow_dispatch:
+    types:
+      - opened
 
 permissions:
   contents: read
@@ -12,14 +12,11 @@ permissions:
 
 jobs:
   prepare:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.issue.author_association == 'OWNER' &&
-       startsWith(github.event.issue.title, '[RANGE48 1Y 15M CLOUD]'))
+    if: ${{ github.event.issue.author_association == 'OWNER' && startsWith(github.event.issue.title, '[RANGE48 1Y 15M CLOUD]') }}
     runs-on: ubuntu-latest
     outputs:
       plan_b64: ${{ steps.plan.outputs.plan_b64 }}
-      matrix_json: ${{ steps.plan.outputs.matrix_json }}
+      matrix: ${{ steps.plan.outputs.matrix }}
       shard_count: ${{ steps.plan.outputs.shard_count }}
     steps:
       - name: Validate cloud plan
@@ -31,8 +28,6 @@ jobs:
           python - <<'PY'
           import base64, json, os
           raw=(os.environ.get("ISSUE_BODY") or "").strip()
-          if not raw:
-              raise SystemExit("Issue body with JSON plan is required")
           plan=json.loads(raw)
           symbols=sorted(set(plan.get("symbols") or []))
           if not symbols:
@@ -42,23 +37,24 @@ jobs:
           if plan.get("strategies") != ["swp_range48_reclaim"]:
               raise SystemExit("strategy must be swp_range48_reclaim")
           shards=int(plan.get("cloudShards",8))
-          if shards < 1 or shards > 8:
+          if not 1 <= shards <= 8:
               raise SystemExit("cloudShards must be 1..8")
           plan["backend"]="cloud"
           plan["symbols"]=symbols
           encoded=base64.b64encode(json.dumps(plan,separators=(",",":")).encode()).decode()
-          matrix={"shard":list(range(shards))}
           with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as f:
-              f.write(f"plan_b64={encoded}\n")
-              f.write("matrix_json="+json.dumps(matrix,separators=(",",":"))+"\n")
-              f.write(f"shard_count={shards}\n")
+              f.write("plan_b64="+encoded+"\n")
+              f.write("matrix="+json.dumps(list(range(shards)),separators=(",",":"))+"\n")
+              f.write("shard_count="+str(shards)+"\n")
           PY
 
   cloud:
     needs: prepare
+    if: ${{ needs.prepare.result == 'success' }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.prepare.outputs.matrix_json) }}
+      matrix:
+        shard: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
@@ -67,11 +63,11 @@ jobs:
       SHARD_COUNT: ${{ needs.prepare.outputs.shard_count }}
       RESEARCH_BACKEND: cloud
       RESEARCH_OUT_DIR: artifacts/range48-cloud
+      DATAHUB_ROOT: ${{ runner.temp }}/datahub-cache
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout DataHub
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: ttaannsseell73-alt/Futures-Research-DataHub
           path: datahub
@@ -88,15 +84,12 @@ jobs:
         run: python -m pip install --disable-pip-version-check -e ./datahub
 
       - name: Decode plan
-        shell: bash
         run: python -c "import os,base64;open('range48-cloud-plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
 
       - name: Run cloud shard
-        env:
-          DATAHUB_ROOT: ${{ runner.temp }}/datahub-cache
         run: node scripts/run-datahub-plan.mjs range48-cloud-plan.json
 
-      - name: Upload shard
+      - name: Upload shard result
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -106,8 +99,10 @@ jobs:
           compression-level: 6
 
   merge:
-    needs: [prepare, cloud]
-    if: always() && needs.prepare.result == 'success'
+    needs:
+      - prepare
+      - cloud
+    if: ${{ always() && needs.prepare.result == 'success' }}
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -123,7 +118,7 @@ jobs:
           path: artifacts/range48-cloud-merged
           merge-multiple: true
 
-      - name: Summarize cloud result
+      - name: Merge and summarize
         run: node scripts/summarize-range48-cloud.mjs artifacts/range48-cloud-merged
 
       - name: Upload merged result
@@ -136,17 +131,3 @@ jobs:
             artifacts/range48-cloud-merged/range48-cloud-summary.json
           if-no-files-found: error
           compression-level: 6
-
-      - name: Comment summary
-        if: always() && github.event_name == 'issues'
-        shell: bash
-        run: |
-          if [ -f artifacts/range48-cloud-merged/range48-cloud-summary.json ]; then
-            s=artifacts/range48-cloud-merged/range48-cloud-summary.json
-            total="$(jq -r '.totalResults' "$s")"
-            fail="$(jq -r '.failures' "$s")"
-            a12="$(jq -r '.pass12of12' "$s")"
-            a11="$(jq -r '.pass11of12' "$s")"
-            a10="$(jq -r '.pass10of12' "$s")"
-            gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body "Cloud Range48: $total sonuç · failures $fail · 12/12 $a12 · 11/12 $a11 · 10/12 $a10"
-          fi
