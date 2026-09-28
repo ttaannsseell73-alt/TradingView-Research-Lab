@@ -34,8 +34,14 @@ jobs:
           $ErrorActionPreference="Stop"
           if (!(Test-Path "$env:BOT_ROOT\.git")) { throw "Local binance-bot missing" }
           Push-Location $env:BOT_ROOT
-          $status=@(git status --porcelain)
-          $allowed=@("package.json","src/live/PostgresSafety.ts","src/tools/runQDemoForwardOnce.ts")
+          $status=@(git status --porcelain --untracked-files=all)
+          $allowed=@(
+            "package.json",
+            "src/live/PostgresSafety.ts",
+            "src/tools/runQDemoForwardOnce.ts",
+            ".q-forward.local.env",
+            "scripts/run-q-demo-forward-scheduled.ps1"
+          )
           $unexpected=@()
           foreach($line in $status){
             if(!$line){continue}
