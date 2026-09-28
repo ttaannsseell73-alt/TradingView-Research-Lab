@@ -24,9 +24,9 @@ jobs:
       LOCAL_DATA_MODE: strict
       RESEARCH_BACKEND: local
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
-      SHARD_INDEX: 0
-      SHARD_COUNT: 1
-      REUSE_EXISTING_CSV: 0
+      LOCAL_PARALLEL_SHARDS: 4
+      REUSE_EXISTING_CSV: 1
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2025-09-20__2026-09-20__1m-5m-15m-1h-4h
 
     steps:
       - uses: actions/checkout@v4
@@ -87,16 +87,14 @@ jobs:
         shell: powershell
         env:
           RESEARCH_OUT_DIR: artifacts/sr35-12m-heavy
-          RESEARCH_CSV_DIR: artifacts/sr35-12m-heavy/csv
-          REUSE_EXISTING_CSV: 0
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs sr35-12m-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs sr35-12m-plan.json
 
       - name: Audit deterministic repeat and future-data leakage
         shell: powershell
         env:
-          RESEARCH_CSV_DIR: artifacts/sr35-12m-heavy/csv
+          RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2025-09-20__2026-09-20__1m-5m-15m-1h-4h
           AUDIT_OUT_DIR: artifacts/sr35-12m-integrity
           AUDIT_START: 2025-09-20T00:00:00Z
           AUDIT_END: 2026-09-20T00:00:00Z
