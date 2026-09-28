@@ -1,0 +1,114 @@
+name: Install Q Demo Forward
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/q-demo-forward-install.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 20
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      PG_CONTAINER: canonical-q-demo-pg
+      PG_VOLUME: canonical-q-demo-pg-data
+      LIVEBOT_PG_URL: postgres://postgres:q_demo_local_pw@127.0.0.1:55440/livebot_demo
+      LIVEBOT_CANARY_APPROVED: YES
+      BINANCE_PUBLIC_FUTURES_URL: https://fapi.binance.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify local bot is clean
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          if (!(Test-Path "$env:BOT_ROOT\.git")) { throw "Local binance-bot missing" }
+          Push-Location $env:BOT_ROOT
+          $status=git status --porcelain
+          if ($status) { throw "Local binance-bot is not clean: $status" }
+          Pop-Location
+
+      - name: Install canonical forward files
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $root=$env:BOT_ROOT
+          New-Item -ItemType Directory -Force "$root\src\live" | Out-Null
+          New-Item -ItemType Directory -Force "$root\src\tools" | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\live\*.ts" "$root\src\live\" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\runQDemoForwardOnce.ts" "$root\src\tools\runQDemoForwardOnce.ts" -Force
+          Push-Location $root
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['q:demo-forward-once']='tsx src/tools/runQDemoForwardOnce.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
+          if (!(Test-Path ".git\info\exclude")) { New-Item -ItemType File -Force ".git\info\exclude" | Out-Null }
+          $exclude=Get-Content ".git\info\exclude" -ErrorAction SilentlyContinue
+          if ($exclude -notcontains "artifacts/") { Add-Content ".git\info\exclude" "artifacts/" }
+          Pop-Location
+
+      - name: Build and test
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          Push-Location $env:BOT_ROOT
+          npm run build
+          if ($LASTEXITCODE -ne 0) { throw "Build failed" }
+          npm test
+          if ($LASTEXITCODE -ne 0) { throw "Tests failed" }
+          Pop-Location
+
+      - name: Ensure persistent PostgreSQL journal
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          cmd /c "docker info >nul 2>&1"
+          if ($LASTEXITCODE -ne 0) { throw "Docker daemon is not available" }
+
+          $exists = docker ps -a --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
+          if (!$exists) {
+            docker volume create $env:PG_VOLUME | Out-Null
+            docker run -d --restart unless-stopped --name $env:PG_CONTAINER -e POSTGRES_PASSWORD=q_demo_local_pw -e POSTGRES_DB=livebot_demo -p "127.0.0.1:55440:5432" -v "$($env:PG_VOLUME):/var/lib/postgresql/data" postgres:16-alpine | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "Could not create Q demo PostgreSQL" }
+          } else {
+            $running = docker ps --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
+            if (!$running) { docker start $env:PG_CONTAINER | Out-Null }
+          }
+
+          $ready=$false
+          for($i=0;$i -lt 30;$i++){
+            docker exec $env:PG_CONTAINER pg_isready -U postgres -d livebot_demo 2>$null | Out-Null
+            if($LASTEXITCODE -eq 0){$ready=$true;break}
+            Start-Sleep -Seconds 1
+          }
+          if(!$ready){throw "Q demo PostgreSQL not ready"}
+
+      - name: Run first canonical demo forward cycle
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          Push-Location $env:BOT_ROOT
+          npm run q:demo-forward-once
+          if ($LASTEXITCODE -ne 0) { throw "First Q demo forward cycle failed" }
+          if (!(Test-Path "artifacts\q-demo-forward-latest.json")) { throw "Forward report missing" }
+          Get-Content "artifacts\q-demo-forward-latest.json"
+          Pop-Location
+
+      - name: Commit local canonical forward
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          Push-Location $env:BOT_ROOT
+          git add src/live src/tools/runQDemoForwardOnce.ts package.json dist
+          $changes=git diff --cached --name-only
+          if ($changes) {
+            git commit -m "feat: canonical Q demo forward monitor"
+            if ($LASTEXITCODE -ne 0) { throw "Local commit failed" }
+          }
+          git status --short
+          git rev-parse HEAD
+          Pop-Location
