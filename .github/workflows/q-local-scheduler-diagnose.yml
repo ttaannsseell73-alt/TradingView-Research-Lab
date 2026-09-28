@@ -10,7 +10,7 @@ on:
 permissions:
   contents: read
 
-# refresh: inspect proximity rollout
+# refresh: inspect Q early-entry evidence
 jobs:
   diagnose:
     runs-on: [self-hosted, datahub-local]
@@ -50,6 +50,93 @@ jobs:
             } | ConvertTo-Json -Compress
           } else {
             Write-Host "REPORT_MISSING"
+          }
+
+      - name: Analyze Q entry timing from local history
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $history=Join-Path $env:BOT_ROOT "artifacts\q-demo-forward.jsonl"
+          if(!(Test-Path $history)){ throw "Q_HISTORY_MISSING" }
+
+          $rows=@()
+          Get-Content $history | ForEach-Object {
+            if($_.Trim()){
+              try { $rows += ($_ | ConvertFrom-Json) } catch {}
+            }
+          }
+          if($rows.Count -eq 0){ throw "Q_HISTORY_EMPTY" }
+
+          $opens=@($rows | Where-Object { $_.result -eq "OPEN_PROTECTED" })
+          if($opens.Count -eq 0){
+            Write-Host "NO_OPEN_PROTECTED_IN_HISTORY"
+          } else {
+            $first=$opens[0]
+            Write-Host "=== FIRST OPEN_PROTECTED ==="
+            [ordered]@{
+              generatedAt=$first.generatedAt
+              result=$first.result
+              action=$first.action
+              fresh=$first.market.signal.fresh
+              signalAction=$first.market.signal.action
+              signalDirection=$first.market.signal.direction
+              signalBarOpenTime=$first.market.signal.barOpenTime
+              proximityScore=$first.market.proximity.score
+              proximityLabel=$first.market.proximity.label
+              longScore=$first.market.proximity.long.score
+              shortScore=$first.market.proximity.short.score
+              entryAvgPrice=$first.entryOrder.avgPrice
+              entryQty=$first.entryOrder.executedQty
+              positionAfterEntry=$first.positionAfter.entryPrice
+            } | ConvertTo-Json -Compress
+          }
+
+          Write-Host "=== FRESH LONG CYCLES ==="
+          $freshLong=@($rows | Where-Object {
+            $_.market.signal.fresh -eq $true -and
+            ($_.market.signal.action -eq "ENTER_LONG" -or $_.action -eq "ENTER_LONG")
+          })
+          $freshLong | Select-Object -Last 20 | ForEach-Object {
+            [ordered]@{
+              generatedAt=$_.generatedAt
+              result=$_.result
+              action=$_.action
+              signalAction=$_.market.signal.action
+              barOpenTime=$_.market.signal.barOpenTime
+              positionAmtBefore=$_.positionBefore.positionAmt
+              entryPriceBefore=$_.positionBefore.entryPrice
+              markPriceBefore=$_.positionBefore.markPrice
+              proximityScore=$_.market.proximity.score
+              proximityLabel=$_.market.proximity.label
+              longScore=$_.market.proximity.long.score
+              longLabel=$_.market.proximity.long.label
+              longSweepDone=$_.market.proximity.long.sweepDone
+              longReclaimDone=$_.market.proximity.long.reclaimDone
+              entryAvgPrice=$_.entryOrder.avgPrice
+            } | ConvertTo-Json -Compress
+          }
+
+          Write-Host "=== POSITION TIMELINE AROUND FIRST OPEN ==="
+          if($opens.Count -gt 0){
+            $firstAt=[datetime]$opens[0].generatedAt
+            $rows | Where-Object {
+              $t=[datetime]$_.generatedAt
+              $t -ge $firstAt.AddMinutes(-20) -and $t -le $firstAt.AddMinutes(90)
+            } | ForEach-Object {
+              [ordered]@{
+                generatedAt=$_.generatedAt
+                result=$_.result
+                fresh=$_.market.signal.fresh
+                action=$_.action
+                signalAction=$_.market.signal.action
+                pos=$_.positionBefore.positionAmt
+                entry=$_.positionBefore.entryPrice
+                mark=$_.positionBefore.markPrice
+                prox=$_.market.proximity.score
+                long=$_.market.proximity.long.score
+                short=$_.market.proximity.short.score
+              } | ConvertTo-Json -Compress
+            }
           }
 
       - name: Check required local env presence
