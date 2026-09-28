@@ -44,6 +44,24 @@ export class BinanceUsdmAdapter {
     this.governor?.observeHeaders(response.headers as Record<string, unknown>);
   }
 
+  private async publicGet<T = any>(path: string, config: any = {}): Promise<AxiosResponse<T>> {
+    let lastError: any;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const response = await this.http.get<T>(path, config);
+        this.observe(response);
+        return response;
+      } catch (error: any) {
+        lastError = error;
+        const status = Number(error?.response?.status ?? 0);
+        const retryable = (!status || status >= 500) && attempt < 3;
+        if (!retryable) throw error;
+        await new Promise(resolve => setTimeout(resolve, attempt * 300));
+      }
+    }
+    throw lastError;
+  }
+
   private assertWriteAllowed(): void {
     if (this.mode === 'SHADOW' || this.mode === 'HALTED') {
       throw new Error('EXCHANGE_WRITE_BLOCKED_IN_' + this.mode);
@@ -80,41 +98,53 @@ export class BinanceUsdmAdapter {
   ): Promise<T> {
     if (!this.apiKey || !this.apiSecret) throw new Error('BINANCE_SIGNED_CREDENTIALS_REQUIRED');
     if (this.governor && !this.governor.canWrite() && method !== 'GET') throw new Error('RATE_LIMIT_GOVERNOR_BLOCKED');
-    const query = this.signedParams(params);
-    try {
-      const response = await this.http.request<T>({
-        method,
-        url: path + '?' + query,
-        headers: { 'X-MBX-APIKEY': this.apiKey },
-      });
-      this.observe(response);
-      return response.data;
-    } catch (error: any) {
-      const status = Number(error?.response?.status);
-      const retryAfter = Number(error?.response?.headers?.['retry-after'] ?? 1);
-      if (status === 429 || status === 418) this.governor?.noteHttpLimit(status, retryAfter);
-      throw error;
+
+    const maxAttempts = method === 'GET' ? 3 : 1;
+    let lastError: any;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const query = this.signedParams(params);
+      try {
+        const response = await this.http.request<T>({
+          method,
+          url: path + '?' + query,
+          headers: { 'X-MBX-APIKEY': this.apiKey },
+        });
+        this.observe(response);
+        return response.data;
+      } catch (error: any) {
+        lastError = error;
+        const status = Number(error?.response?.status ?? 0);
+        const retryAfter = Number(error?.response?.headers?.['retry-after'] ?? 1);
+        if (status === 429 || status === 418) this.governor?.noteHttpLimit(status, retryAfter);
+
+        const retryableRead =
+          method === 'GET' &&
+          attempt < maxAttempts &&
+          status !== 418 &&
+          status !== 429 &&
+          (!status || status >= 500);
+        if (!retryableRead) throw error;
+        await new Promise(resolve => setTimeout(resolve, attempt * 300));
+      }
     }
+    throw lastError;
   }
 
   async serverTime(): Promise<number> {
-    const response = await this.http.get<{ serverTime: number }>('/fapi/v1/time');
-    this.observe(response);
+    const response = await this.publicGet<{ serverTime: number }>('/fapi/v1/time');
     this.clockOffsetMs = response.data.serverTime - Date.now();
     return response.data.serverTime;
   }
 
   async exchangeInfo(): Promise<any> {
-    const response = await this.http.get('/fapi/v1/exchangeInfo');
-    this.observe(response);
+    const response = await this.publicGet('/fapi/v1/exchangeInfo');
     return response.data;
   }
 
   async klines(symbol: string, interval = '15m', limit = 500): Promise<BinanceKline[]> {
-    const response = await this.http.get<any[]>('/fapi/v1/klines', {
+    const response = await this.publicGet<any[]>('/fapi/v1/klines', {
       params: { symbol, interval, limit },
     });
-    this.observe(response);
     return response.data.map(k => ({
       t: Number(k[0]),
       o: Number(k[1]),
@@ -136,10 +166,9 @@ export class BinanceUsdmAdapter {
     const out: BinanceKline[] = [];
     let cursor = startTime;
     while (cursor < endTime) {
-      const response = await this.http.get<any[]>('/fapi/v1/klines', {
+      const response = await this.publicGet<any[]>('/fapi/v1/klines', {
         params: { symbol, interval, startTime: cursor, endTime, limit },
       });
-      this.observe(response);
       if (!response.data.length) break;
       const batch = response.data.map(k => ({
         t: Number(k[0]),
@@ -160,8 +189,7 @@ export class BinanceUsdmAdapter {
   }
 
   async depth(symbol: string, limit = 20): Promise<any> {
-    const response = await this.http.get('/fapi/v1/depth', { params: { symbol, limit } });
-    this.observe(response);
+    const response = await this.publicGet('/fapi/v1/depth', { params: { symbol, limit } });
     return response.data;
   }
 
@@ -174,8 +202,7 @@ export class BinanceUsdmAdapter {
   }
 
   async getMarkPrice(symbol: string): Promise<number> {
-    const response = await this.http.get('/fapi/v1/premiumIndex', { params: { symbol } });
-    this.observe(response);
+    const response = await this.publicGet('/fapi/v1/premiumIndex', { params: { symbol } });
     const value = Number((response.data as any)?.markPrice);
     if (!(value > 0)) throw new Error('INVALID_MARK_PRICE');
     return value;
