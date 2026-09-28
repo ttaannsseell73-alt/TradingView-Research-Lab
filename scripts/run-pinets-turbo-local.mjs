@@ -178,7 +178,6 @@ function mergeResults(results, elapsedMs) {
   return { status: 'DONE', counts };
 }
 
-for (const name of fs.readdirSync(path.join(baseOut, 'shards'), { withFileTypes: true }).filter(() => false)) void name;
 // Remove only incompatible topology outputs; same topology remains useful for inspection.
 const shardsRoot = path.join(baseOut, 'shards');
 fs.mkdirSync(shardsRoot, { recursive: true });
