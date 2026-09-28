@@ -28,6 +28,7 @@ jobs:
       SHARD_COUNT: 1
       REUSE_EXISTING_CSV: 1
       BATCH_LOCAL_CACHE: 1
+      LOCAL_PARALLEL_SHARDS: 4
       RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
     steps:
       - uses: actions/checkout@v4
@@ -101,7 +102,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs plan.json
 
       - name: Upload result
         if: always()
