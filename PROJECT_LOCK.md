@@ -19,3 +19,27 @@ TradingView Research Lab is an isolated research lane for the Binance Futures pr
 - Promotion requires validation **and** untouched holdout evidence with minimum sample counts.
 - A setup must survive every configured robustness run; one insufficient or rejected run blocks robust acceptance.
 - This repository has no order-placement code and needs no exchange API secret.
+
+
+## Runtime monitoring standard — LOCKED 2026-09-28
+
+For every coin/strategy promoted into the runtime monitoring/execution layer, the monitoring contract is mandatory and must be derived from that strategy's real entry conditions:
+
+- current position state: open/flat, direction, entry and execution result;
+- fresh closed-candle signal state;
+- independent LONG proximity score and label;
+- independent SHORT proximity score and label;
+- missing condition for LONG and SHORT;
+- current candidate direction;
+- final trade decision and execution outcome.
+
+Proximity is an execution-awareness metric, not a win probability. It must not change, loosen, or front-run the canonical strategy. Open-candle data may be used only as preview/proximity context; actual entries remain closed-candle/fresh-signal only.
+
+Canonical labels:
+- 0–29: UZAK
+- 30–59: ORTA
+- 60–79: YAKIN
+- 80–99: ACILMAYA_COK_YAKIN
+- 100: TETIK_KOSULU_PREVIEW (entry conditions visible on the preview candle; closed-candle confirmation still required)
+
+QUSDT / swp_range48_reclaim is the reference implementation. Future monitored coins must expose the same runtime fields, with proximity logic computed from their own canonical strategy conditions rather than a generic heuristic.
