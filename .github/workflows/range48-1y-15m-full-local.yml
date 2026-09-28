@@ -1,0 +1,101 @@
+name: Range48 1Y 15m Full Local
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[RANGE48 1Y 15M FULL RUN]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 600
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: local
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      SHARD_INDEX: 0
+      SHARD_COUNT: 1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build current full Futures universe plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-15m-futures.feather"
+          $files = Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*-15m-futures.feather" -File | Sort-Object Name
+          $symbols = @()
+          foreach ($f in $files) {
+            if ($f.Name.EndsWith($suffix)) {
+              $base = $f.Name.Substring(0, $f.Name.Length - $suffix.Length)
+              $symbols += (($base -replace "_","") + "USDT")
+            }
+          }
+          $symbols = @($symbols | Sort-Object -Unique)
+          if ($symbols.Count -lt 600) { throw "Universe unexpectedly small: $($symbols.Count)" }
+
+          $plan = [ordered]@{
+            backend = "local"
+            symbols = $symbols
+            timeframes = @("15m")
+            start = "2025-09-28T00:00:00Z"
+            end = "2026-09-28T00:00:00Z"
+            strategies = @("swp_range48_reclaim")
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "15m"=25 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 10
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.10
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "range48-1y-plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+          Write-Host "RANGE48 1Y: symbols=$($symbols.Count) timeframe=15m strategy=swp_range48_reclaim"
+
+      - name: Run Range48 one-year full universe
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/range48-1y-15m
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-checkpointed.mjs range48-1y-plan.json
+
+      - name: Build 12-month consistency report
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/range48-1y-15m
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/summarize-range48-1y.mjs
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: range48-1y-15m-full-result
+          path: |
+            artifacts/range48-1y-15m/summary-*.json
+            artifacts/range48-1y-15m/results-*.ndjson
+            artifacts/range48-1y-15m/monthly-*.ndjson
+            artifacts/range48-1y-15m/failures-*.ndjson
+            artifacts/range48-1y-15m/range48-1y-top-12m.csv
+            artifacts/range48-1y-15m/range48-1y-summary.json
+          if-no-files-found: warn
+          compression-level: 6
