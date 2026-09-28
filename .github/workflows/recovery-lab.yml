@@ -1,9 +1,6 @@
 name: Recovery Lab Forced Adapters
 
 on:
-  workflow_run:
-    workflows: ["Exact Source Screenshot + Sweep Queue"]
-    types: [completed]
   workflow_dispatch:
 
 permissions:
