@@ -261,8 +261,7 @@ def wrapper_variant(src:str)->tuple[str,list[str],dict[str,Any]]|None:
     if shorts and not longs:
         suffix += ['// No explicit long signal was found; wrapper is short-only.']
     suffix.append("")
-    return base+"\n"+"
-".join(suffix),patches+["append_strategy_entries_from_source_signals"],{"longSignals":longs[:8],"shortSignals":shorts[:8],"evidence":evidence[:20]}
+    return base+"\\n"+"\\n".join(suffix), patches+["append_strategy_entries_from_source_signals"], {"longSignals":longs[:8],"shortSignals":shorts[:8],"evidence":evidence[:20]}
 
 def main()->int:
     ap=argparse.ArgumentParser()
