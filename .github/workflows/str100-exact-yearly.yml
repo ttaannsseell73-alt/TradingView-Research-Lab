@@ -68,7 +68,7 @@ jobs:
         env:
           TURBO_START: 2025-09-28T00:00:00Z
           TURBO_END: 2026-09-28T00:00:00Z
-          TURBO_CACHE_DIR: D:/Futures-Research-Data/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h
+          TURBO_CACHE_DIR: C:/actions-runner-datahub/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h
         run: |
           $ErrorActionPreference = "Stop"
           node scripts/build-turbo-cache-plan.mjs latest-plan.json
@@ -81,7 +81,7 @@ jobs:
         env:
           TURBO_START: 2024-09-28T00:00:00Z
           TURBO_END: 2025-09-28T00:00:00Z
-          TURBO_CACHE_DIR: D:/Futures-Research-Data/research-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h
+          TURBO_CACHE_DIR: C:/actions-runner-datahub/research-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h
         run: |
           $ErrorActionPreference = "Stop"
           node scripts/build-turbo-cache-plan.mjs previous-plan.json
@@ -103,7 +103,7 @@ jobs:
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
       EXACT_CHECKPOINT_ROOT: C:/actions-runner-datahub/str100-yearly-checkpoints
       LOCAL_PARALLEL_SHARDS: 4
-      PINE_SOURCE_CACHE: D:/Futures-Research-Data/pine-source-cache
+      PINE_SOURCE_CACHE: C:/actions-runner-datahub/pine-source-cache
       EXACT_MIN_COVERAGE: '0.98'
       EXACT_MIN_HISTORY_DAYS: '30'
       EXACT_MONTHLY_MIN_TRADES: '10'
@@ -138,7 +138,7 @@ jobs:
           $env:TURBO_PINETS_MODE = "exact"
           $env:EXACT_START = "2025-09-28T00:00:00Z"
           $env:EXACT_END = "2026-09-28T00:00:00Z"
-          $env:EXACT_CSV_CACHE = "D:/Futures-Research-Data/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h"
+          $env:EXACT_CSV_CACHE = "C:/actions-runner-datahub/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h"
           $env:EXACT_OUT_DIR = "artifacts/str100-yearly/$env:EXACT_KEY/latest"
           node scripts/run-pinets-turbo-local.mjs
           if ($LASTEXITCODE -ne 0) { throw "Latest-year exact run failed" }
@@ -150,7 +150,7 @@ jobs:
           $env:TURBO_PINETS_MODE = "exact"
           $env:EXACT_START = "2024-09-28T00:00:00Z"
           $env:EXACT_END = "2025-09-28T00:00:00Z"
-          $env:EXACT_CSV_CACHE = "D:/Futures-Research-Data/research-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h"
+          $env:EXACT_CSV_CACHE = "C:/actions-runner-datahub/research-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h"
           $env:EXACT_OUT_DIR = "artifacts/str100-yearly/$env:EXACT_KEY/previous"
           node scripts/run-pinets-turbo-local.mjs
           if ($LASTEXITCODE -ne 0) { throw "Previous-year exact run failed" }
