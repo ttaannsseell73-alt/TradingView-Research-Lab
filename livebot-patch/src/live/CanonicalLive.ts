@@ -24,6 +24,21 @@ export interface StrategySignal {
   barOpenTime: number | null;
 }
 
+export interface Range48Proximity {
+  previewOnly: true;
+  score: number;
+  label: 'UZAK' | 'ORTA' | 'YAKIN' | 'ACILMAYA_COK_YAKIN' | 'TETIK_KOSULU_PREVIEW';
+  direction: 'LONG' | 'SHORT';
+  sweepDone: boolean;
+  reclaimDone: boolean;
+  priorHigh: number;
+  priorLow: number;
+  atr14Preview: number;
+  sweepThreshold: number;
+  distanceToSweepAtr: number;
+  remaining: string;
+}
+
 export type QExecutionAction =
   | 'HOLD'
   | 'ENTER_LONG'
@@ -141,6 +156,87 @@ export class Range48Strategy {
     }
 
     return sig;
+  }
+
+  public proximityPreview(candlesIncludingPreview: Candle[]): Range48Proximity | null {
+    if (candlesIncludingPreview.length < 49) return null;
+
+    const i = candlesIncludingPreview.length - 1;
+    const { hi, lo } = previousRange(candlesIncludingPreview, 48);
+    const atr = rma(trueRange(candlesIncludingPreview), 14);
+    const a = atr[i];
+    const h = hi[i];
+    const l = lo[i];
+    const bar = candlesIncludingPreview[i];
+    if (!finite(a) || a <= 0 || !finite(h) || !finite(l)) return null;
+
+    const clamp01 = (x: number): number => Math.max(0, Math.min(1, x));
+
+    const longThreshold = l - 0.05 * a;
+    const shortThreshold = h + 0.05 * a;
+
+    const longSweepDone = bar.l < longThreshold;
+    const shortSweepDone = bar.h > shortThreshold;
+    const longReclaimDone = longSweepDone && bar.c > l;
+    const shortReclaimDone = shortSweepDone && bar.c < h;
+
+    const longDistanceAtr = Math.max(0, (bar.l - longThreshold) / a);
+    const shortDistanceAtr = Math.max(0, (shortThreshold - bar.h) / a);
+
+    const longSweepScore = longSweepDone ? 60 : 60 * clamp01(1 - longDistanceAtr / 0.5);
+    const shortSweepScore = shortSweepDone ? 60 : 60 * clamp01(1 - shortDistanceAtr / 0.5);
+
+    const longReclaimScore = longSweepDone
+      ? 40 * clamp01(1 - Math.max(0, l - bar.c) / (0.5 * a))
+      : 0;
+    const shortReclaimScore = shortSweepDone
+      ? 40 * clamp01(1 - Math.max(0, bar.c - h) / (0.5 * a))
+      : 0;
+
+    const longScore = Math.round(longSweepScore + longReclaimScore);
+    const shortScore = Math.round(shortSweepScore + shortReclaimScore);
+    const direction: 'LONG' | 'SHORT' = longScore >= shortScore ? 'LONG' : 'SHORT';
+
+    const score = direction === 'LONG' ? longScore : shortScore;
+    const sweepDone = direction === 'LONG' ? longSweepDone : shortSweepDone;
+    const reclaimDone = direction === 'LONG' ? longReclaimDone : shortReclaimDone;
+    const sweepThreshold = direction === 'LONG' ? longThreshold : shortThreshold;
+    const distanceToSweepAtr = direction === 'LONG' ? longDistanceAtr : shortDistanceAtr;
+
+    let label: Range48Proximity['label'];
+    if (score >= 100) label = 'TETIK_KOSULU_PREVIEW';
+    else if (score >= 80) label = 'ACILMAYA_COK_YAKIN';
+    else if (score >= 60) label = 'YAKIN';
+    else if (score >= 30) label = 'ORTA';
+    else label = 'UZAK';
+
+    let remaining: string;
+    if (!sweepDone) {
+      remaining = direction === 'LONG'
+        ? `LOW <= ${longThreshold.toFixed(8)} sweep bekleniyor`
+        : `HIGH >= ${shortThreshold.toFixed(8)} sweep bekleniyor`;
+    } else if (!reclaimDone) {
+      remaining = direction === 'LONG'
+        ? `Sweep oldu; CLOSE > ${l.toFixed(8)} reclaim bekleniyor`
+        : `Sweep oldu; CLOSE < ${h.toFixed(8)} reclaim bekleniyor`;
+    } else {
+      remaining = 'Preview tetik kosullari olustu; 15m mum kapanisi bekleniyor';
+    }
+
+    return {
+      previewOnly: true,
+      score,
+      label,
+      direction,
+      sweepDone,
+      reclaimDone,
+      priorHigh: h,
+      priorLow: l,
+      atr14Preview: a,
+      sweepThreshold,
+      distanceToSweepAtr,
+      remaining,
+    };
   }
 
   public evaluate(candles: Candle[]): StrategySignal {
