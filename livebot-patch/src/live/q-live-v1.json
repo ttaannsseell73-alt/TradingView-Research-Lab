@@ -1,0 +1,11 @@
+{
+  "deploymentId": "q-usdt-15m-range48-v1",
+  "exchange": "BINANCE_USDM",
+  "symbol": "QUSDT",
+  "timeframe": "15m",
+  "strategyId": "swp_range48_reclaim",
+  "strategyVersion": "sweep-v1",
+  "closedOnly": true,
+  "marginType": "ISOLATED",
+  "leverage": 1
+}
