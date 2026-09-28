@@ -17,6 +17,8 @@ export interface SymbolRules {
   minQty: number;
   maxQty: number;
   minNotional: number;
+  percentMultiplierUp: number;
+  percentMultiplierDown: number;
 }
 
 function findFilter(symbolInfo: any, type: string): any {
@@ -30,6 +32,7 @@ export function parseSymbolRules(exchangeInfo: any, symbol: string): SymbolRules
   const lot = findFilter(s, 'LOT_SIZE');
   const marketLot = findFilter(s, 'MARKET_LOT_SIZE');
   const minNotional = findFilter(s, 'MIN_NOTIONAL');
+  const percent = findFilter(s, 'PERCENT_PRICE');
   return {
     symbol,
     status: String(s.status ?? ''),
@@ -40,6 +43,8 @@ export function parseSymbolRules(exchangeInfo: any, symbol: string): SymbolRules
     minQty: Number(lot.minQty ?? marketLot.minQty ?? 0),
     maxQty: Number(lot.maxQty ?? marketLot.maxQty ?? Number.MAX_VALUE),
     minNotional: Number(minNotional.notional ?? minNotional.minNotional ?? 0),
+    percentMultiplierUp: Number(percent.multiplierUp ?? 0),
+    percentMultiplierDown: Number(percent.multiplierDown ?? 0),
   };
 }
 
@@ -52,7 +57,8 @@ function floorToStep(value: number, step: number): number {
 export function normalizeOrderToRules(
   rules: SymbolRules,
   price: number,
-  quantity: number
+  quantity: number,
+  referencePrice?: number
 ): { price: number; quantity: number; notional: number } {
   if (rules.status !== 'TRADING') throw new Error('SYMBOL_NOT_TRADING');
   const p = floorToStep(price, rules.tickSize);
@@ -60,6 +66,18 @@ export function normalizeOrderToRules(
   if (!(p > 0) || !(q > 0)) throw new Error('INVALID_NORMALIZED_ORDER');
   if (rules.minPrice > 0 && p < rules.minPrice) throw new Error('PRICE_BELOW_MIN');
   if (rules.maxPrice > 0 && p > rules.maxPrice) throw new Error('PRICE_ABOVE_MAX');
+  if (
+    referencePrice !== undefined &&
+    referencePrice > 0 &&
+    rules.percentMultiplierUp > 0 &&
+    p > referencePrice * rules.percentMultiplierUp
+  ) throw new Error('PRICE_ABOVE_PERCENT_BAND');
+  if (
+    referencePrice !== undefined &&
+    referencePrice > 0 &&
+    rules.percentMultiplierDown > 0 &&
+    p < referencePrice * rules.percentMultiplierDown
+  ) throw new Error('PRICE_BELOW_PERCENT_BAND');
   if (rules.minQty > 0 && q < rules.minQty) throw new Error('QTY_BELOW_MIN');
   if (rules.maxQty > 0 && q > rules.maxQty) throw new Error('QTY_ABOVE_MAX');
   const notional = p * q;
@@ -246,8 +264,9 @@ export class ProtectionManager {
     const clientAlgoId = deterministicClientOrderId({
       deploymentId: 'q-hard-stop',
       symbol: args.symbol,
-      candleOpenTime: Number(
-        BigInt('0x' + Buffer.from(args.positionIdentity).toString('hex').slice(0, 10) || '0')
+      candleOpenTime: Array.from(args.positionIdentity).reduce(
+        (acc, ch) => (acc * 131 + ch.charCodeAt(0)) % 9_000_000_000_000,
+        0
       ),
       action: args.positionSide === 'LONG' ? 'STOP_SELL' : 'STOP_BUY',
       generation,
