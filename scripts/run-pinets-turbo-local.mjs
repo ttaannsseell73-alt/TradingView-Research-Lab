@@ -23,6 +23,10 @@ const sourceCacheRoot = path.resolve(env.PINE_SOURCE_CACHE ?? 'D:/Futures-Resear
 const requested = Number(env.LOCAL_PARALLEL_SHARDS ?? 4);
 const available = typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length;
 const shardCount = Math.max(1, Math.min(Number.isInteger(requested) && requested > 0 ? requested : 4, Math.max(1, available)));
+const shardTimeoutMsRaw = Number(env.TURBO_SHARD_TIMEOUT_MS ?? 300_000);
+const shardTimeoutMs = Number.isFinite(shardTimeoutMsRaw) && shardTimeoutMsRaw >= 30_000
+  ? Math.floor(shardTimeoutMsRaw)
+  : 300_000;
 
 if (!key) fail(`${prefix}_KEY is required`);
 if (!sourceSha) fail(`${prefix}_SOURCE_SHA256 is required`);
@@ -99,7 +103,26 @@ function runShard(index, sourceFile) {
       [`${prefix}_OUT_DIR`]: shardOut,
     };
     const child = spawn(process.execPath, [runner], { stdio: 'inherit', env: childEnv });
-    child.on('exit', (code, signal) => resolve({ index, code, signal, shardOut }));
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      console.error(JSON.stringify({
+        turbo: 'SHARD_TIMEOUT',
+        mode,
+        key,
+        shard: index,
+        timeoutMs: shardTimeoutMs,
+      }));
+      try { child.kill(); } catch {}
+      finish({ index, code: 124, signal: 'WATCHDOG_TIMEOUT', shardOut, timedOut: true });
+    }, shardTimeoutMs);
+    child.on('exit', (code, signal) => finish({ index, code, signal, shardOut, timedOut: false }));
+    child.on('error', (error) => finish({ index, code: 1, signal: String(error), shardOut, timedOut: false }));
   });
 }
 
@@ -192,6 +215,22 @@ const sourceFile = mode === 'exact' ? await fetchExactSource() : recoverySource(
 console.log(JSON.stringify({ turbo: 'START', mode, key, shards: shardCount, csvCache, sourceFile }));
 
 const results = await Promise.all(Array.from({ length: shardCount }, (_, index) => runShard(index, sourceFile)));
+const timedOut = results.filter((r) => r.timedOut);
+if (timedOut.length) {
+  const skip = {
+    status: 'SKIP_RUNTIME_TIMEOUT',
+    mode,
+    key,
+    shardCount,
+    timedOutShards: timedOut.map((r) => r.index),
+    shardTimeoutMs,
+    elapsedMs: Date.now() - started,
+    note: 'Watchdog prevented one exact/recovery strategy from monopolizing the self-hosted runner.',
+  };
+  fs.writeFileSync(path.join(baseOut, 'runtime-skip.json'), JSON.stringify(skip, null, 2) + '\n', 'utf8');
+  console.log(JSON.stringify({ turbo: 'SKIP_RUNTIME_TIMEOUT', ...skip }));
+  process.exit(0);
+}
 const failed = results.filter((r) => r.code !== 0);
 if (failed.length) {
   console.error(JSON.stringify({ turbo: 'FAILED', mode, key, failed }));
