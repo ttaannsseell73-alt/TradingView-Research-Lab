@@ -1,0 +1,227 @@
+name: Recovery Lab Forced Adapters
+
+on:
+  workflow_run:
+    workflows: ["Exact Source Screenshot + Sweep Queue"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      count: ${{ steps.matrix.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download previous exact-source artifacts
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          pattern: exact-*
+          path: artifacts/exact-previous
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Rebuild audit for manual dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python scripts/resolve-tradingview-exact-sources.py research/exact_source_manifest.json --out-dir artifacts/exact-previous/exact-source-audit
+
+      - name: Locate exact audit
+        id: audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          AUDIT="$(find artifacts/exact-previous -name resolved-manifest.json -print -quit)"
+          if [ -z "$AUDIT" ]; then
+            echo "resolved-manifest.json not found"
+            exit 1
+          fi
+          echo "path=$AUDIT" >> "$GITHUB_OUTPUT"
+
+      - name: Build independent recovery matrix
+        id: matrix
+        run: |
+          python scripts/build-recovery-matrix.py "${{ steps.audit.outputs.path }}" --exclude-summary-root artifacts/exact-previous --out artifacts/recovery-audit/matrix.json
+
+      - name: Upload recovery matrix
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-lab-matrix
+          path: artifacts/recovery-audit/
+          retention-days: 30
+
+  recover:
+    needs: prepare
+    if: needs.prepare.outputs.count != '0'
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 600
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_TOKEN: ${{ github.token }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      RECOVERY_CSV_CACHE: C:/actions-runner-datahub/recovery-csv-cache-2026
+      RECOVERY_CHECKPOINT_ROOT: C:/actions-runner-datahub/recovery-checkpoints
+      RECOVERY_START: 2026-01-01T00:00:00Z
+      RECOVERY_END: 2026-09-20T00:00:00Z
+      RECOVERY_MIN_COVERAGE: '0.98'
+      RECOVERY_MIN_HISTORY_DAYS: '30'
+      RECOVERY_MONTHLY_MIN_TRADES: '10'
+      RECOVERY_KEY: ${{ matrix.key }}
+      RECOVERY_NAME: ${{ matrix.name }}
+      RECOVERY_AUTHOR: ${{ matrix.author }}
+      RECOVERY_ORIGIN: ${{ matrix.origin }}
+      RECOVERY_GROUP: recovery_lab
+      RECOVERY_SCRIPT_ID: ${{ matrix.script_id_part }}
+      RECOVERY_PINE_VERSION: ${{ matrix.pine_version }}
+      RECOVERY_URL: ${{ matrix.url }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install recovery runtime
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          npm install --no-save --package-lock=false --audit=false --fund=false pinets@0.10.0
+
+      - name: Build forced recovery variants
+        shell: powershell
+        env:
+          EXACT_STATUS: ${{ matrix.exact_status }}
+          EXPECTED_SHA: ${{ matrix.source_sha256 }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $dir = "artifacts/recovery-work/${{ matrix.key }}"
+          & $env:DATAHUB_PYTHON scripts/build-recovery-variants.py --out-dir $dir --name "${{ matrix.name }}" --author "${{ matrix.author }}" --script-id "${{ matrix.script_id_part }}" --url "${{ matrix.url }}" --exact-status "$env:EXACT_STATUS" --expected-sha "$env:EXPECTED_SHA"
+
+      - name: Select first runnable recovery variant
+        id: select
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $dir = "artifacts/recovery-work/${{ matrix.key }}"
+          $env:RECOVERY_VARIANT_DIR = $dir
+          node scripts/select-recovery-variant.mjs
+          $sel = Join-Path $dir "selection.json"
+          if (-not (Test-Path $sel)) {
+            "selected=false" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+          $j = Get-Content $sel -Raw | ConvertFrom-Json
+          if ($j.status -ne "RECOVERY_SELECTED") {
+            "selected=false" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+          $meta = Get-Content (Join-Path $dir "recovery-meta.json") -Raw | ConvertFrom-Json
+          $selected = $j.selected
+          "selected=true" >> $env:GITHUB_OUTPUT
+          "type=$($selected.type)" >> $env:GITHUB_OUTPUT
+          "sha=$($selected.sha256)" >> $env:GITHUB_OUTPUT
+          "original_sha=$($meta.originalSha256)" >> $env:GITHUB_OUTPUT
+          $patches = ($selected.patches -join ';')
+          "patches=$patches" >> $env:GITHUB_OUTPUT
+
+      - name: Full 725 x 5TF recovery backtest
+        if: steps.select.outputs.selected == 'true'
+        shell: powershell
+        env:
+          RECOVERY_SOURCE_FILE: artifacts/recovery-work/${{ matrix.key }}/selected.pine
+          RECOVERY_SOURCE_SHA256: ${{ steps.select.outputs.sha }}
+          RECOVERY_ORIGINAL_SOURCE_SHA256: ${{ steps.select.outputs.original_sha }}
+          RECOVERY_TYPE: ${{ steps.select.outputs.type }}
+          RECOVERY_PATCH_SUMMARY: ${{ steps.select.outputs.patches }}
+          RECOVERY_OUT_DIR: artifacts/recovery-results/${{ matrix.key }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-pinets-recovered-strategy.mjs
+
+      - name: Copy recovery evidence into result
+        if: always()
+        shell: powershell
+        run: |
+          $src = "artifacts/recovery-work/${{ matrix.key }}"
+          $dst = "artifacts/recovery-results/${{ matrix.key }}"
+          New-Item -ItemType Directory -Force -Path $dst | Out-Null
+          if (Test-Path $src) {
+            Copy-Item "$src\recovery-meta.json" $dst -ErrorAction SilentlyContinue
+            Copy-Item "$src\selection.json" $dst -ErrorAction SilentlyContinue
+          }
+
+      - name: Upload recovery result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-${{ matrix.key }}
+          path: artifacts/recovery-results/${{ matrix.key }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+  final_index:
+    needs: [prepare, recover]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all recovery artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: recovery-*
+          path: artifacts/recovery-downloaded
+
+      - name: Build recovery-only index
+        shell: python
+        run: |
+          import csv,json,pathlib
+          root=pathlib.Path("artifacts/recovery-downloaded")
+          rows=[]
+          unresolved=[]
+          for meta_file in root.rglob("recovery-meta.json"):
+              meta=json.loads(meta_file.read_text(encoding="utf-8"))
+              sel_file=meta_file.with_name("selection.json")
+              sel=json.loads(sel_file.read_text(encoding="utf-8")) if sel_file.exists() else {}
+              summary_file=meta_file.with_name("summary.json")
+              summary=json.loads(summary_file.read_text(encoding="utf-8")) if summary_file.exists() else {}
+              counts=summary.get("counts",{})
+              row={
+                  "name":meta.get("name"),"author":meta.get("author"),"provenance":meta.get("provenance"),
+                  "recoveryStatus":sel.get("status",meta.get("status")),
+                  "recoveryType":(sel.get("selected") or {}).get("type"),
+                  "sourceMutation":((sel.get("selected") or {}).get("type") not in (None,"ORIGINAL_RETRY")),
+                  "nineOfNine":counts.get("nineOfNine",0),"eightOfNine":counts.get("eightOfNine",0),
+                  "okTasks":counts.get("ok",0),"errors":counts.get("errors",0),
+              }
+              rows.append(row)
+              if not summary: unresolved.append(row)
+          out=pathlib.Path("artifacts/recovery-final");out.mkdir(parents=True,exist_ok=True)
+          (out/"index.json").write_text(json.dumps({"rows":rows,"unresolved":unresolved},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          fields=["name","author","provenance","recoveryStatus","recoveryType","sourceMutation","nineOfNine","eightOfNine","okTasks","errors"]
+          with (out/"index.csv").open("w",newline="",encoding="utf-8") as f:
+              w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
+
+      - name: Upload recovery final index
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-lab-final-index
+          path: artifacts/recovery-final/
+          retention-days: 30
