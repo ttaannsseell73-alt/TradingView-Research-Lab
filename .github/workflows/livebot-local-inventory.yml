@@ -1,0 +1,67 @@
+name: LiveBot Local Inventory
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  inspect:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[LIVEBOT INVENTORY]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 20
+    env:
+      TARGET: C:/Users/TANSEL/Desktop/binance-bot
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect canonical local bot
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          if (!(Test-Path $env:TARGET)) { throw "Missing target $env:TARGET" }
+          Set-Location $env:TARGET
+          $lines = @()
+          $lines += "LIVEBOT inventory"
+          $lines += "PATH=$env:TARGET"
+          $lines += "GIT=" + ((git rev-parse --is-inside-work-tree 2>$null) -join "")
+          $lines += "BRANCH=" + ((git branch --show-current 2>$null) -join "")
+          $lines += "HEAD=" + ((git rev-parse HEAD 2>$null) -join "")
+          $lines += "STATUS:"
+          $lines += (git status --short 2>$null | Select-Object -First 80)
+          $lines += "REMOTES:"
+          $lines += (git remote -v 2>$null)
+          $lines += "ROOT:"
+          $lines += (Get-ChildItem -Force | Select-Object Name,Mode,Length | Format-Table -AutoSize | Out-String)
+          if (Test-Path package.json) {
+            $lines += "PACKAGE_JSON:"
+            $lines += (Get-Content package.json -Raw)
+          }
+          if (Test-Path tsconfig.json) {
+            $lines += "TSCONFIG:"
+            $lines += (Get-Content tsconfig.json -Raw)
+          }
+          $lines += "SRC_TREE:"
+          if (Test-Path src) {
+            $lines += (Get-ChildItem src -Recurse -File | Select-Object -ExpandProperty FullName | Select-Object -First 250)
+          }
+          $lines += "TEST_TREE:"
+          foreach($d in @("test","tests","src/tests","__tests__")) {
+            if (Test-Path $d) {
+              $lines += (Get-ChildItem $d -Recurse -File | Select-Object -ExpandProperty FullName | Select-Object -First 250)
+            }
+          }
+          $report = $lines -join [Environment]::NewLine
+          $report | Set-Content "$env:GITHUB_WORKSPACE/livebot-inventory.txt" -Encoding UTF8
+          $body = $report.Substring(0,[Math]::Min($report.Length,60000))
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body $body
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: livebot-inventory
+          path: livebot-inventory.txt
+          if-no-files-found: warn
