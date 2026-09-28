@@ -1,0 +1,173 @@
+name: Exact Source Screenshot + Sweep Queue
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+jobs:
+  prepare:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       startsWith(github.event.issue.title, '[EXACT SOURCE QUEUE]'))
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+      ready_count: ${{ steps.resolve.outputs.ready_count }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve exact TradingView sources
+        id: resolve
+        run: |
+          python scripts/resolve-tradingview-exact-sources.py \
+            research/exact_source_manifest.json \
+            --out-dir artifacts/exact-source-audit
+
+      - name: Upload exact-source audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exact-source-audit
+          path: artifacts/exact-source-audit/
+          if-no-files-found: error
+          retention-days: 30
+
+  exact_backtest:
+    needs: prepare
+    if: needs.prepare.outputs.ready_count != '0'
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 600
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      EXACT_CSV_CACHE: C:/actions-runner-datahub/exact-source-csv-cache-2026
+      EXACT_CHECKPOINT_ROOT: C:/actions-runner-datahub/exact-source-checkpoints
+      EXACT_REUSE_CSV_ROOT: artifacts/sr25-2026-full/csv
+      EXACT_START: 2026-01-01T00:00:00Z
+      EXACT_END: 2026-09-20T00:00:00Z
+      EXACT_MIN_COVERAGE: '0.98'
+      EXACT_MIN_HISTORY_DAYS: '30'
+      EXACT_MONTHLY_MIN_TRADES: '10'
+      EXACT_KEY: ${{ matrix.key }}
+      EXACT_NAME: ${{ matrix.name }}
+      EXACT_AUTHOR: ${{ matrix.author }}
+      EXACT_ORIGIN: ${{ matrix.origin }}
+      EXACT_GROUP: ${{ matrix.group }}
+      EXACT_SCRIPT_ID: ${{ matrix.script_id_part }}
+      EXACT_SOURCE_SHA256: ${{ matrix.source_sha256 }}
+      EXACT_PINE_VERSION: ${{ matrix.pine_version }}
+      EXACT_URL: ${{ matrix.url }}
+      EXACT_OUT_DIR: artifacts/exact-source-results/${{ matrix.key }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned exact-source runtime
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          npm install --no-save --package-lock=false --audit=false --fund=false pinets@0.10.0
+
+      - name: Verify local data and Python bridge
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          if (-not (Test-Path $env:FREQTRADE_FUTURES_ROOT)) {
+            throw "Freqtrade futures root missing: $env:FREQTRADE_FUTURES_ROOT"
+          }
+          if (-not (Test-Path $env:DATAHUB_PYTHON)) {
+            throw "DataHub Python missing: $env:DATAHUB_PYTHON"
+          }
+          & $env:DATAHUB_PYTHON --version
+          node --version
+
+      - name: Backtest exact source unchanged
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-pinets-exact-strategy.mjs
+
+      - name: Upload exact result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exact-${{ matrix.key }}
+          path: artifacts/exact-source-results/${{ matrix.key }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+  final_index:
+    needs: [prepare, exact_backtest]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download exact result artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: exact-*
+          path: artifacts/exact-downloaded
+
+      - name: Build queue index
+        shell: python
+        run: |
+          import csv, json, pathlib
+          root = pathlib.Path("artifacts/exact-downloaded")
+          rows = []
+          for p in root.rglob("summary.json"):
+              j = json.loads(p.read_text(encoding="utf-8"))
+              s = j.get("strategy", {})
+              c = j.get("counts", {})
+              rows.append({
+                  "name": s.get("name"),
+                  "author": s.get("author"),
+                  "sourceSha256": s.get("sourceSha256"),
+                  "nineOfNine": c.get("nineOfNine", 0),
+                  "eightOfNine": c.get("eightOfNine", 0),
+                  "okTasks": c.get("ok", 0),
+                  "errors": c.get("errors", 0),
+              })
+          skips = []
+          for p in root.rglob("runtime-skip.json"):
+              skips.append(json.loads(p.read_text(encoding="utf-8")))
+          out = pathlib.Path("artifacts/exact-final")
+          out.mkdir(parents=True, exist_ok=True)
+          (out / "index.json").write_text(
+              json.dumps({"strategies": rows, "runtimeSkips": skips}, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          with (out / "index.csv").open("w", newline="", encoding="utf-8") as f:
+              fieldnames = ["name","author","sourceSha256","nineOfNine","eightOfNine","okTasks","errors"]
+              w = csv.DictWriter(f, fieldnames=fieldnames)
+              w.writeheader()
+              w.writerows(rows)
+
+      - name: Upload final exact index
+        uses: actions/upload-artifact@v4
+        with:
+          name: exact-source-final-index
+          path: artifacts/exact-final/
+          if-no-files-found: error
+          retention-days: 30
