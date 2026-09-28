@@ -126,6 +126,39 @@ export class BinanceUsdmAdapter {
     }));
   }
 
+  async klinesRange(
+    symbol: string,
+    interval: string,
+    startTime: number,
+    endTime: number,
+    limit = 1500
+  ): Promise<BinanceKline[]> {
+    const out: BinanceKline[] = [];
+    let cursor = startTime;
+    while (cursor < endTime) {
+      const response = await this.http.get<any[]>('/fapi/v1/klines', {
+        params: { symbol, interval, startTime: cursor, endTime, limit },
+      });
+      this.observe(response);
+      if (!response.data.length) break;
+      const batch = response.data.map(k => ({
+        t: Number(k[0]),
+        o: Number(k[1]),
+        h: Number(k[2]),
+        l: Number(k[3]),
+        c: Number(k[4]),
+        v: Number(k[5]),
+        closeTime: Number(k[6]),
+      }));
+      out.push(...batch);
+      const next = batch[batch.length - 1].t + 1;
+      if (next <= cursor) throw new Error('KLINE_PAGINATION_STALLED');
+      cursor = next;
+      if (batch.length < limit) break;
+    }
+    return out;
+  }
+
   async depth(symbol: string, limit = 20): Promise<any> {
     const response = await this.http.get('/fapi/v1/depth', { params: { symbol, limit } });
     this.observe(response);
