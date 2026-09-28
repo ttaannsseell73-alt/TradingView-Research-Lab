@@ -24,9 +24,9 @@ jobs:
       RESEARCH_BACKEND: datahub-local
       RESEARCH_OUT_DIR: artifacts/gua-trendline-1y-datahub
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
-      SHARD_INDEX: 0
-      SHARD_COUNT: 1
+      LOCAL_PARALLEL_SHARDS: 4
       REUSE_EXISTING_CSV: 1
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2025-09-28__2026-09-28__15m
 
     steps:
       - uses: actions/checkout@v4
@@ -75,7 +75,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs plan.json
 
       - name: Upload result
         if: always()
