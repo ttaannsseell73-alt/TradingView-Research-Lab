@@ -82,3 +82,36 @@ Do not reopen architecture decisions during commands such as:
 - benchmark
 
 Only inspect the delta needed for the new command.
+
+
+## Canonical speed implementation — 2026-09-28
+
+The speed optimization is now unconditional; it is not gated on the abandoned TLM benchmark.
+
+Repository execution:
+- Local batch cache is canonical in both checkpointed and standard research runners.
+- One 1m Feather read per symbol prepares all requested timeframes.
+- Derived CSV cache is persistent under D:/Futures-Research-Data/research-cache.
+- SR25, SR35 and ALGO9 share the same 2026 multi-timeframe cache.
+- Range48 uses its own persistent 1Y/15m cache.
+- Monthly candle slicing is single-pass instead of repeated full-array filtering.
+- NDJSON result emission is buffered instead of row-by-row synchronous append.
+- Heavy local workflows use 4 parallel Node shards inside the self-hosted runner.
+- Parallel wrapper preserves same-topology checkpoints for resume and removes stale incompatible shard topology.
+- SR35/ALGO9 and Range48 summarizers read all parallel checkpoint directories.
+
+Primary implementation files:
+- scripts/export-freqtrade-feather-batch.py
+- scripts/run-datahub-plan-checkpointed.mjs
+- scripts/run-datahub-plan.mjs
+- scripts/run-datahub-plan-parallel-local.mjs
+- scripts/summarize-sr35.mjs
+- scripts/summarize-range48-1y.mjs
+
+Heavy workflows configured for the fast path:
+- .github/workflows/algo9-2026-full-local.yml
+- .github/workflows/sr25-2026-full-local.yml
+- .github/workflows/sr35-2026-full-local.yml
+- .github/workflows/range48-1y-15m-full-local.yml
+
+TLM benchmark run 36457015198 was cancelled. Speed optimization remains enabled regardless of benchmark comparison.
