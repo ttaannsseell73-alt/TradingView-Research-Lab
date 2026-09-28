@@ -104,11 +104,11 @@ const plan = readPlan(planFile);
 const csvDir = path.resolve(
   process.env.QCLASS_CSV_DIR
     ?? process.env.RESEARCH_CSV_DIR
-    ?? 'D:/Futures-Research-Data/qclass-cache',
+    ?? 'C:/actions-runner-datahub/qclass-cache',
 );
 const checkpointRoot = path.resolve(
   process.env.QCLASS_CHECKPOINT_ROOT
-    ?? 'D:/Futures-Research-Data/qclass-checkpoints',
+    ?? 'C:/actions-runner-datahub/qclass-checkpoints',
 );
 const outDir = path.resolve(
   process.env.QCLASS_OUT_DIR
