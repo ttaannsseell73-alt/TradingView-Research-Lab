@@ -1,8 +1,6 @@
 name: Exact Source Screenshot + Sweep Queue
 
 on:
-  issues:
-    types: [opened]
   workflow_dispatch:
 
 permissions:
@@ -12,10 +10,6 @@ permissions:
 
 jobs:
   prepare:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.issue.author_association == 'OWNER' &&
-       startsWith(github.event.issue.title, '[EXACT SOURCE QUEUE]'))
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.resolve.outputs.matrix }}
