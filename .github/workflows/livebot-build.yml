@@ -60,6 +60,7 @@ jobs:
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\live\*.ts" "$root\src\live\" -Force
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tests\live\*.ts" "$root\src\tests\live\" -Force
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\runQShadow.ts" "$root\src\tools\runQShadow.ts" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\runQDemoForwardOnce.ts" "$root\src\tools\runQDemoForwardOnce.ts" -Force
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\CANONICAL_LIVE_ENGINE_V1.md" "$root\CANONICAL_LIVE_ENGINE_V1.md" -Force
 
           Push-Location $root
@@ -68,7 +69,7 @@ jobs:
           npm install -D @types/pg@^8 --legacy-peer-deps
           if ($LASTEXITCODE -ne 0) { throw "@types/pg install failed" }
 
-          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['q:shadow']='tsx src/tools/runQShadow.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['q:shadow']='tsx src/tools/runQShadow.ts';p.scripts['q:demo-forward-once']='tsx src/tools/runQDemoForwardOnce.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
           Pop-Location
 
       - name: Compile patched engine
@@ -200,7 +201,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           Push-Location $env:BOT_ROOT
-          git add src/live src/tools/runQShadow.ts src/tests/live CANONICAL_LIVE_ENGINE_V1.md package.json package-lock.json dist
+          git add src/live src/tools/runQShadow.ts src/tools/runQDemoForwardOnce.ts src/tests/live CANONICAL_LIVE_ENGINE_V1.md package.json package-lock.json dist
           $changes = git status --porcelain
           if (!$changes) { throw "No canonical changes to commit" }
           git commit -m "feat: canonical Q Range48 live engine v1"
