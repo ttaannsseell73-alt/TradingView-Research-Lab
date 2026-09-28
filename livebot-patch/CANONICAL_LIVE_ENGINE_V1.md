@@ -32,10 +32,10 @@ Shadow reference limits:
 - peak drawdown breaker: 5%
 - symbol notional reference: 5% equity
 - portfolio notional reference: 25% equity
-- effective leverage reference: 2x
+- Q leverage: fixed x1 (no leverage)
 
 These are safety defaults for shadow/canary design, not permission to trade live.
-Spread, depth, shortfall and final leverage constants are calibrated from shadow telemetry before canary.
+Spread, depth and shortfall constants are calibrated from shadow telemetry before canary. Q leverage is not calibrated: it is locked to x1.
 
 ## Binance API contract pinned 2026-09-28
 
