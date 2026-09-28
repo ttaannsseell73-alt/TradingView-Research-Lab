@@ -15,14 +15,29 @@ def main() -> int:
     ap=argparse.ArgumentParser()
     ap.add_argument("resolved_manifest")
     ap.add_argument("--out", default="artifacts/recovery-audit/matrix.json")
+    ap.add_argument("--exclude-summary-root", default="")
     args=ap.parse_args()
     data=json.loads(Path(args.resolved_manifest).read_text(encoding="utf-8"))
+    exclude=set()
+    if args.exclude_summary_root:
+        root=Path(args.exclude_summary_root)
+        if root.exists():
+            for p in root.rglob("summary.json"):
+                try:
+                    s=json.loads(p.read_text(encoding="utf-8")).get("strategy",{})
+                    key=s.get("key")
+                    if key: exclude.add(str(key))
+                except Exception:
+                    pass
     include=[]
     for row in data.get("resolved",[]):
+        key=f"{int(row['index']):03d}-" + "".join(
+            c if c.isalnum() else "-" for c in str(row.get("name") or "").lower()
+        ).strip("-")[:72]
+        if key in exclude:
+            continue
         include.append({
-            "key": f"{int(row['index']):03d}-" + "".join(
-                c if c.isalnum() else "-" for c in str(row.get("name") or "").lower()
-            ).strip("-")[:72],
+            "key": key,
             "index": row.get("index"),
             "origin": row.get("origin"),
             "group": row.get("group"),
@@ -41,7 +56,7 @@ def main() -> int:
         with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8",newline="\n") as f:
             f.write("matrix="+json.dumps(matrix,ensure_ascii=False,separators=(",",":"))+"\n")
             f.write(f"count={len(include)}\n")
-    print(json.dumps({"count":len(include)},ensure_ascii=False))
+    print(json.dumps({"count":len(include),"excludedSuccessfulExact":len(exclude)},ensure_ascii=False))
     return 0
 
 if __name__=="__main__":
