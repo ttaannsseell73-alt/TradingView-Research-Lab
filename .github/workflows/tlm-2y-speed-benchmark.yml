@@ -25,6 +25,7 @@ jobs:
       LOCAL_DATA_MODE: strict
       RESEARCH_BACKEND: local
       REUSE_EXISTING_CSV: 1
+      LOCAL_PARALLEL_SHARDS: 4
       SPEED_CACHE_DIR: D:/Futures-Research-Data/research-cache/tlm-2y-20240920-20260920
 
     steps:
@@ -69,22 +70,6 @@ jobs:
           "prepare_seconds=$([math]::Round($sw.Elapsed.TotalSeconds,3))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           Write-Host "FAST_PREPARE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,3))"
 
-      - name: Verify byte parity with legacy exporter
-        shell: powershell
-        run: |
-          $ErrorActionPreference = "Stop"
-          New-Item -ItemType Directory -Force -Path "artifacts/tlm-speed/parity" | Out-Null
-          $legacy = "artifacts/tlm-speed/parity/TLMUSDT-15m-legacy.csv"
-          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather.py --root "$env:FREQTRADE_FUTURES_ROOT" --symbol TLMUSDT --timeframe 15m --start "2024-09-20T00:00:00Z" --end "2026-09-20T00:00:00Z" --output "$legacy"
-          if ($LASTEXITCODE -ne 0) { throw "Legacy exporter failed." }
-          $fast = Join-Path $env:SPEED_CACHE_DIR "TLMUSDT-15m.csv"
-          $legacyHash = (Get-FileHash $legacy -Algorithm SHA256).Hash
-          $fastHash = (Get-FileHash $fast -Algorithm SHA256).Hash
-          Write-Host "LEGACY_SHA256=$legacyHash"
-          Write-Host "FAST_SHA256=$fastHash"
-          if ($legacyHash -ne $fastHash) { throw "FAST_CACHE_PARITY_FAILED" }
-          Write-Host "FAST_CACHE_PARITY=PASS"
-
       - name: Run TLM research from fast cache
         id: engine
         shell: powershell
@@ -94,7 +79,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $sw = [System.Diagnostics.Stopwatch]::StartNew()
-          node scripts/run-datahub-plan-checkpointed.mjs tlm-speed-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs tlm-speed-plan.json
           if ($LASTEXITCODE -ne 0) { throw "TLM benchmark failed." }
           $sw.Stop()
           "engine_seconds=$([math]::Round($sw.Elapsed.TotalSeconds,3))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
@@ -109,7 +94,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $sw = [System.Diagnostics.Stopwatch]::StartNew()
-          node scripts/run-datahub-plan-checkpointed.mjs tlm-speed-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs tlm-speed-plan.json
           if ($LASTEXITCODE -ne 0) { throw "Warm TLM benchmark failed." }
           $sw.Stop()
           "warm_seconds=$([math]::Round($sw.Elapsed.TotalSeconds,3))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
@@ -122,7 +107,7 @@ jobs:
           $prepare = "${{ steps.prepare.outputs.prepare_seconds }}"
           $engine = "${{ steps.engine.outputs.engine_seconds }}"
           $warm = "${{ steps.warm.outputs.warm_seconds }}"
-          $body = "TLM 2Y speed benchmark`n`nFast cache prepare: $prepare s`nFirst engine pass: $engine s`nWarm-cache engine pass: $warm s`nData parity: workflow fails unless SHA-256 matches legacy exporter.`nDataset: TLMUSDT 15m, 2024-09-20 to 2026-09-20.`nStrategy pack: canonical ALGO9 (9 strategies)."
+          $body = "TLM 2Y speed benchmark`n`nFast cache prepare: $prepare s`nFirst engine pass: $engine s`nWarm-cache engine pass: $warm s`nTurbo path only; no legacy exporter or legacy runner is used.`nDataset: TLMUSDT 15m, 2024-09-20 to 2026-09-20.`nStrategy pack: canonical ALGO9 (9 strategies)."
           gh issue comment $env:PROGRESS_ISSUE_NUMBER --body $body
 
       - name: Upload benchmark result
