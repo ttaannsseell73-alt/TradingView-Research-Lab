@@ -54,8 +54,9 @@ export class QShadowRuntime {
     }
 
     const manifest = qCanonicalManifest('SHADOW');
-    const historyStart = Date.parse(manifest.historyAnchor);
-    const raw = await this.adapter.klinesRange('QUSDT', '15m', historyStart, serverTime, 1500);
+    // Live runtime only needs a rolling window. Full pinned-history parity is verified
+    // separately during build/research and must not be re-downloaded every 5 minutes.
+    const raw = await this.adapter.klines('QUSDT', '15m', 500);
     const closed = raw
       .filter(k => k.closeTime < serverTime)
       .map(k => ({ t: k.t, o: k.o, h: k.h, l: k.l, c: k.c, v: k.v }));
