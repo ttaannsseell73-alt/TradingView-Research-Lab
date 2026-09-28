@@ -286,12 +286,30 @@ export class CanonicalReconciler {
     private adapter: BinanceUsdmAdapter,
     private journal: PgEventJournal,
     private inFlight: InFlightRegistry,
-    private quiescenceMs = 800
+    private quiescenceMs = 800,
+    private positionTolerance = 1e-9
   ) {}
 
   async reconcile(symbol: 'QUSDT'): Promise<{ ok: boolean; halt: boolean; snapshot: ReconcileSnapshot }> {
     const remaining = this.inFlight.quiescenceRemainingMs(this.quiescenceMs);
     if (remaining > 0) await new Promise(resolve => setTimeout(resolve, remaining));
+
+    // Resolve all PROCESSING outbox rows by deterministic clientOrderId before
+    // concluding anything from account snapshots. PENDING rows were never sent.
+    const unresolved = await this.journal.unresolvedOutbox();
+    let unresolvedUnknown = false;
+    for (const row of unresolved.filter(x => x.status === 'PROCESSING')) {
+      const order = await this.adapter.getOrderByClientId(symbol, row.intentId);
+      if (order) {
+        await this.journal.markOutboxUnknownResolved(row.outboxId, String(order.status ?? 'FOUND'), { order });
+        this.inFlight.resolve(row.intentId);
+      } else {
+        unresolvedUnknown = true;
+        await this.journal.appendEvent('ORDER_STILL_UNKNOWN', row.intentId, {
+          reason: 'NOT_FOUND_AFTER_QUIESCENCE',
+        });
+      }
+    }
 
     const [openOrders, openAlgoOrders, positionRisk] = await Promise.all([
       this.adapter.getOpenOrders(symbol),
@@ -299,15 +317,37 @@ export class CanonicalReconciler {
       this.adapter.getPositionRisk(symbol),
     ]);
 
-    const known = new Set(await this.journal.knownIntentIds());
-    const foreign = (Array.isArray(openOrders) ? openOrders : []).filter(
-      (o: any) => o?.clientOrderId && !known.has(String(o.clientOrderId))
+    const knownOrders = new Set(await this.journal.knownIntentIds());
+    const knownAlgo = new Set(await this.journal.knownProtectionIds());
+
+    const foreignOrders = (Array.isArray(openOrders) ? openOrders : []).filter(
+      (o: any) => o?.clientOrderId && !knownOrders.has(String(o.clientOrderId))
     );
+    const foreignAlgo = (Array.isArray(openAlgoOrders) ? openAlgoOrders : []).filter((o: any) => {
+      const id = String(o?.clientAlgoId ?? o?.algoId ?? '');
+      return id && !knownAlgo.has(id);
+    });
+
+    const positionRow = Array.isArray(positionRisk)
+      ? positionRisk.find((x: any) => x.symbol === symbol) ?? positionRisk[0] ?? {}
+      : positionRisk ?? {};
+    const exchangePosition = Number(positionRow.positionAmt ?? 0);
+    const expectedPosition = await this.journal.expectedNetPosition(symbol);
+    const positionMismatch =
+      Number.isFinite(exchangePosition) &&
+      Math.abs(exchangePosition - expectedPosition) > this.positionTolerance;
 
     const snapshot = { openOrders, openAlgoOrders, positionRisk };
-    if (foreign.length) {
-      await this.journal.appendEvent('EXTERNAL_ACTIVITY_DETECTED', symbol, {
-        foreignClientOrderIds: foreign.map((x: any) => x.clientOrderId),
+    await this.journal.recordPositionSnapshot(symbol, positionRisk);
+
+    if (foreignOrders.length || foreignAlgo.length || positionMismatch || unresolvedUnknown) {
+      await this.journal.appendEvent('RECONCILIATION_ERROR', symbol, {
+        foreignClientOrderIds: foreignOrders.map((x: any) => x.clientOrderId),
+        foreignAlgoIds: foreignAlgo.map((x: any) => x.clientAlgoId ?? x.algoId),
+        expectedPosition,
+        exchangePosition,
+        positionMismatch,
+        unresolvedUnknown,
       });
       return { ok: false, halt: true, snapshot };
     }
@@ -315,6 +355,8 @@ export class CanonicalReconciler {
     await this.journal.appendEvent('RECONCILE_OK', symbol, {
       openOrders: Array.isArray(openOrders) ? openOrders.length : 0,
       openAlgoOrders: Array.isArray(openAlgoOrders) ? openAlgoOrders.length : 0,
+      expectedPosition,
+      exchangePosition,
     });
     return { ok: true, halt: false, snapshot };
   }
@@ -327,6 +369,47 @@ export type BinanceAccountReason =
   | 'LIQUIDATION'
   | 'MARGIN_EVENT'
   | 'UNKNOWN';
+
+export class UserDataJournaler {
+  constructor(private journal: PgEventJournal) {}
+
+  async handle(event: any): Promise<BinanceAccountReason> {
+    const reason = classifyUserDataEvent(event);
+    const eventId = String(event?.o?.c ?? event?.E ?? Date.now());
+
+    if (event?.e === 'ORDER_TRADE_UPDATE') {
+      const lastQty = Number(event?.o?.l ?? 0);
+      const lastPrice = Number(event?.o?.L ?? event?.o?.ap ?? event?.o?.p ?? 0);
+      if (lastQty > 0 && lastPrice > 0) {
+        const intentId = String(event?.o?.c ?? '');
+        const expectedPrice = intentId
+          ? await this.journal.expectedPriceForIntent(intentId)
+          : null;
+        const fillId = [
+          String(event?.o?.s ?? ''),
+          String(event?.o?.i ?? ''),
+          String(event?.o?.t ?? event?.T ?? event?.E ?? ''),
+        ].join('|');
+        await this.journal.recordFill({
+          fillId,
+          intentId: intentId || null,
+          symbol: String(event?.o?.s ?? ''),
+          side: String(event?.o?.S ?? ''),
+          expectedPrice,
+          fillPrice: lastPrice,
+          quantity: lastQty,
+          commission: Number(event?.o?.n ?? 0),
+          commissionAsset: event?.o?.N ? String(event.o.N) : null,
+          eventTime: Number(event?.T ?? event?.E ?? Date.now()),
+          payload: event,
+        });
+      }
+    }
+
+    await this.journal.appendEvent('BINANCE_' + reason, eventId, { event });
+    return reason;
+  }
+}
 
 export function classifyUserDataEvent(event: any): BinanceAccountReason {
   if (event?.e === 'ORDER_TRADE_UPDATE') {
