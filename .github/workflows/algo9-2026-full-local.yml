@@ -27,6 +27,8 @@ jobs:
       SHARD_INDEX: 0
       SHARD_COUNT: 1
       REUSE_EXISTING_CSV: 1
+      BATCH_LOCAL_CACHE: 1
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
 
     steps:
       - uses: actions/checkout@v4
@@ -79,8 +81,6 @@ jobs:
         shell: powershell
         env:
           RESEARCH_OUT_DIR: artifacts/algo9-2026-full
-          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
-          REUSE_EXISTING_CSV: 1
         run: |
           $ErrorActionPreference = "Stop"
           node scripts/run-datahub-plan-checkpointed.mjs algo9-plan.json
