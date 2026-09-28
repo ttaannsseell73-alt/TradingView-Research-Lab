@@ -58,9 +58,38 @@ jobs:
           path: artifacts/recovery-audit/
           retention-days: 30
 
-  recover:
+  turbo_cache:
     needs: prepare
     if: needs.prepare.outputs.count != '0'
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 180
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      TURBO_CACHE_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
+      TURBO_START: 2026-01-01T00:00:00Z
+      TURBO_END: 2026-09-20T00:00:00Z
+      TURBO_TIMEFRAMES: 1m,5m,15m,1h,4h
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Build canonical turbo cache plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/build-turbo-cache-plan.mjs turbo-cache-plan.json
+      - name: Prepare canonical turbo cache once
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path "$env:TURBO_CACHE_DIR" | Out-Null
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan turbo-cache-plan.json --output-dir "$env:TURBO_CACHE_DIR" --strict
+          if ($LASTEXITCODE -ne 0) { throw "Turbo cache preparation failed." }
+
+  recover:
+    needs: [prepare, turbo_cache]
+    if: needs.prepare.outputs.count != '0' && needs.turbo_cache.result == 'success'
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -72,8 +101,9 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
-      RECOVERY_CSV_CACHE: C:/actions-runner-datahub/recovery-csv-cache-2026
+      RECOVERY_CSV_CACHE: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
       RECOVERY_CHECKPOINT_ROOT: C:/actions-runner-datahub/recovery-checkpoints
+      LOCAL_PARALLEL_SHARDS: 4
       RECOVERY_START: 2026-01-01T00:00:00Z
       RECOVERY_END: 2026-09-20T00:00:00Z
       RECOVERY_MIN_COVERAGE: '0.98'
@@ -140,7 +170,7 @@ jobs:
           $patches = ($selected.patches -join ';')
           "patches=$patches" >> $env:GITHUB_OUTPUT
 
-      - name: Full 725 x 5TF recovery backtest
+      - name: Turbo 725 x 5TF recovery backtest
         if: steps.select.outputs.selected == 'true'
         shell: powershell
         env:
@@ -152,7 +182,8 @@ jobs:
           RECOVERY_OUT_DIR: artifacts/recovery-results/${{ matrix.key }}
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-pinets-recovered-strategy.mjs
+          $env:TURBO_PINETS_MODE = "recovery"
+          node scripts/run-pinets-turbo-local.mjs
 
       - name: Copy recovery evidence into result
         if: always()
