@@ -95,7 +95,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: q-demo-forward-\${{ github.run_id }}
-          path: \${{ runner.temp }}/q-demo-forward-latest.json
+          name: q-demo-forward-${{ github.run_id }}
+          path: ${{ runner.temp }}/q-demo-forward-latest.json
           if-no-files-found: warn
           retention-days: 14
