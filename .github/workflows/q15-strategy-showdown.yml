@@ -1,0 +1,178 @@
+name: QUSDT 15m Strategy Showdown
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[Q15 SHOWDOWN]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 60
+    env:
+      DATA_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      PYTHON_EXE: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Refresh QUSDT local data
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & $env:PYTHON_EXE scripts/update-local-futures-dataset.py `
+            --root $env:DATA_ROOT `
+            --start 2025-12-29 `
+            --end 2026-09-29 `
+            --symbols QUSDT `
+            --workers 2 `
+            --symbol-workers 1 `
+            --report q15-showdown-data.json
+
+      - name: Build current QUSDT 15m candles
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          @'
+          import json, time, urllib.request, urllib.parse
+          from pathlib import Path
+          from datetime import datetime, timezone
+          import polars as pl
+
+          root=Path(r"C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures")
+          src=root/"Q_USDT_USDT-1m-futures.feather"
+          if not src.exists(): raise SystemExit(f"Missing {src}")
+          df=pl.read_ipc(src)
+          lower={c.lower():c for c in df.columns}
+          tc=next((lower[x] for x in ("date","timestamp","time","t") if x in lower),None)
+          if not tc: raise SystemExit("No time column")
+          dtype=df.schema[tc]
+          if isinstance(dtype,pl.Datetime): texpr=pl.col(tc).dt.epoch("ms")
+          elif dtype==pl.Date: texpr=pl.col(tc).cast(pl.Datetime("ms")).dt.epoch("ms")
+          elif dtype.is_integer(): texpr=pl.col(tc).cast(pl.Int64)
+          else: texpr=pl.col(tc).str.to_datetime(strict=False,time_zone="UTC").dt.epoch("ms")
+          base=df.select(
+            texpr.alias("t"),
+            pl.col(lower["open"]).cast(pl.Float64).alias("o"),
+            pl.col(lower["high"]).cast(pl.Float64).alias("h"),
+            pl.col(lower["low"]).cast(pl.Float64).alias("l"),
+            pl.col(lower["close"]).cast(pl.Float64).alias("c"),
+            pl.col(lower["volume"]).cast(pl.Float64).alias("v")
+          ).drop_nulls().sort("t")
+          if base.height:
+            sample=int(base["t"][0])
+            if sample<10_000_000_000: base=base.with_columns((pl.col("t")*1000).alias("t"))
+            elif sample>10_000_000_000_000_000: base=base.with_columns((pl.col("t")//1_000_000).alias("t"))
+            elif sample>10_000_000_000_000: base=base.with_columns((pl.col("t")//1000).alias("t"))
+
+          warm=int(datetime(2025,12,29,tzinfo=timezone.utc).timestamp()*1000)
+          today=int(datetime(2026,9,28,tzinfo=timezone.utc).timestamp()*1000)
+          now=int(time.time()*1000)
+          hist=base.filter((pl.col("t")>=warm)&(pl.col("t")<today))
+          bucket=900_000
+          hist15=(hist.with_columns(((pl.col("t")//bucket)*bucket).alias("_b"))
+            .group_by("_b",maintain_order=True)
+            .agg(pl.col("o").first().alias("o"),pl.col("h").max().alias("h"),pl.col("l").min().alias("l"),pl.col("c").last().alias("c"),pl.col("v").sum().alias("v"))
+            .rename({"_b":"t"}).sort("t"))
+
+          params=urllib.parse.urlencode({"symbol":"QUSDT","interval":"15m","startTime":today,"limit":1500})
+          live_rows=[]; errors=[]
+          for host in ["https://fapi.binance.com","https://fapi1.binance.com","https://fapi2.binance.com","https://fapi3.binance.com"]:
+            try:
+              req=urllib.request.Request(host+"/fapi/v1/klines?"+params,headers={"User-Agent":"Mozilla/5.0 Q15-Showdown/1.0","Accept":"application/json"})
+              with urllib.request.urlopen(req,timeout=20) as r: raw=json.loads(r.read().decode())
+              for k in raw:
+                if int(k[6])<now:
+                  live_rows.append({"t":int(k[0]),"o":float(k[1]),"h":float(k[2]),"l":float(k[3]),"c":float(k[4]),"v":float(k[5])})
+              break
+            except Exception as e: errors.append(str(e))
+          if not live_rows: raise SystemExit("No current Q 15m bars: "+" | ".join(errors))
+          live=pl.DataFrame(live_rows)
+          out=pl.concat([hist15,live],how="vertical_relaxed").unique(subset=["t"],keep="last").sort("t")
+          out.write_csv("q15-showdown.csv")
+          print(json.dumps({"rows":out.height,"todayClosedBars":live.height,"last":int(out["t"][-1]),"snapshotAtMs":now}))
+          '@ | Set-Content q15-showdown-build.py -Encoding UTF8
+          & $env:PYTHON_EXE q15-showdown-build.py
+
+      - name: Compare Prior-Day vs Range-48
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          @'
+          import fs from 'node:fs';
+          import { evaluateStrategies } from './research/strategy_engine_v2.mjs';
+
+          const rows=fs.readFileSync('q15-showdown.csv','utf8').trim().split(/\r?\n/);
+          const candles=rows.slice(1).map(line=>{const [t,o,h,l,c,v]=line.split(',').map(Number);return {t,o,h,l,c,v};}).filter(b=>Object.values(b).every(Number.isFinite));
+          const ids=['sr25_previous_day_sweep','swp_range48_reclaim'];
+          const start=Date.parse('2026-01-01T00:00:00Z');
+          const last=candles.at(-1)?.t??0;
+          const end=Math.min(Date.parse('2026-09-29T00:00:00Z'),last+900000);
+          const cost=0.0014,stressCost=0.0015,lowCost=0.0006;
+
+          function evalWindow(s,e,id){
+            const warm=s-2*86400000;
+            const cs=candles.filter(b=>b.t>=warm&&b.t<e);
+            return evaluateStrategies(cs,{cost,stressCost,lowCost,minTrades:1,start:s,end:e,strategyIds:[id]})[0];
+          }
+
+          const names={
+            sr25_previous_day_sweep:'Prior-Day Sweep',
+            swp_range48_reclaim:'Sweep Range-48'
+          };
+          const result=[];
+          for(const id of ids){
+            const overall=evalWindow(start,end,id);
+            const months=[];
+            for(let m=0;m<9;m++){
+              const ms=Date.UTC(2026,m,1);
+              const me=Math.min(Date.UTC(2026,m+1,1),end);
+              if(me<=ms) continue;
+              const r=evalWindow(ms,me,id);
+              months.push({month:new Date(ms).toISOString().slice(0,7),n:r.n,net:r.net,pf:r.pf,wr:r.wr,dd:r.dd,stressNet:r.net15,positive:r.net>0});
+            }
+            result.push({
+              id,name:names[id],version:overall.version,
+              overall:{n:overall.n,net:overall.net,pf:overall.pf,wr:overall.wr,dd:overall.dd,stressNet:overall.net15,longTrades:overall.longTrades,shortTrades:overall.shortTrades},
+              months,
+              positiveMonths:months.filter(x=>x.positive).length,
+              monthsTested:months.length
+            });
+          }
+          fs.mkdirSync('artifacts/q15-showdown',{recursive:true});
+          fs.writeFileSync('artifacts/q15-showdown/result.json',JSON.stringify({symbol:'QUSDT',timeframe:'15m',start:new Date(start).toISOString(),end:new Date(end).toISOString(),cost,result},null,2)+'\n');
+          const pct=x=>(x*100).toFixed(2)+'%';
+          const lines=['QUSDT 15m — Prior-Day Sweep vs Sweep Range-48',''];
+          for(const r of result){
+            lines.push('**'+r.name+' ('+r.id+' / '+r.version+')**');
+            lines.push('Net '+pct(r.overall.net)+' | PF '+r.overall.pf.toFixed(2)+' | WR '+pct(r.overall.wr)+' | DD '+pct(r.overall.dd)+' | trades '+r.overall.n+' | pozitif ay '+r.positiveMonths+'/'+r.monthsTested);
+            lines.push(r.months.map(x=>x.month+': '+pct(x.net)).join(' · '));
+            lines.push('');
+          }
+          fs.writeFileSync('artifacts/q15-showdown/summary.md',lines.join('\n')+'\n');
+          console.log(lines.join('\n'));
+          '@ | Set-Content q15-showdown-run.mjs -Encoding UTF8
+          node q15-showdown-run.mjs
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file artifacts/q15-showdown/summary.md
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: q15-showdown-result
+          path: |
+            artifacts/q15-showdown/result.json
+            artifacts/q15-showdown/summary.md
+            q15-showdown-data.json
+          if-no-files-found: warn
