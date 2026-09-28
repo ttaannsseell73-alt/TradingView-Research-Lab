@@ -63,9 +63,9 @@ jobs:
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\CANONICAL_LIVE_ENGINE_V1.md" "$root\CANONICAL_LIVE_ENGINE_V1.md" -Force
 
           Push-Location $root
-          npm install pg@^8 --save
+          npm install pg@^8 --save --legacy-peer-deps
           if ($LASTEXITCODE -ne 0) { throw "pg install failed" }
-          npm install -D @types/pg@^8
+          npm install -D @types/pg@^8 --legacy-peer-deps
           if ($LASTEXITCODE -ne 0) { throw "@types/pg install failed" }
 
           node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['q:shadow']='tsx src/tools/runQShadow.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
