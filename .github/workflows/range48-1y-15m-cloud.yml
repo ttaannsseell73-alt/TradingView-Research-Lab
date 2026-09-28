@@ -126,9 +126,7 @@ jobs:
         with:
           name: range48-1y-15m-cloud-result
           path: |
-            artifacts/range48-cloud-merged/results-cloud-*.ndjson
-            artifacts/range48-cloud-merged/monthly-cloud-*.ndjson
-            artifacts/range48-cloud-merged/failures-cloud-*.ndjson
+            artifacts/range48-cloud-merged/result-cloud-*.json
             artifacts/range48-cloud-merged/range48-cloud-top-12m.csv
             artifacts/range48-cloud-merged/range48-cloud-summary.json
           if-no-files-found: error
