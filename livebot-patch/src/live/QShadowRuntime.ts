@@ -30,11 +30,10 @@ export interface QShadowReport {
 }
 
 export class QShadowRuntime {
-  constructor(private adapter: BinanceUsdmAdapter) {}
+  constructor(private adapter: BinanceUsdmAdapter, private governor: RateLimitGovernor) {}
 
   async runOnce(nowOverride?: number): Promise<QShadowReport> {
     const serverTime = nowOverride ?? (await this.adapter.serverTime());
-    const governor = new RateLimitGovernor();
     const info = await this.adapter.exchangeInfo();
     const symbolInfo = info.symbols?.find((x: any) => x.symbol === 'QUSDT');
     if (!symbolInfo) throw new Error('QUSDT_NOT_IN_EXCHANGE_INFO');
@@ -45,7 +44,7 @@ export class QShadowRuntime {
       const orderMinute = info.rateLimits.find((x: any) => x.rateLimitType === 'ORDERS' && x.interval === 'MINUTE');
       const order10s = info.rateLimits.find((x: any) => x.rateLimitType === 'ORDERS' && x.interval === 'SECOND' && Number(x.intervalNum) === 10);
       if (weight?.limit && orderMinute?.limit && order10s?.limit) {
-        governor.configureLimits({
+        this.governor.configureLimits({
           weight1m: Number(weight.limit),
           order10s: Number(order10s.limit),
           order1m: Number(orderMinute.limit),
@@ -88,7 +87,7 @@ export class QShadowRuntime {
       askDepth5Notional: firstNDepthNotional(book.asks ?? [], 5),
       closedBars: closed.length,
       lastBarOpenTime: closed.at(-1)!.t,
-      rateLimitState: governor.state(),
+      rateLimitState: this.governor.state(),
     };
   }
 
