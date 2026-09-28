@@ -67,7 +67,18 @@ jobs:
         run: |
           $ErrorActionPreference="Stop"
           cmd /c "docker info >nul 2>&1"
-          if ($LASTEXITCODE -ne 0) { throw "Docker daemon is not available" }
+          if ($LASTEXITCODE -ne 0) {
+            $desktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+            if (!(Test-Path $desktop)) { throw "Docker Desktop executable not found" }
+            Start-Process $desktop
+            $dockerReady=$false
+            for($i=0;$i -lt 90;$i++){
+              Start-Sleep -Seconds 2
+              cmd /c "docker info >nul 2>&1"
+              if($LASTEXITCODE -eq 0){$dockerReady=$true;break}
+            }
+            if(!$dockerReady){throw "Docker Desktop did not become ready"}
+          }
 
           $exists = docker ps -a --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
           if (!$exists) {
