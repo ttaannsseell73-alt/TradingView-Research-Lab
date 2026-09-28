@@ -262,6 +262,7 @@ async function main(): Promise<void> {
       generatedAt: shadow.generatedAt,
       barrier: shadow.dataBarrier.reason,
       signal: shadow.signal,
+      proximity: shadow.proximity,
       intent: shadow.intent,
       spreadBps: shadow.spreadBps,
       bidDepth5Notional: shadow.bidDepth5Notional,
