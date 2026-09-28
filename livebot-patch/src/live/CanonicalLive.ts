@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import qCanonical from './q-live-v1.json';
 
 export type Direction = -1 | 0 | 1;
 export type DeploymentMode = 'SHADOW' | 'CANARY' | 'LIVE' | 'HALTED';
@@ -450,6 +451,8 @@ export interface DeploymentManifest {
   mode: DeploymentMode;
   strategyHash: string;
   historyAnchor: '2025-12-29T00:00:00Z';
+  marginType: 'ISOLATED';
+  leverage: 1;
 }
 
 export function qCanonicalManifest(mode: DeploymentMode = 'SHADOW'): DeploymentManifest {
@@ -465,5 +468,7 @@ export function qCanonicalManifest(mode: DeploymentMode = 'SHADOW'): DeploymentM
     mode,
     strategyHash,
     historyAnchor: '2025-12-29T00:00:00Z',
+    marginType: qCanonical.marginType as 'ISOLATED',
+    leverage: qCanonical.leverage as 1,
   };
 }
