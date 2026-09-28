@@ -222,7 +222,17 @@ jobs:
             datahub-v4-${{ runner.os }}-${{ needs.prepare.outputs.cache_profile }}-shard-${{ matrix.shard }}-
 
       - name: Decode plan
-        run: python -c "import os,base64;open('plan.json','wb').write(base64.b64decode(os.environ['PLAN_B64']))"
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, json, os
+          raw=base64.b64decode(os.environ["PLAN_B64"])
+          open("plan.json","wb").write(raw)
+          plan=json.loads(raw)
+          with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as f:
+              f.write("VISION_SPARSE_MODE=" + ("true" if plan.get("visionSparse") else "false") + "\n")
+              f.write("LIFETIME_AWARE_MODE=" + ("true" if plan.get("lifetimeAware") else "false") + "\n")
+          PY
 
       - name: Run cloud shard
         env:
