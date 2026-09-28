@@ -13,6 +13,7 @@ permissions:
 
 # refresh: proximity preview deployed
 # refresh: dual side rollout verified
+# refresh: continuous proximity scale deployed
 jobs:
   install:
     runs-on: [self-hosted, datahub-local]
