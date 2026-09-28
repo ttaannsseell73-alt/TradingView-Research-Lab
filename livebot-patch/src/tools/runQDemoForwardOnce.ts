@@ -350,7 +350,7 @@ async function main(): Promise<void> {
     if (!(bestBid > 0) || !(bestAsk > bestBid)) throw new Error('INVALID_TESTNET_BOOK');
 
     const referencePrice = targetDirection === 1 ? bestAsk : bestBid;
-    const targetNotional = Math.max(rules.minNotional || 0, 5) * 1.20;
+    const targetNotional = 100;
     const rawQty = ceilToStep(targetNotional / referencePrice, rules.stepSize);
     const rawLimit =
       targetDirection === 1
