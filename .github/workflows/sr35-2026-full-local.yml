@@ -72,7 +72,7 @@ jobs:
           REUSE_EXISTING_CSV: 0
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs parity-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs parity-plan.json
 
       - name: Compare against archived original 15m results
         shell: powershell
