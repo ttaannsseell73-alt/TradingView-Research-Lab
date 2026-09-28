@@ -52,7 +52,9 @@ export class QShadowRuntime {
       }
     }
 
-    const raw = await this.adapter.klines('QUSDT', '15m', 500);
+    const manifest = qCanonicalManifest('SHADOW');
+    const historyStart = Date.parse(manifest.historyAnchor);
+    const raw = await this.adapter.klinesRange('QUSDT', '15m', historyStart, serverTime, 1500);
     const closed = raw
       .filter(k => k.closeTime < serverTime)
       .map(k => ({ t: k.t, o: k.o, h: k.h, l: k.l, c: k.c, v: k.v }));
@@ -77,7 +79,7 @@ export class QShadowRuntime {
     return {
       mode: 'SHADOW',
       generatedAt: new Date(serverTime).toISOString(),
-      manifest: qCanonicalManifest('SHADOW'),
+      manifest,
       dataBarrier: barrierResult,
       signal,
       intent,
