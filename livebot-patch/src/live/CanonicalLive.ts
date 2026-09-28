@@ -202,8 +202,17 @@ export class Range48Strategy {
     const longDistanceAtr = Math.max(0, (bar.l - longThreshold) / a);
     const shortDistanceAtr = Math.max(0, (shortThreshold - bar.h) / a);
 
-    const longSweepScore = longSweepDone ? 60 : 60 * clamp01(1 - longDistanceAtr / 0.5);
-    const shortSweepScore = shortSweepDone ? 60 : 60 * clamp01(1 - shortDistanceAtr / 0.5);
+    // Proximity preview should move continuously as price approaches the
+    // actual sweep threshold. Zero is reserved for genuinely distant setups.
+    // At 3 ATR away the pre-sweep score is 0; it rises linearly to 60 at
+    // the sweep threshold. Reclaim contributes the remaining 40 points.
+    const PRE_SWEEP_DISTANCE_ATR = 3;
+    const longSweepScore = longSweepDone
+      ? 60
+      : 60 * clamp01(1 - longDistanceAtr / PRE_SWEEP_DISTANCE_ATR);
+    const shortSweepScore = shortSweepDone
+      ? 60
+      : 60 * clamp01(1 - shortDistanceAtr / PRE_SWEEP_DISTANCE_ATR);
 
     const longReclaimScore = longSweepDone
       ? 40 * clamp01(1 - Math.max(0, l - bar.c) / (0.5 * a))
