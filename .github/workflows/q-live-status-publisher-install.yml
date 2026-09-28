@@ -1,0 +1,177 @@
+name: Install Q Live Status Publisher
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/q-live-status-publisher-install.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  install:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 8
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      STATUS_REPO: ttaannsseell73-alt/TradingView-Research-Lab
+      STATUS_ISSUE: '109'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install publisher into local Q scheduler
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          if (!(Get-Command gh -ErrorAction SilentlyContinue)) { throw "gh CLI missing" }
+          gh auth status
+
+          $root = $env:BOT_ROOT
+          $runner = Join-Path $root "scripts\run-q-demo-forward-scheduled.ps1"
+          $localEnv = Join-Path $root ".q-forward.local.env"
+          if (!(Test-Path $localEnv)) { throw "Local Q environment file missing" }
+
+          $script = @'
+          $ErrorActionPreference = "Stop"
+          $root = "C:\Users\TANSEL\Desktop\binance-bot"
+          $repo = "ttaannsseell73-alt/TradingView-Research-Lab"
+          $issue = 109
+          $log = Join-Path $root "artifacts\q-demo-forward-scheduler.log"
+          $report = Join-Path $root "artifacts\q-demo-forward-latest.json"
+          $localEnv = Join-Path $root ".q-forward.local.env"
+          New-Item -ItemType Directory -Force (Split-Path $log) | Out-Null
+
+          function Publish-QStatus([string]$cycleState, [string]$cycleError) {
+            try {
+              $now = Get-Date
+              $bodyFile = Join-Path $env:TEMP "q-live-status.md"
+              $lines = @(
+                "# QUSDT LIVE STATUS",
+                "",
+                "- scheduler_local: $($now.ToString('yyyy-MM-dd HH:mm:ss zzz'))",
+                "- cycle_state: $cycleState"
+              )
+
+              if ($cycleError) {
+                $safeError = $cycleError -replace '[\r\n]+',' '
+                $lines += "- cycle_error: $safeError"
+              }
+
+              if (Test-Path $report) {
+                $item = Get-Item $report
+                $r = Get-Content $report -Raw | ConvertFrom-Json
+                $lines += @(
+                  "- report_last_write_local: $($item.LastWriteTime.ToString('yyyy-MM-dd HH:mm:ss zzz'))",
+                  "- generatedAt_utc: $($r.generatedAt)",
+                  "- symbol: $($r.symbol)",
+                  "- execution: $($r.execution)",
+                  "- leverage: $($r.leverage)",
+                  "- marginType: $($r.marginType)",
+                  "- result: $($r.result)",
+                  "- action: $($r.action)",
+                  "- fresh: $($r.market.signal.fresh)",
+                  "- direction: $($r.market.signal.direction)",
+                  "- signal_action: $($r.market.signal.action)",
+                  "- decision: $($r.market.intent.decision)",
+                  "- reason: $($r.market.intent.reason)",
+                  "- positionAmt_before: $($r.positionBefore.positionAmt)",
+                  "- entryPrice_before: $($r.positionBefore.entryPrice)",
+                  "- markPrice_before: $($r.positionBefore.markPrice)",
+                  "- spreadBps: $($r.market.spreadBps)"
+                )
+                if ($null -ne $r.positionAfter) {
+                  $lines += "- positionAfter: $($r.positionAfter | ConvertTo-Json -Compress)"
+                } else {
+                  $lines += "- positionAfter: null"
+                }
+              } else {
+                $lines += "- report: MISSING"
+              }
+
+              $lines += @(
+                "",
+                "_Updated automatically by the local 5-minute Q scheduler._"
+              )
+              [System.IO.File]::WriteAllLines($bodyFile, $lines, (New-Object System.Text.UTF8Encoding($false)))
+              gh issue edit $issue --repo $repo --body-file $bodyFile | Out-Null
+              if ($LASTEXITCODE -ne 0) { throw "gh issue edit failed" }
+              Add-Content $log "$(Get-Date -Format o) PUBLISH=OK"
+            } catch {
+              Add-Content $log "$(Get-Date -Format o) PUBLISH=FAIL $($_.Exception.Message)"
+            }
+          }
+
+          $cycleState = "FAIL"
+          $cycleError = ""
+          try {
+            Set-Location $root
+            if (!(Test-Path $localEnv)) { throw "Local Q environment file missing" }
+
+            foreach ($line in Get-Content $localEnv) {
+              if ($line -match '^([^#=]+)=(.*)$') {
+                [Environment]::SetEnvironmentVariable($matches[1], $matches[2], "Process")
+              }
+            }
+
+            cmd /c "docker info >nul 2>&1"
+            if ($LASTEXITCODE -ne 0) {
+              $desktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+              if (!(Test-Path $desktop)) { throw "Docker Desktop missing" }
+              Start-Process $desktop
+              $ready = $false
+              for ($i=0; $i -lt 60; $i++) {
+                Start-Sleep -Seconds 2
+                cmd /c "docker info >nul 2>&1"
+                if ($LASTEXITCODE -eq 0) { $ready = $true; break }
+              }
+              if (!$ready) { throw "Docker unavailable" }
+            }
+
+            $running = docker ps --filter "name=^/canonical-q-demo-pg$" --format "{{.Names}}"
+            if (!$running) {
+              $exists = docker ps -a --filter "name=^/canonical-q-demo-pg$" --format "{{.Names}}"
+              if (!$exists) { throw "Q demo PostgreSQL container missing" }
+              docker start canonical-q-demo-pg | Out-Null
+            }
+
+            $before = if (Test-Path $report) { (Get-Item $report).LastWriteTimeUtc } else { [datetime]::MinValue }
+            npm run q:demo-forward-once *>> $log
+            if ($LASTEXITCODE -ne 0) { throw "Q cycle exit=$LASTEXITCODE" }
+            if (!(Test-Path $report)) { throw "Q report missing" }
+            $after = (Get-Item $report).LastWriteTimeUtc
+            if ($after -le $before) { throw "Q report not refreshed" }
+
+            $cycleState = "SUCCESS"
+            Add-Content $log "$(Get-Date -Format o) EXIT=0"
+          } catch {
+            $cycleError = $_.Exception.Message
+            Add-Content $log "$(Get-Date -Format o) ERROR=$cycleError"
+          } finally {
+            Publish-QStatus $cycleState $cycleError
+          }
+
+          if ($cycleState -ne "SUCCESS") { exit 1 }
+          exit 0
+          '@
+
+          [System.IO.File]::WriteAllText($runner, $script, (New-Object System.Text.UTF8Encoding($false)))
+          Start-ScheduledTask -TaskName "QDemoForwardMonitor"
+
+      - name: Verify publisher updated Q LIVE STATUS
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $deadline = (Get-Date).AddMinutes(3)
+          do {
+            Start-Sleep -Seconds 5
+            $body = gh issue view $env:STATUS_ISSUE --repo $env:STATUS_REPO --json body --jq .body
+            if ($LASTEXITCODE -eq 0 -and $body -match 'cycle_state: SUCCESS') {
+              $body
+              exit 0
+            }
+          } while ((Get-Date) -lt $deadline)
+          throw "Q LIVE STATUS was not published successfully"
