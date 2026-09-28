@@ -43,3 +43,36 @@ Canonical labels:
 - 100: TETIK_KOSULU_PREVIEW (entry conditions visible on the preview candle; closed-candle confirmation still required)
 
 QUSDT / swp_range48_reclaim is the reference implementation. Future monitored coins must expose the same runtime fields, with proximity logic computed from their own canonical strategy conditions rather than a generic heuristic.
+
+
+## ÇYYM — Çift Yön Yakınlık Modülü — LOCKED 2026-09-28
+
+Canonical shorthand: **ÇYYM**
+
+User command form:
+> `XYZ coin'e ÇYYM uygula`
+
+ÇYYM means the complete dual-side runtime proximity package:
+- current position state;
+- fresh closed-candle signal state;
+- independent LONG proximity score + label;
+- independent SHORT proximity score + label;
+- LONG sweep/reclaim state;
+- SHORT sweep/reclaim state;
+- missing condition for each side;
+- current candidate direction;
+- final trade decision;
+- execution result.
+
+Scoring rule:
+- proximity must move continuously as price approaches the strategy's actual trigger;
+- 0 is reserved for genuinely distant conditions;
+- 0–29 UZAK;
+- 30–59 ORTA;
+- 60–79 YAKIN;
+- 80–99 ACILMAYA_COK_YAKIN;
+- 100 TETIK_KOSULU_PREVIEW.
+
+ÇYYM is not win probability and must never alter the strategy itself. It is an observability layer derived from the canonical strategy's real entry conditions. Open-candle information may be used only for preview/proximity; actual execution remains fresh closed-candle only.
+
+Reference implementation: QUSDT / swp_range48_reclaim.
