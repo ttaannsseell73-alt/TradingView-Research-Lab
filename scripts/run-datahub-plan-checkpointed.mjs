@@ -118,6 +118,31 @@ function fetchLocalFeather({ root, symbol, timeframe, start, end, output }) {
   if (run.status !== 0) throw new Error('Local Feather data unavailable for ' + symbol + ' ' + timeframe);
 }
 
+function localCacheKey(plan) {
+  return [
+    String(plan.start).slice(0, 10),
+    String(plan.end).slice(0, 10),
+    [...new Set(plan.timeframes)].sort().join('-'),
+  ].join('__').replace(/[^0-9A-Za-z._-]+/gu, '_');
+}
+
+function prepareLocalBatchCache({ root, planFile, outputDir }) {
+  const python = process.env.DATAHUB_PYTHON
+    ?? process.env.SYSTEM_PYTHON
+    ?? (process.platform === 'win32' ? 'python.exe' : 'python3');
+  const bridge = path.resolve('scripts/export-freqtrade-feather-batch.py');
+  const args = [
+    bridge,
+    '--root', root,
+    '--plan', path.resolve(planFile),
+    '--output-dir', outputDir,
+  ];
+  const run = spawnSync(python, args, { encoding: 'utf8' });
+  if (run.stdout) process.stdout.write(run.stdout);
+  if (run.stderr) process.stderr.write(run.stderr);
+  return run.status === 0;
+}
+
 function fileReady(file) {
   try {
     return fs.statSync(file).size > 32;
@@ -131,6 +156,38 @@ function writeJsonAtomic(file, value) {
   fs.writeFileSync(tmp, JSON.stringify(value) + '\n', 'utf8');
   if (fs.existsSync(file)) fs.unlinkSync(file);
   fs.renameSync(tmp, file);
+}
+
+function createBufferedAppender(file, flushBytes = 4 * 1024 * 1024) {
+  fs.writeFileSync(file, '', 'utf8');
+  let buffer = '';
+  return {
+    addRows(rows) {
+      if (!rows.length) return;
+      buffer += rows.map((row) => JSON.stringify(row)).join('\n') + '\n';
+      if (buffer.length >= flushBytes) {
+        fs.appendFileSync(file, buffer, 'utf8');
+        buffer = '';
+      }
+    },
+    flush() {
+      if (!buffer) return;
+      fs.appendFileSync(file, buffer, 'utf8');
+      buffer = '';
+    },
+  };
+}
+
+function candlesByWindows(candles, windows) {
+  const groups = [];
+  let cursor = 0;
+  for (const window of windows) {
+    while (cursor < candles.length && candles[cursor].t < window.start) cursor += 1;
+    const startIndex = cursor;
+    while (cursor < candles.length && candles[cursor].t < window.end) cursor += 1;
+    groups.push({ window, candles: candles.slice(startIndex, cursor) });
+  }
+  return groups;
 }
 
 function compareRows(a, b) {
@@ -161,7 +218,11 @@ const dataRoot = process.env.DATAHUB_ROOT
   ?? process.env.DATAHUB_LOCAL_ROOT
   ?? (process.platform === 'win32' ? 'D:/Futures-Research-Data' : path.resolve('.datahub-cloud'));
 const outDir = path.resolve(process.env.RESEARCH_OUT_DIR ?? 'artifacts/hybrid-research');
-const csvDir = path.resolve(process.env.RESEARCH_CSV_DIR ?? path.join(outDir, 'csv'));
+const localFeatherRoot = process.env.FREQTRADE_FUTURES_ROOT;
+const defaultCsvDir = localFeatherRoot
+  ? path.join(dataRoot, 'research-cache', localCacheKey(plan))
+  : path.join(outDir, 'csv');
+const csvDir = path.resolve(process.env.RESEARCH_CSV_DIR ?? defaultCsvDir);
 const checkpointDir = path.join(outDir, 'checkpoints-' + shardIndex + '-of-' + shardCount);
 fs.mkdirSync(csvDir, { recursive: true });
 fs.mkdirSync(checkpointDir, { recursive: true });
@@ -171,6 +232,24 @@ for (const symbol of [...new Set(plan.symbols)].sort()) {
   for (const timeframe of [...new Set(plan.timeframes)].sort()) tasks.push({ symbol, timeframe });
 }
 const selectedTasks = tasks.filter((_, index) => index % shardCount === shardIndex);
+
+const batchLocalRequested = Boolean(localFeatherRoot)
+  && shardCount === 1
+  && !['0', 'false', 'off'].includes(String(process.env.BATCH_LOCAL_CACHE ?? '1').toLowerCase());
+let batchLocalPrepared = false;
+if (batchLocalRequested) {
+  const started = Date.now();
+  batchLocalPrepared = prepareLocalBatchCache({
+    root: localFeatherRoot,
+    planFile,
+    outputDir: csvDir,
+  });
+  console.log(JSON.stringify({
+    localBatchCache: batchLocalPrepared ? 'READY' : 'PARTIAL_FALLBACK',
+    csvDir,
+    elapsedMs: Date.now() - started,
+  }));
+}
 
 let progressCommentId = null;
 function reportShardProgress(done, total, force = false) {
@@ -242,7 +321,8 @@ for (const name of completedFiles) {
 
 reportShardProgress(state.completed, selectedTasks.length, true);
 
-const reuseExistingCsv = String(process.env.REUSE_EXISTING_CSV ?? '').toLowerCase() === '1'
+const reuseExistingCsv = batchLocalPrepared
+  || String(process.env.REUSE_EXISTING_CSV ?? '').toLowerCase() === '1'
   || String(process.env.REUSE_EXISTING_CSV ?? '').toLowerCase() === 'true';
 
 for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
@@ -260,7 +340,6 @@ for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
   };
 
   try {
-    const localFeatherRoot = process.env.FREQTRADE_FUTURES_ROOT;
     const strictLocal = String(process.env.LOCAL_DATA_MODE ?? '').toLowerCase() === 'strict';
 
     if (!(reuseExistingCsv && fileReady(csvFile))) {
@@ -353,8 +432,8 @@ for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
 
       if (plan.monthlyBreakdown) {
         const monthlyMinTrades = Number(plan.monthlyMinTrades ?? minTrades);
-        for (const window of monthWindows(effectiveStartMs, plan.endMs)) {
-          const monthCandles = candles.filter((bar) => bar.t >= window.start && bar.t < window.end);
+        const windows = monthWindows(effectiveStartMs, plan.endMs);
+        for (const { window, candles: monthCandles } of candlesByWindows(candles, windows)) {
           const expectedMonth = Math.floor((window.end - window.start) / TF_MS[task.timeframe]);
           const monthCoverage = expectedMonth ? monthCandles.length / expectedMonth : 0;
 
@@ -424,18 +503,21 @@ const backend = process.env.RESEARCH_BACKEND ?? plan.backend;
 const resultsFile = path.join(outDir, 'results-' + backend + '-' + shardIndex + '-of-' + shardCount + '.ndjson');
 const monthlyFile = path.join(outDir, 'monthly-' + backend + '-' + shardIndex + '-of-' + shardCount + '.ndjson');
 const failuresFile = path.join(outDir, 'failures-' + backend + '-' + shardIndex + '-of-' + shardCount + '.ndjson');
-for (const file of [resultsFile, monthlyFile, failuresFile]) {
-  if (fs.existsSync(file)) fs.unlinkSync(file);
-}
+const resultsAppender = createBufferedAppender(resultsFile);
+const monthlyAppender = createBufferedAppender(monthlyFile);
+const failuresAppender = createBufferedAppender(failuresFile);
 
 for (let taskIndex = 0; taskIndex < selectedTasks.length; taskIndex += 1) {
   const checkpointFile = path.join(checkpointDir, 'task-' + String(taskIndex).padStart(6, '0') + '.json');
   if (!fs.existsSync(checkpointFile)) continue;
   const cp = JSON.parse(fs.readFileSync(checkpointFile, 'utf8'));
-  for (const row of cp.results) fs.appendFileSync(resultsFile, JSON.stringify(row) + '\n', 'utf8');
-  for (const row of cp.monthlyResults) fs.appendFileSync(monthlyFile, JSON.stringify(row) + '\n', 'utf8');
-  if (cp.failure) fs.appendFileSync(failuresFile, JSON.stringify(cp.failure) + '\n', 'utf8');
+  resultsAppender.addRows(cp.results);
+  monthlyAppender.addRows(cp.monthlyResults);
+  if (cp.failure) failuresAppender.addRows([cp.failure]);
 }
+resultsAppender.flush();
+monthlyAppender.flush();
+failuresAppender.flush();
 
 state.topResults.sort(compareRows);
 const summary = {
