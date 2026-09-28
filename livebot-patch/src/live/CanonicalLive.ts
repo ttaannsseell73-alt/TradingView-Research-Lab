@@ -1,9 +1,10 @@
 import { createHash } from 'crypto';
-import qCanonical from './q-live-v1.json';
 
 export type Direction = -1 | 0 | 1;
 export type DeploymentMode = 'SHADOW' | 'CANARY' | 'LIVE' | 'HALTED';
 export type SystemMode = 'RUNNING' | 'HALT_NEW_ENTRIES' | 'EXIT_ONLY' | 'EMERGENCY_FLATTEN' | 'FULL_STOP';
+
+export const Q_CANONICAL_LEVERAGE = 1 as const;
 
 export interface Candle {
   t: number;
@@ -468,7 +469,7 @@ export function qCanonicalManifest(mode: DeploymentMode = 'SHADOW'): DeploymentM
     mode,
     strategyHash,
     historyAnchor: '2025-12-29T00:00:00Z',
-    marginType: qCanonical.marginType as 'ISOLATED',
-    leverage: qCanonical.leverage as 1,
+    marginType: 'ISOLATED',
+    leverage: Q_CANONICAL_LEVERAGE,
   };
 }
