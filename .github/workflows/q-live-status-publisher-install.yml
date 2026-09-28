@@ -12,6 +12,7 @@ permissions:
   issues: write
 
 # refresh: proximity preview deployed
+# refresh: dual side rollout verified
 jobs:
   install:
     runs-on: [self-hosted, datahub-local]
