@@ -191,7 +191,11 @@ jobs:
               $LASTEXITCODE -eq 0 -and
               $body -match 'cycle_state: SUCCESS' -and
               $body -match 'proximity_score:\s*[0-9]+' -and
-              $body -match 'proximity_label:\s*(UZAK|ORTA|YAKIN|ACILMAYA_COK_YAKIN|TETIK_KOSULU_PREVIEW)'
+              $body -match 'proximity_label:\s*(UZAK|ORTA|YAKIN|ACILMAYA_COK_YAKIN|TETIK_KOSULU_PREVIEW)' -and
+              $body -match 'long_score:\s*[0-9]+' -and
+              $body -match 'long_label:\s*(UZAK|ORTA|YAKIN|ACILMAYA_COK_YAKIN|TETIK_KOSULU_PREVIEW)' -and
+              $body -match 'short_score:\s*[0-9]+' -and
+              $body -match 'short_label:\s*(UZAK|ORTA|YAKIN|ACILMAYA_COK_YAKIN|TETIK_KOSULU_PREVIEW)'
             ) {
               $body
               exit 0
