@@ -98,20 +98,38 @@ function monthWindows(startMs, endMs) {
 }
 
 function fetchCsv({ root, symbol, timeframe, start, end, output }) {
-  const args = [
-    '--root', root,
-    'fetch-csv',
-    '--symbol', symbol,
-    '--timeframe', timeframe,
-    '--start', start,
-    '--end', end,
-    '--output', output,
-  ];
-  const command = process.platform === 'win32' ? 'datahub.exe' : 'datahub';
+  const sparseVision = String(process.env.VISION_SPARSE_MODE ?? '').toLowerCase() === '1'
+    || String(process.env.VISION_SPARSE_MODE ?? '').toLowerCase() === 'true';
+  let command;
+  let args;
+  if (sparseVision) {
+    command = process.env.DATAHUB_PYTHON
+      ?? process.env.SYSTEM_PYTHON
+      ?? (process.platform === 'win32' ? 'python.exe' : 'python3');
+    args = [
+      path.resolve('scripts/export-binance-vision-sparse.py'),
+      '--symbol', symbol,
+      '--timeframe', timeframe,
+      '--start', start,
+      '--end', end,
+      '--output', output,
+    ];
+  } else {
+    args = [
+      '--root', root,
+      'fetch-csv',
+      '--symbol', symbol,
+      '--timeframe', timeframe,
+      '--start', start,
+      '--end', end,
+      '--output', output,
+    ];
+    command = process.platform === 'win32' ? 'datahub.exe' : 'datahub';
+  }
   const run = spawnSync(command, args, { encoding: 'utf8' });
   if (run.stdout) process.stdout.write(run.stdout);
   if (run.stderr) process.stderr.write(run.stderr);
-  if (run.status !== 0) throw new Error(`DataHub fetch failed for ${symbol} ${timeframe}`);
+  if (run.status !== 0) throw new Error(`${sparseVision ? 'Vision sparse' : 'DataHub'} fetch failed for ${symbol} ${timeframe}`);
 }
 
 function fetchLocalFeather({ root, symbol, timeframe, start, end, output }) {
@@ -216,11 +234,26 @@ for (const task of selectedTasks) {
         output: csvFile,
       });
     }
-    const candles = parseCsv(csvFile);
-    const expected = Math.floor((plan.endMs - plan.startMs) / TF_MS[task.timeframe]);
-    const coverage = expected ? candles.length / expected : 0;
+    const candles = parseCsv(csvFile).filter((bar) => bar.t >= plan.startMs && bar.t < plan.endMs);
+    const lifetimeAware = String(process.env.LIFETIME_AWARE_MODE ?? '').toLowerCase() === '1'
+      || String(process.env.LIFETIME_AWARE_MODE ?? '').toLowerCase() === 'true';
+    const firstBarMs = candles.length ? candles[0].t : NaN;
+    const lastBarMs = candles.length ? candles[candles.length - 1].t : NaN;
+    const effectiveStartMs = lifetimeAware && Number.isFinite(firstBarMs)
+      ? Math.max(plan.startMs, firstBarMs)
+      : plan.startMs;
+    const expected = Math.floor((plan.endMs - effectiveStartMs) / TF_MS[task.timeframe]);
+    const coverage = expected ? Math.min(1, candles.length / expected) : 0;
+    const historyDays = Number.isFinite(firstBarMs) && Number.isFinite(lastBarMs)
+      ? (lastBarMs - firstBarMs + TF_MS[task.timeframe]) / 86_400_000
+      : 0;
+    const minHistoryDays = Number(plan.minHistoryDays ?? 30);
+    if (historyDays < minHistoryDays) {
+      failures.push({ ...task, reason: 'TOO_SHORT_HISTORY', rows: candles.length, expected, coverage, historyDays, minHistoryDays });
+      continue;
+    }
     if (coverage < Number(plan.minCoverage ?? 0.98)) {
-      failures.push({ ...task, reason: 'PARTIAL_COVERAGE', rows: candles.length, expected, coverage });
+      failures.push({ ...task, reason: 'PARTIAL_LIFETIME_COVERAGE', rows: candles.length, expected, coverage, historyDays });
       continue;
     }
 
@@ -242,17 +275,19 @@ for (const task of selectedTasks) {
     for (const row of evaluated) {
       results.push({
         ...task,
-        start: plan.start,
+        start: new Date(effectiveStartMs).toISOString(),
+        requestedStart: plan.start,
         end: plan.end,
         rows: candles.length,
         coverage,
+        historyDays,
         ...row,
       });
     }
 
     if (plan.monthlyBreakdown) {
       const monthlyMinTrades = Number(plan.monthlyMinTrades ?? minTrades);
-      for (const window of monthWindows(plan.startMs, plan.endMs)) {
+      for (const window of monthWindows(effectiveStartMs, plan.endMs)) {
         const monthCandles = candles.filter((bar) => bar.t >= window.start && bar.t < window.end);
         const expectedMonth = Math.floor((window.end - window.start) / TF_MS[task.timeframe]);
         const monthCoverage = expectedMonth ? monthCandles.length / expectedMonth : 0;
