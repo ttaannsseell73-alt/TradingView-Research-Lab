@@ -1,0 +1,60 @@
+name: LiveBot Final Snapshot
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  snapshot:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[LIVEBOT FINAL SNAPSHOT]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 10
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+    steps:
+      - name: Inspect config/user gateway without secrets
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $root=$env:BOT_ROOT
+          $out=Join-Path $env:RUNNER_TEMP "livebot-final-snapshot.md"
+          $lines=New-Object System.Collections.Generic.List[string]
+          foreach($rel in @("package.json","src/config/index.ts","src/gateways/BinanceUserGateway.ts","src/gateways/BinanceRestClient.ts","src/index.ts")){
+            $p=Join-Path $root $rel
+            if(Test-Path $p){
+              $lines.Add("## $rel")
+              $txt=Get-Content $p -Raw
+              if($txt.Length -gt 22000){$txt=$txt.Substring(0,22000)+[Environment]::NewLine+"...[truncated]"}
+              $lines.Add($txt)
+            }
+          }
+          $lines.Add("## .env variable names only")
+          $envFile=Join-Path $root ".env"
+          if(Test-Path $envFile){
+            Get-Content $envFile | ForEach-Object {
+              $line=$_.Trim()
+              if($line -and !$line.StartsWith("#") -and $line.Contains("=")){
+                $name=$line.Split("=")[0].Trim()
+                if($name){$lines.Add($name)}
+              }
+            }
+          } else {
+            $lines.Add("(no .env file)")
+          }
+          $lines.Add("## git remote names")
+          Push-Location $root
+          $remotes=(git remote)
+          $lines.Add(($remotes -join ", "))
+          Pop-Location
+          [IO.File]::WriteAllLines($out,$lines,[Text.UTF8Encoding]::new($false))
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file $out
