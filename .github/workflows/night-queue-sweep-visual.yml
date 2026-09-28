@@ -18,9 +18,9 @@ jobs:
       LOCAL_DATA_MODE: strict
       RESEARCH_BACKEND: local
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
-      SHARD_INDEX: 0
-      SHARD_COUNT: 1
+      LOCAL_PARALLEL_SHARDS: 4
       REUSE_EXISTING_CSV: 1
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2026-01-01__2026-09-20__1m-5m-15m-1h-4h
 
     steps:
       - uses: actions/checkout@v4
@@ -101,10 +101,9 @@ jobs:
         shell: powershell
         env:
           RESEARCH_OUT_DIR: artifacts/sweep20-2026-full
-          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs night-sweep-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs night-sweep-plan.json
 
       - name: Summarize SWEEP20 9-of-9 and 8-of-9
         continue-on-error: true
@@ -136,10 +135,9 @@ jobs:
         shell: powershell
         env:
           RESEARCH_OUT_DIR: artifacts/visual28-2026-full
-          RESEARCH_CSV_DIR: artifacts/sr25-2026-full/csv
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs night-visual-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs night-visual-plan.json
 
       - name: Summarize VISUAL28 9-of-9 and 8-of-9
         continue-on-error: true
