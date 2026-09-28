@@ -1,9 +1,6 @@
 name: Night Queue Sweep Visual
 
 on:
-  push:
-    paths:
-      - '.night-queue-trigger'
   workflow_dispatch:
 
 permissions:
