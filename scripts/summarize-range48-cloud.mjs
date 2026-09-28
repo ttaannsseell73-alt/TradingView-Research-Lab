@@ -21,9 +21,18 @@ function esc(v){
   return /[",\r\n]/u.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
 }
 
-const results=readNdjson('results-cloud-');
-const monthly=readNdjson('monthly-cloud-');
-const failures=readNdjson('failures-cloud-');
+let results=readNdjson('results-cloud-');
+let monthly=readNdjson('monthly-cloud-');
+let failures=readNdjson('failures-cloud-');
+
+// Turbo cloud shards use one JSON payload per shard. Keep backwards read support
+// so archived artifacts remain inspectable, but all new runs use result-cloud-*.
+for(const name of files.filter(n=>n.startsWith('result-cloud-')&&n.endsWith('.json')).sort()){
+  const payload=JSON.parse(fs.readFileSync(path.join(root,name),'utf8'));
+  if(Array.isArray(payload.results)) results.push(...payload.results);
+  if(Array.isArray(payload.monthlyResults)) monthly.push(...payload.monthlyResults);
+  if(Array.isArray(payload.failures)) failures.push(...payload.failures);
+}
 
 const byKey=new Map();
 for(const r of results){
