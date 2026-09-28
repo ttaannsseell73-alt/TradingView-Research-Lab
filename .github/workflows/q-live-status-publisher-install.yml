@@ -88,7 +88,17 @@ jobs:
                   "- proximity_direction: $($r.market.proximity.direction)",
                   "- proximity_sweepDone: $($r.market.proximity.sweepDone)",
                   "- proximity_reclaimDone: $($r.market.proximity.reclaimDone)",
-                  "- proximity_remaining: $($r.market.proximity.remaining)"
+                  "- proximity_remaining: $($r.market.proximity.remaining)",
+                  "- long_score: $($r.market.proximity.long.score)",
+                  "- long_label: $($r.market.proximity.long.label)",
+                  "- long_sweepDone: $($r.market.proximity.long.sweepDone)",
+                  "- long_reclaimDone: $($r.market.proximity.long.reclaimDone)",
+                  "- long_remaining: $($r.market.proximity.long.remaining)",
+                  "- short_score: $($r.market.proximity.short.score)",
+                  "- short_label: $($r.market.proximity.short.label)",
+                  "- short_sweepDone: $($r.market.proximity.short.sweepDone)",
+                  "- short_reclaimDone: $($r.market.proximity.short.reclaimDone)",
+                  "- short_remaining: $($r.market.proximity.short.remaining)"
                 )
                 if ($null -ne $r.positionAfter) {
                   $lines += "- positionAfter: $($r.positionAfter | ConvertTo-Json -Compress)"
