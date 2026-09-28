@@ -315,7 +315,7 @@ async function main() {
     publicationVersion: fetched.payload?.version ?? null,
     facadeAccess: fetched.payload?.scriptAccess ?? null,
     sourceBytes: Buffer.byteLength(source, 'utf8'),
-    exactSourceMutated: true,
+    exactSourceMutated: meta.recoveryType !== 'ORIGINAL_RETRY',
     recoveryType: meta.recoveryType,
     originalSourceSha256: meta.originalSourceSha256,
     patchSummary: meta.patchSummary,
@@ -467,11 +467,11 @@ async function main() {
   const summary = {
     schemaVersion: 1,
     policy: {
-      source: 'RECOVERY_TRADINGVIEW_PINE',
-      sourceMutation: false,
+      source: 'RECOVERY_LAB_PINE',
+      sourceMutation: meta.recoveryType !== 'ORIGINAL_RETRY',
       inputOverrides: false,
       strategyOverrides: false,
-      indicatorConversion: false,
+      indicatorConversion: meta.recoveryType === 'SIGNAL_WRAPPER',
       executionRuntime: 'PineTS 0.10.0',
       monthlyScoring: 'recovered-source closed-trade realized PnL by exit month; recovery provenance kept separate',
     },
