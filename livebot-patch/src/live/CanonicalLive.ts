@@ -24,10 +24,27 @@ export interface StrategySignal {
   barOpenTime: number | null;
 }
 
+export type Range48ProximityLabel =
+  | 'UZAK'
+  | 'ORTA'
+  | 'YAKIN'
+  | 'ACILMAYA_COK_YAKIN'
+  | 'TETIK_KOSULU_PREVIEW';
+
+export interface Range48ProximitySide {
+  score: number;
+  label: Range48ProximityLabel;
+  sweepDone: boolean;
+  reclaimDone: boolean;
+  sweepThreshold: number;
+  distanceToSweepAtr: number;
+  remaining: string;
+}
+
 export interface Range48Proximity {
   previewOnly: true;
   score: number;
-  label: 'UZAK' | 'ORTA' | 'YAKIN' | 'ACILMAYA_COK_YAKIN' | 'TETIK_KOSULU_PREVIEW';
+  label: Range48ProximityLabel;
   direction: 'LONG' | 'SHORT';
   sweepDone: boolean;
   reclaimDone: boolean;
@@ -37,6 +54,8 @@ export interface Range48Proximity {
   sweepThreshold: number;
   distanceToSweepAtr: number;
   remaining: string;
+  long: Range48ProximitySide;
+  short: Range48ProximitySide;
 }
 
 export type QExecutionAction =
@@ -203,25 +222,28 @@ export class Range48Strategy {
     const sweepThreshold = direction === 'LONG' ? longThreshold : shortThreshold;
     const distanceToSweepAtr = direction === 'LONG' ? longDistanceAtr : shortDistanceAtr;
 
-    let label: Range48Proximity['label'];
-    if (score >= 100) label = 'TETIK_KOSULU_PREVIEW';
-    else if (score >= 80) label = 'ACILMAYA_COK_YAKIN';
-    else if (score >= 60) label = 'YAKIN';
-    else if (score >= 30) label = 'ORTA';
-    else label = 'UZAK';
+    const proximityLabel = (value: number): Range48ProximityLabel => {
+      if (value >= 100) return 'TETIK_KOSULU_PREVIEW';
+      if (value >= 80) return 'ACILMAYA_COK_YAKIN';
+      if (value >= 60) return 'YAKIN';
+      if (value >= 30) return 'ORTA';
+      return 'UZAK';
+    };
 
-    let remaining: string;
-    if (!sweepDone) {
-      remaining = direction === 'LONG'
-        ? `LOW <= ${longThreshold.toFixed(8)} sweep bekleniyor`
-        : `HIGH >= ${shortThreshold.toFixed(8)} sweep bekleniyor`;
-    } else if (!reclaimDone) {
-      remaining = direction === 'LONG'
+    const longRemaining = !longSweepDone
+      ? `LOW <= ${longThreshold.toFixed(8)} sweep bekleniyor`
+      : !longReclaimDone
         ? `Sweep oldu; CLOSE > ${l.toFixed(8)} reclaim bekleniyor`
-        : `Sweep oldu; CLOSE < ${h.toFixed(8)} reclaim bekleniyor`;
-    } else {
-      remaining = 'Preview tetik kosullari olustu; 15m mum kapanisi bekleniyor';
-    }
+        : 'Preview tetik kosullari olustu; 15m mum kapanisi bekleniyor';
+
+    const shortRemaining = !shortSweepDone
+      ? `HIGH >= ${shortThreshold.toFixed(8)} sweep bekleniyor`
+      : !shortReclaimDone
+        ? `Sweep oldu; CLOSE < ${h.toFixed(8)} reclaim bekleniyor`
+        : 'Preview tetik kosullari olustu; 15m mum kapanisi bekleniyor';
+
+    const label = proximityLabel(score);
+    const remaining = direction === 'LONG' ? longRemaining : shortRemaining;
 
     return {
       previewOnly: true,
@@ -236,6 +258,24 @@ export class Range48Strategy {
       sweepThreshold,
       distanceToSweepAtr,
       remaining,
+      long: {
+        score: longScore,
+        label: proximityLabel(longScore),
+        sweepDone: longSweepDone,
+        reclaimDone: longReclaimDone,
+        sweepThreshold: longThreshold,
+        distanceToSweepAtr: longDistanceAtr,
+        remaining: longRemaining,
+      },
+      short: {
+        score: shortScore,
+        label: proximityLabel(shortScore),
+        sweepDone: shortSweepDone,
+        reclaimDone: shortReclaimDone,
+        sweepThreshold: shortThreshold,
+        distanceToSweepAtr: shortDistanceAtr,
+        remaining: shortRemaining,
+      },
     };
   }
 
