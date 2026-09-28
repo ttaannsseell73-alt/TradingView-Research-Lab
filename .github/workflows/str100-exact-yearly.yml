@@ -1,0 +1,306 @@
+name: STR100 Exact Yearly
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  prepare:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[STR100 YEARLY]')
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+      ready_count: ${{ steps.resolve.outputs.ready_count }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build canonical 39-exact manifest
+        shell: python
+        run: |
+          import json
+          src=json.load(open("research/exact_source_manifest.json",encoding="utf-8"))
+          exact_indices={1,2,3,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26,27,28,*range(84,98)}
+          items=[x for i,x in enumerate(src["items"],1) if i in exact_indices]
+          assert len(items)==39, len(items)
+          out={**src,"items":items,"screenshotsExpected":25,"screenshotItems":25,"sweepExactItems":14}
+          json.dump(out,open("str100-exact-manifest.json","w",encoding="utf-8"),ensure_ascii=False,indent=2)
+
+      - name: Resolve exact TradingView sources
+        id: resolve
+        run: |
+          python scripts/resolve-tradingview-exact-sources.py str100-exact-manifest.json --out-dir artifacts/str100-exact-audit
+
+      - name: Upload source audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: str100-exact-source-audit
+          path: artifacts/str100-exact-audit/
+          if-no-files-found: error
+          retention-days: 30
+
+  turbo_cache:
+    needs: prepare
+    if: needs.prepare.outputs.ready_count != '0'
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 180
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      TURBO_TIMEFRAMES: 1m,5m,15m,1h,4h
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Prepare latest-year cache first
+        shell: powershell
+        env:
+          TURBO_START: 2025-09-28T00:00:00Z
+          TURBO_END: 2026-09-28T00:00:00Z
+          TURBO_CACHE_DIR: D:/Futures-Research-Data/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/build-turbo-cache-plan.mjs latest-plan.json
+          New-Item -ItemType Directory -Force -Path "$env:TURBO_CACHE_DIR" | Out-Null
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan latest-plan.json --output-dir "$env:TURBO_CACHE_DIR" --strict
+          if ($LASTEXITCODE -ne 0) { throw "Latest-year cache failed" }
+
+      - name: Prepare previous-year cache
+        shell: powershell
+        env:
+          TURBO_START: 2024-09-28T00:00:00Z
+          TURBO_END: 2025-09-28T00:00:00Z
+          TURBO_CACHE_DIR: D:/Futures-Research-Data/research-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/build-turbo-cache-plan.mjs previous-plan.json
+          New-Item -ItemType Directory -Force -Path "$env:TURBO_CACHE_DIR" | Out-Null
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root "$env:FREQTRADE_FUTURES_ROOT" --plan previous-plan.json --output-dir "$env:TURBO_CACHE_DIR" --strict
+          if ($LASTEXITCODE -ne 0) { throw "Previous-year cache failed" }
+
+  exact_yearly:
+    needs: [prepare, turbo_cache]
+    if: needs.prepare.outputs.ready_count != '0' && needs.turbo_cache.result == 'success'
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 1200
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      EXACT_CHECKPOINT_ROOT: C:/actions-runner-datahub/str100-yearly-checkpoints
+      LOCAL_PARALLEL_SHARDS: 4
+      PINE_SOURCE_CACHE: D:/Futures-Research-Data/pine-source-cache
+      EXACT_MIN_COVERAGE: '0.98'
+      EXACT_MIN_HISTORY_DAYS: '30'
+      EXACT_MONTHLY_MIN_TRADES: '10'
+      EXACT_KEY: ${{ matrix.key }}
+      EXACT_NAME: ${{ matrix.name }}
+      EXACT_AUTHOR: ${{ matrix.author }}
+      EXACT_ORIGIN: ${{ matrix.origin }}
+      EXACT_GROUP: ${{ matrix.group }}
+      EXACT_SCRIPT_ID: ${{ matrix.script_id_part }}
+      EXACT_SOURCE_SHA256: ${{ matrix.source_sha256 }}
+      EXACT_PINE_VERSION: ${{ matrix.pine_version }}
+      EXACT_URL: ${{ matrix.url }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned PineTS
+        shell: powershell
+        run: |
+          npm install --no-save --package-lock=false --audit=false --fund=false pinets@0.10.0
+
+      - name: Run latest 12 months FIRST
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:TURBO_PINETS_MODE = "exact"
+          $env:EXACT_START = "2025-09-28T00:00:00Z"
+          $env:EXACT_END = "2026-09-28T00:00:00Z"
+          $env:EXACT_CSV_CACHE = "D:/Futures-Research-Data/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h"
+          $env:EXACT_OUT_DIR = "artifacts/str100-yearly/$env:EXACT_KEY/latest"
+          node scripts/run-pinets-turbo-local.mjs
+          if ($LASTEXITCODE -ne 0) { throw "Latest-year exact run failed" }
+
+      - name: Run previous 12 months SECOND
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:TURBO_PINETS_MODE = "exact"
+          $env:EXACT_START = "2024-09-28T00:00:00Z"
+          $env:EXACT_END = "2025-09-28T00:00:00Z"
+          $env:EXACT_CSV_CACHE = "D:/Futures-Research-Data/research-cache/2024-09-28__2025-09-28__1m-5m-15m-1h-4h"
+          $env:EXACT_OUT_DIR = "artifacts/str100-yearly/$env:EXACT_KEY/previous"
+          node scripts/run-pinets-turbo-local.mjs
+          if ($LASTEXITCODE -ne 0) { throw "Previous-year exact run failed" }
+
+      - name: Upload yearly exact result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: str100-yearly-${{ matrix.key }}
+          path: artifacts/str100-yearly/${{ matrix.key }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+  final_index:
+    needs: [prepare, exact_yearly]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download yearly exact artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: str100-yearly-*
+          path: artifacts/str100-downloaded
+
+      - name: Build current-priority yearly report
+        shell: python
+        run: |
+          import json, pathlib, statistics, csv
+          root=pathlib.Path("artifacts/str100-downloaded")
+          out=pathlib.Path("artifacts/str100-yearly-final")
+          out.mkdir(parents=True,exist_ok=True)
+
+          def load_rows(p):
+              if not p.exists(): return []
+              rows=[]
+              for line in p.read_text(encoding="utf-8").splitlines():
+                  if line.strip(): rows.append(json.loads(line))
+              return rows
+
+          def strength(row, first_partial_month):
+              if row.get("status")!="OK" or float(row.get("historyDays") or 0)<330:
+                  return None
+              monthly=[m for m in row.get("monthly",[]) if m.get("month")!=first_partial_month]
+              eligible=len(monthly)
+              passed=sum(1 for m in monthly if m.get("pass"))
+              ratio=(passed/eligible) if eligible else 0
+              full_pass=bool((row.get("full") or {}).get("pass"))
+              strong=full_pass and eligible>=10 and ratio>=0.80
+              return {
+                  "eligibleMonths":eligible,
+                  "passMonths":passed,
+                  "passRatio":ratio,
+                  "strong":strong,
+                  "netPct":(row.get("full") or {}).get("netPct"),
+                  "pf":(row.get("full") or {}).get("profitFactor"),
+                  "dd":(row.get("full") or {}).get("maxDrawdownPct"),
+                  "trades":(row.get("full") or {}).get("trades"),
+              }
+
+          strategies=[]
+          detail=[]
+          for latest_file in root.rglob("latest/task-results.ndjson"):
+              key=latest_file.parent.parent.name
+              prev_file=latest_file.parent.parent/"previous"/"task-results.ndjson"
+              latest=load_rows(latest_file)
+              previous=load_rows(prev_file)
+              lm={(r.get("symbol"),r.get("timeframe")):r for r in latest}
+              pm={(r.get("symbol"),r.get("timeframe")):r for r in previous}
+              latest_strong=previous_strong=robust=current_only=stale=0
+              latest_nets=[]
+              name=author=None
+              summ=latest_file.parent/"summary.json"
+              if summ.exists():
+                  sj=json.loads(summ.read_text(encoding="utf-8"))
+                  name=(sj.get("strategy") or {}).get("name")
+                  author=(sj.get("strategy") or {}).get("author")
+              for k in sorted(set(lm)|set(pm)):
+                  ls=strength(lm.get(k,{}),"2025-09")
+                  ps=strength(pm.get(k,{}),"2024-09")
+                  lgood=bool(ls and ls["strong"])
+                  pgood=bool(ps and ps["strong"])
+                  latest_strong+=lgood
+                  previous_strong+=pgood
+                  robust+=lgood and pgood
+                  current_only+=lgood and not pgood
+                  stale+=pgood and not lgood
+                  if lgood and ls.get("netPct") is not None:
+                      latest_nets.append(float(ls["netPct"]))
+                  if lgood or pgood:
+                      detail.append({
+                          "key":key,"name":name,"symbol":k[0],"timeframe":k[1],
+                          "latest":ls,"previous":ps,
+                          "classification":"TWO_YEAR_ROBUST" if lgood and pgood else "CURRENT_ONLY" if lgood else "STALE"
+                      })
+              strategies.append({
+                  "key":key,"name":name,"author":author,
+                  "latestStrong":latest_strong,
+                  "twoYearRobust":robust,
+                  "currentOnly":current_only,
+                  "previousStrong":previous_strong,
+                  "stale":stale,
+                  "latestMedianNetPct":statistics.median(latest_nets) if latest_nets else None,
+              })
+
+          strategies.sort(key=lambda r:(r["latestStrong"],r["twoYearRobust"],r["latestMedianNetPct"] or -1e99),reverse=True)
+          report={
+              "policy":{
+                  "primaryWindow":"2025-09-28/2026-09-28",
+                  "secondaryWindow":"2024-09-28/2025-09-28",
+                  "ranking":"latest-year strength first; previous year is robustness confirmation",
+                  "strongTask":"full PASS + >=80% eligible monthly PASS + >=330 history days",
+                  "firstPartialMonthExcluded":True,
+              },
+              "strategies":strategies,
+              "detail":detail,
+          }
+          (out/"report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          fields=["key","name","author","latestStrong","twoYearRobust","currentOnly","previousStrong","stale","latestMedianNetPct"]
+          with (out/"strategy-summary.csv").open("w",newline="",encoding="utf-8") as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(strategies)
+
+      - name: Upload final yearly report
+        uses: actions/upload-artifact@v4
+        with:
+          name: str100-yearly-final
+          path: artifacts/str100-yearly-final/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish issue summary
+        if: github.event_name == 'issues'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY' > /tmp/summary.txt
+          import json
+          j=json.load(open("artifacts/str100-yearly-final/report.json",encoding="utf-8"))
+          rows=j["strategies"]
+          print("STR100 Exact yearly tamamlandı.")
+          print()
+          print("- Son 12 ay birincil: **2025-09-28 → 2026-09-28**")
+          print("- Önceki 12 ay doğrulama: **2024-09-28 → 2025-09-28**")
+          print("- Kaynak: canonical **39 exact** aday; runtime/source uygun olmayanlar audit'te SKIP.")
+          print("- Sıralama: **latestStrong → twoYearRobust → latestMedianNetPct**")
+          print()
+          print("İlk 10:")
+          for r in rows[:10]:
+              print(f"- {r['name']}: latest={r['latestStrong']}, robust={r['twoYearRobust']}, current-only={r['currentOnly']}, stale={r['stale']}")
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --body-file /tmp/summary.txt
