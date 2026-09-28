@@ -15,6 +15,7 @@ jobs:
   # refresh: idempotent Binance read retries
   # refresh: Range48 proximity preview
   # refresh: dual long-short proximity
+  # refresh: continuous 3ATR proximity scale
   install:
     runs-on: [self-hosted, datahub-local]
     timeout-minutes: 20
