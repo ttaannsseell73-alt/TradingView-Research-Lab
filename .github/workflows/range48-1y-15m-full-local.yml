@@ -28,6 +28,7 @@ jobs:
       SHARD_COUNT: 1
       REUSE_EXISTING_CSV: 1
       BATCH_LOCAL_CACHE: 1
+      LOCAL_PARALLEL_SHARDS: 4
       RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2025-09-28__2026-09-28__15m
 
     steps:
@@ -78,7 +79,7 @@ jobs:
           RESEARCH_OUT_DIR: artifacts/range48-1y-15m
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-datahub-plan-checkpointed.mjs range48-1y-plan.json
+          node scripts/run-datahub-plan-parallel-local.mjs range48-1y-plan.json
 
       - name: Build 12-month consistency report
         shell: powershell
