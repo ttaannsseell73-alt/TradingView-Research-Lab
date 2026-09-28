@@ -1,0 +1,70 @@
+name: LiveBot Core Snapshot
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  snapshot:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[LIVEBOT SNAPSHOT]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 15
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+    steps:
+      - name: Publish selected core files
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $root = $env:BOT_ROOT
+          $targets = @(
+            "src/models/types.ts",
+            "src/config/index.ts",
+            "src/config/exchangeSafety.ts",
+            "src/db/IntentJournal.ts",
+            "src/engine/ExecutionEngine.ts",
+            "src/engine/Reconciler.ts",
+            "src/engine/RiskGuard.ts",
+            "src/engine/OrderTracker.ts",
+            "src/engine/Watchdog.ts",
+            "src/gateways/IBinanceClient.ts",
+            "src/gateways/BinanceRestClient.ts",
+            "src/App.ts",
+            "src/tests/FailureMatrix.test.ts",
+            "src/tests/FakeBinanceClient.ts",
+            "src/tests/FakeBinanceExchange.ts"
+          )
+          $chunks = @()
+          $current = New-Object System.Collections.Generic.List[string]
+          $current.Add("# LiveBot core snapshot")
+          foreach ($rel in $targets) {
+            $p = Join-Path $root $rel
+            if (!(Test-Path $p)) { continue }
+            $txt = Get-Content $p -Raw
+            if ($txt.Length -gt 16000) { $txt = $txt.Substring(0,16000) + [Environment]::NewLine + "...truncated" }
+            $block = "## $rel" + [Environment]::NewLine + $txt + [Environment]::NewLine
+            $candidate = (($current -join [Environment]::NewLine) + [Environment]::NewLine + $block)
+            if ($candidate.Length -gt 55000) {
+              $chunks += ,($current -join [Environment]::NewLine)
+              $current = New-Object System.Collections.Generic.List[string]
+            }
+            $current.Add($block)
+          }
+          if ($current.Count -gt 0) { $chunks += ,($current -join [Environment]::NewLine) }
+          $i=0
+          foreach ($chunk in $chunks) {
+            $i++
+            $out = Join-Path $env:RUNNER_TEMP ("livebot-core-$i.md")
+            [IO.File]::WriteAllText($out,$chunk,[Text.UTF8Encoding]::new($false))
+            gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file $out
+          }
