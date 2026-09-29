@@ -50,6 +50,18 @@ jobs:
           node --check scripts/build-execution-watchlist.mjs
           node --check scripts/build-current-signal-watchlist.mjs
           node --check scripts/build-shadow-journal.mjs
+          $tokens = $null
+          $parseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$env:GITHUB_WORKSPACE\scripts\install-demo10-live-monitor.ps1",
+            [ref]$tokens,
+            [ref]$parseErrors
+          ) | Out-Null
+          if (@($parseErrors).Count -gt 0) {
+            $parseErrors | ForEach-Object { Write-Error $_.Message }
+            throw "Demo-10 installer PowerShell parse failed"
+          }
+          Write-Host "DEMO10_INSTALLER_PARSE_OK"
           C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe -m py_compile scripts/fetch-live-market-snapshot.py scripts/fetch-current-candles.py
           node -e "const d=require('./research/demo_cohort_10.json');if(d.mode!=='BINANCE_USDM_TESTNET'||d.cohortId!=='demo-10-forward-v2'||d.deploymentCandidates.length!==10||d.executionRules.productionOrders!==false)process.exit(2);console.log('DEMO10_TESTNET_SOURCE_OK')"
 
