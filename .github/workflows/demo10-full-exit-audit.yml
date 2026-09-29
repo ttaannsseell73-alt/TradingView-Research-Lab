@@ -1,0 +1,95 @@
+name: Demo-10 Full Exit Audit
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       github.event.issue.title == '[DEMO10 FULL EXIT AUDIT]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 10
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      DEMO_PG_CONTAINER: canonical-demo10-testnet-pg
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Audit all Demo-10 runtime histories
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $symbols = @("GUA","RIVER","GPS","TRADOOR","TLM","Q","HANA","XPIN","FF","ALLO")
+          $jsonl = Join-Path $env:BOT_ROOT "artifacts\demo10-testnet.jsonl"
+
+          Write-Host "=== PER-CANDIDATE RUNTIME RESULTS ==="
+          if (Test-Path $jsonl) {
+            $records = @()
+            Get-Content $jsonl | ForEach-Object {
+              try { $records += ($_ | ConvertFrom-Json) } catch {}
+            }
+            foreach ($u in $symbols) {
+              $rows = @()
+              foreach ($d in $records) {
+                $r = @($d.symbols) | Where-Object { $_.underlying -eq $u } | Select-Object -First 1
+                if ($r) {
+                  $rows += [pscustomobject]@{
+                    generatedAt=$d.generatedAt
+                    cycle=$d.result
+                    signalStatus=$r.signalStatus
+                    signalDirection=$r.signalDirection
+                    fresh=$r.fresh
+                    requestedAction=($r.requestedAction | ConvertTo-Json -Compress)
+                    result=$r.result
+                    before=($r.positionBefore | ConvertTo-Json -Compress)
+                    after=($r.positionAfter | ConvertTo-Json -Compress)
+                  }
+                }
+              }
+              Write-Host "--- $u ---"
+              $rows | Select-Object -Last 50 | ConvertTo-Json -Depth 5
+              Write-Host "RESULT_COUNTS"
+              $rows | Group-Object result | Sort-Object Count -Descending | Select-Object Name,Count | Format-Table -AutoSize
+            }
+          } else {
+            Write-Host "demo10-testnet.jsonl missing"
+          }
+
+          Write-Host "=== ALL EXIT EVENTS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT created_at,event_type,entity_id,payload->>'symbol' AS symbol,payload->>'reason' AS reason,payload FROM live_events WHERE event_type ILIKE '%EXIT%' OR event_type ILIKE '%PROTECTION%' ORDER BY created_at;"
+          if ($LASTEXITCODE -ne 0) { throw "Exit event query failed" }
+
+          Write-Host "=== ALL FILLS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT event_time,symbol,side,fill_price,quantity,intent_id,fill_id FROM live_fills ORDER BY event_time,fill_id;"
+          if ($LASTEXITCODE -ne 0) { throw "Fill query failed" }
+
+          Write-Host "=== CURRENT EXCHANGE/JOURNAL RECONCILE EVENTS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT created_at,event_type,entity_id,payload FROM live_events WHERE event_type ILIKE 'RECONCILE%' ORDER BY created_at DESC LIMIT 200;"
+          if ($LASTEXITCODE -ne 0) { throw "Reconcile query failed" }
+
+          Write-Host "=== SHADOW CLOSED TRADE REASONS ==="
+          $shadow = "C:\demo10-live\state\SHADOW_STATE.json"
+          if (Test-Path $shadow) {
+            $s = Get-Content $shadow -Raw | ConvertFrom-Json
+            @($s.closedTrades) | Select-Object underlying,direction,entryPrice,exitPrice,exitReason,netReturn | ConvertTo-Json -Depth 5
+          }
+
+          Write-Host "=== LATEST DEMO10 REPORT ==="
+          $latest = Join-Path $env:BOT_ROOT "artifacts\demo10-testnet-latest.json"
+          if (Test-Path $latest) { Get-Content $latest -Raw }
+
+      - name: Close request
+        if: github.event_name == 'issues'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
