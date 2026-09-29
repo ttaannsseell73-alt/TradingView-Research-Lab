@@ -271,6 +271,55 @@ function rowAction(row: any): {
   return { kind: 'NONE' };
 }
 
+function computeLedgerPnl(fills: any[]): {
+  realizedGrossPnl: number;
+  realizedBySymbol: Record<string, number>;
+} {
+  const state = new Map<string, { qty: number; avg: number; realized: number }>();
+  for (const fill of fills) {
+    const symbol = String(fill.symbol ?? '');
+    const side = String(fill.side ?? '');
+    const qty = Number(fill.quantity ?? 0);
+    const px = Number(fill.fill_price ?? fill.fillPrice ?? 0);
+    if (!symbol || !(qty > 0) || !(px > 0) || !['BUY','SELL'].includes(side)) continue;
+    const signed = side === 'BUY' ? qty : -qty;
+    const s = state.get(symbol) ?? { qty: 0, avg: 0, realized: 0 };
+    const sameDirection = Math.abs(s.qty) < 1e-12 || Math.sign(s.qty) === Math.sign(signed);
+    if (sameDirection) {
+      const newQty = s.qty + signed;
+      const oldAbs = Math.abs(s.qty);
+      const addAbs = Math.abs(signed);
+      s.avg = Math.abs(newQty) > 1e-12
+        ? ((s.avg * oldAbs) + (px * addAbs)) / (oldAbs + addAbs)
+        : 0;
+      s.qty = newQty;
+    } else {
+      const closing = Math.min(Math.abs(s.qty), Math.abs(signed));
+      s.realized += s.qty > 0
+        ? (px - s.avg) * closing
+        : (s.avg - px) * closing;
+      const newQty = s.qty + signed;
+      if (Math.abs(newQty) < 1e-12) {
+        s.qty = 0;
+        s.avg = 0;
+      } else if (Math.sign(newQty) === Math.sign(s.qty)) {
+        s.qty = newQty;
+      } else {
+        s.qty = newQty;
+        s.avg = px;
+      }
+    }
+    state.set(symbol, s);
+  }
+  const realizedBySymbol: Record<string, number> = {};
+  let realizedGrossPnl = 0;
+  for (const [symbol, s] of state) {
+    realizedBySymbol[symbol] = s.realized;
+    realizedGrossPnl += s.realized;
+  }
+  return { realizedGrossPnl, realizedBySymbol };
+}
+
 async function writeReport(report: Record<string, unknown>): Promise<void> {
   const dir = path.join(process.cwd(), 'artifacts');
   fs.mkdirSync(dir, { recursive: true });
@@ -855,10 +904,15 @@ async function main(): Promise<void> {
       const p = positionRow(raw, symbol);
       const amt = Number(p.positionAmt ?? 0);
       if (Math.abs(amt) <= 1e-12) continue;
+      const expectedQty = await journal.expectedNetPosition(symbol);
+      const tolerance = Math.max(1e-9, Math.abs(amt) * 1e-6);
+      const owned = Math.abs(expectedQty) > 1e-12 && Math.abs(expectedQty - amt) <= tolerance;
       finalPositions.push({
         underlying: row?.underlying ?? null,
         symbol,
         positionAmt: amt,
+        expectedJournalQty: expectedQty,
+        ownership: owned ? 'DEMO10_OWNED' : 'FOREIGN_OR_LEGACY',
         direction: amt > 0 ? 'LONG' : 'SHORT',
         entryPrice: Number(p.entryPrice ?? 0),
         markPrice: Number(p.markPrice ?? 0),
@@ -866,16 +920,41 @@ async function main(): Promise<void> {
       });
     }
 
-    report.testnetPositions = finalPositions;
+    const ownedPositions = finalPositions.filter(x => x.ownership === 'DEMO10_OWNED');
+    const foreignPositions = finalPositions.filter(x => x.ownership !== 'DEMO10_OWNED');
+    const fillsResult = await journal.pool.query(
+      `SELECT symbol,side,fill_price,quantity,event_time
+         FROM live_fills
+        ORDER BY event_time,id`
+    );
+    const ledgerPnl = computeLedgerPnl(fillsResult.rows);
+    const ownedUnrealizedPnl = ownedPositions.reduce(
+      (sum, x) => sum + Number(x.unrealizedProfit ?? 0),
+      0
+    );
+
+    report.testnetPositions = ownedPositions;
+    report.foreignOrLegacyPositions = foreignPositions;
+    report.pnl = {
+      realizedGrossPnl: ledgerPnl.realizedGrossPnl,
+      realizedGrossPnlBySymbol: ledgerPnl.realizedBySymbol,
+      unrealizedPnl: ownedUnrealizedPnl,
+      totalGrossPnl: ledgerPnl.realizedGrossPnl + ownedUnrealizedPnl,
+      note: 'Demo-10 journal-owned TESTNET fills/positions only; foreign or legacy exchange positions excluded',
+    };
     report.summary = {
       targetSymbols: targetSymbols.length,
       testnetTradableSymbols: targetSymbols.filter(x => testnetTradable.has(x)).length,
       unavailableOnTestnet: report.symbols.filter((x: any) => x.result === 'UNAVAILABLE_ON_TESTNET').length,
-      openPositions: finalPositions.length,
+      openPositions: ownedPositions.length,
+      foreignOrLegacyOpenPositions: foreignPositions.length,
       openedProtected: report.symbols.filter((x: any) => x.result === 'OPEN_PROTECTED').length,
       closedToFlat: report.symbols.filter((x: any) => x.result === 'CLOSED_TO_FLAT').length,
       safetyFlattened: report.symbols.filter((x: any) => String(x.result).startsWith('SAFETY_FLATTENED')).length,
       reconciliationHalts: report.symbols.filter((x: any) => String(x.result).includes('RECONCILIATION_HALTED')).length,
+      realizedGrossPnl: report.pnl.realizedGrossPnl,
+      unrealizedPnl: report.pnl.unrealizedPnl,
+      totalGrossPnl: report.pnl.totalGrossPnl,
       errors: report.symbols.filter((x: any) => x.error).length,
     };
     report.result = 'SUCCESS';
