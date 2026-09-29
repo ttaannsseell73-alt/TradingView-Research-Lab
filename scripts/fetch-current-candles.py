@@ -71,8 +71,9 @@ def main():
     by_under={x.get("underlying"):x for x in (board.get("deploymentCandidates") or board.get("managementWatchlist") or [])}
     requests=set()
     for x in execution.get("candidates",[]):
-        if x.get("executionStatus") in ("BLOCK","NO_MARKET_SNAPSHOT"):
-            continue
+        # Candle/proximity observation is independent from execution tradability.
+        # BLOCK/NO_MARKET_SNAPSHOT may suppress new orders, but we still need price
+        # context and signal-distance monitoring for every selected candidate.
         symbol=x.get("executionContract")
         cand=by_under.get(x.get("underlying")) or {}
         for combo in cand.get("bestClean",[]):
