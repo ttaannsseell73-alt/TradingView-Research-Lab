@@ -23,10 +23,14 @@ const sourceCacheRoot = path.resolve(env.PINE_SOURCE_CACHE ?? 'D:/Futures-Resear
 const requested = Number(env.LOCAL_PARALLEL_SHARDS ?? 4);
 const available = typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length;
 const shardCount = Math.max(1, Math.min(Number.isInteger(requested) && requested > 0 ? requested : 4, Math.max(1, available)));
-const shardTimeoutMsRaw = Number(env.TURBO_SHARD_TIMEOUT_MS ?? 300_000);
+const shardTimeoutMsRaw = Number(env.TURBO_SHARD_TIMEOUT_MS ?? 900_000);
 const shardTimeoutMs = Number.isFinite(shardTimeoutMsRaw) && shardTimeoutMsRaw >= 30_000
   ? Math.floor(shardTimeoutMsRaw)
-  : 300_000;
+  : 900_000;
+const maxShardRestartsRaw = Number(env.TURBO_MAX_SHARD_RESTARTS ?? 20);
+const maxShardRestarts = Number.isInteger(maxShardRestartsRaw) && maxShardRestartsRaw >= 0
+  ? maxShardRestartsRaw
+  : 20;
 
 if (!key) fail(`${prefix}_KEY is required`);
 if (!sourceSha) fail(`${prefix}_SOURCE_SHA256 is required`);
@@ -214,27 +218,54 @@ const started = Date.now();
 const sourceFile = mode === 'exact' ? await fetchExactSource() : recoverySource();
 console.log(JSON.stringify({ turbo: 'START', mode, key, shards: shardCount, csvCache, sourceFile }));
 
-const results = await Promise.all(Array.from({ length: shardCount }, (_, index) => runShard(index, sourceFile)));
-const timedOut = results.filter((r) => r.timedOut);
-if (timedOut.length) {
-  const skip = {
-    status: 'SKIP_RUNTIME_TIMEOUT',
+let pending = Array.from({ length: shardCount }, (_, index) => index);
+const completed = new Map();
+let restartRound = 0;
+
+while (pending.length) {
+  const batch = await Promise.all(pending.map((index) => runShard(index, sourceFile)));
+  const nextPending = [];
+  for (const result of batch) {
+    if (result.timedOut) nextPending.push(result.index);
+    else completed.set(result.index, result);
+  }
+
+  if (!nextPending.length) break;
+  if (restartRound >= maxShardRestarts) {
+    const skip = {
+      status: 'SKIP_RUNTIME_TIMEOUT',
+      mode,
+      key,
+      shardCount,
+      timedOutShards: nextPending,
+      shardTimeoutMs,
+      maxShardRestarts,
+      elapsedMs: Date.now() - started,
+      note: 'Timed-out shards exhausted restart budget. Checkpoints were preserved for the next run.',
+    };
+    fs.writeFileSync(path.join(baseOut, 'runtime-skip.json'), JSON.stringify(skip, null, 2) + '\n', 'utf8');
+    console.error(JSON.stringify({ turbo: 'SKIP_RUNTIME_TIMEOUT', ...skip }));
+    process.exit(124);
+  }
+
+  restartRound += 1;
+  console.log(JSON.stringify({
+    turbo: 'SHARD_RESTART',
     mode,
     key,
-    shardCount,
-    timedOutShards: timedOut.map((r) => r.index),
+    round: restartRound,
+    pending: nextPending,
     shardTimeoutMs,
-    elapsedMs: Date.now() - started,
-    note: 'Watchdog prevented one exact/recovery strategy from monopolizing the self-hosted runner.',
-  };
-  fs.writeFileSync(path.join(baseOut, 'runtime-skip.json'), JSON.stringify(skip, null, 2) + '\n', 'utf8');
-  console.log(JSON.stringify({ turbo: 'SKIP_RUNTIME_TIMEOUT', ...skip }));
-  process.exit(0);
+  }));
+  pending = nextPending;
 }
-const failed = results.filter((r) => r.code !== 0);
+
+const results = Array.from({ length: shardCount }, (_, index) => completed.get(index));
+const failed = results.filter((r) => !r || r.code !== 0);
 if (failed.length) {
   console.error(JSON.stringify({ turbo: 'FAILED', mode, key, failed }));
   process.exit(1);
 }
 const merged = mergeResults(results, Date.now() - started);
 console.log(JSON.stringify({ turbo: merged.status, mode, key, shards: shardCount, elapsedMs: Date.now() - started, counts: merged.counts }));
+if (merged.status === 'SKIP_RUNTIME_UNSUPPORTED') process.exit(78);
