@@ -48,22 +48,28 @@ jobs:
       - name: Install pinned PineTS
         run: npm install --no-save --package-lock=false --audit=false --fund=false pinets@0.10.0
 
-      - name: Build 600-bar BTCUSDT 15m probe cache
+      - name: Build deterministic 600-bar BTCUSDT 15m probe cache
         shell: python
         run: |
-          import csv, json, pathlib, urllib.request
+          import csv, math, pathlib
           cache=pathlib.Path(".probe-cache")
           data=pathlib.Path(".probe-data")
           cache.mkdir(parents=True, exist_ok=True)
           data.mkdir(parents=True, exist_ok=True)
-          url="https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m&limit=600"
-          req=urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
-          rows=json.load(urllib.request.urlopen(req, timeout=30))
+          start=1759017600000
+          price=65000.0
           with (cache/"BTCUSDT-15m.csv").open("w", newline="", encoding="utf-8") as f:
               w=csv.writer(f)
               w.writerow(["openTime","open","high","low","close","volume"])
-              for r in rows:
-                  w.writerow([r[0],r[1],r[2],r[3],r[4],r[5]])
+              for i in range(600):
+                  drift=8.0 + math.sin(i/17.0)*35.0
+                  o=price
+                  cl=o+drift
+                  hi=max(o,cl)+22.0+(i%7)
+                  lo=min(o,cl)-19.0-(i%5)
+                  vol=100.0+(i%29)
+                  w.writerow([start+i*900000, f"{o:.2f}", f"{hi:.2f}", f"{lo:.2f}", f"{cl:.2f}", f"{vol:.2f}"])
+                  price=cl
 
       - name: Probe previous syminfo failure
         shell: bash
