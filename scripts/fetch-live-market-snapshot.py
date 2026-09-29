@@ -56,7 +56,7 @@ def select_base():
             req=Request(url, headers={"User-Agent":"Mozilla/5.0 TradingView-Research-Lab/1.0","Accept":"application/json"})
             with urlopen(req, timeout=8) as r:
                 json.loads(r.read().decode("utf-8"))
-            BASES=[base]
+            BASES=[base]+[x for x in original if x != base]
             return base, diagnostics
         except HTTPError as e:
             try:
