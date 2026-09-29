@@ -259,10 +259,11 @@ export class ProtectionManager {
     positionSide: 'LONG' | 'SHORT';
     triggerPrice: string;
     positionIdentity: string;
+    deploymentId?: string;
   }): Promise<void> {
     const generation = this.leader.assertHeld();
     const clientAlgoId = deterministicClientOrderId({
-      deploymentId: 'q-hard-stop',
+      deploymentId: args.deploymentId ?? 'q-hard-stop',
       symbol: args.symbol,
       candleOpenTime: Array.from(args.positionIdentity).reduce(
         (acc, ch) => (acc * 131 + ch.charCodeAt(0)) % 9_000_000_000_000,
