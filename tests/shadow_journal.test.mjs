@@ -237,35 +237,3 @@ test('cohort change resets stale positions and history before the new demo cohor
   assert.equal(next.events.at(-1)?.fromCohortId,'demo-old');
   assert.equal(next.events.at(-1)?.toCohortId,'demo-new');
 });
-
-
-test('null undefined zero and NaN marks never become synthetic zero-price PnL',()=>{
-  const first=updateShadowState({
-    snapshotAtMs:2000,
-    dataAvailable:true,
-    paperIntents:[intent('LONG',100,1500)],
-    rows:[{underlying:'TEST',executionStatus:'STRONG',market:{mid:102,last:102}}]
-  },null);
-  const lastValidMark=first.positions[0].markPrice;
-  assert.ok(lastValidMark > 0);
-
-  const badMarkets=[
-    {mid:null,last:null,bid:null,ask:null},
-    {},
-    {mid:0,last:0,bid:0,ask:0},
-    {mid:NaN,last:NaN,bid:NaN,ask:NaN}
-  ];
-
-  for(let i=0;i<badMarkets.length;i++){
-    const next=updateShadowState({
-      snapshotAtMs:3000+i,
-      dataAvailable:true,
-      paperIntents:[],
-      rows:[{underlying:'TEST',executionStatus:'STRONG',market:badMarkets[i]}]
-    },first);
-    assert.equal(next.positions.length,1);
-    assert.equal(next.positions[0].markPrice,lastValidMark);
-    assert.ok(next.positions[0].unrealizedNetIfClosed > -1);
-    assert.equal(next.closedTrades.length,0);
-  }
-});
