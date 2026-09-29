@@ -251,6 +251,13 @@ export function updateShadowState(current,previous=null,{
       continue;
     }
     const updated={...pos,executionStatus:execStatus};
+    if(!positivePx(updated.markPrice)){
+      delete updated.markPrice;
+      delete updated.markTime;
+      delete updated.unrealizedGrossReturn;
+      delete updated.unrealizedNetIfClosed;
+      delete updated.unrealizedPnlPerReferenceNotional;
+    }
     if(intent&&intent.direction===pos.direction){
       updated.supportCount=Number(intent.supportCount??updated.supportCount??1);
       updated.supportingSignals=intent.supportingSignals??updated.supportingSignals??[];
