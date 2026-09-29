@@ -23,6 +23,7 @@ const DEFAULT_MAX_OPEN = 10;
 const DEFAULT_MAX_GROSS = 1000;
 const DEFAULT_STOP_FRACTION = 0.20;
 const MAX_IOC_DEVIATION_BPS = 30;
+const DEMO10_VALID_METRICS_EPOCH_MS = Date.parse('2026-09-29T19:29:00Z');
 
 type Direction = 'LONG' | 'SHORT';
 
@@ -914,7 +915,12 @@ async function main(): Promise<void> {
          FROM live_fills
         ORDER BY event_time,fill_id`
     );
-    const ledgerPnl = computeLedgerPnl(fillsResult.rows);
+    const allJournalFills = fillsResult.rows;
+    const validJournalFills = allJournalFills.filter(
+      (x: any) => Number(x.event_time ?? 0) >= DEMO10_VALID_METRICS_EPOCH_MS
+    );
+    const ledgerPnl = computeLedgerPnl(validJournalFills);
+    const excludedPreFixFills = allJournalFills.length - validJournalFills.length;
     const ownedUnrealizedPnl = ownedPositions.reduce(
       (sum, x) => sum + Number(x.unrealizedProfit ?? 0),
       0
@@ -927,7 +933,9 @@ async function main(): Promise<void> {
       realizedGrossPnlBySymbol: ledgerPnl.realizedBySymbol,
       unrealizedPnl: ownedUnrealizedPnl,
       totalGrossPnl: ledgerPnl.realizedGrossPnl + ownedUnrealizedPnl,
-      note: 'Demo-10 journal-owned TESTNET fills/positions only; foreign or legacy exchange positions excluded',
+      metricsEpoch: new Date(DEMO10_VALID_METRICS_EPOCH_MS).toISOString(),
+      excludedPreFixFills,
+      note: 'Canonical Demo-10 TESTNET performance starts after the 2026-09-29 transient-BLOCK exit bug fix. Raw journal remains immutable; pre-fix infrastructure-error fills are excluded. Foreign or legacy exchange positions are also excluded.',
     };
     report.summary = {
       targetSymbols: targetSymbols.length,
