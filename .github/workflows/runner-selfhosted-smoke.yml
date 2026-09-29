@@ -1,0 +1,61 @@
+name: TANSEL-DATAHUB Self-Hosted Smoke
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  smoke:
+    if: github.event_name != 'issues' || startsWith(github.event.issue.title, '[RUNNER SMOKE]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 5
+    steps:
+      - name: Verify runner and DataHub runtime
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STATUS_ISSUE: "147"
+          TRIGGER_ISSUE: ${{ github.event.issue.number }}
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $python = "C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe"
+          if (!(Test-Path $python)) { throw "DATAHUB_PYTHON_MISSING: $python" }
+
+          $pyVersion = (& $python --version 2>&1 | Out-String).Trim()
+          $nodeVersion = (& node --version 2>&1 | Out-String).Trim()
+          $gitVersion = (& git --version 2>&1 | Out-String).Trim()
+          $now = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+          $body = @"
+          # TANSEL-DATAHUB RUNNER STATUS
+
+          - checked_at_utc: $now
+          - state: HEALTHY
+          - runner: $env:RUNNER_NAME
+          - os: $env:RUNNER_OS
+          - required_label: datahub-local
+          - label_gate: PASS
+          - github_to_runner_queue: PASS
+          - datahub_python: PASS ($pyVersion)
+          - node: PASS ($nodeVersion)
+          - git: PASS ($gitVersion)
+          - priority: research/backtest recovery
+          - q_live_bootstrap_priority: disabled
+
+          _Verified by an actual self-hosted smoke job._
+          "@
+
+          gh api --method PATCH "repos/$env:GITHUB_REPOSITORY/issues/$env:STATUS_ISSUE" -f body="$body" | Out-Null
+
+          if ($env:TRIGGER_ISSUE) {
+            gh api --method PATCH "repos/$env:GITHUB_REPOSITORY/issues/$env:TRIGGER_ISSUE" -f state=closed | Out-Null
+          }
+
+          Write-Host "RUNNER_SMOKE_OK"
+          Write-Host $body
