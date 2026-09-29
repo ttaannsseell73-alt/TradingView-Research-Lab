@@ -12,11 +12,11 @@ jobs:
     if: >-
       github.event.issue.author_association == 'OWNER' &&
       startsWith(github.event.issue.title, '[STR100 PROBE]')
-    runs-on: [self-hosted, datahub-local]
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
-      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      FREQTRADE_FUTURES_ROOT: ${{ github.workspace }}/.probe-data
+      DATAHUB_PYTHON: python3
       EXACT_KEY: 027-crypto-institutional-liquidity-sweep-strategy
       EXACT_NAME: Crypto Institutional Liquidity Sweep Strategy
       EXACT_AUTHOR: Danish7421
@@ -28,13 +28,13 @@ jobs:
       EXACT_URL: https://www.tradingview.com/script/ZhJzjmAk-Crypto-Institutional-Liquidity-Sweep-Strategy/
       EXACT_START: 2025-09-28T00:00:00Z
       EXACT_END: 2026-09-28T00:00:00Z
-      EXACT_CSV_CACHE: C:/actions-runner-datahub/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h
+      EXACT_CSV_CACHE: ${{ github.workspace }}/.probe-cache
       EXACT_OUT_DIR: artifacts/str100-runtime-probe
       EXACT_SMOKE_BARS: '600'
       EXACT_PREFLIGHT_ONLY: '1'
       TURBO_STRICT_CACHE: '1'
       LOCAL_PARALLEL_SHARDS: '1'
-      PINE_SOURCE_CACHE: C:/actions-runner-datahub/pine-source-cache
+      PINE_SOURCE_CACHE: ${{ github.workspace }}/.probe-source-cache
 
     steps:
       - uses: actions/checkout@v4
@@ -46,18 +46,31 @@ jobs:
           node-version: '22'
 
       - name: Install pinned PineTS
-        shell: powershell
+        run: npm install --no-save --package-lock=false --audit=false --fund=false pinets@0.10.0
+
+      - name: Build 600-bar BTCUSDT 15m probe cache
+        shell: python
         run: |
-          npm install --no-save --package-lock=false --audit=false --fund=false pinets@0.10.0
+          import csv, json, pathlib, urllib.request
+          cache=pathlib.Path(".probe-cache")
+          data=pathlib.Path(".probe-data")
+          cache.mkdir(parents=True, exist_ok=True)
+          data.mkdir(parents=True, exist_ok=True)
+          url="https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=15m&limit=600"
+          req=urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
+          rows=json.load(urllib.request.urlopen(req, timeout=30))
+          with (cache/"BTCUSDT-15m.csv").open("w", newline="", encoding="utf-8") as f:
+              w=csv.writer(f)
+              w.writerow(["openTime","open","high","low","close","volume"])
+              for r in rows:
+                  w.writerow([r[0],r[1],r[2],r[3],r[4],r[5]])
 
       - name: Probe previous syminfo failure
-        shell: powershell
+        shell: bash
         run: |
-          $ErrorActionPreference = "Stop"
-          $env:TURBO_PINETS_MODE = "exact"
+          export TURBO_PINETS_MODE=exact
           node scripts/run-pinets-turbo-local.mjs
-          if ($LASTEXITCODE -ne 0) { throw "STR100 runtime probe failed" }
-          Get-Content "$env:EXACT_OUT_DIR/preflight.json"
+          cat "$EXACT_OUT_DIR/preflight.json"
 
       - name: Upload probe
         if: always()
