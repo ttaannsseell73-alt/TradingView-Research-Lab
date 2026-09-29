@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import { deterministicClientOrderId, RateLimitGovernor } from '../live/CanonicalLive';
 import { BinanceUsdmAdapter } from '../live/BinanceUsdmAdapter';
 
@@ -5,6 +6,8 @@ function positionRow(raw: any, symbol: string): any {
   const rows = Array.isArray(raw) ? raw : [raw];
   return rows.find((x: any) => x?.symbol === symbol) ?? rows[0] ?? {};
 }
+
+dotenv.config();
 
 async function main(): Promise<void> {
   const symbol = 'QUSDT';
