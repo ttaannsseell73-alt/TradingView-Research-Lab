@@ -1,0 +1,122 @@
+name: Diagnose Demo-10 and Close Legacy Q
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose-close:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       github.event.issue.title == '[DEMO10 DIAG CLOSE LEGACY Q]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 10
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      DEMO_PG_CONTAINER: canonical-demo10-testnet-pg
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Diagnose TRADOOR cycle history
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $jsonl = Join-Path $env:BOT_ROOT "artifacts\demo10-testnet.jsonl"
+          if (Test-Path $jsonl) {
+            Write-Host "=== TRADOOR REPORT HISTORY ==="
+            Get-Content $jsonl -Tail 40 | ForEach-Object {
+              try {
+                $d = $_ | ConvertFrom-Json
+                $r = @($d.symbols) | Where-Object { $_.underlying -eq "TRADOOR" } | Select-Object -First 1
+                $p = @($d.testnetPositions) | Where-Object { $_.underlying -eq "TRADOOR" } | Select-Object -First 1
+                if ($r -or $p) {
+                  [pscustomobject]@{
+                    generatedAt = $d.generatedAt
+                    result = $d.result
+                    signalStatus = $r.signalStatus
+                    signalDirection = $r.signalDirection
+                    fresh = $r.fresh
+                    requestedAction = ($r.requestedAction | ConvertTo-Json -Compress)
+                    executionResult = $r.result
+                    positionBefore = ($r.positionBefore | ConvertTo-Json -Compress)
+                    positionAfter = ($r.positionAfter | ConvertTo-Json -Compress)
+                    openPosition = ($p | ConvertTo-Json -Compress)
+                  } | ConvertTo-Json -Compress
+                }
+              } catch {}
+            }
+          } else {
+            Write-Host "demo10-testnet.jsonl missing"
+          }
+
+          Write-Host "=== CURRENT TRADOOR EXECUTION WATCHLIST ==="
+          $exec = "C:\demo10-live\work\execution\EXECUTION_WATCHLIST.json"
+          if (Test-Path $exec) {
+            $d = Get-Content $exec -Raw | ConvertFrom-Json
+            @($d.candidates) | Where-Object { $_.underlying -eq "TRADOOR" } | ConvertTo-Json -Depth 8
+          }
+
+          Write-Host "=== CURRENT TRADOOR SIGNAL WATCHLIST ==="
+          $sig = "C:\demo10-live\work\current-signal\CURRENT_SIGNAL_WATCHLIST.json"
+          if (Test-Path $sig) {
+            $d = Get-Content $sig -Raw | ConvertFrom-Json
+            @($d.rows) | Where-Object { $_.underlying -eq "TRADOOR" } | ConvertTo-Json -Depth 8
+          }
+
+          Write-Host "=== TRADOOR JOURNAL EVENTS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT created_at,event_type,entity_id,payload FROM live_events WHERE entity_id ILIKE '%TRADOOR%' OR payload::text ILIKE '%TRADOOR%' ORDER BY created_at;"
+          if ($LASTEXITCODE -ne 0) { throw "TRADOOR journal query failed" }
+
+          Write-Host "=== TRADOOR FILLS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT event_time,symbol,side,fill_price,quantity,intent_id FROM live_fills WHERE symbol='TRADOORUSDT' ORDER BY event_time,fill_id;"
+          if ($LASTEXITCODE -ne 0) { throw "TRADOOR fills query failed" }
+
+      - name: Close retired QUSDT TESTNET position
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $envFile = Join-Path $env:BOT_ROOT ".demo10-testnet.local.env"
+          if (!(Test-Path $envFile)) { throw "Demo-10 TESTNET env file missing" }
+          foreach ($line in Get-Content $envFile) {
+            if ($line -match '^([^#=]+)=(.*)$') {
+              [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
+            }
+          }
+          $env:LIVEBOT_CANARY_APPROVED = "YES"
+
+          $hostName = ([Uri]$env:BINANCE_FUTURES_URL).Host.ToLowerInvariant()
+          if ($hostName -ne "testnet.binancefuture.com") {
+            throw "Refusing Q close outside Binance TESTNET"
+          }
+
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\closeLegacyQTestnet.ts" "$env:BOT_ROOT\src\tools\closeLegacyQTestnet.ts" -Force
+          Push-Location $env:BOT_ROOT
+          try {
+            npx tsx src/tools/closeLegacyQTestnet.ts
+            if ($LASTEXITCODE -ne 0) { throw "Legacy Q TESTNET close failed" }
+          } finally {
+            Pop-Location
+          }
+
+      - name: Snapshot Demo-10 log tail
+        shell: powershell
+        run: |
+          $log = "C:\demo10-live\logs\demo10-live.log"
+          if (Test-Path $log) {
+            Write-Host "=== DEMO10 LOG TAIL ==="
+            Get-Content $log -Tail 250
+          }
+
+      - name: Close request
+        if: github.event_name == 'issues'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
