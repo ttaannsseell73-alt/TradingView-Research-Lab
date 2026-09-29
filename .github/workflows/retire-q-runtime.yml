@@ -1,0 +1,53 @@
+name: Retire Q Runtime Now
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/retire-q-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  retire:
+    runs-on: self-hosted
+    timeout-minutes: 5
+    steps:
+      - name: Stop Q scheduled runtime
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $task = "QDemoForwardMonitor"
+          try { Stop-ScheduledTask -TaskName $task -ErrorAction SilentlyContinue } catch {}
+          try { Unregister-ScheduledTask -TaskName $task -Confirm:$false -ErrorAction SilentlyContinue } catch {}
+
+          try {
+            $running = docker ps --filter "name=^/canonical-q-demo-pg$" --format "{{.Names}}" 2>$null
+            if ($running -eq "canonical-q-demo-pg") { docker stop canonical-q-demo-pg | Out-Null }
+          } catch {}
+
+          $body = @"
+          # QUSDT LIVE STATUS — RETIRED
+
+          - state: STOPPED
+          - retired_at_local: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss zzz")
+          - scheduler: QDemoForwardMonitor removed
+          - automatic_q_cycles: DISABLED
+          - q_postgres: stopped where present; data preserved
+          - exchange_position_action: NOT_TOUCHED
+          - replacement: Demo-10 live shadow monitor
+          - replacement_status: Issue #150
+
+          Q is no longer an active monitoring lane.
+          "@
+          $tmp = Join-Path $env:TEMP "q-retired-status.md"
+          [System.IO.File]::WriteAllText($tmp,$body,[Text.UTF8Encoding]::new($false))
+          gh issue edit 109 --repo $env:GITHUB_REPOSITORY --body-file $tmp | Out-Null
+          gh issue close 109 --repo $env:GITHUB_REPOSITORY --reason completed | Out-Null
+
+          Write-Host "Q_RUNTIME_RETIRED"
