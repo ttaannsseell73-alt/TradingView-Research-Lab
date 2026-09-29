@@ -99,36 +99,55 @@ Decision:
 - Demo-10 is independent of this Q decision and MUST continue running as the active 10-setup paper/shadow observation lane.
 
 
-## DEMO-10 LIVE MONITOR — CANONICAL 2026-09-29
+## DEMO-10 TESTNET — CANONICAL 2026-09-29
 
-Purpose: replace Q as the active forward-observation lane.
+Purpose: active forward execution validation for the selected 10 setups on Binance USD-M Futures TESTNET.
 
 Canonical cohort:
 - `demo-10-forward-v2`
 - GUA / RIVER / GPS / TRADOOR / TLM / Q / HANA / XPIN / FF / ALLO
 - Configuration source: `research/demo_cohort_10.json`
-- Canonical status source: GitHub Issue #150 (`DEMO10 LIVE STATUS`)
+- Canonical live status: GitHub Issue #150 (`DEMO10 LIVE STATUS`)
 
 Runtime contract:
-- Local Windows task: `Demo10LiveMonitor`
+- Local Windows loop: `Demo10LiveMonitor`.
 - Cadence: 1 minute.
-- Data: Binance USD-M Futures public market data.
-- Signals: confirmed closed candles only; next-bar open remains the canonical paper execution assumption.
-- Mode: `PAPER_SHADOW_ONLY`.
-- Real exchange orders: DISABLED.
-- Persistent local shadow state: `C:\demo10-live\state\SHADOW_STATE.json`.
+- Signal data: Binance USD-M Futures public market data.
+- Execution venue: Binance USD-M Futures TESTNET only.
+- Mode: `BINANCE_USDM_TESTNET`.
+- Production/live-money orders: DISABLED.
+- Signal timing: confirmed closed candles only.
+- Fresh eligible signal can create a TESTNET intent/order; no seeding of old shadow positions.
+- Selected-cohort REVIEW/evidence flags are advisory; BLOCK, no-market and non-trading states remain hard execution blocks.
+- x1 leverage, isolated margin.
+- Reference testnet allocation: 100 USDT per new position.
+- Maximum 10 Demo-10 positions / 1,000 USDT gross testnet notional.
+- Catastrophic TESTNET protection: 20% from entry.
+- Durable testnet journal: dedicated PostgreSQL `canonical-demo10-testnet-pg`; it is separate from the retired Q demo journal.
+- Intent/outbox persistence, deterministic client-order IDs, exchange reconciliation, reduce-only exits, and protection verification are mandatory.
+- Foreign/legacy exchange positions must never be silently adopted. A position/journal mismatch is `RECONCILIATION_HALTED` for that symbol.
+- Persistent shadow state remains active as a reference/control track at `C:\demo10-live\state\SHADOW_STATE.json`.
 - Status publication: Issue #150 after every successful/failed local cycle.
-- GitHub `Demo Cohort 10 Shadow` workflow is manual fallback/evidence only; it is not the continuous scheduler.
-- 1m and 15m timeframes are mandatory because the selected cohort includes TLM 1m and multiple 15m setups.
-- Generic evidence flags remain visible, but for this explicitly selected paper cohort they are advisory and must not silently exclude a selected setup from shadow observation.
-- Cohort ID is part of shadow state; a cohort change must reset stale positions/history rather than carrying positions from an older candidate list.
+- GitHub workflow `Install Demo-10 Local Testnet Monitor` is deployment/verification; the continuous runtime is local.
+
+Deployment evidence:
+- Installer PowerShell parser: PASS.
+- Local `binance-bot` TypeScript build: PASS.
+- Canonical execution safety tests: 11/11 PASS.
+- TESTNET journal bootstrap: PASS.
+- Deployment run `36617764540`: SUCCESS.
+- First confirmed TESTNET cycle opened TRADOOR SHORT and verified protection.
+- Following cycle did not duplicate the entry; when TRADOOR became BLOCK it was safety-flattened.
+- Initial TESTNET universe availability was 7/10; unavailable contracts remain visible and do not route orders.
+- Legacy QUSDT testnet position was detected and isolated with `RECONCILIATION_HALTED`; Demo-10 did not adopt or alter it.
 
 When the user asks for Demo-10 status:
 1. Read Issue #150.
-2. Report scheduler timestamp/age and cycle state.
-3. Report all 10 setup states, including direction, signal state, execution/tradability state, freshness and age.
-4. Report open paper positions and normalized realized/unrealized PnL.
-5. If Issue #150 is stale or failed, inspect the local `Demo10LiveMonitor` runtime before treating the report as current.
+2. Report scheduler timestamp/age, cycle state, TESTNET result and data availability.
+3. Report all 10 setup states and each symbol's TESTNET execution result.
+4. Report TESTNET positions separately from shadow reference positions.
+5. Explicitly identify unavailable TESTNET contracts and reconciliation halts.
+6. If Issue #150 is stale/failed, inspect the local `Demo10LiveMonitor` runtime before treating the report as current.
 
 
 ## TEST MASTER INDEX — CANONICAL TEST INVENTORY
