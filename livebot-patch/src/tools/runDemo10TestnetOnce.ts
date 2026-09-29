@@ -532,21 +532,6 @@ async function main(): Promise<void> {
       const action = rowAction(row);
       state.requestedAction = action;
 
-      if (row?.executionStatus === 'BLOCK' && Math.abs(positionAmt) > 1e-12) {
-        await closePosition(
-          adapter,
-          journal,
-          leader,
-          symbol,
-          positionAmt,
-          Number(action.candleTime ?? Date.now()),
-          'DEMO10_TRADABILITY_BLOCK'
-        );
-        openCount = Math.max(0, openCount - 1);
-        state.result = 'SAFETY_FLATTENED_BLOCKED';
-        continue;
-      }
-
       if (action.kind === 'EXIT_FLAT') {
         if (Math.abs(positionAmt) > 1e-12) {
           await closePosition(
@@ -587,7 +572,9 @@ async function main(): Promise<void> {
               stopFraction
             );
             state.protected = true;
-            state.result = 'HOLD_PROTECTED';
+            state.result = row?.executionStatus === 'BLOCK'
+              ? 'HOLD_PROTECTED_EXECUTION_BLOCK'
+              : 'HOLD_PROTECTED';
           } catch (error: any) {
             await closePosition(
               adapter,
