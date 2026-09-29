@@ -106,6 +106,8 @@ jobs:
       TURBO_SHARD_TIMEOUT_MS: '900000'
       TURBO_MAX_SHARD_RESTARTS: '40'
       EXACT_SMOKE_BARS: '600'
+      EXACT_ENGINE_REV: 'exact-provider-v2-binance-meta-20260929'
+      EXACT_SYMBOL_METADATA: research/binance-usdm-symbol-metadata.json
       PINE_SOURCE_CACHE: C:/actions-runner-datahub/pine-source-cache
       EXACT_MIN_COVERAGE: '0.98'
       EXACT_MIN_HISTORY_DAYS: '30'
