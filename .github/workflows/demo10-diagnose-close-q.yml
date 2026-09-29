@@ -90,6 +90,7 @@ jobs:
             }
           }
           $env:LIVEBOT_CANARY_APPROVED = "YES"
+          $env:BINANCE_FUTURES_URL = "https://testnet.binancefuture.com"
 
           $hostName = ([Uri]$env:BINANCE_FUTURES_URL).Host.ToLowerInvariant()
           if ($hostName -ne "testnet.binancefuture.com") {
