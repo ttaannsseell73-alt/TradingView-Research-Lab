@@ -56,18 +56,32 @@ function algoId(row: any): string {
 }
 
 async function recordOrderFill(
+  adapter: BinanceUsdmAdapter,
   journal: PgEventJournal,
   order: any,
   side: 'BUY' | 'SELL',
-  intentId: string | null
+  intentId: string | null,
+  clientOrderId?: string
 ): Promise<number> {
-  const quantity = Number(order?.executedQty ?? 0);
-  const fillPrice = Number(order?.avgPrice ?? order?.price ?? 0);
+  let resolved = order;
+  let quantity = Number(resolved?.executedQty ?? 0);
+  let fillPrice = Number(resolved?.avgPrice ?? resolved?.price ?? 0);
+
+  if ((!(quantity > 0) || !(fillPrice > 0)) && clientOrderId) {
+    await sleep(250);
+    const refreshed = await adapter.getOrderByClientId(SYMBOL, clientOrderId);
+    if (refreshed) {
+      resolved = refreshed;
+      quantity = Number(resolved?.executedQty ?? 0);
+      fillPrice = Number(resolved?.avgPrice ?? resolved?.price ?? 0);
+    }
+  }
+
   if (!(quantity > 0) || !(fillPrice > 0)) return 0;
   const fillId = [
     SYMBOL,
-    String(order?.orderId ?? ''),
-    String(order?.updateTime ?? order?.time ?? Date.now()),
+    String(resolved?.orderId ?? ''),
+    String(resolved?.updateTime ?? resolved?.time ?? Date.now()),
     side,
   ].join('|');
   await journal.recordFill({
@@ -78,8 +92,8 @@ async function recordOrderFill(
     expectedPrice: null,
     fillPrice,
     quantity,
-    eventTime: Number(order?.updateTime ?? order?.time ?? Date.now()),
-    payload: order ?? {},
+    eventTime: Number(resolved?.updateTime ?? resolved?.time ?? Date.now()),
+    payload: resolved ?? {},
   });
   return quantity;
 }
@@ -131,7 +145,7 @@ async function closePosition(
     reason,
     response: result,
   });
-  await recordOrderFill(journal, result, side, null);
+  await recordOrderFill(adapter, journal, result, side, null, clientOrderId);
   await sleep(400);
   await cancelKnownProtection(adapter, journal);
 }
@@ -269,7 +283,17 @@ async function main(): Promise<void> {
     const inFlight = new InFlightRegistry();
     const reconciler = new CanonicalReconciler(execAdapter, journal, inFlight);
     const reconcile = await reconciler.reconcile(SYMBOL);
-    report.reconcileBefore = { ok: reconcile.ok, halt: reconcile.halt };
+    const reconcilePositionRow = positionRow(reconcile.snapshot.positionRisk);
+    report.reconcileBefore = {
+      ok: reconcile.ok,
+      halt: reconcile.halt,
+      diagnostics: reconcile.diagnostics,
+    };
+    report.positionObservedDuringReconcile = {
+      positionAmt: Number(reconcilePositionRow.positionAmt ?? 0),
+      entryPrice: Number(reconcilePositionRow.entryPrice ?? 0),
+      markPrice: Number(reconcilePositionRow.markPrice ?? 0),
+    };
     if (reconcile.halt) throw new Error('RECONCILIATION_HALTED');
 
     const shadow = await new QShadowRuntime(publicAdapter, publicGovernor).runOnce();
@@ -437,9 +461,11 @@ async function main(): Promise<void> {
 
     if (order) {
       await recordOrderFill(
+        execAdapter,
         journal,
         order,
         targetDirection === 1 ? 'BUY' : 'SELL',
+        persisted.clientOrderId,
         persisted.clientOrderId
       );
     }
@@ -505,7 +531,11 @@ async function main(): Promise<void> {
     }
 
     const finalRecon = await reconciler.reconcile(SYMBOL);
-    report.reconcileAfter = { ok: finalRecon.ok, halt: finalRecon.halt };
+    report.reconcileAfter = {
+      ok: finalRecon.ok,
+      halt: finalRecon.halt,
+      diagnostics: finalRecon.diagnostics,
+    };
     if (finalRecon.halt) throw new Error('POST_ENTRY_RECONCILIATION_HALTED');
 
     report.positionAfter = {
