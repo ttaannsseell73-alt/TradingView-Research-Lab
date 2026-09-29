@@ -1,0 +1,133 @@
+name: Demo-10 Emergency Stop
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+jobs:
+  stop:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       github.event.issue.title == '[DEMO10 EMERGENCY STOP]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 12
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      DEMO_PG_CONTAINER: canonical-demo10-testnet-pg
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stop local Demo-10 loop and persistence
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\Demo10LiveMonitor.cmd"
+          if (Test-Path $startup) {
+            Remove-Item $startup -Force
+            Write-Host "REMOVED_STARTUP=$startup"
+          }
+
+          $targets = Get-CimInstance Win32_Process | Where-Object {
+            $_.CommandLine -and (
+              $_.CommandLine -match 'demo10-monitor-loop\.ps1' -or
+              $_.CommandLine -match 'run-demo10-live\.ps1'
+            )
+          }
+          foreach($p in @($targets)) {
+            Write-Host "STOP_PROCESS pid=$($p.ProcessId) cmd=$($p.CommandLine)"
+            Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue
+          }
+
+          New-Item -ItemType Directory -Force "C:\demo10-live\state" | Out-Null
+          Set-Content -Path "C:\demo10-live\state\CANCELLED.txt" -Value "Demo-10 cancelled by explicit user instruction at $(Get-Date -Format o)" -Encoding UTF8
+
+      - name: Flatten Demo-10 TESTNET cohort and cancel orders
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $envFile = Join-Path $env:BOT_ROOT ".demo10-testnet.local.env"
+          if (!(Test-Path $envFile)) { throw "Demo-10 TESTNET env file missing" }
+          foreach ($line in Get-Content $envFile) {
+            if ($line -match '^([^#=]+)=(.*)$') {
+              [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
+            }
+          }
+          $env:LIVEBOT_CANARY_APPROVED = "YES"
+          $env:BINANCE_FUTURES_URL = "https://testnet.binancefuture.com"
+          $env:DEMO10_COHORT_PATH = "$env:GITHUB_WORKSPACE\research\demo_cohort_10.json"
+
+          $hostName = ([Uri]$env:BINANCE_FUTURES_URL).Host.ToLowerInvariant()
+          if ($hostName -ne "testnet.binancefuture.com") {
+            throw "Refusing shutdown writes outside Binance TESTNET"
+          }
+
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\stopDemo10AndClosePositions.ts" "$env:BOT_ROOT\src\tools\stopDemo10AndClosePositions.ts" -Force
+          Push-Location $env:BOT_ROOT
+          try {
+            npx tsx src/tools/stopDemo10AndClosePositions.ts
+            if ($LASTEXITCODE -ne 0) { throw "Demo-10 TESTNET flatten failed" }
+          } finally {
+            Pop-Location
+          }
+
+      - name: Stop Demo-10 PostgreSQL container after flatten
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $running = docker ps --filter "name=^/$env:DEMO_PG_CONTAINER$" --format "{{.Names}}"
+          if ($running) {
+            docker stop $env:DEMO_PG_CONTAINER | Out-Host
+          }
+          Write-Host "DEMO10_POSTGRES_STOPPED_OR_ALREADY_STOPPED"
+
+      - name: Verify monitor is stopped and no startup relaunch remains
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Start-Sleep -Seconds 2
+          $startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\Demo10LiveMonitor.cmd"
+          if (Test-Path $startup) { throw "Demo-10 startup launcher still exists" }
+          $targets = Get-CimInstance Win32_Process | Where-Object {
+            $_.CommandLine -and (
+              $_.CommandLine -match 'demo10-monitor-loop\.ps1' -or
+              $_.CommandLine -match 'run-demo10-live\.ps1'
+            )
+          }
+          if (@($targets).Count -gt 0) {
+            $targets | ForEach-Object { Write-Host $_.CommandLine }
+            throw "Demo-10 monitor process still running"
+          }
+          Write-Host "DEMO10_RUNTIME_STOPPED"
+
+      - name: Cancel other queued or running repository workflows
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Continue"
+          $current = [string]$env:GITHUB_RUN_ID
+          $json = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs?per_page=100"
+          if ($LASTEXITCODE -ne 0) { exit 0 }
+          $runs = ($json | ConvertFrom-Json).workflow_runs | Where-Object {
+            ([string]$_.id -ne $current) -and ($_.status -eq 'queued' -or $_.status -eq 'in_progress')
+          }
+          foreach($r in @($runs)) {
+            Write-Host "CANCEL_RUN id=$($r.id) name=$($r.name) status=$($r.status)"
+            gh api -X POST "repos/$env:GITHUB_REPOSITORY/actions/runs/$($r.id)/cancel" 2>$null | Out-Null
+          }
+
+      - name: Close request
+        if: github.event_name == 'issues'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
