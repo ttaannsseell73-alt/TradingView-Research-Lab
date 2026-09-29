@@ -15,20 +15,32 @@ const policy=JSON.parse(fs.readFileSync(policyPath,'utf8'));
 const bySymbol=new Map((market.contracts??[]).map(x=>[x.symbol,x]));
 
 const minDepth=x=>Math.min(Number(x.bidDepth10bps??0),Number(x.askDepth10bps??0));
-function classify(x){
+const selectedTestnet=board.mode==='BINANCE_USDM_TESTNET';
+function classifyDetail(x){
   const q=Number(x.quoteVolume24h??0),s=Number(x.spreadBps??Infinity),d=minDepth(x),oi=Number(x.openInterestNotional??0);
-  const hard=s>policy.hardBlock.maxSpreadBps||
-    q<policy.hardBlock.minQuoteVolume24h||
-    d<policy.hardBlock.minSideDepth10bps||
-    oi<policy.hardBlock.minOpenInterestNotional;
-  if(hard) return 'BLOCK';
+  const hardReasons=[];
+  if(s>policy.hardBlock.maxSpreadBps) hardReasons.push('SPREAD_HARD');
+  if(q<policy.hardBlock.minQuoteVolume24h) hardReasons.push('QUOTE_VOLUME_HARD');
+  if(d<policy.hardBlock.minSideDepth10bps) hardReasons.push('MIN_DEPTH_10BPS');
+  if(oi<policy.hardBlock.minOpenInterestNotional) hardReasons.push('OPEN_INTEREST_HARD');
+
+  // Demo-10 uses a fixed small notional and performs an authoritative,
+  // direction-specific live depth check immediately before submitting an IOC.
+  // Therefore generic min(bid,ask) 10-bps depth alone is advisory here.
+  const nonDepthHard=hardReasons.filter(x=>x!=='MIN_DEPTH_10BPS');
+  if(nonDepthHard.length || (!selectedTestnet && hardReasons.length)) {
+    return {status:'BLOCK',reasons:hardReasons};
+  }
+
   const strong=q>=policy.strong.minQuoteVolume24h&&s<=policy.strong.maxSpreadBps&&
     d>=policy.strong.minSideDepth10bps&&oi>=policy.strong.minOpenInterestNotional;
-  if(strong) return 'STRONG';
+  if(strong) return {status:'STRONG',reasons:hardReasons};
+
   const tradeable=q>=policy.tradeable.minQuoteVolume24h&&s<=policy.tradeable.maxSpreadBps&&
     d>=policy.tradeable.minSideDepth10bps&&oi>=policy.tradeable.minOpenInterestNotional;
-  return tradeable?'TRADEABLE':'REVIEW';
+  return {status:tradeable?'TRADEABLE':'REVIEW',reasons:hardReasons};
 }
+const classify=x=>classifyDetail(x).status;
 const rank={STRONG:3,TRADEABLE:2,REVIEW:1,BLOCK:0};
 function compare(a,b){
   const ca=classify(a),cb=classify(b);
@@ -55,9 +67,11 @@ for(const candidate of source){
   }
   contracts.sort(compare);
   const chosen=contracts[0];
+  const detail=classifyDetail(chosen);
   rows.push({
     ...candidate,
-    executionStatus:classify(chosen),
+    executionStatus:detail.status,
+    executionReasons:detail.reasons,
     executionContract:chosen.symbol,
     market:{
       last:Number(chosen.last??NaN),
