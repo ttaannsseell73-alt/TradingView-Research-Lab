@@ -24,6 +24,13 @@ const DEFAULT_MAX_GROSS = 1000;
 const DEFAULT_STOP_FRACTION = 0.20;
 const MAX_IOC_DEVIATION_BPS = 30;
 const DEMO10_VALID_METRICS_EPOCH_MS = Date.parse('2026-09-29T19:29:00Z');
+const TIMEFRAME_MS: Record<string, number> = {
+  '1m': 60_000,
+  '5m': 5 * 60_000,
+  '15m': 15 * 60_000,
+  '1h': 60 * 60_000,
+  '4h': 4 * 60 * 60_000,
+};
 
 type Direction = 'LONG' | 'SHORT';
 
@@ -272,6 +279,121 @@ function rowAction(row: any): {
   return { kind: 'NONE' };
 }
 
+type PendingEntry = {
+  underlying: string;
+  symbol: string;
+  strategy: string;
+  timeframe: string;
+  direction: Direction;
+  candleTime: number;
+  expiresAt: number;
+};
+
+function freshEntryCandidate(row: any): PendingEntry | null {
+  if (
+    row?.fresh !== true ||
+    row?.directionConflict ||
+    !['LONG','SHORT'].includes(String(row?.direction ?? '')) ||
+    !finite(row?.canonicalEntryTime)
+  ) return null;
+
+  const timeframe = String(row?.timeframe ?? '');
+  const ttl = TIMEFRAME_MS[timeframe];
+  if (!(ttl > 0)) return null;
+
+  const candleTime = Number(row.canonicalEntryTime);
+  return {
+    underlying: String(row?.underlying ?? ''),
+    symbol: String(row?.executionContract ?? ''),
+    strategy: String(row?.strategy ?? ''),
+    timeframe,
+    direction: row.direction as Direction,
+    candleTime,
+    expiresAt: candleTime + ttl,
+  };
+}
+
+async function ensurePendingSchema(journal: PgEventJournal): Promise<void> {
+  await journal.pool.query(`
+    CREATE TABLE IF NOT EXISTS demo10_pending_entries (
+      underlying TEXT PRIMARY KEY,
+      symbol TEXT NOT NULL,
+      strategy TEXT NOT NULL,
+      timeframe TEXT NOT NULL,
+      direction TEXT NOT NULL,
+      candle_time BIGINT NOT NULL,
+      expires_at BIGINT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+}
+
+async function upsertPendingEntry(journal: PgEventJournal, p: PendingEntry): Promise<void> {
+  await journal.pool.query(
+    `INSERT INTO demo10_pending_entries
+       (underlying,symbol,strategy,timeframe,direction,candle_time,expires_at,created_at,updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,NOW(),NOW())
+     ON CONFLICT (underlying) DO UPDATE SET
+       symbol=EXCLUDED.symbol,
+       strategy=EXCLUDED.strategy,
+       timeframe=EXCLUDED.timeframe,
+       direction=EXCLUDED.direction,
+       candle_time=EXCLUDED.candle_time,
+       expires_at=EXCLUDED.expires_at,
+       updated_at=NOW()`,
+    [p.underlying,p.symbol,p.strategy,p.timeframe,p.direction,p.candleTime,p.expiresAt]
+  );
+}
+
+async function getPendingEntry(
+  journal: PgEventJournal,
+  underlying: string,
+  nowMs: number
+): Promise<PendingEntry | null> {
+  const r = await journal.pool.query(
+    `SELECT underlying,symbol,strategy,timeframe,direction,candle_time,expires_at
+       FROM demo10_pending_entries
+      WHERE underlying=$1 AND expires_at>$2`,
+    [underlying, nowMs]
+  );
+  if (!r.rows.length) return null;
+  const x = r.rows[0];
+  return {
+    underlying:String(x.underlying),
+    symbol:String(x.symbol),
+    strategy:String(x.strategy),
+    timeframe:String(x.timeframe),
+    direction:String(x.direction) as Direction,
+    candleTime:Number(x.candle_time),
+    expiresAt:Number(x.expires_at),
+  };
+}
+
+async function clearPendingEntry(journal: PgEventJournal, underlying: string): Promise<void> {
+  await journal.pool.query(
+    `DELETE FROM demo10_pending_entries WHERE underlying=$1`,
+    [underlying]
+  );
+}
+
+async function expirePendingEntries(journal: PgEventJournal, nowMs: number): Promise<number> {
+  const r = await journal.pool.query(
+    `DELETE FROM demo10_pending_entries
+      WHERE expires_at<=$1
+      RETURNING underlying,symbol,direction,candle_time`,
+    [nowMs]
+  );
+  for (const row of r.rows) {
+    await journal.appendEvent('DEMO10_PENDING_EXPIRED', String(row.underlying), {
+      symbol:String(row.symbol),
+      direction:String(row.direction),
+      candleTime:Number(row.candle_time),
+    });
+  }
+  return r.rowCount ?? 0;
+}
+
 function computeLedgerPnl(fills: any[]): {
   realizedGrossPnl: number;
   realizedBySymbol: Record<string, number>;
@@ -418,6 +540,8 @@ async function main(): Promise<void> {
   try {
     await journal.init();
     await journal.healthcheck();
+    await ensurePendingSchema(journal);
+    report.expiredPendingEntries = await expirePendingEntries(journal, Date.now());
 
     const lock = await leader.acquire();
     report.leader = lock;
@@ -492,6 +616,17 @@ async function main(): Promise<void> {
         continue;
       }
 
+      const freshCandidate = freshEntryCandidate(row);
+      if (freshCandidate) {
+        await upsertPendingEntry(journal, freshCandidate);
+        state.pendingCaptured = {
+          direction:freshCandidate.direction,
+          candleTime:freshCandidate.candleTime,
+          expiresAt:freshCandidate.expiresAt,
+        };
+        await journal.appendEvent('DEMO10_PENDING_CAPTURED', freshCandidate.underlying, freshCandidate);
+      }
+
       let rawPosition = await adapter.getPositionRisk(symbol);
       let posRow = positionRow(rawPosition, symbol);
       let positionAmt = Number(posRow.positionAmt ?? 0);
@@ -530,10 +665,23 @@ async function main(): Promise<void> {
 
       const rules = parseSymbolRules(exchangeInfo, symbol);
       const priceDecimals = decimalsFromStep(rules.tickSize);
-      const action = rowAction(row);
+      const directAction = rowAction(row);
+      const pending = await getPendingEntry(journal, String(row?.underlying ?? ''), Date.now());
+      const action =
+        directAction.kind !== 'NONE'
+          ? directAction
+          : pending
+            ? { kind:'ENTER' as const, direction:pending.direction, candleTime:pending.candleTime }
+            : directAction;
       state.requestedAction = action;
+      state.pendingExecution = pending ? {
+        direction:pending.direction,
+        candleTime:pending.candleTime,
+        expiresAt:pending.expiresAt,
+      } : null;
 
       if (action.kind === 'EXIT_FLAT') {
+        await clearPendingEntry(journal, String(row?.underlying ?? ''));
         if (Math.abs(positionAmt) > 1e-12) {
           await closePosition(
             adapter,
@@ -549,6 +697,38 @@ async function main(): Promise<void> {
         } else {
           state.result = 'ALREADY_FLAT';
         }
+        continue;
+      }
+
+      if (
+        action.kind === 'ENTER' &&
+        ['BLOCK','NO_MARKET_SNAPSHOT'].includes(String(row?.executionStatus ?? ''))
+      ) {
+        if (Math.abs(positionAmt) > 1e-12) {
+          const entryPrice = Number(posRow.entryPrice ?? 0);
+          if (entryPrice > 0) {
+            try {
+              await ensureProtection(
+                adapter,
+                journal,
+                leader,
+                symbol,
+                positionAmt > 0 ? 1 : -1,
+                entryPrice,
+                rules.tickSize,
+                priceDecimals,
+                'carry-' + symbol + '-' + String(entryPrice),
+                stopFraction
+              );
+              state.protected = true;
+            } catch (error: any) {
+              state.result = 'PROTECTION_FAILURE_WHILE_PENDING';
+              state.error = String(error?.message ?? error);
+              continue;
+            }
+          }
+        }
+        state.result = 'PENDING_EXECUTION_WAIT';
         continue;
       }
 
@@ -613,12 +793,14 @@ async function main(): Promise<void> {
             stopFraction
           );
         }
+        await clearPendingEntry(journal, String(row?.underlying ?? ''));
         state.result = 'HOLD_MATCHING_POSITION';
         continue;
       }
 
       const candleTime = Number(action.candleTime);
       if (await journal.hasIntentForCandle(symbol, candleTime)) {
+        await clearPendingEntry(journal, String(row?.underlying ?? ''));
         state.result = 'DUPLICATE_CANDLE_BLOCKED';
         continue;
       }
@@ -727,6 +909,7 @@ async function main(): Promise<void> {
         state.result = 'OUTBOX_CLAIM_FAILED';
         continue;
       }
+      await clearPendingEntry(journal, String(row?.underlying ?? ''));
 
       state.plannedEntry = {
         direction: action.direction,
