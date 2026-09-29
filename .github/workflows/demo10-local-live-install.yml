@@ -1,4 +1,4 @@
-name: Install Demo-10 Local Live Monitor
+name: Install Demo-10 Local Testnet Monitor
 
 on:
   push:
@@ -17,6 +17,8 @@ on:
       - 'scripts/build-execution-watchlist.mjs'
       - 'scripts/build-current-signal-watchlist.mjs'
       - 'scripts/build-shadow-journal.mjs'
+      - 'livebot-patch/src/live/**'
+      - 'livebot-patch/src/tools/runDemo10TestnetOnce.ts'
   workflow_dispatch:
 
 permissions:
@@ -24,13 +26,19 @@ permissions:
   issues: write
 
 concurrency:
-  group: demo10-local-live-install
+  group: demo10-local-testnet-install
   cancel-in-progress: true
 
 jobs:
   install:
     runs-on: [self-hosted, datahub-local]
-    timeout-minutes: 12
+    timeout-minutes: 20
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      DEMO_PG_CONTAINER: canonical-demo10-testnet-pg
+      DEMO_PG_VOLUME: canonical-demo10-testnet-pg-data
+      DEMO_PG_URL: postgres://postgres:demo10_testnet_pw@127.0.0.1:55441/demo10_testnet
+
     steps:
       - uses: actions/checkout@v4
 
@@ -43,34 +51,114 @@ jobs:
           node --check scripts/build-current-signal-watchlist.mjs
           node --check scripts/build-shadow-journal.mjs
           C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe -m py_compile scripts/fetch-live-market-snapshot.py scripts/fetch-current-candles.py
-          node -e "const d=require('./research/demo_cohort_10.json');if(d.mode!=='PAPER_SHADOW_ONLY'||d.cohortId!=='demo-10-forward-v2'||d.deploymentCandidates.length!==10)process.exit(2);console.log('DEMO10_SOURCE_OK')"
+          node -e "const d=require('./research/demo_cohort_10.json');if(d.mode!=='BINANCE_USDM_TESTNET'||d.cohortId!=='demo-10-forward-v2'||d.deploymentCandidates.length!==10||d.executionRules.productionOrders!==false)process.exit(2);console.log('DEMO10_TESTNET_SOURCE_OK')"
 
-      - name: Retire Q and install Demo-10 local live monitor
+      - name: Install guarded multi-symbol testnet executor
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          if (!(Test-Path "$env:BOT_ROOT\.git")) { throw "Local binance-bot missing" }
+
+          $qEnv = Join-Path $env:BOT_ROOT ".q-forward.local.env"
+          $demoEnv = Join-Path $env:BOT_ROOT ".demo10-testnet.local.env"
+          if (!(Test-Path $qEnv)) { throw "Existing Binance TESTNET credential file missing" }
+          Copy-Item $qEnv $demoEnv -Force
+
+          New-Item -ItemType Directory -Force "$env:BOT_ROOT\src\live" | Out-Null
+          New-Item -ItemType Directory -Force "$env:BOT_ROOT\src\tools" | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\live\*.ts" "$env:BOT_ROOT\src\live\" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\runDemo10TestnetOnce.ts" "$env:BOT_ROOT\src\tools\runDemo10TestnetOnce.ts" -Force
+
+          Push-Location $env:BOT_ROOT
+          try {
+            node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['demo10:testnet-once']='tsx src/tools/runDemo10TestnetOnce.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
+
+            if (!(Test-Path ".git\info\exclude")) { New-Item -ItemType File -Force ".git\info\exclude" | Out-Null }
+            $exclude = Get-Content ".git\info\exclude" -ErrorAction SilentlyContinue
+            if ($exclude -notcontains ".demo10-testnet.local.env") { Add-Content ".git\info\exclude" ".demo10-testnet.local.env" }
+            if ($exclude -notcontains "artifacts/") { Add-Content ".git\info\exclude" "artifacts/" }
+
+            npm run build
+            if ($LASTEXITCODE -ne 0) { throw "binance-bot build failed" }
+
+            if (Test-Path "src\tests\live\CanonicalSafety.test.ts") {
+              npx vitest run src/tests/live/CanonicalSafety.test.ts
+              if ($LASTEXITCODE -ne 0) { throw "Canonical safety tests failed" }
+            }
+          }
+          finally {
+            Pop-Location
+          }
+
+      - name: Ensure persistent Demo-10 TESTNET journal
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          cmd /c "docker info >nul 2>&1"
+          if ($LASTEXITCODE -ne 0) {
+            $desktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+            if (!(Test-Path $desktop)) { throw "Docker Desktop executable not found" }
+            $tracking = $env:RUNNER_TRACKING_ID
+            Remove-Item Env:RUNNER_TRACKING_ID -ErrorAction SilentlyContinue
+            Start-Process $desktop
+            if ($tracking) { $env:RUNNER_TRACKING_ID = $tracking }
+
+            $ready = $false
+            for ($i=0; $i -lt 90; $i++) {
+              Start-Sleep -Seconds 2
+              cmd /c "docker info >nul 2>&1"
+              if ($LASTEXITCODE -eq 0) { $ready = $true; break }
+            }
+            if (!$ready) { throw "Docker Desktop did not become ready" }
+          }
+
+          $exists = docker ps -a --filter "name=^/$env:DEMO_PG_CONTAINER$" --format "{{.Names}}"
+          if (!$exists) {
+            docker volume create $env:DEMO_PG_VOLUME | Out-Null
+            docker run -d --restart unless-stopped --name $env:DEMO_PG_CONTAINER -e POSTGRES_PASSWORD=demo10_testnet_pw -e POSTGRES_DB=demo10_testnet -p "127.0.0.1:55441:5432" -v "$($env:DEMO_PG_VOLUME):/var/lib/postgresql/data" postgres:16-alpine | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "Could not create Demo-10 TESTNET PostgreSQL" }
+          } else {
+            $running = docker ps --filter "name=^/$env:DEMO_PG_CONTAINER$" --format "{{.Names}}"
+            if (!$running) { docker start $env:DEMO_PG_CONTAINER | Out-Null }
+          }
+
+          $ready = $false
+          for ($i=0; $i -lt 30; $i++) {
+            docker exec $env:DEMO_PG_CONTAINER pg_isready -U postgres -d demo10_testnet 2>$null | Out-Null
+            if ($LASTEXITCODE -eq 0) { $ready = $true; break }
+            Start-Sleep -Seconds 1
+          }
+          if (!$ready) { throw "Demo-10 TESTNET PostgreSQL not ready" }
+
+      - name: Install Demo-10 one-minute TESTNET loop
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
           & "$env:GITHUB_WORKSPACE\scripts\install-demo10-live-monitor.ps1"
 
-      - name: Verify canonical Demo-10 status
+      - name: Verify canonical Demo-10 TESTNET status
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = "Stop"
-          $deadline = (Get-Date).AddMinutes(1)
+          $deadline = (Get-Date).AddMinutes(2)
           do {
             $body = gh api "repos/$env:GITHUB_REPOSITORY/issues/150" --jq .body
             if (
               $LASTEXITCODE -eq 0 -and
               $body -match 'cycle_state:\s*SUCCESS' -and
               $body -match 'cohort:\s*demo-10-forward-v2' -and
-              $body -match 'real_orders:\s*DISABLED' -and
+              $body -match 'mode:\s*BINANCE_USDM_TESTNET' -and
+              $body -match 'testnet_orders:\s*ENABLED' -and
+              $body -match 'production_orders:\s*DISABLED' -and
+              $body -match 'testnet_result:\s*SUCCESS' -and
               $body -match 'evaluated:\s*10'
             ) {
               $body
-              Write-Host "DEMO10_STATUS_VERIFIED"
+              Write-Host "DEMO10_TESTNET_STATUS_VERIFIED"
               exit 0
             }
-            Start-Sleep -Seconds 3
+            Start-Sleep -Seconds 4
           } while ((Get-Date) -lt $deadline)
-          throw "Demo-10 canonical live status did not become current within verification window"
+          throw "Demo-10 TESTNET canonical status did not become current within verification window"
