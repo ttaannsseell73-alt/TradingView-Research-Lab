@@ -213,7 +213,10 @@ jobs:
           '@
 
           [System.IO.File]::WriteAllText($runner, $script, (New-Object System.Text.UTF8Encoding($false)))
-          Start-ScheduledTask -TaskName "QDemoForwardMonitor"
+
+          # Force one immediate current-account cycle so deployment cannot pass on stale #109 data.
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $runner
+          if ($LASTEXITCODE -ne 0) { throw "Immediate Q status cycle failed" }
 
       - name: Verify publisher updated Q LIVE STATUS
         shell: powershell
@@ -226,6 +229,8 @@ jobs:
             if (
               $LASTEXITCODE -eq 0 -and
               $body -match 'cycle_state: SUCCESS' -and
+              $body -match 'position_source:\s*CURRENT_CYCLE_EXCHANGE' -and
+              $body -match 'positionAmt_before:\s*-?[0-9.]+' -and
               $body -match 'proximity_score:\s*[0-9]+' -and
               $body -match 'proximity_label:\s*(UZAK|ORTA|YAKIN|ACILMAYA_COK_YAKIN|TETIK_KOSULU_PREVIEW)' -and
               $body -match 'long_score:\s*[0-9]+' -and
