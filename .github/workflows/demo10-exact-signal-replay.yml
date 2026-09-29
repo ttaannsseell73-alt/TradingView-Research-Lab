@@ -1,0 +1,114 @@
+name: Demo-10 Exact Signal Replay Audit
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  replay:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      github.event.issue.title == '[DEMO10 EXACT SIGNAL REPLAY]'
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replay exact selected strategies since Demo-10 start
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $script=@'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import { evaluateStrategies } from './research/strategy_engine_v2.mjs';
+
+          const board=JSON.parse(fs.readFileSync('./research/demo_cohort_10.json','utf8'));
+          const dir='C:/demo10-live/work/candles';
+          const start=Date.parse('2026-09-29T17:28:08Z');
+          const end=Date.now();
+          const intervalMs={'1m':60000,'5m':300000,'15m':900000,'1h':3600000,'4h':14400000};
+
+          const out=[];
+          for(const c of board.deploymentCandidates){
+            const combo=c.bestClean?.[0];
+            if(!combo) continue;
+            const symbol=c.contracts?.[0];
+            const tf=combo.timeframe;
+            const p=path.join(dir,`${symbol}__${tf}.json`);
+            if(!fs.existsSync(p)){
+              out.push({underlying:c.underlying,symbol,tf,strategy:combo.strategy,error:'NO_CANDLE_FILE'});
+              continue;
+            }
+            const doc=JSON.parse(fs.readFileSync(p,'utf8'));
+            const candles=(doc.candles??[]).filter(x=>Number.isFinite(Number(x.t))).map(x=>({
+              ...x,t:Number(x.t),o:Number(x.o),h:Number(x.h),l:Number(x.l),c:Number(x.c),v:Number(x.v??0)
+            }));
+            const closed=candles.filter(b=>b.t+(intervalMs[tf]??0)<=end);
+            const r=evaluateStrategies(closed,{
+              start,end,
+              strategyIds:[combo.strategy],
+              minTrades:0,
+              cost:0,
+              stressCost:0,
+              lowCost:0
+            })[0];
+            out.push({
+              underlying:c.underlying,
+              symbol,tf,strategy:combo.strategy,
+              bars:closed.length,
+              firstBar:closed[0]?.t??null,
+              lastBar:closed.at(-1)?.t??null,
+              exactEntriesSinceDemo:r?.n??null,
+              longEntries:r?.longTrades??null,
+              shortEntries:r?.shortTrades??null,
+              researchTrades:combo.trades
+            });
+          }
+          console.log('=== EXACT_REPLAY ===');
+          for(const x of out) console.log(JSON.stringify(x));
+          console.log('=== TOTALS ===');
+          console.log(JSON.stringify({
+            allExactEntries:out.reduce((a,x)=>a+Number(x.exactEntriesSinceDemo??0),0),
+            testnetExactEntries:out.filter(x=>!['TLM','FF','ALLO'].includes(x.underlying)).reduce((a,x)=>a+Number(x.exactEntriesSinceDemo??0),0)
+          }));
+          '@
+          Set-Content -Path ".\tmp-demo10-exact-replay.mjs" -Value $script -Encoding UTF8
+          node .\tmp-demo10-exact-replay.mjs
+
+      - name: Actual TESTNET fills
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Continue"
+          $jsonl="C:\Users\TANSEL\Desktop\binance-bot\artifacts\demo10-testnet.jsonl"
+          Write-Host "=== ACTUAL TESTNET ENTRY FILLS ==="
+          if(Test-Path $jsonl){
+            $seen=@{}
+            Get-Content $jsonl | ForEach-Object {
+              try {
+                $d=$_ | ConvertFrom-Json
+                foreach($r in @($d.symbols)){
+                  if($r.entryOrder -and [double]$r.entryOrder.executedQty -gt 0){
+                    $k="$($r.underlying)|$($r.intentId)"
+                    if(-not $seen.ContainsKey($k)){
+                      $seen[$k]=$true
+                      [pscustomobject]@{
+                        t=$d.generatedAt; underlying=$r.underlying; direction=$r.signalDirection;
+                        result=$r.result; intent=$r.intentId; qty=$r.entryOrder.executedQty
+                      } | ConvertTo-Json -Compress
+                    }
+                  }
+                }
+              } catch {}
+            }
+          }
+
+      - name: Close request
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
