@@ -99,6 +99,14 @@ Decision:
 - Demo-10 is independent of this Q decision and MUST continue running as the active 10-setup paper/shadow observation lane.
 
 
+## GUA — SECOND REAL CANDIDATE LOCK 2026-09-29
+
+Decision:
+- GUA / GUAUSDT / 15m / `sr25_trendline_breakout` is classified as the second REAL_CANDIDATE after Q, based on the user's explicit promotion decision plus the already-locked research evidence.
+- This classification does NOT authorize production/live-money orders.
+- GUA remains inside Demo-10 TESTNET forward validation until the user explicitly authorizes real execution.
+- A valid fresh closed-candle GUA signal must not be lost solely because of a transient execution-layer market snapshot or liquidity availability gap.
+
 ## DEMO-10 TESTNET — CANONICAL 2026-09-29
 
 Purpose: active forward execution validation for the selected 10 setups on Binance USD-M Futures TESTNET.
@@ -118,6 +126,7 @@ Runtime contract:
 - Production/live-money orders: DISABLED.
 - Signal timing: confirmed closed candles only.
 - Fresh eligible signal can create a TESTNET intent/order; no seeding of old shadow positions.
+- Pending-execution rule applies to ALL Demo-10 candidates: every valid fresh closed-candle entry is durably captured before execution checks. If a transient execution condition blocks the order, the signal remains `PENDING_EXECUTION` only until the end of its canonical entry bar (1m/5m/15m/1h/4h according to the setup). If execution recovers within that bar, the same candle may execute exactly once. If the bar expires, the pending signal is discarded. No stale chasing and no front-running are allowed.
 - Selected-cohort REVIEW/evidence flags are advisory; BLOCK, no-market and non-trading states remain hard execution blocks.
 - x1 leverage, isolated margin.
 - Reference testnet allocation: 100 USDT per new position.
