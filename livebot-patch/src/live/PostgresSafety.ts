@@ -182,6 +182,46 @@ export class PgEventJournal {
     }
   }
 
+  async claimOutboxByIntent(intentId: string): Promise<{ outboxId: string; intentId: string; payload: Record<string, unknown> } | null> {
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+      const result = await client.query(
+        `SELECT id,outbox_id,intent_id,payload,status
+           FROM live_outbox
+          WHERE intent_id=$1
+          FOR UPDATE`,
+        [intentId]
+      );
+      if (!result.rows.length) {
+        await client.query('COMMIT');
+        return null;
+      }
+      const row = result.rows[0];
+      if (String(row.status) !== 'PENDING') {
+        await client.query('COMMIT');
+        return null;
+      }
+      await client.query(
+        `UPDATE live_outbox
+            SET status='PROCESSING', attempts=attempts+1, updated_at=NOW()
+          WHERE id=$1`,
+        [String(row.id)]
+      );
+      await client.query('COMMIT');
+      return {
+        outboxId: String(row.outbox_id),
+        intentId: String(row.intent_id),
+        payload: row.payload,
+      };
+    } catch (error) {
+      await client.query('ROLLBACK').catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   async markOutboxDone(outboxId: string): Promise<void> {
     await this.pool.query(
       `UPDATE live_outbox SET status='DONE',updated_at=NOW() WHERE outbox_id=$1`,
