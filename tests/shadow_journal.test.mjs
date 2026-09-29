@@ -66,17 +66,18 @@ test('opposite fresh intent closes and reverses exactly once',()=>{
   assert.equal(second.closedTrades[0].exitPrice,110);
 });
 
-test('hard tradability block force-closes at current mark',()=>{
+test('tradability block suppresses new entries but preserves an existing position',()=>{
   const first=updateShadowState(baseCurrent(intent('LONG')),null);
   const second=updateShadowState({
     snapshotAtMs:7000,
     paperIntents:[],
     rows:[{underlying:'TEST',executionStatus:'BLOCK',market:{mid:90,last:90}}]
   },first);
-  assert.equal(second.positions.length,0);
-  assert.equal(second.closedTrades.length,1);
-  assert.equal(second.closedTrades[0].exitReason,'TRADABILITY_BLOCK');
-  assert.equal(second.closedTrades[0].exitPrice,90);
+  assert.equal(second.positions.length,1);
+  assert.equal(second.positions[0].direction,'LONG');
+  assert.equal(second.positions[0].executionStatus,'BLOCK');
+  assert.equal(second.positions[0].markPrice,90);
+  assert.equal(second.closedTrades.length,0);
 });
 
 
