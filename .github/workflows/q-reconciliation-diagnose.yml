@@ -1,0 +1,127 @@
+name: Q Reconciliation Diagnose
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[Q RECON DIAG]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 8
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      PG_CONTAINER: canonical-q-demo-pg
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+    steps:
+      - name: Inspect journal and local Q artifacts
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $root=$env:BOT_ROOT
+          $out="$env:RUNNER_TEMP\q-recon-diag.txt"
+
+          cmd /c "docker info >nul 2>&1"
+          if($LASTEXITCODE -ne 0){ throw "Docker unavailable" }
+          $running=docker ps --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
+          if(!$running){ throw "Q demo PostgreSQL not running" }
+
+          @(
+            "=== TIME ===",
+            (Get-Date -Format o),
+            "",
+            "=== SCHEDULER ==="
+          ) | Set-Content $out -Encoding utf8
+          Get-ScheduledTaskInfo -TaskName "QDemoForwardMonitor" |
+            Format-List LastRunTime,LastTaskResult,NextRunTime |
+            Out-String | Add-Content $out
+
+          $report=Join-Path $root "artifacts\q-demo-forward-latest.json"
+          $failure=Join-Path $root "artifacts\q-demo-forward-failure-latest.json"
+          if(Test-Path $report){
+            "=== LAST SUCCESS REPORT ===" | Add-Content $out
+            $r=Get-Content $report -Raw | ConvertFrom-Json
+            [ordered]@{
+              generatedAt=$r.generatedAt
+              result=$r.result
+              action=$r.action
+              signalAction=$r.market.signal.action
+              fresh=$r.market.signal.fresh
+              positionAmtBefore=$r.positionBefore.positionAmt
+              entryPriceBefore=$r.positionBefore.entryPrice
+              positionAfter=$r.positionAfter
+            } | ConvertTo-Json -Depth 8 -Compress | Add-Content $out
+          }
+          if(Test-Path $failure){
+            "=== LAST FAILURE REPORT ===" | Add-Content $out
+            $f=Get-Content $failure -Raw | ConvertFrom-Json
+            [ordered]@{
+              generatedAt=$f.generatedAt
+              result=$f.result
+              error=$f.error
+              reconcileBefore=$f.reconcileBefore
+              positionBefore=$f.positionBefore
+              positionAfter=$f.positionAfter
+            } | ConvertTo-Json -Depth 8 -Compress | Add-Content $out
+          }
+
+          "=== EXPECTED POSITION FROM FILLS ===" | Add-Content $out
+          docker exec $env:PG_CONTAINER psql -U postgres -d livebot_demo -Atc @"
+          SELECT COALESCE(SUM(CASE WHEN side='BUY' THEN quantity WHEN side='SELL' THEN -quantity ELSE 0 END),0)
+          FROM live_fills WHERE symbol='QUSDT';
+          "@ | Add-Content $out
+
+          "=== LAST 30 FILLS ===" | Add-Content $out
+          docker exec $env:PG_CONTAINER psql -U postgres -d livebot_demo -P pager=off -F "|" -Atc @"
+          SELECT
+            to_char(to_timestamp(event_time/1000.0),'YYYY-MM-DD HH24:MI:SS.MS'),
+            side,
+            quantity,
+            fill_price,
+            COALESCE(intent_id,'NULL'),
+            fill_id,
+            COALESCE(payload->>'orderId',''),
+            COALESCE(payload->>'clientOrderId',payload#>>'{o,c}','')
+          FROM live_fills
+          WHERE symbol='QUSDT'
+          ORDER BY event_time DESC
+          LIMIT 30;
+          "@ | Add-Content $out
+
+          "=== UNRESOLVED OUTBOX ===" | Add-Content $out
+          docker exec $env:PG_CONTAINER psql -U postgres -d livebot_demo -P pager=off -F "|" -Atc @"
+          SELECT status,intent_id,outbox_id,attempts,updated_at
+          FROM live_outbox
+          WHERE status IN ('PENDING','PROCESSING')
+          ORDER BY id;
+          "@ | Add-Content $out
+
+          "=== LAST RECONCILIATION EVENTS ===" | Add-Content $out
+          docker exec $env:PG_CONTAINER psql -U postgres -d livebot_demo -P pager=off -F "|" -Atc @"
+          SELECT created_at,event_type,payload::text
+          FROM live_events
+          WHERE entity_id='QUSDT' AND event_type IN ('RECONCILIATION_ERROR','RECONCILE_OK')
+          ORDER BY id DESC
+          LIMIT 12;
+          "@ | Add-Content $out
+
+          "=== PROTECTION EVENTS ===" | Add-Content $out
+          docker exec $env:PG_CONTAINER psql -U postgres -d livebot_demo -P pager=off -F "|" -Atc @"
+          SELECT created_at,event_type,entity_id,payload::text
+          FROM live_events
+          WHERE event_type IN ('PROTECTION_ACK','PROTECTION_CANCELLED','OPEN_UNPROTECTED')
+          ORDER BY id DESC
+          LIMIT 20;
+          "@ | Add-Content $out
+
+          Get-Content $out
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body-file $out | Out-Null
