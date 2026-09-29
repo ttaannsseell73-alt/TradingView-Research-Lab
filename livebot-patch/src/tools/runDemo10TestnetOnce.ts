@@ -573,7 +573,7 @@ async function main(): Promise<void> {
               stopFraction
             );
             state.protected = true;
-            state.result = row?.executionStatus === 'BLOCK'
+            state.result = ['BLOCK','NO_MARKET_SNAPSHOT'].includes(String(row?.executionStatus ?? ''))
               ? 'HOLD_PROTECTED_EXECUTION_BLOCK'
               : 'HOLD_PROTECTED';
           } catch (error: any) {
