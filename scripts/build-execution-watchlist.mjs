@@ -43,7 +43,14 @@ const rows=[];
 for(const candidate of source){
   const contracts=(candidate.contracts??[]).map(s=>bySymbol.get(s)).filter(Boolean);
   if(!contracts.length){
-    rows.push({...candidate,executionStatus:'NO_MARKET_SNAPSHOT',executionContract:null,market:null});
+    const fallbackContract=(candidate.contracts??[])[0]??null;
+    rows.push({
+      ...candidate,
+      executionStatus:'NO_MARKET_SNAPSHOT',
+      executionContract:fallbackContract,
+      market:null,
+      alternativeContracts:[]
+    });
     continue;
   }
   contracts.sort(compare);
