@@ -6,6 +6,8 @@ on:
     paths:
       - '.github/workflows/runner-control-plane-diagnose.yml'
   workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   contents: read
@@ -14,6 +16,7 @@ permissions:
 
 jobs:
   diagnose:
+    if: github.event_name != 'issues' || startsWith(github.event.issue.title, '[RUNNER CHECK]')
     runs-on: ubuntu-latest
     steps:
       - name: Inspect repository runners and publish canonical status
@@ -24,6 +27,8 @@ jobs:
           STATUS_ISSUE: "147"
           TARGET_RUNNER: "TANSEL-DATAHUB"
           REQUIRED_LABEL: "datahub-local"
+          EVENT_NAME: ${{ github.event_name }}
+          TRIGGER_ISSUE: ${{ github.event.issue.number }}
         run: |
           set -euo pipefail
 
@@ -74,6 +79,10 @@ jobs:
 
           gh api --method PATCH "repos/$REPO/issues/$STATUS_ISSUE" -f body="$body" >/dev/null
           printf '%s\n' "$body"
+
+          if [ "$EVENT_NAME" = "issues" ] && [ -n "${TRIGGER_ISSUE:-}" ]; then
+            gh api --method PATCH "repos/$REPO/issues/$TRIGGER_ISSUE" -f state=closed >/dev/null || true
+          fi
 
           if [ "$state" != "HEALTHY" ]; then
             echo "::error::Self-hosted research runner is not healthy: $state"
