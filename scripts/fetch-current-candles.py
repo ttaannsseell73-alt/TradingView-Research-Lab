@@ -7,7 +7,7 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
 BASES=["https://fapi.binance.com","https://fapi1.binance.com","https://fapi2.binance.com","https://fapi3.binance.com","https://fapi4.binance.com"]
-LIMIT=350
+LIMIT_BY_TF={"1m":3000,"5m":800,"15m":800,"1h":500,"4h":500,"1d":400}
 
 def get_json(path, params=None, retries=2):
     last=None
@@ -77,14 +77,32 @@ def main():
         cand=by_under.get(x.get("underlying")) or {}
         for combo in cand.get("bestClean",[]):
             tf=combo.get("timeframe")
-            if symbol and tf in ("5m","1h","4h","1d"):
+            if symbol and tf in ("1m","5m","15m","1h","4h","1d"):
                 requests.add((symbol,tf))
     failures=[]
     manifest=[]
     now_ms=int(time.time()*1000)
 
     def fetch_series(symbol,tf):
-        raw=get_json("/fapi/v1/klines",{"symbol":symbol,"interval":tf,"limit":LIMIT})
+        wanted=int(LIMIT_BY_TF.get(tf,500))
+        raw=[]
+        end_time=None
+        while len(raw)<wanted:
+            chunk_limit=min(1500,wanted-len(raw))
+            params={"symbol":symbol,"interval":tf,"limit":chunk_limit}
+            if end_time is not None:
+                params["endTime"]=end_time
+            chunk=get_json("/fapi/v1/klines",params)
+            if not chunk:
+                break
+            raw=chunk+raw
+            first_open=int(chunk[0][0])
+            if len(chunk)<chunk_limit or first_open<=0:
+                break
+            end_time=first_open-1
+            if len(raw)>=wanted:
+                raw=raw[-wanted:]
+                break
         closed=[]
         current_bar=None
         for k in raw:
