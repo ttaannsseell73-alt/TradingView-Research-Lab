@@ -1,0 +1,68 @@
+name: STR100 Runtime Probe
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[STR100 PROBE]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 20
+    env:
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      EXACT_KEY: 027-crypto-institutional-liquidity-sweep-strategy
+      EXACT_NAME: Crypto Institutional Liquidity Sweep Strategy
+      EXACT_AUTHOR: Danish7421
+      EXACT_ORIGIN: sweep_exact_research
+      EXACT_GROUP: sweep_exact
+      EXACT_SCRIPT_ID: PUB;61910d0a54484ce7b9aa5dcd8f9912fe
+      EXACT_SOURCE_SHA256: 20247debd352052e0896cd265a2d9485e35c60071a1f148f033a6a7e82668b3c
+      EXACT_PINE_VERSION: '5'
+      EXACT_URL: https://www.tradingview.com/script/ZhJzjmAk-Crypto-Institutional-Liquidity-Sweep-Strategy/
+      EXACT_START: 2025-09-28T00:00:00Z
+      EXACT_END: 2026-09-28T00:00:00Z
+      EXACT_CSV_CACHE: C:/actions-runner-datahub/research-cache/2025-09-28__2026-09-28__1m-5m-15m-1h-4h
+      EXACT_OUT_DIR: artifacts/str100-runtime-probe
+      EXACT_SMOKE_BARS: '600'
+      EXACT_PREFLIGHT_ONLY: '1'
+      TURBO_STRICT_CACHE: '1'
+      SHARD_INDEX: '0'
+      SHARD_COUNT: '1'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned PineTS
+        shell: powershell
+        run: |
+          npm install --no-save --package-lock=false --audit=false --fund=false pinets@0.10.0
+
+      - name: Probe previous syminfo failure
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-pinets-exact-strategy.mjs
+          if ($LASTEXITCODE -ne 0) { throw "STR100 runtime probe failed" }
+          Get-Content "$env:EXACT_OUT_DIR/preflight.json"
+
+      - name: Upload probe
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: str100-runtime-probe
+          path: artifacts/str100-runtime-probe/
+          if-no-files-found: error
+          retention-days: 7
