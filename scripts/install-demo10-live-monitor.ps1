@@ -183,6 +183,10 @@ try {
     node (Join-Path $RepoRoot "scripts\build-current-signal-watchlist.mjs") $board (Join-Path $executionDir "EXECUTION_WATCHLIST.json") $candlesDir $signalDir *>> $Log
     if ($LASTEXITCODE -ne 0) { throw "SIGNAL_WATCHLIST_EXIT_$LASTEXITCODE" }
 
+    $proximityPath = Join-Path $WorkRoot "demo10-proximity.json"
+    node (Join-Path $RepoRoot "scripts\build-demo10-proximity.mjs") $board (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") $candlesDir $proximityPath *>> $Log
+    if ($LASTEXITCODE -ne 0) { throw "PROXIMITY_EXIT_$LASTEXITCODE" }
+
     $prevArg = if (Test-Path $previous) { $previous } else { "-" }
     node (Join-Path $RepoRoot "scripts\build-shadow-journal.mjs") (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") $prevArg $journalDir *>> $Log
     if ($LASTEXITCODE -ne 0) { throw "SHADOW_JOURNAL_EXIT_$LASTEXITCODE" }
@@ -223,6 +227,9 @@ try {
 
     $s = Get-Content $newState -Raw | ConvertFrom-Json
     $w = Get-Content (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") -Raw | ConvertFrom-Json
+    $prox = Get-Content $proximityPath -Raw | ConvertFrom-Json
+    $nearCount = @($prox.rows | Where-Object { [int]$_.closestScore -ge 60 }).Count
+    $veryNearCount = @($prox.rows | Where-Object { [int]$_.closestScore -ge 80 }).Count
     $lines = @(
         "# DEMO-10 LIVE STATUS",
         "",
@@ -243,6 +250,8 @@ try {
         "- testnetOpenPositions: $($t.summary.openPositions)",
         "- testnetOpenedProtectedThisCycle: $($t.summary.openedProtected)",
         "- reconciliationHalts: $($t.summary.reconciliationHalts)",
+        "- proximityNearOrBetter: $nearCount",
+        "- proximityVeryNearOrTrigger: $veryNearCount",
         "- shadowOpenPositions: $($s.summary.openPositions)",
         "- shadowClosedTrades: $($s.summary.closedTrades)",
         "- shadowRealizedPnlRefSum: $($s.summary.realizedPnlPerReferenceNotionalSum)",
@@ -259,6 +268,31 @@ try {
         $txResult = if ($tx) { $tx.result } else { "NO_TESTNET_ROW" }
         $lines += "| $($r.underlying) | $($r.timeframe) | $($r.strategy) | $($r.direction) | $($r.status) | $($r.executionStatus) | $($r.fresh) | $($r.signalAgeBars) | $txResult |"
     }
+
+    $lines += @("","## TESTNET signal proximity","")
+    $lines += "| Coin | TF | Price | LONG | SHORT | Closest | Testnet state |"
+    $lines += "|---|---|---:|---|---|---|---|"
+    foreach($px in @($prox.rows) | Sort-Object underlying){
+        $tx = @($t.symbols) | Where-Object { $_.underlying -eq $px.underlying } | Select-Object -First 1
+        $txResult = if ($tx) { $tx.result } else { "NO_TESTNET_ROW" }
+        if ($txResult -eq "UNAVAILABLE_ON_TESTNET") { continue }
+        $lp = "$($px.long.score)/100 $($px.long.class) [$($px.long.distancePct)%]"
+        $sp = "$($px.short.score)/100 $($px.short.class) [$($px.short.distancePct)%]"
+        $closest = "$($px.closestDirection) $($px.closestScore)/100 $($px.closestClass)"
+        $lines += "| $($px.underlying) | $($px.timeframe) | $($px.currentPrice) | $lp | $sp | $closest | $txResult |"
+    }
+
+    $lines += @("","### TESTNET missing conditions","")
+    $lines += "| Coin | LONG missing | SHORT missing |"
+    $lines += "|---|---|---|"
+    foreach($px in @($prox.rows) | Sort-Object underlying){
+        $tx = @($t.symbols) | Where-Object { $_.underlying -eq $px.underlying } | Select-Object -First 1
+        $txResult = if ($tx) { $tx.result } else { "NO_TESTNET_ROW" }
+        if ($txResult -eq "UNAVAILABLE_ON_TESTNET") { continue }
+        $lines += "| $($px.underlying) | $($px.long.missing) | $($px.short.missing) |"
+    }
+
+    $lines += @("","_Proximity is mechanical distance to strategy conditions, not probability. 0-29 UZAK; 30-59 ORTA; 60-79 YAKIN; 80-99 COK_YAKIN; 100 TETIK/WAIT_CLOSE. Orders still require a confirmed closed-candle FRESH_ENTRY._")
 
     $lines += @("","## Open TESTNET positions","")
     if (@($t.testnetPositions).Count -eq 0) {
@@ -297,6 +331,7 @@ try {
         counts = $w.counts
         shadowSummary = $s.summary
         shadowPositions = $s.positions
+        proximity = $prox
         testnetResult = $t.result
         testnetSummary = $t.summary
         testnetPositions = $t.testnetPositions
