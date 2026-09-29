@@ -249,12 +249,6 @@ export function updateShadowState(current,previous=null,{
       handled.add(pos.underlying);
       continue;
     }
-    if(execStatus==='BLOCK'&&finite(mark)){
-      closePosition(pos,mark,nowMs,'TRADABILITY_BLOCK');
-      handled.add(pos.underlying);
-      continue;
-    }
-
     const updated={...pos,executionStatus:execStatus};
     if(intent&&intent.direction===pos.direction){
       updated.supportCount=Number(intent.supportCount??updated.supportCount??1);
@@ -325,7 +319,7 @@ export function updateShadowState(current,previous=null,{
       capital:'Reference notional is normalized per independent paper trade; it is not a live allocation recommendation.',
       entry:'Fresh eligible signals enter at the actual next-bar open. After an outage or scheduler gap, the latest eligible direction change may be reconstructed from any current row whose canonical entry occurred after the previous successful shadow snapshot.',
       mark:'Open positions are marked at current futures mid/last price.',
-      exit:'Opposite eligible fresh intent reverses; target-position lead strategy can exit to flat; hard tradability block forces paper exit.',
+      exit:'Opposite eligible fresh intent reverses; target-position lead strategy can exit to flat. Tradability BLOCK suppresses new entries but does not close an existing position.',
       cost:'Net returns subtract the same modeled round-trip cost used by the research baseline.'
     },
     summary,
