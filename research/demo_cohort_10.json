@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "cohortId": "demo-10-forward-v1",
+  "cohortId": "demo-10-forward-v2",
   "createdAt": "2026-09-29",
   "purpose": "Paper/shadow forward observation shortlist for possible later live promotion. No real orders.",
   "mode": "PAPER_SHADOW_ONLY",
@@ -14,17 +14,44 @@
     "promotion": "No automatic live promotion. Require forward evidence review."
   },
   "selectionRules": [
+    "Slots 1-5 are canonical SR35 A_9_OF_9 setups from run 36350416306 / artifact sr35-2026-full-result",
+    "Slots 6-10 are strongest unique-underlying Near-Pass 2Y / recovery candidates; no duplicate underlying",
     "Current strategy implementation exists in research/strategy_engine_v2.mjs",
     "USDT perpetual contract currently active",
-    "Historical evidencePass=true and no reviewFlags on selected setup",
-    "Prefer larger sample, controlled drawdown/PF, and current futures liquidity",
-    "Avoid low-sample/extreme-PF setup as the selected lead"
+    "One paper position per underlying; no automatic live promotion",
+    "Confirmed closed candle -> next bar open; modeled round-trip cost 0.0014"
   ],
   "deploymentCandidates": [
     {
-      "underlying": "XRP",
+      "underlying": "GUA",
       "contracts": [
-        "XRPUSDT"
+        "GUAUSDT"
+      ],
+      "evidenceTimeframes": [
+        "15m"
+      ],
+      "evidenceTimeframeCount": 1,
+      "evidenceFamilyCount": 1,
+      "cleanCombinations": 1,
+      "bestEvidenceNet": 387.1485513699305,
+      "medianEvidenceDD": 0.2742962971521795,
+      "selectionClass": "SR35_9_OF_9",
+      "bestClean": [
+        {
+          "contract": "GUAUSDT",
+          "strategy": "sr25_trendline_breakout",
+          "timeframe": "15m",
+          "net": 387.1485513699305,
+          "pf": 4.056071102378791,
+          "dd": 0.2742962971521795,
+          "trades": 164
+        }
+      ]
+    },
+    {
+      "underlying": "RIVER",
+      "contracts": [
+        "RIVERUSDT"
       ],
       "evidenceTimeframes": [
         "1h"
@@ -32,24 +59,51 @@
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 0.4690857665167256,
-      "medianEvidenceDD": 0.1812857956977948,
+      "bestEvidenceNet": 43.25361010526647,
+      "medianEvidenceDD": 0.6038235354827173,
+      "selectionClass": "SR35_9_OF_9",
       "bestClean": [
         {
-          "contract": "XRPUSDT",
-          "strategy": "ssl_hybrid_qqe_flip",
+          "contract": "RIVERUSDT",
+          "strategy": "sr25_fvg_first_touch",
           "timeframe": "1h",
-          "net": 0.4690857665167256,
-          "pf": 1.6096979522038888,
-          "dd": 0.1812857956977948,
-          "trades": 92
+          "net": 43.25361010526647,
+          "pf": 2.0206843896600417,
+          "dd": 0.6038235354827173,
+          "trades": 231
         }
       ]
     },
     {
-      "underlying": "WLD",
+      "underlying": "GPS",
       "contracts": [
-        "WLDUSDT"
+        "GPSUSDT"
+      ],
+      "evidenceTimeframes": [
+        "15m"
+      ],
+      "evidenceTimeframeCount": 1,
+      "evidenceFamilyCount": 1,
+      "cleanCombinations": 1,
+      "bestEvidenceNet": 29.680820795514347,
+      "medianEvidenceDD": 0.28189247074663637,
+      "selectionClass": "SR35_9_OF_9",
+      "bestClean": [
+        {
+          "contract": "GPSUSDT",
+          "strategy": "sr_liquidity_sweep",
+          "timeframe": "15m",
+          "net": 29.680820795514347,
+          "pf": 1.7118361091380614,
+          "dd": 0.28189247074663637,
+          "trades": 614
+        }
+      ]
+    },
+    {
+      "underlying": "TRADOOR",
+      "contracts": [
+        "TRADOORUSDT"
       ],
       "evidenceTimeframes": [
         "5m"
@@ -57,217 +111,179 @@
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 1.2732827566852287,
-      "medianEvidenceDD": 0.16366073924413094,
+      "bestEvidenceNet": 24.48084673478754,
+      "medianEvidenceDD": 0.7958034373328922,
+      "selectionClass": "SR35_9_OF_9",
       "bestClean": [
         {
-          "contract": "WLDUSDT",
-          "strategy": "tott",
+          "contract": "TRADOORUSDT",
+          "strategy": "sr25_poc_mean_reversion",
           "timeframe": "5m",
-          "net": 1.2732827566852287,
-          "pf": 2.3124329246500013,
-          "dd": 0.16366073924413094,
-          "trades": 43
+          "net": 24.48084673478754,
+          "pf": 1.6741688285463163,
+          "dd": 0.7958034373328922,
+          "trades": 574
         }
       ]
     },
     {
-      "underlying": "AAVE",
+      "underlying": "TLM",
       "contracts": [
-        "AAVEUSDT"
+        "TLMUSDT"
       ],
       "evidenceTimeframes": [
-        "1h"
+        "1m"
       ],
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 0.7582906353577821,
-      "medianEvidenceDD": 0.22630067082668626,
+      "bestEvidenceNet": 13.816682648908055,
+      "medianEvidenceDD": 0.3412907103825137,
+      "selectionClass": "SR35_9_OF_9",
       "bestClean": [
         {
-          "contract": "AAVEUSDT",
-          "strategy": "ssl_hybrid_qqe_flip",
-          "timeframe": "1h",
-          "net": 0.7582906353577821,
-          "pf": 1.6765697953131988,
-          "dd": 0.22630067082668626,
-          "trades": 90
+          "contract": "TLMUSDT",
+          "strategy": "sr25_camarilla_h3_l3",
+          "timeframe": "1m",
+          "net": 13.816682648908055,
+          "pf": 2.2589713648360092,
+          "dd": 0.3412907103825137,
+          "trades": 233
         }
       ]
     },
     {
-      "underlying": "1000PEPE",
+      "underlying": "Q",
       "contracts": [
-        "1000PEPEUSDT"
+        "QUSDT"
       ],
       "evidenceTimeframes": [
-        "4h"
+        "5m"
       ],
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 0.6886354125585334,
-      "medianEvidenceDD": 0.2426278865054018,
+      "bestEvidenceNet": 3230.568983059226,
+      "medianEvidenceDD": 0.6188326841450228,
+      "selectionClass": "NEARPASS_2Y_ONE_MONTH_SHORT",
+      "monthlyConsistency": "8/9",
       "bestClean": [
         {
-          "contract": "1000PEPEUSDT",
-          "strategy": "ut_bot_quantnomad",
-          "timeframe": "4h",
-          "net": 0.6886354125585334,
-          "pf": 1.724136179881703,
-          "dd": 0.2426278865054018,
-          "trades": 56
+          "contract": "QUSDT",
+          "strategy": "sr_range_edge",
+          "timeframe": "5m",
+          "net": 3230.568983059226,
+          "pf": 2.1829801833880462,
+          "dd": 0.6188326841450228,
+          "trades": 967
         }
       ]
     },
     {
-      "underlying": "ARB",
+      "underlying": "HANA",
       "contracts": [
-        "ARBUSDT"
+        "HANAUSDT"
       ],
       "evidenceTimeframes": [
-        "4h"
+        "5m"
       ],
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 1.9670111305327502,
-      "medianEvidenceDD": 0.2796432287550201,
+      "bestEvidenceNet": 44.8510834026124,
+      "medianEvidenceDD": 0.554224640130575,
+      "selectionClass": "NEARPASS_2Y_GE80PCT",
+      "monthlyConsistency": "9/11",
       "bestClean": [
         {
-          "contract": "ARBUSDT",
-          "strategy": "ssl_hybrid_flip",
-          "timeframe": "4h",
-          "net": 1.9670111305327502,
-          "pf": 2.95515495885906,
-          "dd": 0.2796432287550201,
-          "trades": 26
+          "contract": "HANAUSDT",
+          "strategy": "sr25_poc_mean_reversion",
+          "timeframe": "5m",
+          "net": 44.8510834026124,
+          "pf": 1.5585249664827356,
+          "dd": 0.554224640130575,
+          "trades": 766
         }
       ]
     },
     {
-      "underlying": "FET",
+      "underlying": "XPIN",
       "contracts": [
-        "FETUSDT"
+        "XPINUSDT"
       ],
       "evidenceTimeframes": [
-        "1h"
+        "5m"
       ],
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 0.7776837127250413,
-      "medianEvidenceDD": 0.21936033752769812,
+      "bestEvidenceNet": 20.72252853514615,
+      "medianEvidenceDD": 0.784310122968551,
+      "selectionClass": "NEARPASS_2Y_GE80PCT",
+      "monthlyConsistency": "9/11",
       "bestClean": [
         {
-          "contract": "FETUSDT",
-          "strategy": "ssl_hybrid_qqe_flip",
-          "timeframe": "1h",
-          "net": 0.7776837127250413,
-          "pf": 1.6363721168049996,
-          "dd": 0.21936033752769812,
-          "trades": 90
+          "contract": "XPINUSDT",
+          "strategy": "sr_range_edge",
+          "timeframe": "5m",
+          "net": 20.72252853514615,
+          "pf": 1.3249843619799877,
+          "dd": 0.784310122968551,
+          "trades": 1282
         }
       ]
     },
     {
-      "underlying": "DOT",
+      "underlying": "FF",
       "contracts": [
-        "DOTUSDT"
+        "FFUSDT"
       ],
       "evidenceTimeframes": [
-        "1h"
+        "15m"
       ],
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 0.8561667327158262,
-      "medianEvidenceDD": 0.21440847747576997,
+      "bestEvidenceNet": 10.192594139698414,
+      "medianEvidenceDD": 0.5609979791861457,
+      "selectionClass": "NEARPASS_2Y_GE80PCT",
+      "monthlyConsistency": "9/11",
       "bestClean": [
         {
-          "contract": "DOTUSDT",
-          "strategy": "ott",
-          "timeframe": "1h",
-          "net": 0.8561667327158262,
-          "pf": 1.7864007208322716,
-          "dd": 0.21440847747576997,
-          "trades": 82
+          "contract": "FFUSDT",
+          "strategy": "sr_range_edge",
+          "timeframe": "15m",
+          "net": 10.192594139698414,
+          "pf": 1.5623039284254958,
+          "dd": 0.5609979791861457,
+          "trades": 449
         }
       ]
     },
     {
-      "underlying": "RAYSOL",
+      "underlying": "ALLO",
       "contracts": [
-        "RAYSOLUSDT"
+        "ALLOUSDT"
       ],
       "evidenceTimeframes": [
-        "1h"
+        "15m"
       ],
       "evidenceTimeframeCount": 1,
       "evidenceFamilyCount": 1,
       "cleanCombinations": 1,
-      "bestEvidenceNet": 2.0119523585902797,
-      "medianEvidenceDD": 0.22574054765091234,
+      "bestEvidenceNet": 405.751969628063,
+      "medianEvidenceDD": 0.4120669786495116,
+      "selectionClass": "NEARPASS_2Y_RECOVERY",
+      "monthlyConsistency": "7/9",
       "bestClean": [
         {
-          "contract": "RAYSOLUSDT",
-          "strategy": "ssl_hybrid_qqe_flip",
-          "timeframe": "1h",
-          "net": 2.0119523585902797,
-          "pf": 2.48039392675101,
-          "dd": 0.22574054765091234,
-          "trades": 82
-        }
-      ]
-    },
-    {
-      "underlying": "1000BONK",
-      "contracts": [
-        "1000BONKUSDT"
-      ],
-      "evidenceTimeframes": [
-        "4h"
-      ],
-      "evidenceTimeframeCount": 1,
-      "evidenceFamilyCount": 1,
-      "cleanCombinations": 1,
-      "bestEvidenceNet": 1.9359981012246785,
-      "medianEvidenceDD": 0.19330346801269027,
-      "bestClean": [
-        {
-          "contract": "1000BONKUSDT",
-          "strategy": "ut_bot_quantnomad",
-          "timeframe": "4h",
-          "net": 1.9359981012246785,
-          "pf": 2.7782568626071305,
-          "dd": 0.19330346801269027,
-          "trades": 44
-        }
-      ]
-    },
-    {
-      "underlying": "MINA",
-      "contracts": [
-        "MINAUSDT"
-      ],
-      "evidenceTimeframes": [
-        "4h"
-      ],
-      "evidenceTimeframeCount": 1,
-      "evidenceFamilyCount": 1,
-      "cleanCombinations": 1,
-      "bestEvidenceNet": 2.5156200459474016,
-      "medianEvidenceDD": 0.1319977154476838,
-      "bestClean": [
-        {
-          "contract": "MINAUSDT",
-          "strategy": "ott",
-          "timeframe": "4h",
-          "net": 2.5156200459474016,
-          "pf": 4.057248065384005,
-          "dd": 0.1319977154476838,
-          "trades": 30
+          "contract": "ALLOUSDT",
+          "strategy": "sr25_impulse_ob_retest",
+          "timeframe": "15m",
+          "net": 405.751969628063,
+          "pf": 2.845231134849327,
+          "dd": 0.4120669786495116,
+          "trades": 287
         }
       ]
     }
