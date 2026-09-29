@@ -588,6 +588,16 @@ async function main() {
     return;
   }
 
+  if (!['0', 'false', 'off', ''].includes(String(process.env.EXACT_PREFLIGHT_ONLY ?? '').toLowerCase())) {
+    safeJsonWrite(path.join(outDir, 'preflight.json'), {
+      ...sourceRecord,
+      status: 'PREFLIGHT_OK',
+      smokeBars: Math.max(200, Number(process.env.EXACT_SMOKE_BARS ?? 600)),
+    });
+    console.log(JSON.stringify({ status: 'PREFLIGHT_OK', key: meta.key }));
+    return;
+  }
+
   const symbols = universeFromFeather(dataRoot);
   if (symbols.length < 500) {
     throw new Error(`exact universe guard failed: expected at least 500 symbols, found ${symbols.length}`);
