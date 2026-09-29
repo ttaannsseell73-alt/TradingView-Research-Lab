@@ -32,6 +32,8 @@ jobs:
   shadow:
     runs-on: [self-hosted, datahub-local]
     timeout-minutes: 10
+    env:
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
     steps:
       - uses: actions/checkout@v4
 
@@ -47,7 +49,7 @@ jobs:
           node --check scripts/build-execution-watchlist.mjs
           node --check scripts/build-current-signal-watchlist.mjs
           node --check scripts/build-shadow-journal.mjs
-          python -m py_compile scripts/fetch-live-market-snapshot.py scripts/fetch-current-candles.py
+          & $env:DATAHUB_PYTHON -m py_compile scripts/fetch-live-market-snapshot.py scripts/fetch-current-candles.py
           node -e "const d=require('./research/demo_cohort_10.json'); if(d.mode!=='PAPER_SHADOW_ONLY'||d.deploymentCandidates.length!==10) process.exit(2); console.log('DEMO10_CONFIG_OK')"
 
       - name: Restore previous Demo-10 state
@@ -67,9 +69,9 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          python scripts/fetch-live-market-snapshot.py research/demo_cohort_10.json artifacts/demo10/live-market.json
+          & $env:DATAHUB_PYTHON scripts/fetch-live-market-snapshot.py research/demo_cohort_10.json artifacts/demo10/live-market.json
           node scripts/build-execution-watchlist.mjs research/demo_cohort_10.json artifacts/demo10/live-market.json research/tradability_policy.json artifacts/demo10/execution
-          python scripts/fetch-current-candles.py research/demo_cohort_10.json artifacts/demo10/execution/EXECUTION_WATCHLIST.json artifacts/demo10/candles
+          & $env:DATAHUB_PYTHON scripts/fetch-current-candles.py research/demo_cohort_10.json artifacts/demo10/execution/EXECUTION_WATCHLIST.json artifacts/demo10/candles
           node scripts/build-current-signal-watchlist.mjs research/demo_cohort_10.json artifacts/demo10/execution/EXECUTION_WATCHLIST.json artifacts/demo10/candles artifacts/demo10/current-signal
 
       - name: Update Demo-10 paper journal
