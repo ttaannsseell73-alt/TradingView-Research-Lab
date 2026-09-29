@@ -138,11 +138,25 @@ function csvEscape(value) {
 function mergeResults(results, elapsedMs) {
   const summaries = [];
   const runtimeSkips = [];
+  const preflights = [];
   for (const result of results) {
     const summaryFile = path.join(result.shardOut, 'summary.json');
     const skipFile = path.join(result.shardOut, 'runtime-skip.json');
+    const preflightFile = path.join(result.shardOut, 'preflight.json');
     if (fs.existsSync(summaryFile)) summaries.push(JSON.parse(fs.readFileSync(summaryFile, 'utf8')));
     if (fs.existsSync(skipFile)) runtimeSkips.push(JSON.parse(fs.readFileSync(skipFile, 'utf8')));
+    if (fs.existsSync(preflightFile)) preflights.push(JSON.parse(fs.readFileSync(preflightFile, 'utf8')));
+  }
+
+  if (!summaries.length && preflights.length === shardCount) {
+    const one = {
+      ...preflights[0],
+      turbo: true,
+      shardCount,
+      elapsedMs,
+    };
+    fs.writeFileSync(path.join(baseOut, 'preflight.json'), JSON.stringify(one, null, 2) + '\n', 'utf8');
+    return { status: 'PREFLIGHT_OK', counts: null };
   }
 
   if (!summaries.length && runtimeSkips.length) {
