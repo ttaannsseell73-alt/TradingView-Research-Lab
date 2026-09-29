@@ -196,6 +196,7 @@ const flat=rows.filter(x=>x.status==='FLAT');
 
 const out={
   schemaVersion:1,
+  cohortId:board.cohortId??null,
   generatedAt:new Date().toISOString(),
   snapshotAtMs:manifest.snapshotAtMs??null,
   dataAvailable:execution.marketDataAvailable!==false&&manifest.dataAvailable!==false&&(manifest.series??[]).length>0,
