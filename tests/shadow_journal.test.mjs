@@ -81,6 +81,31 @@ test('tradability block suppresses new entries but preserves an existing positio
 });
 
 
+
+
+test('zero or missing market price never overwrites the last valid shadow mark',()=>{
+  const first=updateShadowState({
+    snapshotAtMs:2000,
+    dataAvailable:true,
+    paperIntents:[intent('LONG',100,1500)],
+    rows:[{underlying:'TEST',executionStatus:'STRONG',market:{mid:102,last:102}}]
+  },null);
+  assert.equal(first.positions[0].markPrice,102);
+
+  const second=updateShadowState({
+    snapshotAtMs:3000,
+    dataAvailable:true,
+    paperIntents:[],
+    rows:[{underlying:'TEST',executionStatus:'BLOCK',market:{mid:0,last:0,bid:0,ask:0}}]
+  },first);
+
+  assert.equal(second.positions.length,1);
+  assert.equal(second.positions[0].markPrice,102);
+  assert.equal(second.positions[0].executionStatus,'BLOCK');
+  assert.ok(second.positions[0].unrealizedNetIfClosed > -1);
+  assert.equal(second.closedTrades.length,0);
+});
+
 test('recent signal after previous snapshot is catch-up entered once',()=>{
   const previous={
     schemaVersion:1,
