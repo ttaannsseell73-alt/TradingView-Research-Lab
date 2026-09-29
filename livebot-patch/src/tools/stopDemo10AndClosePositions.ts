@@ -3,16 +3,20 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { RateLimitGovernor } from '../live/CanonicalLive';
 import { BinanceUsdmAdapter } from '../live/BinanceUsdmAdapter';
+import {
+  buildShutdownVerdict,
+  deterministicShutdownClientOrderId,
+  errorCode,
+  errorMessage,
+  isBenignCancelError,
+  isUnavailableSymbolError,
+  symbolSnapshotFromGlobal,
+} from '../../scripts/demo11-shutdown-policy.mjs';
 
 dotenv.config();
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function safeId(symbol: string, suffix: string): string {
-  const raw = `d10stop-${symbol}-${Date.now()}-${suffix}`;
-  return raw.replace(/[^A-Za-z0-9._-]/g, '').slice(0, 36);
 }
 
 async function main(): Promise<void> {
@@ -49,35 +53,57 @@ async function main(): Promise<void> {
   await adapter.serverTime();
 
   const report: any = {
+    schemaVersion: 2,
     generatedAt: new Date().toISOString(),
     execution: 'BINANCE_USDM_TESTNET',
     productionOrders: false,
     scope: 'DEMO10_COHORT_SYMBOLS_ONLY',
     symbols: [],
+    reconciliationPasses: [],
   };
 
+  // Operation phase is deliberately best-effort. A failure for one symbol must
+  // never prevent later cohort symbols from being attempted.
   for (const symbol of symbols) {
-    const row: any = { symbol, cancelledRegular: [], cancelledAlgo: [], close: null };
+    const row: any = {
+      symbol,
+      cancelledRegular: [],
+      cancelledAlgo: [],
+      close: null,
+      operationErrors: [],
+      unavailableOnTestnet: false,
+    };
     report.symbols.push(row);
 
+    let openRegular: any[] = [];
     try {
-      const openRegular = await adapter.getOpenOrders(symbol);
-      for (const order of Array.isArray(openRegular) ? openRegular : []) {
-        const clientOrderId = String(order?.clientOrderId ?? order?.origClientOrderId ?? '');
-        if (!clientOrderId) continue;
-        try {
-          await adapter.cancelOrder(symbol, clientOrderId);
-          row.cancelledRegular.push(clientOrderId);
-        } catch (error: any) {
-          const code = Number(error?.response?.data?.code);
-          if (code !== -2011 && code !== -2013) throw error;
+      const raw = await adapter.getOpenOrders(symbol);
+      openRegular = Array.isArray(raw) ? raw : [];
+    } catch (error: any) {
+      row.operationErrors.push({ step: 'READ_REGULAR', code: errorCode(error), message: errorMessage(error) });
+      if (isUnavailableSymbolError(error)) row.unavailableOnTestnet = true;
+    }
+
+    for (const order of openRegular) {
+      const clientOrderId = String(order?.clientOrderId ?? order?.origClientOrderId ?? '');
+      if (!clientOrderId) continue;
+      try {
+        await adapter.cancelOrder(symbol, clientOrderId);
+        row.cancelledRegular.push(clientOrderId);
+      } catch (error: any) {
+        if (!isBenignCancelError(error)) {
+          row.operationErrors.push({ step: 'CANCEL_REGULAR', code: errorCode(error), message: errorMessage(error) });
+          if (isUnavailableSymbolError(error)) row.unavailableOnTestnet = true;
         }
       }
+    }
 
+    try {
       const rawPosition = await adapter.getPositionRisk(symbol);
       const rows = Array.isArray(rawPosition) ? rawPosition : [rawPosition];
       const pos = rows.find((x: any) => x?.symbol === symbol) ?? rows[0] ?? {};
-      const amount = Number(pos?.positionAmt ?? 0);
+      const rawAmount = String(pos?.positionAmt ?? '0');
+      const amount = Number(rawAmount);
       row.before = {
         positionAmt: amount,
         entryPrice: Number(pos?.entryPrice ?? 0),
@@ -86,74 +112,116 @@ async function main(): Promise<void> {
 
       if (Number.isFinite(amount) && Math.abs(amount) > 1e-12) {
         const side: 'BUY' | 'SELL' = amount > 0 ? 'SELL' : 'BUY';
-        const close = await adapter.closePositionMarket({
-          symbol,
-          side,
-          quantity: String(Math.abs(amount)),
-          clientOrderId: safeId(symbol, 'close'),
-        });
-        row.close = {
-          side,
-          status: close?.status ?? null,
-          executedQty: close?.executedQty ?? null,
-          orderId: close?.orderId ?? null,
-        };
-        await sleep(350);
-      }
-
-      const openAlgo = await adapter.getOpenAlgoOrders(symbol);
-      for (const order of Array.isArray(openAlgo) ? openAlgo : []) {
-        const id = String(order?.clientAlgoId ?? order?.algoId ?? '');
-        if (!id) continue;
         try {
-          await adapter.cancelAlgoOrder(id);
-          row.cancelledAlgo.push(id);
+          const close = await adapter.closePositionMarket({
+            symbol,
+            side,
+            quantity: String(Math.abs(amount)),
+            clientOrderId: deterministicShutdownClientOrderId(symbol, rawAmount),
+          });
+          row.close = {
+            side,
+            status: close?.status ?? null,
+            executedQty: close?.executedQty ?? null,
+            orderId: close?.orderId ?? null,
+          };
+          await sleep(350);
         } catch (error: any) {
-          const code = Number(error?.response?.data?.code);
-          if (code !== -2011 && code !== -2013) throw error;
+          row.operationErrors.push({ step: 'CLOSE_POSITION', code: errorCode(error), message: errorMessage(error) });
+          if (isUnavailableSymbolError(error)) row.unavailableOnTestnet = true;
         }
       }
-
-      const verifyRaw = await adapter.getPositionRisk(symbol);
-      const verifyRows = Array.isArray(verifyRaw) ? verifyRaw : [verifyRaw];
-      const verify = verifyRows.find((x: any) => x?.symbol === symbol) ?? verifyRows[0] ?? {};
-      row.after = {
-        positionAmt: Number(verify?.positionAmt ?? 0),
-        entryPrice: Number(verify?.entryPrice ?? 0),
-        markPrice: Number(verify?.markPrice ?? 0),
-      };
-
-      const remainingRegular = await adapter.getOpenOrders(symbol);
-      const remainingAlgo = await adapter.getOpenAlgoOrders(symbol);
-      row.remainingRegularOrders = Array.isArray(remainingRegular) ? remainingRegular.length : 0;
-      row.remainingAlgoOrders = Array.isArray(remainingAlgo) ? remainingAlgo.length : 0;
     } catch (error: any) {
-      const code = Number(error?.response?.data?.code);
-      // TESTNET can omit some real-market contracts. Treat unavailable contract as non-actionable.
-      if (code === -1121 || code === -4108) {
-        row.unavailableOnTestnet = true;
-        row.error = String(error?.response?.data?.msg ?? error?.message ?? error);
-        continue;
+      row.operationErrors.push({ step: 'READ_POSITION', code: errorCode(error), message: errorMessage(error) });
+      if (isUnavailableSymbolError(error)) row.unavailableOnTestnet = true;
+    }
+
+    let openAlgo: any[] = [];
+    try {
+      const raw = await adapter.getOpenAlgoOrders(symbol);
+      openAlgo = Array.isArray(raw) ? raw : [];
+    } catch (error: any) {
+      row.operationErrors.push({ step: 'READ_ALGO', code: errorCode(error), message: errorMessage(error) });
+      if (isUnavailableSymbolError(error)) row.unavailableOnTestnet = true;
+    }
+
+    for (const order of openAlgo) {
+      const id = String(order?.clientAlgoId ?? order?.algoId ?? '');
+      if (!id) continue;
+      try {
+        await adapter.cancelAlgoOrder(id);
+        row.cancelledAlgo.push(id);
+      } catch (error: any) {
+        if (!isBenignCancelError(error)) {
+          row.operationErrors.push({ step: 'CANCEL_ALGO', code: errorCode(error), message: errorMessage(error) });
+          if (isUnavailableSymbolError(error)) row.unavailableOnTestnet = true;
+        }
       }
-      row.error = String(error?.stack ?? error?.message ?? error);
-      throw error;
     }
   }
 
-  const nonFlat = report.symbols.filter((x: any) =>
-    x.after && Number.isFinite(Number(x.after.positionAmt)) && Math.abs(Number(x.after.positionAmt)) > 1e-12
-  );
-  const remainingOrders = report.symbols.filter((x: any) =>
-    Number(x.remainingRegularOrders ?? 0) > 0 || Number(x.remainingAlgoOrders ?? 0) > 0
-  );
+  // Final truth comes from two account-wide reads. This is intentionally
+  // independent of symbol-specific endpoints so a closed contract cannot hide
+  // a remaining position or order behind -4141.
+  for (let passIndex = 0; passIndex < 2; passIndex++) {
+    if (passIndex) await sleep(500);
+    const pass: any = { at: new Date().toISOString(), ok: false, symbols: {} };
+    const reads = await Promise.allSettled([
+      adapter.getAccount(),
+      adapter.getOpenOrders(undefined as any),
+      adapter.getOpenAlgoOrders(undefined as any),
+    ]);
+
+    const failures = reads
+      .map((x, i) => x.status === 'rejected'
+        ? { source: ['ACCOUNT', 'OPEN_ORDERS', 'OPEN_ALGO_ORDERS'][i], message: errorMessage((x as PromiseRejectedResult).reason), code: errorCode((x as PromiseRejectedResult).reason) }
+        : null)
+      .filter(Boolean);
+    pass.errors = failures;
+
+    if (!failures.length) {
+      const account = (reads[0] as PromiseFulfilledResult<any>).value;
+      const regularOrders = (reads[1] as PromiseFulfilledResult<any>).value;
+      const algoOrders = (reads[2] as PromiseFulfilledResult<any>).value;
+      pass.ok = true;
+      for (const symbol of symbols) {
+        pass.symbols[symbol] = symbolSnapshotFromGlobal({
+          symbol,
+          account,
+          regularOrders,
+          algoOrders,
+        });
+      }
+    }
+
+    report.reconciliationPasses.push(pass);
+  }
+
+  for (const row of report.symbols) {
+    const passes = report.reconciliationPasses.map((p: any) => {
+      if (!p.ok) return { ok: false };
+      return { ok: true, ...(p.symbols[row.symbol] ?? {}) };
+    });
+    row.reconciliation = passes;
+    row.final = buildShutdownVerdict({
+      symbol: row.symbol,
+      unavailable: row.unavailableOnTestnet,
+      passes,
+    });
+  }
+
+  const unresolved = report.symbols
+    .filter((x: any) => x.final?.status === 'CRITICAL_UNRESOLVED')
+    .map((x: any) => ({ symbol: x.symbol, reason: x.final?.reason ?? 'UNKNOWN' }));
 
   report.summary = {
     cohortSymbols: symbols.length,
+    attemptedSymbols: report.symbols.length,
     closedPositions: report.symbols.filter((x: any) => x.close).length,
-    nonFlatAfter: nonFlat.map((x: any) => x.symbol),
-    symbolsWithRemainingOrders: remainingOrders.map((x: any) => x.symbol),
+    verifiedFlat: report.symbols.filter((x: any) => ['FLAT', 'SKIPPED_UNAVAILABLE_VERIFIED_FLAT'].includes(x.final?.status)).length,
+    unresolved,
   };
-  report.result = nonFlat.length || remainingOrders.length ? 'FAIL_NOT_FLAT' : 'ALL_DEMO10_TESTNET_FLAT';
+  report.result = unresolved.length ? 'FAIL_CRITICAL_UNRESOLVED' : 'ALL_DEMO10_TESTNET_FLAT';
 
   const outDir = path.join(process.cwd(), 'artifacts');
   fs.mkdirSync(outDir, { recursive: true });
