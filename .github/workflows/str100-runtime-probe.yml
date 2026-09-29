@@ -32,6 +32,8 @@ jobs:
       EXACT_OUT_DIR: artifacts/str100-runtime-probe
       EXACT_SMOKE_BARS: '600'
       EXACT_PREFLIGHT_ONLY: '1'
+      EXACT_ENGINE_REV: 'exact-provider-v2-binance-meta-20260929'
+      EXACT_SYMBOL_METADATA: research/binance-usdm-symbol-metadata.json
       TURBO_STRICT_CACHE: '1'
       LOCAL_PARALLEL_SHARDS: '1'
       PINE_SOURCE_CACHE: ${{ github.workspace }}/.probe-source-cache
