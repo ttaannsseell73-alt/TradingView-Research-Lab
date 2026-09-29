@@ -10,16 +10,72 @@ on:
 permissions:
   contents: read
   actions: read
+  issues: write
 
 jobs:
   diagnose:
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect repository runners
+      - name: Inspect repository runners and publish canonical status
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          STATUS_ISSUE: "147"
+          TARGET_RUNNER: "TANSEL-DATAHUB"
+          REQUIRED_LABEL: "datahub-local"
         run: |
           set -euo pipefail
-          gh api "repos/$REPO/actions/runners"             --jq '.runners[] | {id,name,os,status,busy,labels:[.labels[].name]}'
+
+          runners="$(gh api "repos/$REPO/actions/runners")"
+          target="$(jq -c --arg name "$TARGET_RUNNER" '.runners[]? | select(.name==$name)' <<<"$runners" | head -n 1 || true)"
+
+          if [ -z "$target" ]; then
+            state="MISSING"
+            status="missing"
+            busy="unknown"
+            os="unknown"
+            labels="none"
+            label_ok="false"
+          else
+            status="$(jq -r '.status // "unknown"' <<<"$target")"
+            busy="$(jq -r '.busy // false' <<<"$target")"
+            os="$(jq -r '.os // "unknown"' <<<"$target")"
+            labels="$(jq -r '[.labels[].name] | join(", ")' <<<"$target")"
+            label_ok="$(jq -r --arg required "$REQUIRED_LABEL" '[.labels[].name] | index($required) != null' <<<"$target")"
+            if [ "$status" = "online" ] && [ "$label_ok" = "true" ]; then
+              state="HEALTHY"
+            elif [ "$status" = "online" ]; then
+              state="LABEL_MISMATCH"
+            else
+              state="OFFLINE"
+            fi
+          fi
+
+          now="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          body=$(cat <<EOF
+          # TANSEL-DATAHUB RUNNER STATUS
+
+          - checked_at_utc: $now
+          - state: $state
+          - runner: $TARGET_RUNNER
+          - status: $status
+          - busy: $busy
+          - os: $os
+          - required_label: $REQUIRED_LABEL
+          - label_ok: $label_ok
+          - labels: $labels
+          - priority: research/backtest recovery
+          - q_live_bootstrap_priority: disabled
+
+          _Updated automatically by Runner Control Plane Diagnose._
+          EOF
+          )
+
+          gh api --method PATCH "repos/$REPO/issues/$STATUS_ISSUE" -f body="$body" >/dev/null
+          printf '%s\n' "$body"
+
+          if [ "$state" != "HEALTHY" ]; then
+            echo "::error::Self-hosted research runner is not healthy: $state"
+            exit 1
+          fi
