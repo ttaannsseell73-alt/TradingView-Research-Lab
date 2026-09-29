@@ -59,7 +59,7 @@ jobs:
             $freshEntry = @($all | Where-Object { $_.signalStatus -eq "FRESH_ENTRY" })
             $pending = @($all | Where-Object { $_.pendingCaptured -eq $true -or $_.executionResult -eq "PENDING_EXECUTION_WAIT" })
             $intents = @($all | Where-Object { $_.intentId })
-            $filled = @($all | Where-Object { [double]($_.executedQty ?? 0) -gt 0 })
+            $filled = @($all | Where-Object { $_.executedQty -ne $null -and [double]$_.executedQty -gt 0 })
             $resultCounts = $all | Group-Object executionResult | Sort-Object Count -Descending | ForEach-Object { "$($_.Name)=$($_.Count)" }
             [pscustomobject]@{
               underlying=$u
