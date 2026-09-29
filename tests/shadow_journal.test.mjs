@@ -181,3 +181,32 @@ test('long outage recovers latest post-snapshot reversal from current rows',()=>
   assert.equal(second.positions[0].entryPrice,95);
   assert.equal(second.positions[0].intentSource,'CATCHUP_RECENT');
 });
+
+
+test('cohort change resets stale positions and history before the new demo cohort starts',()=>{
+  const oldState=updateShadowState({
+    cohortId:'demo-old',
+    snapshotAtMs:2000,
+    dataAvailable:true,
+    paperIntents:[intent('LONG',100,1500)],
+    rows:[{underlying:'TEST',executionStatus:'STRONG',market:{mid:102,last:102}}]
+  },null);
+  assert.equal(oldState.positions.length,1);
+  assert.equal(oldState.cohortId,'demo-old');
+
+  const next=updateShadowState({
+    cohortId:'demo-new',
+    snapshotAtMs:3000,
+    dataAvailable:true,
+    paperIntents:[],
+    rows:[]
+  },oldState);
+
+  assert.equal(next.cohortId,'demo-new');
+  assert.equal(next.positions.length,0);
+  assert.equal(next.closedTrades.length,0);
+  assert.equal(next.summary.openPositions,0);
+  assert.equal(next.events.at(-1)?.type,'COHORT_RESET');
+  assert.equal(next.events.at(-1)?.fromCohortId,'demo-old');
+  assert.equal(next.events.at(-1)?.toCohortId,'demo-new');
+});
