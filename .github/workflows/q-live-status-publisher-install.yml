@@ -70,7 +70,7 @@ jobs:
                 $item = Get-Item $report
                 $r = Get-Content $report -Raw | ConvertFrom-Json
 
-                $positionSource = "LAST_SUCCESS_REPORT"
+                $positionSource = if ($cycleState -eq "SUCCESS") { "CURRENT_CYCLE_EXCHANGE" } else { "LAST_SUCCESS_REPORT" }
                 $positionAmt = $r.positionBefore.positionAmt
                 $entryPrice = $r.positionBefore.entryPrice
                 $markPrice = $r.positionBefore.markPrice
