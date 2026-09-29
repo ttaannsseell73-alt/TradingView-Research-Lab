@@ -29,9 +29,46 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "Configured DATAHUB_LOCAL_ROOT=$DataRoot"
 
+function Get-ConfiguredRunnerService([string]$runnerName) {
+    Get-Service -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.Name -like "actions.runner.*" -and
+            ($_.Name -like "*$runnerName*" -or $_.DisplayName -like "*$runnerName*")
+        } |
+        Select-Object -First 1
+}
+
+function Ensure-RunnerServiceHealthy([string]$root,[string]$runnerName) {
+    $svc = Get-ConfiguredRunnerService $runnerName
+    if (-not $svc) {
+        $svcCmd = Join-Path $root "svc.cmd"
+        if (!(Test-Path $svcCmd)) { throw "svc.cmd missing for configured runner $runnerName" }
+        Write-Host "Runner is configured but Windows service is missing; installing service."
+        Push-Location $root
+        try {
+            & $svcCmd install
+            if ($LASTEXITCODE -ne 0) { throw "Runner service install failed for $runnerName" }
+        }
+        finally { Pop-Location }
+        $svc = Get-ConfiguredRunnerService $runnerName
+        if (-not $svc) { throw "Runner service still missing after install: $runnerName" }
+    }
+
+    if ($svc.Status -ne "Running") {
+        Write-Host "Runner service is $($svc.Status); starting it."
+        Start-Service -Name $svc.Name
+        $svc.WaitForStatus("Running",[TimeSpan]::FromSeconds(30))
+    }
+
+    $svc = Get-Service -Name $svc.Name
+    if ($svc.Status -ne "Running") { throw "Runner service is not healthy: $runnerName" }
+    Write-Host "RUNNER_SERVICE_OK name=$runnerName service=$($svc.Name) status=$($svc.Status)"
+}
+
 $runnerConfig = Join-Path $RunnerRoot ".runner"
 if (Test-Path $runnerConfig) {
-    Write-Host "Runner is already configured at $RunnerRoot; no destructive reconfiguration performed."
+    Write-Host "Runner is already configured at $RunnerRoot; verifying service health instead of exiting blindly."
+    Ensure-RunnerServiceHealthy $RunnerRoot $RunnerName
     Write-Host "DataHub root: $DataRoot"
     exit 0
 }
