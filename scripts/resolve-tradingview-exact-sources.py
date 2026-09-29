@@ -291,6 +291,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("manifest")
     ap.add_argument("--out-dir", default="artifacts/exact-source-audit")
+    ap.add_argument("--min-pine-version", type=int, default=None)
     args = ap.parse_args()
 
     manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
@@ -313,6 +314,12 @@ def main() -> int:
                 "status": "SKIP_RESOLUTION_ERROR",
                 "error": str(exc),
             }
+        if (
+            args.min_pine_version is not None
+            and row.get("status") == "READY_SOURCE"
+            and int(row.get("pineVersion") or 0) < args.min_pine_version
+        ):
+            row["status"] = f"SKIP_PINE_VERSION_LT_{args.min_pine_version}"
         resolved.append(row)
         print(f"[{index:03d}/{len(items):03d}] {row['status']:24s} {row.get('name','')}", flush=True)
 
