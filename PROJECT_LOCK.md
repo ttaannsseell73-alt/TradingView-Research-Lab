@@ -87,15 +87,16 @@ Decision:
 - Current live/demo Range48 logic remains unchanged.
 
 
-## Q RUNTIME — RETIRED 2026-09-29
+## Q — REAL CANDIDATE LOCK 2026-09-29
 
 Decision:
-- QUSDT Range48 research evidence remains historical/canonical research evidence, but the Q live/demo runtime lane is retired.
-- Local task `QDemoForwardMonitor` must be removed and no further automatic Q cycles are allowed.
-- Existing Binance TESTNET position state is not to be altered merely by retirement of the monitor; no close/cancel action is implied by this lock.
-- Issue #109 is archival Q status only after the local stop is applied.
-- Issue #127 Q status lookup contract is retired.
-- Do not spend runner/queue capacity on Q bootstrap, Q scheduler repair, Q publisher, or Q live monitoring unless the user explicitly reopens Q later.
+- QUSDT's dedicated demo/testnet forward-monitoring phase is complete.
+- The old Q demo scheduler/runtime remains STOPPED; do not restart the Q demo lane.
+- Q is now classified as an accepted REAL_CANDIDATE based on the user's decision plus the already-locked research/forward evidence.
+- This promotion does NOT itself authorize a real-money order.
+- Real execution requires an explicit later user command to enable live trading and must use the canonical Q strategy/risk configuration locked for production.
+- Existing historical/testnet evidence remains preserved for audit.
+- Demo-10 is independent of this Q decision and MUST continue running as the active 10-setup paper/shadow observation lane.
 
 
 ## DEMO-10 LIVE MONITOR — CANONICAL 2026-09-29
