@@ -1,0 +1,145 @@
+name: Demo-10 Entry Funnel Audit
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       github.event.issue.title == '[DEMO10 ENTRY FUNNEL AUDIT]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 10
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      DEMO_PG_CONTAINER: canonical-demo10-testnet-pg
+
+    steps:
+      - name: Build entry funnel from runtime JSONL
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $jsonl = Join-Path $env:BOT_ROOT "artifacts\demo10-testnet.jsonl"
+          if (!(Test-Path $jsonl)) { throw "demo10-testnet.jsonl missing" }
+
+          $records = @()
+          Get-Content $jsonl | ForEach-Object {
+            try { $records += ($_ | ConvertFrom-Json) } catch {}
+          }
+
+          $symbols = @("GUA","RIVER","GPS","TRADOOR","TLM","Q","HANA","XPIN","FF","ALLO")
+          foreach($u in $symbols) {
+            $all = @()
+            foreach($d in $records) {
+              $r = @($d.symbols) | Where-Object { $_.underlying -eq $u } | Select-Object -First 1
+              if ($r) {
+                $all += [pscustomobject]@{
+                  t=$d.generatedAt
+                  cycle=$d.result
+                  signalStatus=$r.signalStatus
+                  signalDirection=$r.signalDirection
+                  fresh=$r.fresh
+                  executionResult=$r.result
+                  pendingCaptured=($null -ne $r.pendingCaptured)
+                  pendingExecution=($null -ne $r.pendingExecution)
+                  intentId=$r.intentId
+                  orderStatus=$r.entryOrder.status
+                  executedQty=$r.entryOrder.executedQty
+                }
+              }
+            }
+            $fresh = @($all | Where-Object { $_.fresh -eq $true })
+            $freshEntry = @($all | Where-Object { $_.signalStatus -eq "FRESH_ENTRY" })
+            $pending = @($all | Where-Object { $_.pendingCaptured -eq $true -or $_.executionResult -eq "PENDING_EXECUTION_WAIT" })
+            $intents = @($all | Where-Object { $_.intentId })
+            $filled = @($all | Where-Object { [double]($_.executedQty ?? 0) -gt 0 })
+            $resultCounts = $all | Group-Object executionResult | Sort-Object Count -Descending | ForEach-Object { "$($_.Name)=$($_.Count)" }
+            [pscustomobject]@{
+              underlying=$u
+              cycles=$all.Count
+              freshAny=$fresh.Count
+              freshEntry=$freshEntry.Count
+              pendingObservations=$pending.Count
+              intents=$intents.Count
+              filledCycles=$filled.Count
+              resultCounts=($resultCounts -join ";")
+              firstFresh=($fresh | Select-Object -First 1).t
+              lastFresh=($fresh | Select-Object -Last 1).t
+            } | ConvertTo-Json -Compress
+          }
+
+          Write-Host "=== FRESH EVENT DETAIL ==="
+          foreach($d in $records) {
+            foreach($r in @($d.symbols)) {
+              if ($r.fresh -eq $true -or $r.pendingCaptured -or $r.intentId -or $r.entryOrder) {
+                [pscustomobject]@{
+                  t=$d.generatedAt
+                  underlying=$r.underlying
+                  signalStatus=$r.signalStatus
+                  direction=$r.signalDirection
+                  fresh=$r.fresh
+                  result=$r.result
+                  pendingCaptured=($r.pendingCaptured | ConvertTo-Json -Compress)
+                  pendingExecution=($r.pendingExecution | ConvertTo-Json -Compress)
+                  intentId=$r.intentId
+                  entryOrder=($r.entryOrder | ConvertTo-Json -Compress)
+                } | ConvertTo-Json -Compress
+              }
+            }
+          }
+
+      - name: Query durable journal
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Write-Host "=== PENDING TABLE ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT underlying,symbol,strategy,timeframe,direction,candle_time,expires_at,created_at,updated_at FROM demo10_pending_entries ORDER BY created_at;"
+          if ($LASTEXITCODE -ne 0) { throw "pending query failed" }
+
+          Write-Host "=== INTENTS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT created_at,intent_id,symbol,side,state,payload FROM live_intents ORDER BY created_at;"
+          if ($LASTEXITCODE -ne 0) { throw "intent query failed" }
+
+          Write-Host "=== OUTBOX ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT created_at,outbox_id,intent_id,status,attempts,payload FROM live_outbox ORDER BY created_at;"
+          if ($LASTEXITCODE -ne 0) { throw "outbox query failed" }
+
+          Write-Host "=== FILLS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT event_time,symbol,side,fill_price,quantity,intent_id,fill_id FROM live_fills ORDER BY event_time,fill_id;"
+          if ($LASTEXITCODE -ne 0) { throw "fills query failed" }
+
+          Write-Host "=== PENDING EVENTS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT created_at,event_type,entity_id,payload FROM live_events WHERE event_type LIKE 'DEMO10_PENDING_%' ORDER BY created_at;"
+          if ($LASTEXITCODE -ne 0) { throw "pending event query failed" }
+
+          Write-Host "=== ORDER/RECON EVENTS ==="
+          docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo10_testnet -P pager=off -c "SELECT created_at,event_type,entity_id,payload FROM live_events WHERE event_type IN ('ORDER_ACK','ORDER_SUBMIT_UNKNOWN','RECONCILE_OK','RECONCILE_HALT') ORDER BY created_at;"
+          if ($LASTEXITCODE -ne 0) { throw "event query failed" }
+
+      - name: Current status and log tail
+        shell: powershell
+        run: |
+          $latest = Join-Path $env:BOT_ROOT "artifacts\demo10-testnet-latest.json"
+          if (Test-Path $latest) {
+            Write-Host "=== LATEST ==="
+            Get-Content $latest -Raw
+          }
+          $log = "C:\demo10-live\logs\demo10-live.log"
+          if (Test-Path $log) {
+            Write-Host "=== LOG TAIL ==="
+            Get-Content $log -Tail 250
+          }
+
+      - name: Close request
+        if: github.event_name == 'issues'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
