@@ -1,0 +1,123 @@
+name: Demo Cohort 10 Shadow
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'research/demo_cohort_10.json'
+      - '.github/workflows/demo-cohort-10-shadow.yml'
+      - 'research/strategy_engine_v2.mjs'
+      - 'research/sr25_strategies.mjs'
+      - 'research/sweep_strategies.mjs'
+      - 'research/visual_strategies.mjs'
+      - 'research/tradability_policy.json'
+      - 'scripts/fetch-live-market-snapshot.py'
+      - 'scripts/build-execution-watchlist.mjs'
+      - 'scripts/fetch-current-candles.py'
+      - 'scripts/build-current-signal-watchlist.mjs'
+      - 'scripts/build-shadow-journal.mjs'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: demo-cohort-10-shadow
+  cancel-in-progress: true
+
+jobs:
+  shadow:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate cohort and signal engine
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --check research/strategy_engine_v2.mjs
+          node --check scripts/build-execution-watchlist.mjs
+          node --check scripts/build-current-signal-watchlist.mjs
+          node --check scripts/build-shadow-journal.mjs
+          python -m py_compile scripts/fetch-live-market-snapshot.py scripts/fetch-current-candles.py
+          node -e "const d=require('./research/demo_cohort_10.json'); if(d.mode!=='PAPER_SHADOW_ONLY'||d.deploymentCandidates.length!==10) process.exit(2); console.log('DEMO10_CONFIG_OK')"
+
+      - name: Restore previous Demo-10 state
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force artifacts/demo10-previous | Out-Null
+          $id = gh api "repos/$env:GITHUB_REPOSITORY/actions/artifacts?name=demo-cohort-10-shadow-state&per_page=20" --jq ".artifacts | map(select(.expired == false)) | .[0].id // empty"
+          if ($id) {
+            gh api "repos/$env:GITHUB_REPOSITORY/actions/artifacts/$id/zip" > "$env:RUNNER_TEMP\demo10-state.zip"
+            Expand-Archive -Path "$env:RUNNER_TEMP\demo10-state.zip" -DestinationPath artifacts/demo10-previous -Force
+          }
+
+      - name: Refresh market and signals
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          python scripts/fetch-live-market-snapshot.py research/demo_cohort_10.json artifacts/demo10/live-market.json
+          node scripts/build-execution-watchlist.mjs research/demo_cohort_10.json artifacts/demo10/live-market.json research/tradability_policy.json artifacts/demo10/execution
+          python scripts/fetch-current-candles.py research/demo_cohort_10.json artifacts/demo10/execution/EXECUTION_WATCHLIST.json artifacts/demo10/candles
+          node scripts/build-current-signal-watchlist.mjs research/demo_cohort_10.json artifacts/demo10/execution/EXECUTION_WATCHLIST.json artifacts/demo10/candles artifacts/demo10/current-signal
+
+      - name: Update Demo-10 paper journal
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $prev = "-"
+          if (Test-Path artifacts/demo10-previous/SHADOW_STATE.json) { $prev = "artifacts/demo10-previous/SHADOW_STATE.json" }
+          node scripts/build-shadow-journal.mjs artifacts/demo10/current-signal/CURRENT_SIGNAL_WATCHLIST.json $prev artifacts/demo10/shadow-journal
+
+      - name: Print Demo-10 status
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $s = Get-Content artifacts/demo10/shadow-journal/SHADOW_STATE.json -Raw | ConvertFrom-Json
+          $w = Get-Content artifacts/demo10/current-signal/CURRENT_SIGNAL_WATCHLIST.json -Raw | ConvertFrom-Json
+          [ordered]@{
+            dataAvailable = $w.dataAvailable
+            openPositions = $s.summary.openPositions
+            closedTrades = $s.summary.closedTrades
+            winRate = $s.summary.winRate
+            realizedPnlPerReferenceNotionalSum = $s.summary.realizedPnlPerReferenceNotionalSum
+            unrealizedPnlPerReferenceNotionalSum = $s.summary.unrealizedPnlPerReferenceNotionalSum
+            paperIntents = $w.counts.paperIntents
+            freshSignals = $w.counts.freshSignals
+          } | ConvertTo-Json -Compress
+          $s.positions | Select-Object underlying,direction,executionContract,leadStrategy,leadTimeframe,entryPrice,markPrice,unrealizedNetIfClosed | Format-Table -AutoSize
+
+      - name: Detect live data state
+        id: live
+        shell: powershell
+        run: |
+          $d = Get-Content artifacts/demo10/current-signal/CURRENT_SIGNAL_WATCHLIST.json -Raw | ConvertFrom-Json
+          "available=$($d.dataAvailable.ToString().ToLower())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Upload Demo-10 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-cohort-10-shadow-monitor
+          path: artifacts/demo10/
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload persistent Demo-10 state
+        if: steps.live.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-cohort-10-shadow-state
+          path: artifacts/demo10/shadow-journal/SHADOW_STATE.json
+          if-no-files-found: error
+          retention-days: 90
