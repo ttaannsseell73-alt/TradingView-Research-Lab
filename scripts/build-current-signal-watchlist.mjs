@@ -18,7 +18,7 @@ const manifest=fs.existsSync(manifestPath)?JSON.parse(fs.readFileSync(manifestPa
 const intervalMs={ '1m':60000, '5m':300000, '15m':900000, '1h':3600000, '4h':14400000, '1d':86400000 };
 const byUnder=new Map((board.deploymentCandidates??board.managementWatchlist??[]).map(x=>[x.underlying,x]));
 const rank={STRONG:3,TRADEABLE:2,REVIEW:1,BLOCK:0,NO_MARKET_SNAPSHOT:-1};
-const explicitPaperCohort=board.mode==='PAPER_SHADOW_ONLY'&&Array.isArray(board.deploymentCandidates);
+const explicitSelectedCohort=['PAPER_SHADOW_ONLY','BINANCE_USDM_TESTNET'].includes(board.mode)&&Array.isArray(board.deploymentCandidates);
 
 function readCandles(symbol,timeframe){
   const p=path.join(candlesDir,`${symbol}__${timeframe}.json`);
@@ -37,8 +37,8 @@ function evidenceFlags(combo){
 function actionStatus(execStatus,sig,flags,timeframe){
   if(execStatus==='BLOCK'||execStatus==='NO_MARKET_SNAPSHOT') return 'BLOCKED';
   if(!sig||sig.direction==='FLAT') return 'FLAT';
-  if(execStatus==='REVIEW') return 'OBSERVE_ONLY';
-  if(flags.length&&!explicitPaperCohort) return 'EVIDENCE_REVIEW';
+  if(execStatus==='REVIEW'&&!explicitSelectedCohort) return 'OBSERVE_ONLY';
+  if(flags.length&&!explicitSelectedCohort) return 'EVIDENCE_REVIEW';
   if(sig.signalAgeBars===0) return 'FRESH_ENTRY';
   const recentLimit=(timeframe==='1m'||timeframe==='5m')?3:1;
   if(sig.signalAgeBars!=null&&sig.signalAgeBars<=recentLimit) return 'RECENT_SIGNAL';
@@ -257,8 +257,8 @@ const out={
     execution:'signal on closed candle; next-bar-open remains canonical execution assumption',
     fresh:'signalAgeBars = 0',
     recent:'5m: signalAgeBars <= 3; higher timeframes: <= 1. Recent is primarily for scheduler catch-up and is not equivalent to a fresh live entry.',
-    paper:'FRESH_ENTRY requires STRONG/TRADEABLE execution, no evidence review flags and no conflicting fresh direction; no real orders are placed',
-    evidenceReview:'THIN_SAMPLE (<10 trades), EXTREME_PF (>8), HIGH_DD (>45%) or EXTREME_COMPOUNDING (>500%) remain visible. For an explicitly selected PAPER_SHADOW_ONLY cohort they are advisory and do not suppress shadow entries; generic candidate boards still exclude them.',
+    paper:'FRESH_ENTRY requires selected-cohort eligibility and no conflicting fresh direction. In BINANCE_USDM_TESTNET mode, only testnet orders may be emitted; production/live-money orders remain disabled.',
+    evidenceReview:'THIN_SAMPLE (<10 trades), EXTREME_PF (>8), HIGH_DD (>45%) or EXTREME_COMPOUNDING (>500%) remain visible. For an explicitly selected PAPER_SHADOW_ONLY or BINANCE_USDM_TESTNET cohort they are advisory and do not suppress selected-cohort entries; generic candidate boards still exclude them.',
     directionConflict:'Opposing fresh LONG/SHORT signals on the same underlying are visible but excluded from paper-entry queue'
   },
   counts:{
@@ -274,6 +274,7 @@ const out={
     missingCandles:rows.filter(x=>x.status==='NO_CANDLES').length
   },
   paperIntents,
+  testnetIntents:board.mode==='BINANCE_USDM_TESTNET'?paperIntents:[],
   paperEntryQueue,
   freshSignals,
   recentSignalCandidates,
