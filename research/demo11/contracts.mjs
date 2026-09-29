@@ -42,8 +42,14 @@ export function executionDecisionId({signalEventId:signalId,policyVersion,snapsh
   return 'dec_'+sha256({signalId,policyVersion,snapshotTs,verdict,reason:reason??null}).slice(0,32);
 }
 
+export function intentIdForSignals(signalIds){
+  const ids=[...new Set((signalIds??[]).map(String))].sort();
+  if(!ids.length) throw new Error('SIGNAL_IDS_REQUIRED');
+  return 'int_'+sha256({signalIds:ids}).slice(0,32);
+}
+
 export function intentIdForSignal(signalId){
-  return 'int_'+sha256({signalId}).slice(0,32);
+  return intentIdForSignals([signalId]);
 }
 
 export function clientOrderIdForIntent(intentId){
