@@ -19,6 +19,8 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm run check
+      - name: Run Demo-11 engineering gate
+        run: npm run gate:demo11
       - name: Validate Strategy Selector live pipeline
         run: |
           python -m py_compile scripts/fetch-live-market-snapshot.py
