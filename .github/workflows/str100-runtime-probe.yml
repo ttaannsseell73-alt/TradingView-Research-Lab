@@ -33,8 +33,8 @@ jobs:
       EXACT_SMOKE_BARS: '600'
       EXACT_PREFLIGHT_ONLY: '1'
       TURBO_STRICT_CACHE: '1'
-      SHARD_INDEX: '0'
-      SHARD_COUNT: '1'
+      LOCAL_PARALLEL_SHARDS: '1'
+      PINE_SOURCE_CACHE: C:/actions-runner-datahub/pine-source-cache
 
     steps:
       - uses: actions/checkout@v4
@@ -54,7 +54,8 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
-          node scripts/run-pinets-exact-strategy.mjs
+          $env:TURBO_PINETS_MODE = "exact"
+          node scripts/run-pinets-turbo-local.mjs
           if ($LASTEXITCODE -ne 0) { throw "STR100 runtime probe failed" }
           Get-Content "$env:EXACT_OUT_DIR/preflight.json"
 
