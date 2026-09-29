@@ -1,24 +1,9 @@
 name: Demo Cohort 10 Shadow
 
 on:
+  # Continuous monitoring moved to the local Windows task Demo10LiveMonitor.
+  # Keep this workflow as a manual fallback/evidence run only.
   workflow_dispatch:
-  schedule:
-    - cron: '*/15 * * * *'
-  push:
-    branches: [main]
-    paths:
-      - 'research/demo_cohort_10.json'
-      - '.github/workflows/demo-cohort-10-shadow.yml'
-      - 'research/strategy_engine_v2.mjs'
-      - 'research/sr25_strategies.mjs'
-      - 'research/sweep_strategies.mjs'
-      - 'research/visual_strategies.mjs'
-      - 'research/tradability_policy.json'
-      - 'scripts/fetch-live-market-snapshot.py'
-      - 'scripts/build-execution-watchlist.mjs'
-      - 'scripts/fetch-current-candles.py'
-      - 'scripts/build-current-signal-watchlist.mjs'
-      - 'scripts/build-shadow-journal.mjs'
 
 permissions:
   contents: read
