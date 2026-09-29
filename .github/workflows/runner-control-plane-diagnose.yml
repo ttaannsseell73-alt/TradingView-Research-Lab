@@ -1,4 +1,4 @@
-name: Runner Control Plane Diagnose
+name: GitHub Actions Control Plane Diagnose
 
 on:
   push:
@@ -6,85 +6,22 @@ on:
     paths:
       - '.github/workflows/runner-control-plane-diagnose.yml'
   workflow_dispatch:
-  issues:
-    types: [opened]
 
 permissions:
   contents: read
   actions: read
-  issues: write
 
 jobs:
   diagnose:
-    if: github.event_name != 'issues' || startsWith(github.event.issue.title, '[RUNNER CHECK]')
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect repository runners and publish canonical status
+      - name: Verify GitHub Actions control plane
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          STATUS_ISSUE: "147"
-          TARGET_RUNNER: "TANSEL-DATAHUB"
-          REQUIRED_LABEL: "datahub-local"
-          EVENT_NAME: ${{ github.event_name }}
-          TRIGGER_ISSUE: ${{ github.event.issue.number }}
         run: |
           set -euo pipefail
-
-          runners="$(gh api "repos/$REPO/actions/runners")"
-          target="$(jq -c --arg name "$TARGET_RUNNER" '.runners[]? | select(.name==$name)' <<<"$runners" | head -n 1 || true)"
-
-          if [ -z "$target" ]; then
-            state="MISSING"
-            status="missing"
-            busy="unknown"
-            os="unknown"
-            labels="none"
-            label_ok="false"
-          else
-            status="$(jq -r '.status // "unknown"' <<<"$target")"
-            busy="$(jq -r '.busy // false' <<<"$target")"
-            os="$(jq -r '.os // "unknown"' <<<"$target")"
-            labels="$(jq -r '[.labels[].name] | join(", ")' <<<"$target")"
-            label_ok="$(jq -r --arg required "$REQUIRED_LABEL" '[.labels[].name] | index($required) != null' <<<"$target")"
-            if [ "$status" = "online" ] && [ "$label_ok" = "true" ]; then
-              state="HEALTHY"
-            elif [ "$status" = "online" ]; then
-              state="LABEL_MISMATCH"
-            else
-              state="OFFLINE"
-            fi
-          fi
-
-          now="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          body=$(cat <<EOF
-          # TANSEL-DATAHUB RUNNER STATUS
-
-          - checked_at_utc: $now
-          - state: $state
-          - runner: $TARGET_RUNNER
-          - status: $status
-          - busy: $busy
-          - os: $os
-          - required_label: $REQUIRED_LABEL
-          - label_ok: $label_ok
-          - labels: $labels
-          - priority: research/backtest recovery
-          - q_live_bootstrap_priority: disabled
-
-          _Updated automatically by Runner Control Plane Diagnose._
-          EOF
-          )
-
-          gh api --method PATCH "repos/$REPO/issues/$STATUS_ISSUE" -f body="$body" >/dev/null
-          printf '%s\n' "$body"
-
-          if [ "$EVENT_NAME" = "issues" ] && [ -n "${TRIGGER_ISSUE:-}" ]; then
-            gh api --method PATCH "repos/$REPO/issues/$TRIGGER_ISSUE" -f state=closed >/dev/null || true
-          fi
-
-          if [ "$state" != "HEALTHY" ]; then
-            echo "::error::Self-hosted research runner is not healthy: $state"
-            exit 1
-          fi
+          echo "ACTIONS_CONTROL_PLANE_OK"
+          gh api "repos/$REPO/actions/runs?per_page=5" --jq '.workflow_runs[] | {id,name,status,conclusion,event,created_at}'
+          echo "Self-hosted runner health is verified separately by runner-selfhosted-smoke.yml."
