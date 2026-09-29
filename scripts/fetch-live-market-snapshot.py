@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json, math, sys, time
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urlencode
@@ -7,6 +8,34 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
 BASES=["https://fapi.binance.com","https://fapi1.binance.com","https://fapi2.binance.com","https://fapi3.binance.com","https://fapi4.binance.com"]
+
+STALE_FALLBACK_MAX_SECONDS=180
+
+def parse_snapshot_epoch(value):
+    try:
+        if not value:
+            return None
+        return datetime.fromisoformat(str(value).replace("Z","+00:00")).timestamp()
+    except Exception:
+        return None
+
+def load_recent_previous(path):
+    try:
+        p=Path(path)
+        if not p.exists():
+            return None, None
+        prev=json.loads(p.read_text(encoding="utf-8"))
+        ts=parse_snapshot_epoch(prev.get("snapshotAt"))
+        if ts is None:
+            return None, None
+        age=max(0.0,time.time()-ts)
+        if age>STALE_FALLBACK_MAX_SECONDS:
+            return None, age
+        if not prev.get("contracts"):
+            return None, age
+        return prev, age
+    except Exception:
+        return None, None
 
 def get_json(path, params=None, retries=2):
     last=None
@@ -74,10 +103,34 @@ def main():
         raise SystemExit("Usage: fetch-live-market-snapshot.py CROSS_BOARD.json OUT.json")
     board=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     out=Path(sys.argv[2]); out.parent.mkdir(parents=True, exist_ok=True)
+    previous,previous_age=load_recent_previous(out)
     source=board.get("deploymentCandidates") or board.get("managementWatchlist") or []
     symbols=sorted({s for x in source for s in x.get("contracts",[])})
     active_base,base_diagnostics=select_base()
     if active_base is None:
+        if previous is not None:
+            payload=dict(previous)
+            payload.update({
+                "schemaVersion":1,
+                "snapshotAt":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "source":"Binance USDⓈ-M Futures public REST + recent last-good fallback",
+                "requestedContracts":len(symbols),
+                "dataAvailable":True,
+                "allFailed":False,
+                "activeBase":None,
+                "baseDiagnostics":base_diagnostics,
+                "staleFallback":True,
+                "staleAgeSeconds":round(float(previous_age or 0),3),
+                "failures":[{"symbol":"*","error":"Live snapshot unavailable; using recent last-good snapshot"}]
+            })
+            out.write_text(json.dumps(payload,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+            print(json.dumps({
+                "requested":len(symbols),"ok":len(payload.get("contracts",[])),
+                "failed":0,"allFailed":False,"activeBase":None,
+                "staleFallback":True,"staleAgeSeconds":round(float(previous_age or 0),3)
+            },ensure_ascii=False))
+            return
+
         payload={
             "schemaVersion":1,
             "snapshotAt":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -87,6 +140,8 @@ def main():
             "allFailed":True,
             "activeBase":None,
             "baseDiagnostics":base_diagnostics,
+            "staleFallback":False,
+            "staleAgeSeconds":None,
             "contracts":[],
             "failures":[{"symbol":"*","error":"No Binance Futures REST host reachable from this runner"}]
         }
@@ -132,6 +187,21 @@ def main():
                 failures.append({"symbol":symbol,"error":str(e)})
     rows.sort(key=lambda x:x["symbol"])
     failures.sort(key=lambda x:x["symbol"])
+
+    stale_symbols=[]
+    if previous is not None and failures:
+        live={x["symbol"] for x in rows}
+        prev_by={x.get("symbol"):x for x in previous.get("contracts",[]) if x.get("symbol")}
+        failed_symbols={x.get("symbol") for x in failures}
+        for symbol in sorted(failed_symbols):
+            if symbol in live:
+                continue
+            prev_row=prev_by.get(symbol)
+            if prev_row is not None:
+                rows.append(prev_row)
+                stale_symbols.append(symbol)
+        rows.sort(key=lambda x:x["symbol"])
+
     payload={
         "schemaVersion":1,
         "snapshotAt":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -141,6 +211,9 @@ def main():
         "requestedContracts":len(symbols),
         "dataAvailable":len(rows)>0,
         "allFailed":len(symbols)>0 and len(rows)==0,
+        "staleFallback":len(stale_symbols)>0,
+        "staleAgeSeconds":round(float(previous_age or 0),3) if stale_symbols else 0,
+        "staleSymbols":stale_symbols,
         "contracts":rows,
         "failures":failures
     }
@@ -148,7 +221,10 @@ def main():
     print(json.dumps({
         "requested":len(symbols),"ok":len(rows),"failed":len(failures),
         "allFailed":len(symbols)>0 and len(rows)==0,
-        "activeBase":active_base,"failureSample":failures[:3]
+        "activeBase":active_base,
+        "staleFallback":len(stale_symbols)>0,
+        "staleSymbols":stale_symbols,
+        "failureSample":failures[:3]
     },ensure_ascii=False))
     if not rows:
         print("Market snapshot unavailable; downstream will carry forward previous shadow state.",file=sys.stderr)
