@@ -700,38 +700,6 @@ async function main(): Promise<void> {
         continue;
       }
 
-      if (
-        action.kind === 'ENTER' &&
-        ['BLOCK','NO_MARKET_SNAPSHOT'].includes(String(row?.executionStatus ?? ''))
-      ) {
-        if (Math.abs(positionAmt) > 1e-12) {
-          const entryPrice = Number(posRow.entryPrice ?? 0);
-          if (entryPrice > 0) {
-            try {
-              await ensureProtection(
-                adapter,
-                journal,
-                leader,
-                symbol,
-                positionAmt > 0 ? 1 : -1,
-                entryPrice,
-                rules.tickSize,
-                priceDecimals,
-                'carry-' + symbol + '-' + String(entryPrice),
-                stopFraction
-              );
-              state.protected = true;
-            } catch (error: any) {
-              state.result = 'PROTECTION_FAILURE_WHILE_PENDING';
-              state.error = String(error?.message ?? error);
-              continue;
-            }
-          }
-        }
-        state.result = 'PENDING_EXECUTION_WAIT';
-        continue;
-      }
-
       if (action.kind === 'NONE') {
         if (Math.abs(positionAmt) > 1e-12) {
           const entryPrice = Number(posRow.entryPrice ?? 0);
@@ -795,6 +763,13 @@ async function main(): Promise<void> {
         }
         await clearPendingEntry(journal, String(row?.underlying ?? ''));
         state.result = 'HOLD_MATCHING_POSITION';
+        continue;
+      }
+
+      if (
+        ['BLOCK','NO_MARKET_SNAPSHOT'].includes(String(row?.executionStatus ?? ''))
+      ) {
+        state.result = 'PENDING_EXECUTION_WAIT';
         continue;
       }
 
