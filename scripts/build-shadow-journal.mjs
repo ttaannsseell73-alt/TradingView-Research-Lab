@@ -4,17 +4,18 @@ import path from 'node:path';
 const DEFAULT_REFERENCE_NOTIONAL=1000;
 const DEFAULT_ROUND_TRIP_COST=0.0014;
 
-const finite=x=>Number.isFinite(Number(x));
+const finite=x=>x!==null&&x!==undefined&&x!==''&&Number.isFinite(Number(x));
+const positivePx=x=>finite(x)&&Number(x)>0;
 const pxOfMarket=m=>{
-  if(finite(m?.mid)) return Number(m.mid);
-  if(finite(m?.last)) return Number(m.last);
-  if(finite(m?.bid)&&finite(m?.ask)) return (Number(m.bid)+Number(m.ask))/2;
+  if(positivePx(m?.mid)) return Number(m.mid);
+  if(positivePx(m?.last)) return Number(m.last);
+  if(positivePx(m?.bid)&&positivePx(m?.ask)) return (Number(m.bid)+Number(m.ask))/2;
   return null;
 };
 const sideNum=d=>d==='LONG'?1:d==='SHORT'?-1:0;
 const grossReturn=(direction,entry,exit)=>{
   const s=sideNum(direction);
-  if(!s||!finite(entry)||!finite(exit)||Number(entry)<=0) return 0;
+  if(!s||!positivePx(entry)||!positivePx(exit)) return 0;
   return s===1?Number(exit)/Number(entry)-1:Number(entry)/Number(exit)-1;
 };
 const round=x=>Number(Number(x).toFixed(10));
