@@ -1,0 +1,183 @@
+name: Wire Demo-10 Proximity Live
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  wire:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       github.event.issue.title == '[WIRE DEMO10 PROXIMITY]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch installer and deployment workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path("scripts/install-demo10-live-monitor.ps1")
+          s=p.read_text(encoding="utf-8")
+
+          def one(old,new,label):
+              global s
+              n=s.count(old)
+              if n != 1:
+                  raise SystemExit(f"{label}: expected 1 marker, got {n}")
+              s=s.replace(old,new)
+
+          one(
+          '''    node (Join-Path $RepoRoot "scripts\\build-current-signal-watchlist.mjs") $board (Join-Path $executionDir "EXECUTION_WATCHLIST.json") $candlesDir $signalDir *>> $Log
+              if ($LASTEXITCODE -ne 0) { throw "SIGNAL_WATCHLIST_EXIT_$LASTEXITCODE" }
+
+              $prevArg = if (Test-Path $previous) { $previous } else { "-" }
+          ''',
+          '''    node (Join-Path $RepoRoot "scripts\\build-current-signal-watchlist.mjs") $board (Join-Path $executionDir "EXECUTION_WATCHLIST.json") $candlesDir $signalDir *>> $Log
+              if ($LASTEXITCODE -ne 0) { throw "SIGNAL_WATCHLIST_EXIT_$LASTEXITCODE" }
+
+              $proximityPath = Join-Path $WorkRoot "demo10-proximity.json"
+              node (Join-Path $RepoRoot "scripts\\build-demo10-proximity.mjs") $board (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") $candlesDir $proximityPath *>> $Log
+              if ($LASTEXITCODE -ne 0) { throw "PROXIMITY_EXIT_$LASTEXITCODE" }
+
+              $prevArg = if (Test-Path $previous) { $previous } else { "-" }
+          ''',
+          "insert proximity engine")
+
+          one(
+          '''    $s = Get-Content $newState -Raw | ConvertFrom-Json
+              $w = Get-Content (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") -Raw | ConvertFrom-Json
+              $lines = @(
+          ''',
+          '''    $s = Get-Content $newState -Raw | ConvertFrom-Json
+              $w = Get-Content (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") -Raw | ConvertFrom-Json
+              $prox = Get-Content $proximityPath -Raw | ConvertFrom-Json
+              $nearCount = @($prox.rows | Where-Object { [int]$_.closestScore -ge 60 }).Count
+              $veryNearCount = @($prox.rows | Where-Object { [int]$_.closestScore -ge 80 }).Count
+              $lines = @(
+          ''',
+          "load proximity")
+
+          one(
+          '''        "- reconciliationHalts: $($t.summary.reconciliationHalts)",
+                  "- shadowOpenPositions: $($s.summary.openPositions)",
+          ''',
+          '''        "- reconciliationHalts: $($t.summary.reconciliationHalts)",
+                  "- proximityNearOrBetter: $nearCount",
+                  "- proximityVeryNearOrTrigger: $veryNearCount",
+                  "- shadowOpenPositions: $($s.summary.openPositions)",
+          ''',
+          "summary proximity")
+
+          marker='''    $lines += @("","## Open TESTNET positions","")
+          '''
+          section='''    $lines += @("","## TESTNET signal proximity","")
+              $lines += "| Coin | TF | Price | LONG | SHORT | Closest | Testnet state |"
+              $lines += "|---|---|---:|---|---|---|---|"
+              foreach($px in @($prox.rows) | Sort-Object underlying){
+                  $tx = @($t.symbols) | Where-Object { $_.underlying -eq $px.underlying } | Select-Object -First 1
+                  $txResult = if ($tx) { $tx.result } else { "NO_TESTNET_ROW" }
+                  if ($txResult -eq "UNAVAILABLE_ON_TESTNET") { continue }
+                  $lp = "$($px.long.score)/100 $($px.long.class) [$($px.long.distancePct)%]"
+                  $sp = "$($px.short.score)/100 $($px.short.class) [$($px.short.distancePct)%]"
+                  $closest = "$($px.closestDirection) $($px.closestScore)/100 $($px.closestClass)"
+                  $lines += "| $($px.underlying) | $($px.timeframe) | $($px.currentPrice) | $lp | $sp | $closest | $txResult |"
+              }
+
+              $lines += @("","### TESTNET missing conditions","")
+              $lines += "| Coin | LONG missing | SHORT missing |"
+              $lines += "|---|---|---|"
+              foreach($px in @($prox.rows) | Sort-Object underlying){
+                  $tx = @($t.symbols) | Where-Object { $_.underlying -eq $px.underlying } | Select-Object -First 1
+                  $txResult = if ($tx) { $tx.result } else { "NO_TESTNET_ROW" }
+                  if ($txResult -eq "UNAVAILABLE_ON_TESTNET") { continue }
+                  $lines += "| $($px.underlying) | $($px.long.missing) | $($px.short.missing) |"
+              }
+
+              $lines += @("","_Proximity is mechanical distance to strategy conditions, not probability. 0-29 UZAK; 30-59 ORTA; 60-79 YAKIN; 80-99 COK_YAKIN; 100 TETIK/WAIT_CLOSE. Orders still require a confirmed closed-candle FRESH_ENTRY._")
+
+              $lines += @("","## Open TESTNET positions","")
+          '''
+          one(marker,section,"insert proximity tables")
+
+          one(
+          '''        testnetResult = $t.result
+                  testnetSummary = $t.summary
+                  testnetPositions = $t.testnetPositions
+                  testnetSymbols = $t.symbols
+          ''',
+          '''        proximity = $prox
+                  testnetResult = $t.result
+                  testnetSummary = $t.summary
+                  testnetPositions = $t.testnetPositions
+                  testnetSymbols = $t.symbols
+          ''',
+          "latest proximity")
+
+          p.write_text(s,encoding="utf-8",newline="\n")
+
+          w=Path(".github/workflows/demo10-local-live-install.yml")
+          y=w.read_text(encoding="utf-8")
+          if "scripts/build-demo10-proximity.mjs" not in y:
+              y=y.replace(
+                  "      - 'scripts/build-current-signal-watchlist.mjs'\n",
+                  "      - 'scripts/build-current-signal-watchlist.mjs'\n      - 'scripts/build-demo10-proximity.mjs'\n"
+              )
+          if "node --check scripts/build-demo10-proximity.mjs" not in y:
+              y=y.replace(
+                  "          node --check scripts/build-current-signal-watchlist.mjs\n",
+                  "          node --check scripts/build-current-signal-watchlist.mjs\n          node --check scripts/build-demo10-proximity.mjs\n"
+              )
+          if "TESTNET signal proximity" not in y:
+              y=y.replace(
+                  "              $body -match 'evaluated:\\s*10'\n",
+                  "              $body -match 'evaluated:\\s*10' -and\n              $body -match 'TESTNET signal proximity'\n"
+              )
+          w.write_text(y,encoding="utf-8",newline="\n")
+          PY
+
+      - name: Validate generated files
+        shell: pwsh
+        run: |
+          node --check scripts/build-demo10-proximity.mjs
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$env:GITHUB_WORKSPACE/scripts/install-demo10-live-monitor.ps1",
+            [ref]$tokens,
+            [ref]$errors
+          ) | Out-Null
+          if (@($errors).Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            throw "Demo-10 installer parse failed"
+          }
+          Write-Host "DEMO10_PROXIMITY_PATCH_VALID"
+
+      - name: Commit proximity wiring
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/install-demo10-live-monitor.ps1 .github/workflows/demo10-local-live-install.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "feat: wire Demo-10 live proximity status"
+          git push origin HEAD:main
+
+      - name: Close request
+        if: github.event_name == 'issues'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
