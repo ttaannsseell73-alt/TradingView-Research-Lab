@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { PineTS } from 'pinets';
+import { PineTS, Indicator } from 'pinets';
 
 const TF_MS = {
   '1m': 60_000,
@@ -577,6 +577,7 @@ function writeAcceptedCsv(rows) {
 async function main() {
   const fetched = await fetchExactSource();
   const source = fetched.source;
+  const indicator = new Indicator(source);
 
   const sourceRecord = {
     ...meta,
@@ -591,7 +592,7 @@ async function main() {
   safeJsonWrite(path.join(outDir, 'source-proof.json'), sourceRecord);
 
   try {
-    await smoke(source);
+    await smoke(indicator);
   } catch (error) {
     safeJsonWrite(path.join(outDir, 'runtime-skip.json'), {
       ...sourceRecord,
@@ -655,7 +656,7 @@ async function main() {
             ...qc,
           };
         } else {
-          const ctx = await runSource(source, candles, symbol, timeframe);
+          const ctx = await runSource(indicator, candles, symbol, timeframe);
           const full = exactMetrics(ctx, START_MS, END_MS, MIN_TRADES[timeframe]);
           const monthly = monthlyFromTrades(full.rawTrades, full.initialCapital);
           const passMonths = monthly.filter((m) => m.pass).length;
