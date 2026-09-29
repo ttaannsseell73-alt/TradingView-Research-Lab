@@ -87,30 +87,47 @@ Decision:
 - Current live/demo Range48 logic remains unchanged.
 
 
-## Q DURUM — CANONICAL LOOKUP CONTRACT
+## Q RUNTIME — RETIRED 2026-09-29
 
-Purpose: make `Q durum` work the same way across new chats; do not rely on chat-local context.
+Decision:
+- QUSDT Range48 research evidence remains historical/canonical research evidence, but the Q live/demo runtime lane is retired.
+- Local task `QDemoForwardMonitor` must be removed and no further automatic Q cycles are allowed.
+- Existing Binance TESTNET position state is not to be altered merely by retirement of the monitor; no close/cancel action is implied by this lock.
+- Issue #109 is archival Q status only after the local stop is applied.
+- Issue #127 Q status lookup contract is retired.
+- Do not spend runner/queue capacity on Q bootstrap, Q scheduler repair, Q publisher, or Q live monitoring unless the user explicitly reopens Q later.
 
-When the user says `Q durum`:
-1. Read GitHub Issue #109 (`Q LIVE STATUS`) in this repository.
-2. Read current Binance USD-M Futures QUSDT price.
-3. If needed, read the latest QUSDT 15m candles to distinguish open-candle preview from closed-candle execution state.
-4. Report, at minimum:
-   - scheduler timestamp and age
-   - cycle_state
-   - actual open position from `positionAmt_before` (side, quantity, entry)
-   - leverage and margin type
-   - fresh / signal_action / action / result / decision
-   - current QUSDT price
-   - approximate unrealized PnL versus entry when a position exists
-   - ÇYYM LONG score/label/sweep/reclaim/missing condition
-   - ÇYYM SHORT score/label/sweep/reclaim/missing condition
-5. If Issue #109 is older than about 6 minutes or `cycle_state != SUCCESS`, mark status STALE and inspect the local Q scheduler before treating the status as current.
-6. `direction`, `HOLD_LONG`, or `HOLD_SHORT` alone do NOT prove an open position. Use `positionAmt_before` as the canonical position field.
-7. ÇYYM scores are proximity to mechanical conditions, not win probabilities.
-8. Open-candle preview is observability only; execution remains closed-candle/fresh-signal based.
-9. Do not change Q strategy logic merely to answer `Q durum`.
-10. Canonical Q strategy remains `swp_range48_reclaim`, 15m, x1, ISOLATED unless an explicit later lock changes it.
+
+## DEMO-10 LIVE MONITOR — CANONICAL 2026-09-29
+
+Purpose: replace Q as the active forward-observation lane.
+
+Canonical cohort:
+- `demo-10-forward-v2`
+- GUA / RIVER / GPS / TRADOOR / TLM / Q / HANA / XPIN / FF / ALLO
+- Configuration source: `research/demo_cohort_10.json`
+- Canonical status source: GitHub Issue #150 (`DEMO10 LIVE STATUS`)
+
+Runtime contract:
+- Local Windows task: `Demo10LiveMonitor`
+- Cadence: 1 minute.
+- Data: Binance USD-M Futures public market data.
+- Signals: confirmed closed candles only; next-bar open remains the canonical paper execution assumption.
+- Mode: `PAPER_SHADOW_ONLY`.
+- Real exchange orders: DISABLED.
+- Persistent local shadow state: `C:\demo10-live\state\SHADOW_STATE.json`.
+- Status publication: Issue #150 after every successful/failed local cycle.
+- GitHub `Demo Cohort 10 Shadow` workflow is manual fallback/evidence only; it is not the continuous scheduler.
+- 1m and 15m timeframes are mandatory because the selected cohort includes TLM 1m and multiple 15m setups.
+- Generic evidence flags remain visible, but for this explicitly selected paper cohort they are advisory and must not silently exclude a selected setup from shadow observation.
+- Cohort ID is part of shadow state; a cohort change must reset stale positions/history rather than carrying positions from an older candidate list.
+
+When the user asks for Demo-10 status:
+1. Read Issue #150.
+2. Report scheduler timestamp/age and cycle state.
+3. Report all 10 setup states, including direction, signal state, execution/tradability state, freshness and age.
+4. Report open paper positions and normalized realized/unrealized PnL.
+5. If Issue #150 is stale or failed, inspect the local `Demo10LiveMonitor` runtime before treating the report as current.
 
 
 ## TEST MASTER INDEX — CANONICAL TEST INVENTORY
