@@ -1,0 +1,64 @@
+name: Install Demo-10 Local Live Monitor
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/install-demo10-live-monitor.ps1'
+      - '.github/workflows/demo10-local-live-install.yml'
+      - 'research/demo_cohort_10.json'
+      - 'research/strategy_engine_v2.mjs'
+      - 'research/sr25_strategies.mjs'
+      - 'research/sweep_strategies.mjs'
+      - 'research/visual_strategies.mjs'
+      - 'research/tradability_policy.json'
+      - 'scripts/fetch-live-market-snapshot.py'
+      - 'scripts/fetch-current-candles.py'
+      - 'scripts/build-execution-watchlist.mjs'
+      - 'scripts/build-current-signal-watchlist.mjs'
+      - 'scripts/build-shadow-journal.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: demo10-local-live-install
+  cancel-in-progress: true
+
+jobs:
+  install:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Demo-10 source
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --check research/strategy_engine_v2.mjs
+          node --check scripts/build-execution-watchlist.mjs
+          node --check scripts/build-current-signal-watchlist.mjs
+          node --check scripts/build-shadow-journal.mjs
+          C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe -m py_compile scripts/fetch-live-market-snapshot.py scripts/fetch-current-candles.py
+          node -e "const d=require('./research/demo_cohort_10.json');if(d.mode!=='PAPER_SHADOW_ONLY'||d.cohortId!=='demo-10-forward-v2'||d.deploymentCandidates.length!==10)process.exit(2);console.log('DEMO10_SOURCE_OK')"
+
+      - name: Retire Q and install Demo-10 local live monitor
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & "$env:GITHUB_WORKSPACE\scripts\install-demo10-live-monitor.ps1"
+
+      - name: Verify canonical Demo-10 status
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $body = gh issue view 150 --repo $env:GITHUB_REPOSITORY --json body --jq .body
+          if ($body -notmatch 'cycle_state: SUCCESS') { throw "Demo-10 live status is not SUCCESS" }
+          if ($body -notmatch 'cohort: demo-10-forward-v2') { throw "Wrong Demo-10 cohort in live status" }
+          if ($body -notmatch 'real_orders: DISABLED') { throw "Demo-10 real-order guard missing" }
+          $body
