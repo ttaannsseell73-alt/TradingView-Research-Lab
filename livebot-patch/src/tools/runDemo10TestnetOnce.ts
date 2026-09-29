@@ -923,9 +923,9 @@ async function main(): Promise<void> {
     const ownedPositions = finalPositions.filter(x => x.ownership === 'DEMO10_OWNED');
     const foreignPositions = finalPositions.filter(x => x.ownership !== 'DEMO10_OWNED');
     const fillsResult = await journal.pool.query(
-      `SELECT symbol,side,fill_price,quantity,event_time
+      `SELECT symbol,side,fill_price,quantity,event_time,fill_id
          FROM live_fills
-        ORDER BY event_time,id`
+        ORDER BY event_time,fill_id`
     );
     const ledgerPnl = computeLedgerPnl(fillsResult.rows);
     const ownedUnrealizedPnl = ownedPositions.reduce(
