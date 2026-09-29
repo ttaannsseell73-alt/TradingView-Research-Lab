@@ -54,9 +54,15 @@ export class BinanceUsdmAdapter {
       } catch (error: any) {
         lastError = error;
         const status = Number(error?.response?.status ?? 0);
-        const retryable = (!status || status >= 500) && attempt < 3;
+        const retryAfter = Math.max(1, Number(error?.response?.headers?.['retry-after'] ?? 1));
+        if (status === 429 || status === 418) this.governor?.noteHttpLimit(status, retryAfter);
+        const retryable =
+          attempt < 3 &&
+          status !== 418 &&
+          (status === 429 || !status || status >= 500);
         if (!retryable) throw error;
-        await new Promise(resolve => setTimeout(resolve, attempt * 300));
+        const waitMs = status === 429 ? retryAfter * 1000 : attempt * 300;
+        await new Promise(resolve => setTimeout(resolve, waitMs));
       }
     }
     throw lastError;
@@ -121,10 +127,10 @@ export class BinanceUsdmAdapter {
           method === 'GET' &&
           attempt < maxAttempts &&
           status !== 418 &&
-          status !== 429 &&
-          (!status || status >= 500);
+          (status === 429 || !status || status >= 500);
         if (!retryableRead) throw error;
-        await new Promise(resolve => setTimeout(resolve, attempt * 300));
+        const waitMs = status === 429 ? Math.max(1, retryAfter) * 1000 : attempt * 300;
+        await new Promise(resolve => setTimeout(resolve, waitMs));
       }
     }
     throw lastError;
