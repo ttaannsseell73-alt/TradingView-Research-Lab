@@ -285,16 +285,19 @@ export function updateShadowState(current,previous=null,{
   }
 
   const closedTrades=closed.slice(-1000);
+  const validClosedTrades=closedTrades.filter(x=>x.exitReason!=='TRADABILITY_BLOCK');
+  const invalidInfrastructureClosedTrades=closedTrades.length-validClosedTrades.length;
   const allEvents=[...(prev.events??[]),...events].slice(-1000);
-  const realized=closedTrades.map(x=>Number(x.netReturn??0));
+  const realized=validClosedTrades.map(x=>Number(x.netReturn??0));
   const unrealized=positions.map(x=>Number(x.unrealizedNetIfClosed??0));
-  const realizedPnl=round(closedTrades.reduce((a,x)=>a+Number(x.pnlPerReferenceNotional??0),0));
+  const realizedPnl=round(validClosedTrades.reduce((a,x)=>a+Number(x.pnlPerReferenceNotional??0),0));
   const unrealizedPnl=round(positions.reduce((a,x)=>a+Number(x.unrealizedPnlPerReferenceNotional??0),0));
-  const closedReferenceNotional=closedTrades.length*prev.referenceNotional;
+  const closedReferenceNotional=validClosedTrades.length*prev.referenceNotional;
   const openReferenceNotional=positions.length*prev.referenceNotional;
   const summary={
     openPositions:positions.length,
-    closedTrades:closedTrades.length,
+    closedTrades:validClosedTrades.length,
+    invalidInfrastructureClosedTrades,
     wins:realized.filter(x=>x>0).length,
     losses:realized.filter(x=>x<0).length,
     winRate:realized.length?round(realized.filter(x=>x>0).length/realized.length):0,
