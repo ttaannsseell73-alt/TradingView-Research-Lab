@@ -2,24 +2,30 @@
   "schemaVersion": 1,
   "cohortId": "demo-10-forward-v2",
   "createdAt": "2026-09-29",
-  "purpose": "Paper/shadow forward observation shortlist for possible later live promotion. No real orders.",
-  "mode": "PAPER_SHADOW_ONLY",
+  "purpose": "Forward execution observation on Binance USD-M Futures TESTNET. Testnet orders only; production/live-money orders forbidden.",
+  "mode": "BINANCE_USDM_TESTNET",
   "executionRules": {
     "leverage": 1,
     "onePositionPerUnderlying": true,
-    "signalTiming": "confirmed closed candle -> next bar open",
+    "signalTiming": "confirmed closed candle -> next live execution opportunity",
     "seedExistingPositions": false,
     "reverseOnOppositeFreshSignal": true,
     "modeledRoundTripCost": 0.0014,
-    "promotion": "No automatic live promotion. Require forward evidence review."
+    "promotion": "No automatic live promotion. Require forward evidence review.",
+    "testnetNotionalPerPosition": 100,
+    "maxOpenPositions": 10,
+    "maxGrossTestnetNotional": 1000,
+    "catastrophicStopFraction": 0.2,
+    "productionOrders": false
   },
   "selectionRules": [
     "Slots 1-5 are canonical SR35 A_9_OF_9 setups from run 36350416306 / artifact sr35-2026-full-result",
     "Slots 6-10 are strongest unique-underlying Near-Pass 2Y / recovery candidates; no duplicate underlying",
     "Current strategy implementation exists in research/strategy_engine_v2.mjs",
     "USDT perpetual contract currently active",
-    "One paper position per underlying; no automatic live promotion",
-    "Confirmed closed candle -> next bar open; modeled round-trip cost 0.0014"
+    "One testnet position per underlying; no production/live-money execution",
+    "Confirmed closed candle -> next bar open; modeled round-trip cost 0.0014",
+    "Selected-cohort REVIEW/evidence flags are advisory on TESTNET; BLOCK/no-market/non-trading remain execution blocks"
   ],
   "deploymentCandidates": [
     {
