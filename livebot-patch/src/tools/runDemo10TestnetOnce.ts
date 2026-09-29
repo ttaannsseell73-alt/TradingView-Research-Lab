@@ -319,9 +319,11 @@ async function main(): Promise<void> {
   }
 
   const rows = Array.isArray(signalDoc?.rows) ? signalDoc.rows : [];
-  const targetSymbols = [...new Set(
-    rows.map((x: any) => String(x?.executionContract ?? '')).filter(Boolean)
-  )].sort();
+  const targetSymbols: string[] = Array.from(new Set<string>(
+    rows
+      .map((x: any) => String(x?.executionContract ?? ''))
+      .filter((x: string) => Boolean(x))
+  )).sort();
 
   const targetNotional = Number(process.env.DEMO10_TESTNET_NOTIONAL ?? DEFAULT_NOTIONAL);
   const maxOpenPositions = Number(process.env.DEMO10_TESTNET_MAX_OPEN ?? DEFAULT_MAX_OPEN);
@@ -391,7 +393,7 @@ async function main(): Promise<void> {
     if (mode !== 'ONE_WAY') throw new Error('DEMO10_TESTNET_REQUIRES_ONE_WAY');
     if (report.multiAssetsMargin) throw new Error('DEMO10_TESTNET_REQUIRES_SINGLE_ASSET_MODE');
 
-    const testnetTradable = new Set(
+    const testnetTradable = new Set<string>(
       (exchangeInfo?.symbols ?? [])
         .filter((x: any) => String(x?.status ?? '') === 'TRADING')
         .map((x: any) => String(x.symbol))
