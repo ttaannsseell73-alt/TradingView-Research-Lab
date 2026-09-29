@@ -111,3 +111,12 @@ When the user says `Q durum`:
 8. Open-candle preview is observability only; execution remains closed-candle/fresh-signal based.
 9. Do not change Q strategy logic merely to answer `Q durum`.
 10. Canonical Q strategy remains `swp_range48_reclaim`, 15m, x1, ISOLATED unless an explicit later lock changes it.
+
+
+## TEST MASTER INDEX — CANONICAL TEST INVENTORY
+
+- Canonical file: `TEST_MASTER_INDEX.md`
+- Purpose: single source of truth for historical and current research/backtest families, their completion state, report state, retries, invalid runs and recovery priority.
+- Rule: do not infer a valid test result from GitHub workflow SUCCESS alone; use the status in `TEST_MASTER_INDEX.md` and underlying artifacts/evidence.
+- Current STR100 canonical line: Exact v2 / Issue #139; v1 is invalid historical evidence only.
+- Current priority: stabilize TANSEL-DATAHUB, recover reports from compute-complete families, then resume STR100 Exact v2 from checkpoint.
