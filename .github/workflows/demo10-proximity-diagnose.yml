@@ -1,0 +1,41 @@
+name: Demo-10 Proximity Diagnose
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      github.event.issue.title == '[DEMO10 PROXIMITY DIAG]'
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 5
+    steps:
+      - name: Inspect live candle/proximity pipeline
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Continue"
+          $paths = @(
+            "C:\demo10-live\work\candles\manifest.json",
+            "C:\demo10-live\work\live-market.json",
+            "C:\demo10-live\work\execution\EXECUTION_WATCHLIST.json",
+            "C:\demo10-live\work\demo10-proximity.json"
+          )
+          foreach($p in $paths){
+            Write-Host "=== $p ==="
+            if(Test-Path $p){ Get-Content $p -Raw } else { Write-Host "MISSING" }
+          }
+          Write-Host "=== LOG TAIL ==="
+          $log="C:\demo10-live\logs\demo10-live.log"
+          if(Test-Path $log){ Get-Content $log -Tail 180 }
+
+      - name: Close request
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
