@@ -23,6 +23,7 @@ const DEFAULT_MAX_OPEN = 10;
 const DEFAULT_MAX_GROSS = 1000;
 const DEFAULT_STOP_FRACTION = 0.20;
 const MAX_IOC_DEVIATION_BPS = 30;
+const MIN_LIVE_DEPTH_MULTIPLE = 1.5;
 const DEMO10_VALID_METRICS_EPOCH_MS = Date.parse('2026-09-29T19:29:00Z');
 const TIMEFRAME_MS: Record<string, number> = {
   '1m': 60_000,
@@ -824,6 +825,31 @@ async function main(): Promise<void> {
       }
 
       const referencePrice = targetDirection === 1 ? bestAsk : bestBid;
+      const maxBuyPrice = bestAsk * (1 + MAX_IOC_DEVIATION_BPS / 10_000);
+      const minSellPrice = bestBid * (1 - MAX_IOC_DEVIATION_BPS / 10_000);
+      const executableNotional = (
+        targetDirection === 1 ? (book?.asks ?? []) : (book?.bids ?? [])
+      ).reduce((sum: number, level: any) => {
+        const p = Number(level?.[0]);
+        const q = Number(level?.[1]);
+        if (!(p > 0) || !(q > 0)) return sum;
+        const inWindow =
+          targetDirection === 1 ? p <= maxBuyPrice : p >= minSellPrice;
+        return inWindow ? sum + p * q : sum;
+      }, 0);
+      const minRequiredLiveDepth = targetNotional * MIN_LIVE_DEPTH_MULTIPLE;
+      state.liveDepthCheck = {
+        side: targetDirection === 1 ? 'ASK' : 'BID',
+        windowBps: MAX_IOC_DEVIATION_BPS,
+        executableNotional,
+        requiredNotional: minRequiredLiveDepth,
+        multiple: MIN_LIVE_DEPTH_MULTIPLE,
+      };
+      if (executableNotional + 1e-9 < minRequiredLiveDepth) {
+        state.result = 'INSUFFICIENT_LIVE_DEPTH_PENDING';
+        continue;
+      }
+
       const rawQty = ceilToStep(targetNotional / referencePrice, rules.stepSize);
       const rawLimit =
         targetDirection === 1
