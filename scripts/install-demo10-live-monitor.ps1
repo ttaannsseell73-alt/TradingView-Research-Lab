@@ -156,14 +156,22 @@ try {
     $journalDir = Join-Path $WorkRoot "shadow-journal"
     $previous = Join-Path $StateRoot "SHADOW_STATE.json"
 
+    $savedEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     & $Python (Join-Path $RepoRoot "scripts\fetch-live-market-snapshot.py") $board $market *>> $Log
-    if ($LASTEXITCODE -ne 0) { throw "MARKET_SNAPSHOT_EXIT_$LASTEXITCODE" }
+    $pythonExit = $LASTEXITCODE
+    $ErrorActionPreference = $savedEap
+    if ($pythonExit -ne 0) { throw "MARKET_SNAPSHOT_EXIT_$pythonExit" }
 
     node (Join-Path $RepoRoot "scripts\build-execution-watchlist.mjs") $board $market $policy $executionDir *>> $Log
     if ($LASTEXITCODE -ne 0) { throw "EXECUTION_WATCHLIST_EXIT_$LASTEXITCODE" }
 
+    $savedEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     & $Python (Join-Path $RepoRoot "scripts\fetch-current-candles.py") $board (Join-Path $executionDir "EXECUTION_WATCHLIST.json") $candlesDir *>> $Log
-    if ($LASTEXITCODE -ne 0) { throw "CANDLES_EXIT_$LASTEXITCODE" }
+    $pythonExit = $LASTEXITCODE
+    $ErrorActionPreference = $savedEap
+    if ($pythonExit -ne 0) { throw "CANDLES_EXIT_$pythonExit" }
 
     node (Join-Path $RepoRoot "scripts\build-current-signal-watchlist.mjs") $board (Join-Path $executionDir "EXECUTION_WATCHLIST.json") $candlesDir $signalDir *>> $Log
     if ($LASTEXITCODE -ne 0) { throw "SIGNAL_WATCHLIST_EXIT_$LASTEXITCODE" }
