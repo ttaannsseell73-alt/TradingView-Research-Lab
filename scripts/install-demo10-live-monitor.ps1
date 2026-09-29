@@ -9,7 +9,6 @@ $WorkRoot = Join-Path $RuntimeRoot "work"
 $StateRoot = Join-Path $RuntimeRoot "state"
 $LogRoot = Join-Path $RuntimeRoot "logs"
 $Python = "C:\actions-runner-datahub\.venv-datahub\Scripts\python.exe"
-$TaskName = "Demo10LiveMonitor"
 $QTaskName = "QDemoForwardMonitor"
 $RepoRoot = Split-Path $PSScriptRoot -Parent
 
@@ -257,26 +256,82 @@ finally {
     return $runnerPath
 }
 
-function Install-Demo10Task([string]$runnerPath) {
-    Write-Host "== Registering Demo-10 local 1-minute task =="
+function Install-Demo10Loop([string]$runnerPath) {
+    Write-Host "== Installing Demo-10 user-level 1-minute loop =="
 
-    try { Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue } catch {}
-    try { Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue } catch {}
+    $loopPath = Join-Path $RuntimeRoot "demo10-monitor-loop.ps1"
+    $loopBody = @'
+$ErrorActionPreference = "Continue"
+$RuntimeRoot = "C:\demo10-live"
+$OneCycle = Join-Path $RuntimeRoot "run-demo10-live.ps1"
+$Log = Join-Path $RuntimeRoot "logs\demo10-loop.log"
+$pidFile = Join-Path $RuntimeRoot "demo10-loop.pid"
 
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$runnerPath`""
-    $repeat = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 1)
-    $startup = New-ScheduledTaskTrigger -AtStartup
-    $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 3)
-    $principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Limited
+New-Item -ItemType Directory -Force (Split-Path $Log) | Out-Null
+[System.IO.File]::WriteAllText($pidFile,[string]$PID,[Text.UTF8Encoding]::new($false))
 
-    Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger @($repeat,$startup) -Settings $settings -Principal $principal -Force | Out-Null
-    Start-ScheduledTask -TaskName $TaskName
+try {
+    while ($true) {
+        $started = Get-Date
+        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $OneCycle
+        $code = $LASTEXITCODE
+        Add-Content $Log "$(Get-Date -Format o) cycle_exit=$code"
+        $elapsed = ((Get-Date) - $started).TotalSeconds
+        $sleep = [Math]::Max(1,[int](60 - $elapsed))
+        Start-Sleep -Seconds $sleep
+    }
+}
+finally {
+    Remove-Item $pidFile -Force -ErrorAction SilentlyContinue
+}
+'@
+    [System.IO.File]::WriteAllText($loopPath,$loopBody,[Text.UTF8Encoding]::new($false))
+
+    # User Startup folder gives reboot/login persistence without requiring Administrator
+    # or Task Scheduler registration rights.
+    $startup = [Environment]::GetFolderPath("Startup")
+    if (!(Test-Path $startup)) { New-Item -ItemType Directory -Force $startup | Out-Null }
+    $startupCmd = Join-Path $startup "Demo10LiveMonitor.cmd"
+    $cmd = "@echo off`r`nstart `"`" /min powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$loopPath`"`r`n"
+    [System.IO.File]::WriteAllText($startupCmd,$cmd,[Text.UTF8Encoding]::new($false))
+
+    # Stop an older copy owned by this user, if one exists.
+    Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
+        Where-Object { $_.CommandLine -and $_.CommandLine -like "*demo10-monitor-loop.ps1*" } |
+        ForEach-Object {
+            try { Invoke-CimMethod -InputObject $_ -MethodName Terminate -ErrorAction Stop | Out-Null } catch {}
+        }
+
+    Remove-Item (Join-Path $RuntimeRoot "latest.json") -Force -ErrorAction SilentlyContinue
+
+    # GitHub Runner normally kills child processes when a job ends. Remove its tracking
+    # marker before starting this intentionally persistent local monitor.
+    $tracking = $env:RUNNER_TRACKING_ID
+    Remove-Item Env:RUNNER_TRACKING_ID -ErrorAction SilentlyContinue
+    try {
+        $proc = Start-Process powershell.exe -ArgumentList @(
+            "-NoProfile",
+            "-WindowStyle","Hidden",
+            "-ExecutionPolicy","Bypass",
+            "-File",$loopPath
+        ) -WindowStyle Hidden -PassThru
+    }
+    finally {
+        if ($tracking) { $env:RUNNER_TRACKING_ID = $tracking }
+    }
+
+    Start-Sleep -Seconds 2
+    if ($proc.HasExited) { throw "Demo-10 loop exited immediately with code $($proc.ExitCode)" }
+
+    Write-Host "DEMO10_LOOP_STARTED pid=$($proc.Id)"
+    Write-Host "DEMO10_STARTUP=$startupCmd"
+    return $loopPath
 }
 
 Stop-QRuntime
 Copy-RuntimeSource
 $runnerPath = Install-Demo10RunnerScript
-Install-Demo10Task $runnerPath
+$loopPath = Install-Demo10Loop $runnerPath
 
 $deadline = (Get-Date).AddMinutes(3)
 $latest = Join-Path $RuntimeRoot "latest.json"
@@ -297,8 +352,13 @@ if (!(Test-Path $latest)) {
 $status = Get-Content $latest -Raw | ConvertFrom-Json
 if ($status.cycleState -ne "SUCCESS") { throw "Demo-10 first cycle not successful" }
 
-Get-ScheduledTask -TaskName $TaskName | Format-List TaskName,State
-Get-ScheduledTaskInfo -TaskName $TaskName | Format-List LastRunTime,LastTaskResult,NextRunTime
+$loopProc = Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
+    Where-Object { $_.CommandLine -and $_.CommandLine -like "*demo10-monitor-loop.ps1*" } |
+    Select-Object -First 1
+if (!$loopProc) { throw "Demo-10 persistent loop process not found after first cycle" }
+
+Write-Host "DEMO10_LOOP_OK pid=$($loopProc.ProcessId)"
+Write-Host "DEMO10_STARTUP_OK $([Environment]::GetFolderPath('Startup'))\Demo10LiveMonitor.cmd"
 Get-Content $latest
 
 Write-Host "DEMO10_LOCAL_LIVE_READY"
