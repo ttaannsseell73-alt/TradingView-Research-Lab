@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "policyVersion": "demo11-exec-v1",
+  "purpose": "Signal-independent execution decision policy",
+  "entry": {
+    "maxSpreadBps": 25,
+    "maxSnapshotAgeMs": 5000,
+    "depth10bpsMinMultipleOfOrderNotional": 2.5,
+    "minOrderNotional": 5
+  },
+  "sizing": {
+    "exitDepthDivisor": 1.5,
+    "exitDepthWarningMultipleOfOrderNotional": 2.0
+  },
+  "universeEligibility": {
+    "minQuoteVolume24h": 500000,
+    "minOpenInterestNotional": 500000
+  },
+  "principles": [
+    "LONG entry consumes ask depth; SHORT entry consumes bid depth.",
+    "Opposite-side depth constrains sizing and raises warnings but does not mutate SignalEvent.",
+    "Missing or stale market data is DEFER(infra_fault), not a market-policy rejection.",
+    "24h volume and open interest belong to cohort eligibility, not per-signal hard gating."
+  ]
+}
