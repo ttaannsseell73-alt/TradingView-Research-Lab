@@ -1,0 +1,103 @@
+name: Repair Demo-10 Testnet Installer
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  repair:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       github.event.issue.title == '[REPAIR DEMO10 TESTNET INSTALLER]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reassemble corrupted installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path("scripts/install-demo10-live-monitor.ps1")
+          lines = p.read_text(encoding="utf-8").splitlines()
+
+          if len(lines) < 616:
+              raise SystemExit(f"unexpected installer length: {len(lines)}")
+
+          if "if ($line -match '^([^#=]+)=(.*)" not in lines[196]:
+              raise SystemExit("expected corruption marker not found")
+
+          rebuilt = (
+              lines[:196]
+              + ["        if ($line -match '^([^#=]+)=(.*)$') {"]
+              + lines[404:432]
+              + lines[197:403]
+          )
+
+          text = "\n".join(rebuilt) + "\n"
+          checks = {
+              "outer_tail": text.count("Stop-QRuntime\nCopy-RuntimeSource"),
+              "runner_here": text.count("$body = @'"),
+              "loop_here": text.count("$loopBody = @'"),
+              "executor": text.count("npm run demo10:testnet-once"),
+              "paper_mode": text.count('"- mode: PAPER_SHADOW_ONLY"'),
+          }
+          if checks != {
+              "outer_tail": 1,
+              "runner_here": 1,
+              "loop_here": 1,
+              "executor": 1,
+              "paper_mode": 0,
+          }:
+              raise SystemExit(f"rebuild sanity failed: {checks}")
+
+          p.write_text(text, encoding="utf-8", newline="\n")
+          print(checks)
+          PY
+
+      - name: Parse PowerShell installer
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$env:GITHUB_WORKSPACE/scripts/install-demo10-live-monitor.ps1",
+            [ref]$tokens,
+            [ref]$errors
+          ) | Out-Null
+          if (@($errors).Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            throw "PowerShell parser found $(@($errors).Count) error(s)"
+          }
+          Write-Host "DEMO10_INSTALLER_PARSE_OK"
+
+      - name: Commit repaired installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/install-demo10-live-monitor.ps1
+          if git diff --cached --quiet; then
+            echo "No repair diff"
+            exit 0
+          fi
+          git commit -m "fix: repair Demo-10 testnet installer parser corruption"
+          git push origin HEAD:main
+
+      - name: Close repair request
+        if: github.event_name == 'issues'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
