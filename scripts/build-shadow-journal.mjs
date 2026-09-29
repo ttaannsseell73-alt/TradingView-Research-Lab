@@ -24,8 +24,17 @@ export function updateShadowState(current,previous=null,{
   roundTripCost=DEFAULT_ROUND_TRIP_COST
 }={}){
   const nowMs=Number(current?.snapshotAtMs??Date.now());
-  const prev=previous&&previous.schemaVersion===1?structuredClone(previous):{
+  const currentCohortId=current?.cohortId??null;
+  const previousIsState=Boolean(previous&&previous.schemaVersion===1);
+  const cohortChanged=Boolean(
+    currentCohortId&&
+    previousIsState&&
+    (previous?.cohortId??null)!==currentCohortId
+  );
+  const effectivePrevious=previousIsState&&!cohortChanged?previous:null;
+  const prev=effectivePrevious?structuredClone(effectivePrevious):{
     schemaVersion:1,
+    cohortId:currentCohortId,
     createdAt:new Date(nowMs).toISOString(),
     referenceNotional,
     modeledRoundTripCost:roundTripCost,
@@ -33,11 +42,20 @@ export function updateShadowState(current,previous=null,{
     closedTrades:[],
     events:[]
   };
+  prev.cohortId=currentCohortId??prev.cohortId??null;
   prev.referenceNotional=Number(prev.referenceNotional??referenceNotional);
   prev.modeledRoundTripCost=Number(prev.modeledRoundTripCost??roundTripCost);
+  if(cohortChanged){
+    prev.events=[...(prev.events??[]),{
+      type:'COHORT_RESET',
+      at:nowMs,
+      fromCohortId:previous?.cohortId??null,
+      toCohortId:currentCohortId
+    }].slice(-1000);
+  }
 
   if(current?.dataAvailable===false){
-    const carried=previous&&previous.schemaVersion===1?structuredClone(previous):{
+    const carried=effectivePrevious?structuredClone(effectivePrevious):{
       ...prev,
       snapshotAtMs:null,
       summary:{
@@ -60,7 +78,7 @@ export function updateShadowState(current,previous=null,{
 
   const rows=current?.rows??[];
   const freshIntents=current?.paperIntents??[];
-  const previousSnapshot=previous&&finite(previous.snapshotAtMs)?Number(previous.snapshotAtMs):null;
+  const previousSnapshot=effectivePrevious&&finite(effectivePrevious.snapshotAtMs)?Number(effectivePrevious.snapshotAtMs):null;
 
   const catchupGroups=new Map();
   if(previousSnapshot!=null){
@@ -297,6 +315,7 @@ export function updateShadowState(current,previous=null,{
   };
   return {
     schemaVersion:1,
+    cohortId:currentCohortId??prev.cohortId??null,
     createdAt:prev.createdAt??new Date(nowMs).toISOString(),
     updatedAt:new Date(nowMs).toISOString(),
     snapshotAtMs:nowMs,
