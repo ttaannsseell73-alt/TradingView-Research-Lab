@@ -56,7 +56,8 @@ fs.mkdirSync(outDir, { recursive: true });
 
 const persistentCsv = path.resolve(process.env.EXACT_CSV_CACHE ?? 'C:/actions-runner-datahub/exact-source-csv-cache-2026');
 const persistentRoot = path.resolve(process.env.EXACT_CHECKPOINT_ROOT ?? 'C:/actions-runner-datahub/exact-source-checkpoints');
-const windowKey = `${new Date(START_MS).toISOString().slice(0,10)}_${new Date(END_MS).toISOString().slice(0,10)}_pinets-0.10.0`;
+const engineRevision = String(process.env.EXACT_ENGINE_REV ?? 'exact-provider-v2').replace(/[^a-zA-Z0-9._-]+/g, '-');
+const windowKey = `${new Date(START_MS).toISOString().slice(0,10)}_${new Date(END_MS).toISOString().slice(0,10)}_pinets-0.10.0_${engineRevision}`;
 const checkpointDir = path.join(persistentRoot, meta.sourceSha256, windowKey, `checkpoints-${shardIndex}-of-${shardCount}`);
 fs.mkdirSync(persistentCsv, { recursive: true });
 fs.mkdirSync(checkpointDir, { recursive: true });
@@ -207,6 +208,14 @@ const PINE_TF_MS = {
 };
 
 const providerCache = new Map();
+const symbolMetadataPath = path.resolve(process.env.EXACT_SYMBOL_METADATA ?? 'research/binance-usdm-symbol-metadata.json');
+let symbolMetadata = {};
+try {
+  const payload = JSON.parse(fs.readFileSync(symbolMetadataPath, 'utf8'));
+  symbolMetadata = payload?.symbols ?? {};
+} catch (error) {
+  console.warn(`Symbol metadata unavailable at ${symbolMetadataPath}; falling back to candle precision: ${error?.message ?? error}`);
+}
 
 function normalizeProviderSymbol(tickerId) {
   return String(tickerId ?? '')
@@ -362,12 +371,15 @@ class LocalResearchProvider {
     const rows = symbol === this.primarySymbol
       ? this.primaryCandles
       : loadProviderCandles(symbol, '15');
-    const mintick = inferMintick(rows);
-    const base = symbol.endsWith('USDT') ? symbol.slice(0, -4) : symbol;
+    const venue = symbolMetadata[symbol] ?? null;
+    const venueTick = Number(venue?.tickSize);
+    const mintick = Number.isFinite(venueTick) && venueTick > 0 ? venueTick : inferMintick(rows);
+    const base = venue?.baseAsset || (symbol.endsWith('USDT') ? symbol.slice(0, -4) : symbol);
+    const quote = venue?.quoteAsset || 'USDT';
     const ticker = `${symbol}.P`;
     return {
       current_contract: 'Perpetual',
-      description: `${base} / USDT Perpetual`,
+      description: `${base} / ${quote} Perpetual`,
       isin: '',
       main_tickerid: `BINANCE:${ticker}`,
       prefix: 'BINANCE',
@@ -377,7 +389,7 @@ class LocalResearchProvider {
       type: 'futures',
       basecurrency: base,
       country: '',
-      currency: 'USDT',
+      currency: quote,
       timezone: 'Etc/UTC',
       employees: 0,
       industry: '',
@@ -385,10 +397,10 @@ class LocalResearchProvider {
       shareholders: 0,
       shares_outstanding_float: 0,
       shares_outstanding_total: 0,
-      expiration_date: 0,
+      expiration_date: Number(venue?.deliveryDate ?? 0),
       session: '24x7',
       volumetype: 'base',
-      mincontract: 0,
+      mincontract: Number(venue?.minQty ?? 0),
       minmove: 1,
       mintick,
       pointvalue: 1,
@@ -573,6 +585,8 @@ async function main() {
     sourceBytes: Buffer.byteLength(source, 'utf8'),
     exactSourceMutated: false,
     runtime: 'PineTS 0.10.0',
+    engineRevision,
+    symbolMetadataPath,
   };
   safeJsonWrite(path.join(outDir, 'source-proof.json'), sourceRecord);
 
