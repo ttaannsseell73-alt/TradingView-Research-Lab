@@ -180,8 +180,240 @@ function exportCsv(symbol, timeframe) {
   return file;
 }
 
-async function runSource(source, candles) {
-  const pine = new PineTS(candles);
+const PINETS_TF = {
+  '1m': '1',
+  '5m': '5',
+  '15m': '15',
+  '1h': '60',
+  '4h': '240',
+};
+
+const PINE_TF_MS = {
+  '1': 60_000,
+  '3': 180_000,
+  '5': 300_000,
+  '15': 900_000,
+  '30': 1_800_000,
+  '60': 3_600_000,
+  '120': 7_200_000,
+  '180': 10_800_000,
+  '240': 14_400_000,
+  'D': 86_400_000,
+  '1D': 86_400_000,
+  'W': 604_800_000,
+  '1W': 604_800_000,
+  'M': 30 * 86_400_000,
+  '1M': 30 * 86_400_000,
+};
+
+const providerCache = new Map();
+
+function normalizeProviderSymbol(tickerId) {
+  return String(tickerId ?? '')
+    .replace(/^BINANCE:/i, '')
+    .replace(/\.P$/i, '')
+    .replace(/;.*$/, '');
+}
+
+function decimalsOf(value) {
+  if (!Number.isFinite(value)) return 0;
+  const s = Math.abs(value).toFixed(12).replace(/0+$/, '').replace(/\.$/, '');
+  const p = s.indexOf('.');
+  return p < 0 ? 0 : s.length - p - 1;
+}
+
+function inferMintick(candles) {
+  let maxDecimals = 0;
+  const sample = candles.length > 3000 ? candles.slice(-3000) : candles;
+  for (const row of sample) {
+    maxDecimals = Math.max(
+      maxDecimals,
+      decimalsOf(row.open),
+      decimalsOf(row.high),
+      decimalsOf(row.low),
+      decimalsOf(row.close),
+    );
+  }
+  return 10 ** (-Math.min(12, maxDecimals));
+}
+
+function pineTfToLocal(tf) {
+  const value = String(tf ?? '').toUpperCase();
+  const direct = {
+    '1': '1m', '3': '3m', '5': '5m', '15': '15m', '30': '30m',
+    '60': '1h', '120': '2h', '180': '3h', '240': '4h',
+    '4H': '4h', 'D': '1d', '1D': '1d', 'W': '1w', '1W': '1w', 'M': '1M', '1M': '1M',
+  };
+  return direct[value] ?? String(tf ?? '');
+}
+
+function localTfMs(tf) {
+  const table = {
+    '1m': 60_000, '3m': 180_000, '5m': 300_000, '15m': 900_000, '30m': 1_800_000,
+    '1h': 3_600_000, '2h': 7_200_000, '3h': 10_800_000, '4h': 14_400_000,
+    '1d': 86_400_000, '1w': 604_800_000, '1M': 30 * 86_400_000,
+  };
+  return table[tf] ?? null;
+}
+
+function bucketStart(openTime, tf) {
+  const d = new Date(openTime);
+  if (tf === '1d') return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  if (tf === '1w') {
+    const day = (d.getUTCDay() + 6) % 7;
+    return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - day);
+  }
+  if (tf === '1M') return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1);
+  const ms = localTfMs(tf);
+  if (!ms) throw new Error(`UNSUPPORTED_PROVIDER_TIMEFRAME ${tf}`);
+  return Math.floor(openTime / ms) * ms;
+}
+
+function nextBucket(start, tf) {
+  if (tf === '1M') {
+    const d = new Date(start);
+    return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1);
+  }
+  return start + localTfMs(tf);
+}
+
+function aggregateCandles(rows, tf) {
+  const out = [];
+  let current = null;
+  for (const row of rows) {
+    const start = bucketStart(row.openTime, tf);
+    if (!current || current.openTime !== start) {
+      if (current) out.push(current);
+      current = {
+        openTime: start,
+        closeTime: nextBucket(start, tf),
+        open: row.open,
+        high: row.high,
+        low: row.low,
+        close: row.close,
+        volume: row.volume,
+      };
+    } else {
+      current.high = Math.max(current.high, row.high);
+      current.low = Math.min(current.low, row.low);
+      current.close = row.close;
+      current.volume += row.volume;
+    }
+  }
+  if (current) out.push(current);
+  return out;
+}
+
+function loadProviderCandles(symbol, pineTf) {
+  const localTf = pineTfToLocal(pineTf);
+  const key = `${symbol}|${localTf}`;
+  if (providerCache.has(key)) return providerCache.get(key);
+
+  const direct = new Set(['1m', '5m', '15m', '1h', '4h']);
+  let rows;
+  if (direct.has(localTf)) {
+    rows = parseCsv(exportCsv(symbol, localTf));
+  } else {
+    const targetMs = localTfMs(localTf);
+    if (!targetMs) throw new Error(`UNSUPPORTED_PROVIDER_TIMEFRAME ${pineTf}`);
+    const bases = ['4h', '1h', '15m', '5m', '1m'];
+    const baseTf = bases.find((tf) => {
+      const ms = localTfMs(tf);
+      return ms <= targetMs && targetMs % ms === 0;
+    }) ?? '1m';
+    rows = aggregateCandles(parseCsv(exportCsv(symbol, baseTf)), localTf);
+  }
+  providerCache.set(key, rows);
+  return rows;
+}
+
+class LocalResearchProvider {
+  constructor(primarySymbol, primaryTimeframe, primaryCandles) {
+    this.primarySymbol = primarySymbol;
+    this.primaryTimeframe = PINETS_TF[primaryTimeframe] ?? primaryTimeframe;
+    this.primaryCandles = primaryCandles;
+  }
+
+  configure() {}
+
+  async getMarketData(tickerId, timeframe, limit, sDate, eDate) {
+    const symbol = normalizeProviderSymbol(tickerId);
+    let rows;
+    if (
+      symbol === this.primarySymbol
+      && String(timeframe) === String(this.primaryTimeframe)
+    ) {
+      rows = this.primaryCandles;
+    } else {
+      rows = loadProviderCandles(symbol, timeframe);
+    }
+
+    const start = Number.isFinite(Number(sDate)) ? Number(sDate) : -Infinity;
+    const end = Number.isFinite(Number(eDate)) ? Number(eDate) : Infinity;
+    let filtered = rows.filter((r) => r.openTime >= start && r.openTime < end);
+    if (Number.isFinite(Number(limit)) && Number(limit) > 0 && filtered.length > Number(limit)) {
+      filtered = filtered.slice(-Number(limit));
+    }
+    return filtered;
+  }
+
+  async getSymbolInfo(tickerId) {
+    const symbol = normalizeProviderSymbol(tickerId);
+    const rows = symbol === this.primarySymbol
+      ? this.primaryCandles
+      : loadProviderCandles(symbol, '15');
+    const mintick = inferMintick(rows);
+    const base = symbol.endsWith('USDT') ? symbol.slice(0, -4) : symbol;
+    const ticker = `${symbol}.P`;
+    return {
+      current_contract: 'Perpetual',
+      description: `${base} / USDT Perpetual`,
+      isin: '',
+      main_tickerid: `BINANCE:${ticker}`,
+      prefix: 'BINANCE',
+      root: base,
+      ticker,
+      tickerid: `BINANCE:${ticker}`,
+      type: 'futures',
+      basecurrency: base,
+      country: '',
+      currency: 'USDT',
+      timezone: 'Etc/UTC',
+      employees: 0,
+      industry: '',
+      sector: '',
+      shareholders: 0,
+      shares_outstanding_float: 0,
+      shares_outstanding_total: 0,
+      expiration_date: 0,
+      session: '24x7',
+      volumetype: 'base',
+      mincontract: 0,
+      minmove: 1,
+      mintick,
+      pointvalue: 1,
+      pricescale: Math.max(1, Math.round(1 / mintick)),
+      recommendations_buy: 0,
+      recommendations_buy_strong: 0,
+      recommendations_date: 0,
+      recommendations_hold: 0,
+      recommendations_sell: 0,
+      recommendations_sell_strong: 0,
+      recommendations_total: 0,
+      target_price_average: 0,
+      target_price_date: 0,
+      target_price_estimates: 0,
+      target_price_high: 0,
+      target_price_low: 0,
+      target_price_median: 0,
+    };
+  }
+}
+
+async function runSource(source, candles, symbol, timeframe) {
+  const provider = new LocalResearchProvider(symbol, timeframe, candles);
+  const pineTf = PINETS_TF[timeframe] ?? timeframe;
+  const pine = new PineTS(provider, `${symbol}.P`, pineTf, candles.length, START_MS, END_MS);
   return await pine.run(source);
 }
 
@@ -310,9 +542,10 @@ function taskFile(symbol, timeframe) {
 
 async function smoke(source) {
   const file = exportCsv('BTCUSDT', '15m');
-  const candles = parseCsv(file).slice(0, 4000);
+  const smokeBars = Math.max(200, Number(process.env.EXACT_SMOKE_BARS ?? 600));
+  const candles = parseCsv(file).slice(0, smokeBars);
   if (candles.length < 200) throw new Error('BTCUSDT 15m smoke data unavailable');
-  await runSource(source, candles);
+  await runSource(source, candles, 'BTCUSDT', '15m');
 }
 
 function csvEscape(value) {
@@ -359,7 +592,9 @@ async function main() {
   if (symbols.length < 500) {
     throw new Error(`exact universe guard failed: expected at least 500 symbols, found ${symbols.length}`);
   }
-  const timeframes = ['1m', '5m', '15m', '1h', '4h'];
+  const timeframes = String(process.env.EXACT_TIMEFRAMES ?? '1m,5m,15m,1h,4h')
+    .split(',').map((x) => x.trim()).filter((x) => Object.hasOwn(TF_MS, x));
+  if (!timeframes.length) throw new Error('EXACT_TIMEFRAMES resolved to empty set');
   const tasks = [];
   for (const symbol of symbols) for (const timeframe of timeframes) tasks.push({ symbol, timeframe });
   const selectedTasks = tasks.filter((_, index) => index % shardCount === shardIndex);
@@ -396,7 +631,7 @@ async function main() {
             ...qc,
           };
         } else {
-          const ctx = await runSource(source, candles);
+          const ctx = await runSource(source, candles, symbol, timeframe);
           const full = exactMetrics(ctx, START_MS, END_MS, MIN_TRADES[timeframe]);
           const monthly = monthlyFromTrades(full.rawTrades, full.initialCapital);
           const passMonths = monthly.filter((m) => m.pass).length;
