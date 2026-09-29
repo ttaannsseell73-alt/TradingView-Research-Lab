@@ -1,0 +1,31 @@
+name: Bootstrap Dedicated Q Live Runner
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/setup-q-live-runner.ps1'
+      - '.github/workflows/bootstrap-q-live-runner.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: bootstrap-q-live-runner
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install and verify dedicated Q runner
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & "$env:GITHUB_WORKSPACE\scripts\setup-q-live-runner.ps1"
