@@ -74,6 +74,15 @@ export class PgEventJournal {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
 
+      CREATE TABLE IF NOT EXISTS live_position_adjustments (
+        id BIGSERIAL PRIMARY KEY,
+        symbol TEXT NOT NULL,
+        quantity_delta DOUBLE PRECISION NOT NULL,
+        reason TEXT NOT NULL,
+        payload JSONB NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
       CREATE TABLE IF NOT EXISTS live_risk_snapshots (
         id BIGSERIAL PRIMARY KEY,
         symbol TEXT,
@@ -223,18 +232,64 @@ export class PgEventJournal {
 
   async expectedNetPosition(symbol: string): Promise<number> {
     const result = await this.pool.query(
-      `SELECT COALESCE(SUM(
-          CASE
-            WHEN side='BUY' THEN quantity
-            WHEN side='SELL' THEN -quantity
-            ELSE 0
-          END
-        ),0)::float8 AS qty
-         FROM live_fills
-        WHERE symbol=$1`,
+      `SELECT (
+          SELECT COALESCE(SUM(
+            CASE
+              WHEN side='BUY' THEN quantity
+              WHEN side='SELL' THEN -quantity
+              ELSE 0
+            END
+          ),0)::float8
+          FROM live_fills
+          WHERE symbol=$1
+        ) + (
+          SELECT COALESCE(SUM(quantity_delta),0)::float8
+          FROM live_position_adjustments
+          WHERE symbol=$1
+        ) AS qty`,
       [symbol]
     );
     return Number(result.rows[0]?.qty ?? 0);
+  }
+
+  async applyPositionAdjustment(args: {
+    symbol: string;
+    quantityDelta: number;
+    reason: string;
+    payload: Record<string, unknown>;
+  }): Promise<string> {
+    if (!Number.isFinite(args.quantityDelta) || Math.abs(args.quantityDelta) < 1e-12) {
+      throw new Error('INVALID_POSITION_ADJUSTMENT');
+    }
+    if (!args.reason.trim()) throw new Error('POSITION_ADJUSTMENT_REASON_REQUIRED');
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+      const inserted = await client.query(
+        `INSERT INTO live_position_adjustments(symbol,quantity_delta,reason,payload)
+         VALUES($1,$2,$3,$4::jsonb)
+         RETURNING id::text AS id`,
+        [args.symbol, args.quantityDelta, args.reason, JSON.stringify(args.payload)]
+      );
+      const id = String(inserted.rows[0].id);
+      await client.query(
+        `INSERT INTO live_events(event_type,entity_id,payload)
+         VALUES('POSITION_LEDGER_ADJUSTED',$1,$2::jsonb)`,
+        [args.symbol, JSON.stringify({
+          adjustmentId: id,
+          quantityDelta: args.quantityDelta,
+          reason: args.reason,
+          ...args.payload,
+        })]
+      );
+      await client.query('COMMIT');
+      return id;
+    } catch (error) {
+      await client.query('ROLLBACK').catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   async unresolvedOutbox(): Promise<Array<{ outboxId: string; intentId: string; status: string; payload: Record<string, unknown> }>> {
@@ -353,7 +408,7 @@ export class PgEventJournal {
 
   async truncateForTesting(): Promise<void> {
     if (process.env.NODE_ENV === 'production') throw new Error('Refusing truncate in production');
-    await this.pool.query('TRUNCATE live_outbox, live_intents, live_events, live_fills, live_position_snapshots, live_risk_snapshots RESTART IDENTITY CASCADE');
+    await this.pool.query('TRUNCATE live_outbox, live_intents, live_events, live_fills, live_position_snapshots, live_position_adjustments, live_risk_snapshots RESTART IDENTITY CASCADE');
   }
 
   async close(): Promise<void> {
