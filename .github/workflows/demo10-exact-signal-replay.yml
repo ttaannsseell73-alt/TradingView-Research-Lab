@@ -76,6 +76,39 @@ jobs:
             allExactEntries:out.reduce((a,x)=>a+Number(x.exactEntriesSinceDemo??0),0),
             testnetExactEntries:out.filter(x=>!['TLM','FF','ALLO'].includes(x.underlying)).reduce((a,x)=>a+Number(x.exactEntriesSinceDemo??0),0)
           }));
+
+          console.log('=== UNIQUE_SIGNAL_TIMELINE ===');
+          const { evaluateCurrentSignals } = await import('./research/strategy_engine_v2.mjs');
+          for(const c of board.deploymentCandidates){
+            const combo=c.bestClean?.[0];
+            if(!combo) continue;
+            const symbol=c.contracts?.[0], tf=combo.timeframe, step=intervalMs[tf];
+            const p=path.join(dir,`${symbol}__${tf}.json`);
+            if(!fs.existsSync(p)||!step) continue;
+            const doc=JSON.parse(fs.readFileSync(p,'utf8'));
+            const candles=(doc.candles??[]).filter(x=>Number.isFinite(Number(x.t))).map(x=>({
+              ...x,t:Number(x.t),o:Number(x.o),h:Number(x.h),l:Number(x.l),c:Number(x.c),v:Number(x.v??0)
+            }));
+            let prev=evaluateCurrentSignals(candles,{asOf:start-1,intervalMs:step,strategyIds:[combo.strategy]})[0]?.direction??'FLAT';
+            for(const b of candles){
+              const closeAt=Number(b.t)+step;
+              if(closeAt<start||closeAt>end) continue;
+              const sig=evaluateCurrentSignals(candles,{asOf:closeAt,intervalMs:step,strategyIds:[combo.strategy]})[0];
+              if(!sig) continue;
+              const dirNow=sig.direction;
+              if(dirNow!==prev){
+                console.log(JSON.stringify({
+                  underlying:c.underlying,symbol,tf,strategy:combo.strategy,
+                  from:prev,to:dirNow,
+                  signalBarTime:sig.lastSignalTime,
+                  signalBarIso:sig.lastSignalTime?new Date(sig.lastSignalTime).toISOString():null,
+                  canonicalEntryTime:sig.lastSignalTime!=null?Number(sig.lastSignalTime)+step:null,
+                  canonicalEntryIso:sig.lastSignalTime!=null?new Date(Number(sig.lastSignalTime)+step).toISOString():null
+                }));
+              }
+              prev=dirNow;
+            }
+          }
           '@
           Set-Content -Path ".\tmp-demo10-exact-replay.mjs" -Value $script -Encoding UTF8
           node .\tmp-demo10-exact-replay.mjs
