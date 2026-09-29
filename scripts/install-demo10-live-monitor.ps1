@@ -194,7 +194,35 @@ try {
     if (!(Test-Path $BotRoot)) { throw "BINANCE_BOT_ROOT_MISSING" }
     if (!(Test-Path $DemoEnv)) { throw "DEMO10_TESTNET_ENV_MISSING" }
     foreach ($line in Get-Content $DemoEnv) {
-        if ($line -match '^([^#=]+)=(.*)
+        if ($line -match '^([^#=]+)=(.*)$') {
+            [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
+        }
+    }
+    $env:LIVEBOT_CANARY_APPROVED = "YES"
+    $env:DEMO10_TESTNET_APPROVED = "YES"
+    $env:DEMO10_TESTNET_PG_URL = $DemoPgUrl
+    $env:DEMO10_SIGNAL_PATH = Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json"
+    $env:DEMO10_TESTNET_NOTIONAL = "100"
+    $env:DEMO10_TESTNET_MAX_OPEN = "10"
+    $env:DEMO10_TESTNET_MAX_GROSS = "1000"
+    $env:DEMO10_TESTNET_STOP_FRACTION = "0.20"
+
+    Push-Location $BotRoot
+    try {
+        npm run demo10:testnet-once *>> $Log
+        $testnetExit = $LASTEXITCODE
+        if ($testnetExit -ne 0) { throw "DEMO10_TESTNET_EXECUTOR_EXIT_$testnetExit" }
+        $testnetReport = Join-Path $BotRoot "artifacts\demo10-testnet-latest.json"
+        if (!(Test-Path $testnetReport)) { throw "DEMO10_TESTNET_REPORT_MISSING" }
+        $t = Get-Content $testnetReport -Raw | ConvertFrom-Json
+        if ($t.result -ne "SUCCESS") { throw "DEMO10_TESTNET_RESULT_$($t.result)" }
+    }
+    finally {
+        Pop-Location
+    }
+
+    $s = Get-Content $newState -Raw | ConvertFrom-Json
+    $w = Get-Content (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") -Raw | ConvertFrom-Json
     $lines = @(
         "# DEMO-10 LIVE STATUS",
         "",
@@ -277,219 +305,6 @@ try {
     [System.IO.File]::WriteAllText((Join-Path $RuntimeRoot "latest.json"),$latest,[Text.UTF8Encoding]::new($false))
 
     Add-Content $Log "$(Get-Date -Format o) SUCCESS cohort=$($w.cohortId) fresh=$($w.counts.freshSignals) testnetOpen=$($t.summary.openPositions) shadowOpen=$($s.summary.openPositions)"
-    exit 0
-}
-catch {
-    $msg = $_.Exception.Message
-    Add-Content $Log "$(Get-Date -Format o) FAIL $msg"
-    Publish-Failure $msg
-    exit 1
-}
-finally {
-    try { $mutex.ReleaseMutex() } catch {}
-    $mutex.Dispose()
-}
-'@
-
-    [System.IO.File]::WriteAllText($runnerPath,$body,[Text.UTF8Encoding]::new($false))
-    return $runnerPath
-}
-
-function Install-Demo10Loop([string]$runnerPath) {
-    Write-Host "== Installing Demo-10 user-level 1-minute loop =="
-
-    $loopPath = Join-Path $RuntimeRoot "demo10-monitor-loop.ps1"
-    $loopBody = @'
-$ErrorActionPreference = "Continue"
-$RuntimeRoot = "C:\demo10-live"
-$OneCycle = Join-Path $RuntimeRoot "run-demo10-live.ps1"
-$Log = Join-Path $RuntimeRoot "logs\demo10-loop.log"
-$pidFile = Join-Path $RuntimeRoot "demo10-loop.pid"
-
-New-Item -ItemType Directory -Force (Split-Path $Log) | Out-Null
-[System.IO.File]::WriteAllText($pidFile,[string]$PID,[Text.UTF8Encoding]::new($false))
-
-try {
-    while ($true) {
-        $started = Get-Date
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $OneCycle
-        $code = $LASTEXITCODE
-        Add-Content $Log "$(Get-Date -Format o) cycle_exit=$code"
-        $elapsed = ((Get-Date) - $started).TotalSeconds
-        $sleep = [Math]::Max(1,[int](60 - $elapsed))
-        Start-Sleep -Seconds $sleep
-    }
-}
-finally {
-    Remove-Item $pidFile -Force -ErrorAction SilentlyContinue
-}
-'@
-    [System.IO.File]::WriteAllText($loopPath,$loopBody,[Text.UTF8Encoding]::new($false))
-
-    # User Startup folder gives reboot/login persistence without requiring Administrator
-    # or Task Scheduler registration rights.
-    $startup = [Environment]::GetFolderPath("Startup")
-    if (!(Test-Path $startup)) { New-Item -ItemType Directory -Force $startup | Out-Null }
-    $startupCmd = Join-Path $startup "Demo10LiveMonitor.cmd"
-    $cmd = "@echo off`r`nstart `"`" /min powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$loopPath`"`r`n"
-    [System.IO.File]::WriteAllText($startupCmd,$cmd,[Text.UTF8Encoding]::new($false))
-
-    # Stop an older copy owned by this user, if one exists.
-    Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -and $_.CommandLine -like "*demo10-monitor-loop.ps1*" } |
-        ForEach-Object {
-            try { Invoke-CimMethod -InputObject $_ -MethodName Terminate -ErrorAction Stop | Out-Null } catch {}
-        }
-
-    Remove-Item (Join-Path $RuntimeRoot "latest.json") -Force -ErrorAction SilentlyContinue
-
-    # GitHub Runner normally kills child processes when a job ends. Remove its tracking
-    # marker before starting this intentionally persistent local monitor.
-    $tracking = $env:RUNNER_TRACKING_ID
-    Remove-Item Env:RUNNER_TRACKING_ID -ErrorAction SilentlyContinue
-    try {
-        $proc = Start-Process powershell.exe -ArgumentList @(
-            "-NoProfile",
-            "-WindowStyle","Hidden",
-            "-ExecutionPolicy","Bypass",
-            "-File",$loopPath
-        ) -WindowStyle Hidden -PassThru
-    }
-    finally {
-        if ($tracking) { $env:RUNNER_TRACKING_ID = $tracking }
-    }
-
-    Start-Sleep -Seconds 2
-    if ($proc.HasExited) { throw "Demo-10 loop exited immediately with code $($proc.ExitCode)" }
-
-    Write-Host "DEMO10_LOOP_STARTED pid=$($proc.Id)"
-    Write-Host "DEMO10_STARTUP=$startupCmd"
-    return $loopPath
-}
-
-Stop-QRuntime
-Copy-RuntimeSource
-$runnerPath = Install-Demo10RunnerScript
-$loopPath = Install-Demo10Loop $runnerPath
-
-$deadline = (Get-Date).AddMinutes(3)
-$latest = Join-Path $RuntimeRoot "latest.json"
-do {
-    Start-Sleep -Seconds 5
-    if (Test-Path $latest) {
-        $item = Get-Item $latest
-        if ($item.LastWriteTime -gt (Get-Date).AddMinutes(-3)) { break }
-    }
-} while ((Get-Date) -lt $deadline)
-
-if (!(Test-Path $latest)) {
-    $log = Join-Path $LogRoot "demo10-live.log"
-    if (Test-Path $log) { Get-Content $log -Tail 120 }
-    throw "Demo-10 local monitor did not produce latest.json"
-}
-
-$status = Get-Content $latest -Raw | ConvertFrom-Json
-if ($status.cycleState -ne "SUCCESS") { throw "Demo-10 first cycle not successful" }
-
-$loopProc = Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
-    Where-Object { $_.CommandLine -and $_.CommandLine -like "*demo10-monitor-loop.ps1*" } |
-    Select-Object -First 1
-if (!$loopProc) { throw "Demo-10 persistent loop process not found after first cycle" }
-
-Write-Host "DEMO10_LOOP_OK pid=$($loopProc.ProcessId)"
-Write-Host "DEMO10_STARTUP_OK $([Environment]::GetFolderPath('Startup'))\Demo10LiveMonitor.cmd"
-Get-Content $latest
-
-Write-Host "DEMO10_LOCAL_LIVE_READY"
-) {
-            [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
-        }
-    }
-    $env:LIVEBOT_CANARY_APPROVED = "YES"
-    $env:DEMO10_TESTNET_APPROVED = "YES"
-    $env:DEMO10_TESTNET_PG_URL = $DemoPgUrl
-    $env:DEMO10_SIGNAL_PATH = Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json"
-    $env:DEMO10_TESTNET_NOTIONAL = "100"
-    $env:DEMO10_TESTNET_MAX_OPEN = "10"
-    $env:DEMO10_TESTNET_MAX_GROSS = "1000"
-    $env:DEMO10_TESTNET_STOP_FRACTION = "0.20"
-
-    Push-Location $BotRoot
-    try {
-        npm run demo10:testnet-once *>> $Log
-        $testnetExit = $LASTEXITCODE
-        if ($testnetExit -ne 0) { throw "DEMO10_TESTNET_EXECUTOR_EXIT_$testnetExit" }
-        $testnetReport = Join-Path $BotRoot "artifacts\demo10-testnet-latest.json"
-        if (!(Test-Path $testnetReport)) { throw "DEMO10_TESTNET_REPORT_MISSING" }
-        $t = Get-Content $testnetReport -Raw | ConvertFrom-Json
-        if ($t.result -ne "SUCCESS") { throw "DEMO10_TESTNET_RESULT_$($t.result)" }
-    }
-    finally {
-        Pop-Location
-    }
-
-    $s = Get-Content $newState -Raw | ConvertFrom-Json
-    $w = Get-Content (Join-Path $signalDir "CURRENT_SIGNAL_WATCHLIST.json") -Raw | ConvertFrom-Json
-
-    $lines = @(
-        "# DEMO-10 LIVE STATUS",
-        "",
-        "- scheduler_local: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss zzz")",
-        "- cycle_state: SUCCESS",
-        "- cohort: $($w.cohortId)",
-        "- mode: PAPER_SHADOW_ONLY",
-        "- real_orders: DISABLED",
-        "- cadence: 1 minute",
-        "- dataAvailable: $($w.dataAvailable)",
-        "- evaluated: $($w.counts.evaluated)",
-        "- freshSignals: $($w.counts.freshSignals)",
-        "- paperIntents: $($w.counts.paperIntents)",
-        "- openPositions: $($s.summary.openPositions)",
-        "- closedTrades: $($s.summary.closedTrades)",
-        "- winRate: $($s.summary.winRate)",
-        "- realizedPnlPerReferenceNotionalSum: $($s.summary.realizedPnlPerReferenceNotionalSum)",
-        "- unrealizedPnlPerReferenceNotionalSum: $($s.summary.unrealizedPnlPerReferenceNotionalSum)",
-        "",
-        "## 10 setup live state",
-        "",
-        "| Underlying | TF | Strategy | Direction | Signal state | Exec | Fresh | Age |",
-        "|---|---|---|---|---|---|---|---:|"
-    )
-
-    foreach($r in @($w.rows) | Sort-Object underlying){
-        $lines += "| $($r.underlying) | $($r.timeframe) | $($r.strategy) | $($r.direction) | $($r.status) | $($r.executionStatus) | $($r.fresh) | $($r.signalAgeBars) |"
-    }
-
-    $lines += @("","## Open paper positions","")
-    if (@($s.positions).Count -eq 0) {
-        $lines += "_None._"
-    } else {
-        $lines += "| Underlying | Dir | Contract | Strategy | TF | Entry | Mark | Net if closed |"
-        $lines += "|---|---|---|---|---|---:|---:|---:|"
-        foreach($p in @($s.positions) | Sort-Object underlying){
-            $lines += "| $($p.underlying) | $($p.direction) | $($p.executionContract) | $($p.leadStrategy) | $($p.leadTimeframe) | $($p.entryPrice) | $($p.markPrice) | $($p.unrealizedNetIfClosed) |"
-        }
-    }
-
-    $lines += @("","_Updated by the local 1-minute Demo-10 monitor._")
-
-    $bodyFile = Join-Path $env:TEMP "demo10-live-status.md"
-    [System.IO.File]::WriteAllLines($bodyFile,$lines,[Text.UTF8Encoding]::new($false))
-    gh issue edit $StatusIssue --repo $Repo --body-file $bodyFile | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw "STATUS_PUBLISH_FAILED" }
-
-    $latest = [ordered]@{
-        generatedAt = (Get-Date).ToUniversalTime().ToString("o")
-        cohortId = $w.cohortId
-        cycleState = "SUCCESS"
-        dataAvailable = $w.dataAvailable
-        counts = $w.counts
-        summary = $s.summary
-        positions = $s.positions
-    } | ConvertTo-Json -Depth 12
-    [System.IO.File]::WriteAllText((Join-Path $RuntimeRoot "latest.json"),$latest,[Text.UTF8Encoding]::new($false))
-
-    Add-Content $Log "$(Get-Date -Format o) SUCCESS cohort=$($w.cohortId) fresh=$($w.counts.freshSignals) open=$($s.summary.openPositions)"
     exit 0
 }
 catch {
