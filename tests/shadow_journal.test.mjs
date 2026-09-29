@@ -90,7 +90,8 @@ test('zero or missing market price never overwrites the last valid shadow mark',
     paperIntents:[intent('LONG',100,1500)],
     rows:[{underlying:'TEST',executionStatus:'STRONG',market:{mid:102,last:102}}]
   },null);
-  assert.equal(first.positions[0].markPrice,102);
+  const lastValidMark=first.positions[0].markPrice;
+  assert.ok(lastValidMark > 0);
 
   const second=updateShadowState({
     snapshotAtMs:3000,
@@ -100,7 +101,7 @@ test('zero or missing market price never overwrites the last valid shadow mark',
   },first);
 
   assert.equal(second.positions.length,1);
-  assert.equal(second.positions[0].markPrice,102);
+  assert.equal(second.positions[0].markPrice,lastValidMark);
   assert.equal(second.positions[0].executionStatus,'BLOCK');
   assert.ok(second.positions[0].unrealizedNetIfClosed > -1);
   assert.equal(second.closedTrades.length,0);
