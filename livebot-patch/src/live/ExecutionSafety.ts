@@ -300,6 +300,15 @@ export interface ReconcileSnapshot {
   positionRisk: any;
 }
 
+export interface ReconcileDiagnostics {
+  foreignClientOrderIds: string[];
+  foreignAlgoIds: string[];
+  expectedPosition: number;
+  exchangePosition: number;
+  positionMismatch: boolean;
+  unresolvedUnknown: boolean;
+}
+
 export class CanonicalReconciler {
   constructor(
     private adapter: BinanceUsdmAdapter,
@@ -309,7 +318,7 @@ export class CanonicalReconciler {
     private positionTolerance = 1e-9
   ) {}
 
-  async reconcile(symbol: 'QUSDT'): Promise<{ ok: boolean; halt: boolean; snapshot: ReconcileSnapshot }> {
+  async reconcile(symbol: 'QUSDT'): Promise<{ ok: boolean; halt: boolean; snapshot: ReconcileSnapshot; diagnostics: ReconcileDiagnostics }> {
     const remaining = this.inFlight.quiescenceRemainingMs(this.quiescenceMs);
     if (remaining > 0) await new Promise(resolve => setTimeout(resolve, remaining));
 
@@ -357,18 +366,19 @@ export class CanonicalReconciler {
       Math.abs(exchangePosition - expectedPosition) > this.positionTolerance;
 
     const snapshot = { openOrders, openAlgoOrders, positionRisk };
+    const diagnostics: ReconcileDiagnostics = {
+      foreignClientOrderIds: foreignOrders.map((x: any) => String(x.clientOrderId)),
+      foreignAlgoIds: foreignAlgo.map((x: any) => String(x.clientAlgoId ?? x.algoId)),
+      expectedPosition,
+      exchangePosition,
+      positionMismatch,
+      unresolvedUnknown,
+    };
     await this.journal.recordPositionSnapshot(symbol, positionRisk);
 
     if (foreignOrders.length || foreignAlgo.length || positionMismatch || unresolvedUnknown) {
-      await this.journal.appendEvent('RECONCILIATION_ERROR', symbol, {
-        foreignClientOrderIds: foreignOrders.map((x: any) => x.clientOrderId),
-        foreignAlgoIds: foreignAlgo.map((x: any) => x.clientAlgoId ?? x.algoId),
-        expectedPosition,
-        exchangePosition,
-        positionMismatch,
-        unresolvedUnknown,
-      });
-      return { ok: false, halt: true, snapshot };
+      await this.journal.appendEvent('RECONCILIATION_ERROR', symbol, diagnostics as unknown as Record<string, unknown>);
+      return { ok: false, halt: true, snapshot, diagnostics };
     }
 
     await this.journal.appendEvent('RECONCILE_OK', symbol, {
@@ -377,7 +387,7 @@ export class CanonicalReconciler {
       expectedPosition,
       exchangePosition,
     });
-    return { ok: true, halt: false, snapshot };
+    return { ok: true, halt: false, snapshot, diagnostics };
   }
 }
 
