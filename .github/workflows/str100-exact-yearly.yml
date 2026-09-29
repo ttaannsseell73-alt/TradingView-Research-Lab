@@ -38,7 +38,7 @@ jobs:
       - name: Resolve exact TradingView sources
         id: resolve
         run: |
-          python scripts/resolve-tradingview-exact-sources.py str100-exact-manifest.json --out-dir artifacts/str100-exact-audit
+          python scripts/resolve-tradingview-exact-sources.py str100-exact-manifest.json --out-dir artifacts/str100-exact-audit --min-pine-version 5
 
       - name: Upload source audit
         if: always()
@@ -103,6 +103,9 @@ jobs:
       DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
       EXACT_CHECKPOINT_ROOT: C:/actions-runner-datahub/str100-yearly-checkpoints
       LOCAL_PARALLEL_SHARDS: 4
+      TURBO_SHARD_TIMEOUT_MS: '900000'
+      TURBO_MAX_SHARD_RESTARTS: '40'
+      EXACT_SMOKE_BARS: '600'
       PINE_SOURCE_CACHE: C:/actions-runner-datahub/pine-source-cache
       EXACT_MIN_COVERAGE: '0.98'
       EXACT_MIN_HISTORY_DAYS: '30'
@@ -258,6 +261,7 @@ jobs:
               })
 
           strategies.sort(key=lambda r:(r["latestStrong"],r["twoYearRobust"],r["latestMedianNetPct"] or -1e99),reverse=True)
+          no_real_results = len(strategies) == 0
           report={
               "policy":{
                   "primaryWindow":"2025-09-28/2026-09-28",
@@ -266,6 +270,7 @@ jobs:
                   "strongTask":"full PASS + >=80% eligible monthly PASS + >=330 history days",
                   "firstPartialMonthExcluded":True,
               },
+              "status":"NO_REAL_RESULTS" if no_real_results else "OK",
               "strategies":strategies,
               "detail":detail,
           }
@@ -292,6 +297,10 @@ jobs:
           import json
           j=json.load(open("artifacts/str100-yearly-final/report.json",encoding="utf-8"))
           rows=j["strategies"]
+          if not rows:
+              print("STR100 Exact yearly FAILED: hiçbir gerçek task-results üretilmedi.")
+              print("Workflow teknik olarak bitmiş görünse bile sonuç yoksa PASS/SUCCESS sayılmayacak.")
+              raise SystemExit(3)
           print("STR100 Exact yearly tamamlandı.")
           print()
           print("- Son 12 ay birincil: **2025-09-28 → 2026-09-28**")
