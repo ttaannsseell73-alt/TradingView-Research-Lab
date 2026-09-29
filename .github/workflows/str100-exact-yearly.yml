@@ -300,8 +300,8 @@ jobs:
           if not rows:
               print("STR100 Exact yearly FAILED: hiçbir gerçek task-results üretilmedi.")
               print("Workflow teknik olarak bitmiş görünse bile sonuç yoksa PASS/SUCCESS sayılmayacak.")
-              raise SystemExit(3)
-          print("STR100 Exact yearly tamamlandı.")
+          else:
+              print("STR100 Exact yearly tamamlandı.")
           print()
           print("- Son 12 ay birincil: **2025-09-28 → 2026-09-28**")
           print("- Önceki 12 ay doğrulama: **2024-09-28 → 2025-09-28**")
@@ -313,3 +313,9 @@ jobs:
               print(f"- {r['name']}: latest={r['latestStrong']}, robust={r['twoYearRobust']}, current-only={r['currentOnly']}, stale={r['stale']}")
           PY
           gh issue comment "${{ github.event.issue.number }}" --body-file /tmp/summary.txt
+          python - <<'PY'
+          import json
+          j=json.load(open("artifacts/str100-yearly-final/report.json",encoding="utf-8"))
+          if not j.get("strategies"):
+              raise SystemExit("NO_REAL_RESULTS: task-results.ndjson bulunamadı")
+          PY
