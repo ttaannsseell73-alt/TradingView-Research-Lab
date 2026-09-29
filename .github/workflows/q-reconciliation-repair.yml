@@ -1,0 +1,151 @@
+name: Repair Q Reconciliation
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  repair:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[Q RECON REPAIR]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 20
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      PG_CONTAINER: canonical-q-demo-pg
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pause Q scheduler
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $task=Get-ScheduledTask -TaskName "QDemoForwardMonitor" -ErrorAction Stop
+          if($task.State -eq "Running"){
+            Stop-ScheduledTask -TaskName "QDemoForwardMonitor"
+            Start-Sleep -Seconds 2
+          }
+          Get-ScheduledTask -TaskName "QDemoForwardMonitor" | Format-List TaskName,State
+
+      - name: Install repaired reconciliation code locally
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $root=$env:BOT_ROOT
+          if(!(Test-Path "$root\.git")){ throw "Local binance-bot missing" }
+
+          New-Item -ItemType Directory -Force "$root\src\live" | Out-Null
+          New-Item -ItemType Directory -Force "$root\src\tools" | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\live\PostgresSafety.ts" "$root\src\live\PostgresSafety.ts" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\live\ExecutionSafety.ts" "$root\src\live\ExecutionSafety.ts" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\runQDemoForwardOnce.ts" "$root\src\tools\runQDemoForwardOnce.ts" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\repairQReconciliation.ts" "$root\src\tools\repairQReconciliation.ts" -Force
+
+          Push-Location $root
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['q:repair-reconciliation']='tsx src/tools/repairQReconciliation.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
+          npm run build
+          if($LASTEXITCODE -ne 0){ throw "Build failed" }
+          npx vitest run src/tests/live/CanonicalSafety.test.ts
+          if($LASTEXITCODE -ne 0){ throw "Canonical safety tests failed" }
+          Pop-Location
+
+      - name: Ensure persistent Q journal is ready
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          cmd /c "docker info >nul 2>&1"
+          if($LASTEXITCODE -ne 0){ throw "Docker unavailable" }
+          $running=docker ps --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
+          if(!$running){
+            $exists=docker ps -a --filter "name=^/$env:PG_CONTAINER$" --format "{{.Names}}"
+            if(!$exists){ throw "Q demo PostgreSQL container missing" }
+            docker start $env:PG_CONTAINER | Out-Null
+          }
+          docker exec $env:PG_CONTAINER pg_isready -U postgres -d livebot_demo
+          if($LASTEXITCODE -ne 0){ throw "Q demo PostgreSQL not ready" }
+
+      - name: Run guarded reconciliation repair
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $root=$env:BOT_ROOT
+          $localEnv=Join-Path $root ".q-forward.local.env"
+          if(!(Test-Path $localEnv)){ throw "Local Q environment file missing" }
+
+          foreach($line in Get-Content $localEnv){
+            if($line -match '^([^#=]+)=(.*)$'){
+              [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
+            }
+          }
+
+          Push-Location $root
+          npm run q:repair-reconciliation 2>&1 | Tee-Object "$env:RUNNER_TEMP\q-reconciliation-repair.log"
+          if($LASTEXITCODE -ne 0){ throw "Guarded reconciliation repair refused or failed" }
+          if(!(Test-Path "artifacts\q-reconciliation-repair.json")){ throw "Repair artifact missing" }
+          $repair=Get-Content "artifacts\q-reconciliation-repair.json" -Raw | ConvertFrom-Json
+          if($repair.finalReconcile.ok -ne $true -or $repair.finalReconcile.halt -eq $true){
+            throw "Final reconcile is not healthy"
+          }
+          Copy-Item "artifacts\q-reconciliation-repair.json" "$env:RUNNER_TEMP\q-reconciliation-repair.json" -Force
+          Pop-Location
+
+      - name: Commit repaired local runtime
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          Push-Location $env:BOT_ROOT
+          git add src/live/PostgresSafety.ts src/live/ExecutionSafety.ts src/tools/runQDemoForwardOnce.ts src/tools/repairQReconciliation.ts package.json dist
+          $staged=git diff --cached --name-only
+          if($staged){
+            git commit -m "fix: repair Q reconciliation ledger"
+            if($LASTEXITCODE -ne 0){ throw "Local repair commit failed" }
+          }
+          git rev-parse HEAD
+          Pop-Location
+
+      - name: Resume scheduler on normal cadence
+        if: success()
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          Enable-ScheduledTask -TaskName "QDemoForwardMonitor" | Out-Null
+          Get-ScheduledTask -TaskName "QDemoForwardMonitor" | Format-List TaskName,State
+          Get-ScheduledTaskInfo -TaskName "QDemoForwardMonitor" | Format-List LastRunTime,LastTaskResult,NextRunTime
+
+      - name: Publish repair evidence
+        if: success()
+        shell: powershell
+        run: |
+          $ErrorActionPreference="Stop"
+          $repair=Get-Content "$env:RUNNER_TEMP\q-reconciliation-repair.json" -Raw | ConvertFrom-Json
+          $body=@(
+            "## Q reconciliation repair PASS",
+            "",
+            "- result: $($repair.result)",
+            "- expectedBefore: $($repair.precheck.expectedBefore)",
+            "- exchangePosition: $($repair.precheck.exchangePosition)",
+            "- entryPrice: $($repair.precheck.exchangeEntryPrice)",
+            "- adjustmentDelta: $($repair.adjustment.quantityDelta)",
+            "- expectedAfter: $($repair.expectedAfter)",
+            "- finalReconcile.ok: $($repair.finalReconcile.ok)",
+            "- finalReconcile.halt: $($repair.finalReconcile.halt)",
+            "",
+            "No exchange order was placed or cancelled by this repair workflow."
+          ) -join [Environment]::NewLine
+          gh issue comment $env:ISSUE_NUMBER --repo $env:REPO --body $body | Out-Null
+
+      - name: Resume scheduler after failed repair
+        if: failure()
+        shell: powershell
+        run: |
+          Enable-ScheduledTask -TaskName "QDemoForwardMonitor" -ErrorAction SilentlyContinue | Out-Null
+          Write-Host "Repair refused/failed; no ledger adjustment is assumed."
