@@ -1,0 +1,68 @@
+name: Demo-11 Canonical Read-Only Shadow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [demo11-canonical-rebuild]
+    paths:
+      - '.github/workflows/demo11-canonical-shadow.yml'
+      - 'research/demo11/**'
+      - 'research/tradability_policy_v2.json'
+      - 'scripts/build-demo11-shadow.mjs'
+      - 'tests/demo11_*.test.mjs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demo11-canonical-readonly-shadow
+  cancel-in-progress: true
+
+jobs:
+  shadow:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 12
+    env:
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Canonical contract tests
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --test tests/demo11_*.test.mjs
+
+      - name: Read public market and closed candles
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & $env:DATAHUB_PYTHON scripts/fetch-live-market-snapshot.py research/demo_cohort_10.json artifacts/demo11/live-market.json
+          node scripts/build-execution-watchlist.mjs research/demo_cohort_10.json artifacts/demo11/live-market.json research/tradability_policy.json artifacts/demo11/execution
+          & $env:DATAHUB_PYTHON scripts/fetch-current-candles.py research/demo_cohort_10.json artifacts/demo11/execution/EXECUTION_WATCHLIST.json artifacts/demo11/candles
+
+      - name: Build Demo-11 canonical shadow evidence
+        shell: powershell
+        env:
+          DEMO11_SHADOW_REFERENCE_NOTIONAL: '100'
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/build-demo11-shadow.mjs research/demo_cohort_10.json artifacts/demo11/execution/EXECUTION_WATCHLIST.json artifacts/demo11/candles artifacts/demo11/canonical-shadow research/tradability_policy_v2.json
+
+      - name: Print census
+        shell: powershell
+        run: |
+          $d = Get-Content artifacts/demo11/canonical-shadow/DEMO11_CANONICAL_SHADOW.json -Raw | ConvertFrom-Json
+          $d.counts | ConvertTo-Json -Compress
+          $d.rows | Select-Object underlying,symbol,timeframe,strategy,status,@{N='direction';E={$_.signal.direction}},@{N='transitionFresh';E={$_.signal.transitionFresh}},@{N='decision';E={$_.execution_decision.verdict}},@{N='reason';E={$_.execution_decision.reason}} | Format-Table -AutoSize
+
+      - name: Upload read-only evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo11-canonical-readonly-shadow
+          path: artifacts/demo11/
+          if-no-files-found: error
+          retention-days: 90
