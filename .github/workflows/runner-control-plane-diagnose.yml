@@ -1,0 +1,25 @@
+name: Runner Control Plane Diagnose
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/runner-control-plane-diagnose.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect repository runners
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$REPO/actions/runners"             --jq '.runners[] | {id,name,os,status,busy,labels:[.labels[].name]}'
