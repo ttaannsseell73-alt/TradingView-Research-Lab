@@ -57,8 +57,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = "Stop"
-          $body = gh issue view 150 --repo $env:GITHUB_REPOSITORY --json body --jq .body
-          if ($body -notmatch 'cycle_state: SUCCESS') { throw "Demo-10 live status is not SUCCESS" }
-          if ($body -notmatch 'cohort: demo-10-forward-v2') { throw "Wrong Demo-10 cohort in live status" }
-          if ($body -notmatch 'real_orders: DISABLED') { throw "Demo-10 real-order guard missing" }
-          $body
+          $deadline = (Get-Date).AddMinutes(1)
+          do {
+            $body = gh api "repos/$env:GITHUB_REPOSITORY/issues/150" --jq .body
+            if (
+              $LASTEXITCODE -eq 0 -and
+              $body -match 'cycle_state:\s*SUCCESS' -and
+              $body -match 'cohort:\s*demo-10-forward-v2' -and
+              $body -match 'real_orders:\s*DISABLED' -and
+              $body -match 'evaluated:\s*10'
+            ) {
+              $body
+              Write-Host "DEMO10_STATUS_VERIFIED"
+              exit 0
+            }
+            Start-Sleep -Seconds 3
+          } while ((Get-Date) -lt $deadline)
+          throw "Demo-10 canonical live status did not become current within verification window"
