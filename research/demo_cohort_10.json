@@ -293,5 +293,20 @@
         }
       ]
     }
-  ]
+  ],
+  "proximityPreview": {
+    "enabled": true,
+    "scope": "ALL_SELECTED_CANDIDATES",
+    "displayScope": "TESTNET_TRADABLE",
+    "scoreRange": "0-100",
+    "classes": {
+      "100": "TETIK_WAIT_CLOSE",
+      "0-29": "UZAK",
+      "30-59": "ORTA",
+      "60-79": "YAKIN",
+      "80-99": "COK_YAKIN"
+    },
+    "executionAuthority": false,
+    "note": "Preview uses current/open candle mechanics only; execution still requires confirmed closed-candle FRESH_ENTRY."
+  }
 }
