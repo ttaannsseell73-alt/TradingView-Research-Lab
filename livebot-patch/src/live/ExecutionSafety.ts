@@ -255,7 +255,7 @@ export class ProtectionManager {
   ) {}
 
   async ensureCatastrophicStop(args: {
-    symbol: 'QUSDT';
+    symbol: string;
     positionSide: 'LONG' | 'SHORT';
     triggerPrice: string;
     positionIdentity: string;
@@ -318,14 +318,22 @@ export class CanonicalReconciler {
     private positionTolerance = 1e-9
   ) {}
 
-  async reconcile(symbol: 'QUSDT'): Promise<{ ok: boolean; halt: boolean; snapshot: ReconcileSnapshot; diagnostics: ReconcileDiagnostics }> {
+  async reconcile(symbol: string): Promise<{ ok: boolean; halt: boolean; snapshot: ReconcileSnapshot; diagnostics: ReconcileDiagnostics }> {
     const remaining = this.inFlight.quiescenceRemainingMs(this.quiescenceMs);
     if (remaining > 0) await new Promise(resolve => setTimeout(resolve, remaining));
 
     // Resolve all PROCESSING outbox rows by deterministic clientOrderId before
     // concluding anything from account snapshots. PENDING rows were never sent.
-    const unresolved = await this.journal.unresolvedOutbox();
-    let unresolvedUnknown = false;
+    const unresolved = (await this.journal.unresolvedOutbox()).filter(
+      x => String((x.payload as any)?.symbol ?? '') === symbol
+    );
+    let unresolvedUnknown = unresolved.some(x => x.status === 'PENDING');
+    for (const row of unresolved.filter(x => x.status === 'PENDING')) {
+      await this.journal.appendEvent('OUTBOX_PENDING_UNSENT', row.intentId, {
+        symbol,
+        outboxId: row.outboxId,
+      });
+    }
     for (const row of unresolved.filter(x => x.status === 'PROCESSING')) {
       const order = await this.adapter.getOrderByClientId(symbol, row.intentId);
       if (order) {
