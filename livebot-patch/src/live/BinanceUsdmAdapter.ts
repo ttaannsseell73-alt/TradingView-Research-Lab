@@ -44,6 +44,32 @@ export class BinanceUsdmAdapter {
     this.governor?.observeHeaders(response.headers as Record<string, unknown>);
   }
 
+  private safeSignedError(error: any, path: string, method: string): any {
+    const status = Number(error?.response?.status ?? 0) || undefined;
+    const exchangeCode = error?.response?.data?.code;
+    const exchangeMessage = error?.response?.data?.msg;
+    const message = [
+      `BINANCE_SIGNED_${method}_FAILED`,
+      path,
+      status ? `HTTP_${status}` : null,
+      exchangeCode !== undefined ? `CODE_${exchangeCode}` : null,
+      exchangeMessage ? String(exchangeMessage) : String(error?.message ?? 'UNKNOWN_ERROR'),
+    ].filter(Boolean).join(' ');
+    const safe: any = new Error(message);
+    safe.name = error?.name ?? 'BinanceSignedRequestError';
+    safe.code = error?.code;
+    safe.response = {
+      status,
+      statusText: error?.response?.statusText,
+      headers: {
+        'retry-after': error?.response?.headers?.['retry-after'],
+        'x-mbx-used-weight-1m': error?.response?.headers?.['x-mbx-used-weight-1m'],
+      },
+      data: error?.response?.data,
+    };
+    return safe;
+  }
+
   private async publicGet<T = any>(path: string, config: any = {}): Promise<AxiosResponse<T>> {
     let lastError: any;
     for (let attempt = 1; attempt <= 3; attempt++) {
@@ -128,12 +154,12 @@ export class BinanceUsdmAdapter {
           attempt < maxAttempts &&
           status !== 418 &&
           (status === 429 || !status || status >= 500);
-        if (!retryableRead) throw error;
+        if (!retryableRead) throw this.safeSignedError(error, path, method);
         const waitMs = status === 429 ? Math.max(1, retryAfter) * 1000 : attempt * 300;
         await new Promise(resolve => setTimeout(resolve, waitMs));
       }
     }
-    throw lastError;
+    throw this.safeSignedError(lastError, path, method);
   }
 
   async serverTime(): Promise<number> {
