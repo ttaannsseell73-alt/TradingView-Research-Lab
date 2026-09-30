@@ -119,6 +119,7 @@ jobs:
             "- canonical_DEFER: $($s.canonicalDefer)",
             "- canonical_REJECT: $($s.canonicalReject)",
             "- bridge_fresh_actions: $($s.bridgeFreshActions)",
+            "- bridge_catchup_actions: $($s.bridgeCatchupActions)",
             "- testnet_result: $($s.testnetResult)",
             "- open_testnet_positions: $($s.testnetSummary.openPositions)",
             "- open_shadow_positions: $($s.testnetSummary.shadowOpenPositions)",
