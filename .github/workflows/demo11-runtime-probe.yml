@@ -65,6 +65,21 @@ jobs:
 
           Write-Host "=== DEMO11 EXCHANGE AUDIT ==="
           $bot="C:\Users\TANSEL\Desktop\binance-bot"
+          $envFile=Join-Path $bot ".demo11-testnet.local.env"
+          if(!(Test-Path $envFile)){ throw "DEMO11_TESTNET_ENV_MISSING" }
+          foreach($line in Get-Content $envFile){
+            if($line -match '^([^#=]+)=(.*)
+          try {
+            npx tsx src/tools/auditDemo11Exchange.ts
+            if($LASTEXITCODE -ne 0){ throw "DEMO11_EXCHANGE_AUDIT_FAILED" }
+          } finally {
+            Pop-Location
+          }
+){
+              [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
+            }
+          }
+          $env:BINANCE_FUTURES_URL="https://testnet.binancefuture.com"
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\auditDemo11Exchange.ts" "$bot\src\tools\auditDemo11Exchange.ts" -Force
           Push-Location $bot
           try {
