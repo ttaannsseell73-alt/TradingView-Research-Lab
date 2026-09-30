@@ -22,10 +22,20 @@ $runner = Join-Path $InstallRoot "run-demo11-local-shadow.ps1"
 Copy-Item (Join-Path $SourceRoot "scripts\run-demo11-local-shadow.ps1") $runner -Force
 
 
-$pythonExe = if ($env:pythonLocation) { Join-Path $env:pythonLocation "python.exe" } else { $null }
-if (!$pythonExe -or !(Test-Path $pythonExe)) { throw "SETUP_PYTHON_RUNTIME_MISSING" }
-& $pythonExe -E -c "import sys; print(sys.executable)" | Out-Host
-if ($LASTEXITCODE -ne 0) { throw "SETUP_PYTHON_RUNTIME_BROKEN" }
+$runtimeRoot = Join-Path $InstallRoot "runtime"
+$pythonRoot = Join-Path $runtimeRoot "python312"
+$pythonExe = Join-Path $pythonRoot "python.exe"
+if (!(Test-Path $pythonExe)) {
+  New-Item -ItemType Directory -Force $pythonRoot | Out-Null
+  $zip = Join-Path $runtimeRoot "python-3.12.10-embed-amd64.zip"
+  $uri = "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip"
+  Invoke-WebRequest -Uri $uri -OutFile $zip -UseBasicParsing
+  Expand-Archive -LiteralPath $zip -DestinationPath $pythonRoot -Force
+  Remove-Item $zip -Force -ErrorAction SilentlyContinue
+}
+if (!(Test-Path $pythonExe)) { throw "PORTABLE_PYTHON_RUNTIME_MISSING" }
+& $pythonExe -E -c "import sys, json, urllib.request; print(sys.executable)"
+if ($LASTEXITCODE -ne 0) { throw "PORTABLE_PYTHON_RUNTIME_BROKEN" }
 
 $nodeCmd = Get-Command node.exe -ErrorAction Stop
 $nodeExe = $nodeCmd.Source
