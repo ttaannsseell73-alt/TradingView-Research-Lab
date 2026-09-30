@@ -8,6 +8,7 @@ $Status = Join-Path $Art "DEMO11_TESTNET_STATUS.json"
 $Canonical = Join-Path $Art "canonical-shadow\DEMO11_CANONICAL_SHADOW.json"
 $Bridge = Join-Path $Art "testnet-bridge\DEMO11_TESTNET_SIGNAL.json"
 $Evidence = Join-Path $Art "persistent-shadow\DEMO11_EVIDENCE_STATE.json"
+$Cooldown = Join-Path $Art "testnet-cooldown.json"
 $RuntimePath = Join-Path $Root "testnet-runtime.json"
 $DemoEnv = Join-Path $BotRoot ".demo11-testnet.local.env"
 $PgUrl = "postgres://postgres:demo11_testnet_pw@127.0.0.1:55442/demo11_testnet"
@@ -49,6 +50,63 @@ try {
   if ($bridgeDoc.cohortId -ne "demo-11-canonical-v1") { throw "DEMO11_BRIDGE_COHORT_MISMATCH" }
   if ($bridgeDoc.productionOrders -ne $false) { throw "DEMO11_BRIDGE_PRODUCTION_FLAG_INVALID" }
 
+  $prior = $null
+  $priorCycles = 0
+  if (Test-Path $Status) {
+    try {
+      $prior = Get-Content $Status -Raw | ConvertFrom-Json
+      $priorCycles = [int]$prior.cycles
+    } catch {}
+  }
+
+  if (Test-Path $Cooldown) {
+    try {
+      $cd = Get-Content $Cooldown -Raw | ConvertFrom-Json
+      $cooldownUntil = [DateTimeOffset]::Parse([string]$cd.until)
+      if ([DateTimeOffset]::UtcNow -lt $cooldownUntil.ToUniversalTime()) {
+        $freshActions = @($bridgeDoc.rows | Where-Object { $_.fresh -eq $true }).Count
+        $summary = if ($prior -and $prior.testnetSummary) { $prior.testnetSummary } else {
+          [pscustomobject]@{
+            openPositions=0; shadowOpenPositions=0; shadowOpenedThisCycle=0; shadowClosedThisCycle=0;
+            foreignOrLegacyOpenPositions=0; openedProtected=0; reconciliationHalts=0
+          }
+        }
+        $symbols = if ($prior -and $prior.symbolResults) { @($prior.symbolResults) } else { @() }
+        $cooldownDoc = [ordered]@{
+          schemaVersion=1
+          updatedAt=(Get-Date).ToUniversalTime().ToString("o")
+          state="COOLDOWN"
+          mode="BINANCE_USDM_TESTNET"
+          testnetOrders=$true
+          productionOrders=$false
+          cycles=$priorCycles + 1
+          canonicalGeneratedAt=$canonicalDoc.generatedAt
+          canonicalEvaluated=[int]$canonicalDoc.counts.evaluated
+          canonicalTransitions=[int]$canonicalDoc.counts.transitions
+          canonicalAllow=[int]$canonicalDoc.counts.allow
+          canonicalDefer=[int]$canonicalDoc.counts.defer
+          canonicalReject=[int]$canonicalDoc.counts.reject
+          bridgeFreshActions=$freshActions
+          bridgeCatchupActions=if ($null -ne $bridgeDoc.catchupActions) { [int]$bridgeDoc.catchupActions } else { 0 }
+          testnetResult="RATE_LIMIT_COOLDOWN"
+          cooldownUntil=$cooldownUntil.ToUniversalTime().ToString("o")
+          cooldownReason=[string]$cd.reason
+          testnetSummary=$summary
+          testnetPositions=if ($prior) { $prior.testnetPositions } else { @() }
+          foreignOrLegacyPositions=if ($prior) { $prior.foreignOrLegacyPositions } else { @() }
+          symbolResults=$symbols
+        }
+        $tmp = "$Status.tmp"
+        $cooldownDoc | ConvertTo-Json -Depth 12 | Set-Content $tmp -Encoding UTF8
+        Move-Item $tmp $Status -Force
+        return
+      }
+      Remove-Item $Cooldown -Force -ErrorAction SilentlyContinue
+    } catch {
+      Remove-Item $Cooldown -Force -ErrorAction SilentlyContinue
+    }
+  }
+
   foreach ($line in Get-Content $DemoEnv) {
     if ($line -match '^([^#=]+)=(.*)$') {
       [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
@@ -64,24 +122,84 @@ try {
   $env:DEMO11_TESTNET_MAX_GROSS = "1000"
   $env:DEMO11_TESTNET_STOP_FRACTION = "0.20"
 
+  $rateLimited = $false
+  $rateLimitReason = $null
+  $rateLimitUntil = $null
   Push-Location $BotRoot
   try {
     $savedEap = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
-    & $NpmCmd run demo11:testnet-once *>> $Log
+    $execOutput = @(& $NpmCmd run demo11:testnet-once 2>&1)
     $execExit = $LASTEXITCODE
+    $execOutput | Add-Content $Log
     $ErrorActionPreference = $savedEap
-    if ($execExit -ne 0) { throw "DEMO11_TESTNET_EXECUTOR_EXIT_$execExit" }
-    $reportPath = Join-Path $BotRoot "artifacts\demo11-testnet-latest.json"
-    if (!(Test-Path $reportPath)) { throw "DEMO11_TESTNET_REPORT_MISSING" }
-    $report = Get-Content $reportPath -Raw | ConvertFrom-Json
-    if ($report.result -notin @("SUCCESS","SKIP_NOT_LEADER")) { throw "DEMO11_TESTNET_RESULT_$($report.result)" }
+    if ($execExit -ne 0) {
+      $execText = ($execOutput | Out-String)
+      if ($execText -match 'HTTP_418' -or $execText -match 'CODE_-1003') {
+        $rateLimited = $true
+        $rateLimitReason = "BINANCE_HTTP_418_-1003"
+        $rateLimitUntil = [DateTimeOffset]::UtcNow.AddMinutes(5)
+      } elseif ($execText -match 'HTTP_429') {
+        $rateLimited = $true
+        $rateLimitReason = "BINANCE_HTTP_429"
+        $rateLimitUntil = [DateTimeOffset]::UtcNow.AddMinutes(2)
+      } else {
+        throw "DEMO11_TESTNET_EXECUTOR_EXIT_$execExit"
+      }
+    }
+    if (!$rateLimited) {
+      $reportPath = Join-Path $BotRoot "artifacts\demo11-testnet-latest.json"
+      if (!(Test-Path $reportPath)) { throw "DEMO11_TESTNET_REPORT_MISSING" }
+      $report = Get-Content $reportPath -Raw | ConvertFrom-Json
+      if ($report.result -notin @("SUCCESS","SKIP_NOT_LEADER")) { throw "DEMO11_TESTNET_RESULT_$($report.result)" }
+    }
   } finally { Pop-Location }
 
-  $priorCycles = 0
-  if (Test-Path $Status) {
-    try { $priorCycles = [int]((Get-Content $Status -Raw | ConvertFrom-Json).cycles) } catch {}
+  if ($rateLimited) {
+    [ordered]@{
+      until=$rateLimitUntil.ToUniversalTime().ToString("o")
+      reason=$rateLimitReason
+      createdAt=[DateTimeOffset]::UtcNow.ToString("o")
+    } | ConvertTo-Json | Set-Content $Cooldown -Encoding UTF8
+
+    $freshActions = @($bridgeDoc.rows | Where-Object { $_.fresh -eq $true }).Count
+    $summary = if ($prior -and $prior.testnetSummary) { $prior.testnetSummary } else {
+      [pscustomobject]@{
+        openPositions=0; shadowOpenPositions=0; shadowOpenedThisCycle=0; shadowClosedThisCycle=0;
+        foreignOrLegacyOpenPositions=0; openedProtected=0; reconciliationHalts=0
+      }
+    }
+    $cooldownDoc = [ordered]@{
+      schemaVersion=1
+      updatedAt=(Get-Date).ToUniversalTime().ToString("o")
+      state="COOLDOWN"
+      mode="BINANCE_USDM_TESTNET"
+      testnetOrders=$true
+      productionOrders=$false
+      cycles=$priorCycles + 1
+      canonicalGeneratedAt=$canonicalDoc.generatedAt
+      canonicalEvaluated=[int]$canonicalDoc.counts.evaluated
+      canonicalTransitions=[int]$canonicalDoc.counts.transitions
+      canonicalAllow=[int]$canonicalDoc.counts.allow
+      canonicalDefer=[int]$canonicalDoc.counts.defer
+      canonicalReject=[int]$canonicalDoc.counts.reject
+      bridgeFreshActions=$freshActions
+      bridgeCatchupActions=if ($null -ne $bridgeDoc.catchupActions) { [int]$bridgeDoc.catchupActions } else { 0 }
+      testnetResult="RATE_LIMIT_COOLDOWN"
+      cooldownUntil=$rateLimitUntil.ToUniversalTime().ToString("o")
+      cooldownReason=$rateLimitReason
+      testnetSummary=$summary
+      testnetPositions=if ($prior) { $prior.testnetPositions } else { @() }
+      foreignOrLegacyPositions=if ($prior) { $prior.foreignOrLegacyPositions } else { @() }
+      symbolResults=if ($prior -and $prior.symbolResults) { @($prior.symbolResults) } else { @() }
+    }
+    $tmp = "$Status.tmp"
+    $cooldownDoc | ConvertTo-Json -Depth 12 | Set-Content $tmp -Encoding UTF8
+    Move-Item $tmp $Status -Force
+    Add-Content $Log "$(Get-Date -Format o) COOLDOWN=$rateLimitReason UNTIL=$($rateLimitUntil.ToString('o'))"
+    return
   }
+
   $freshActions = @($bridgeDoc.rows | Where-Object { $_.fresh -eq $true }).Count
   $statusDoc = [ordered]@{
     schemaVersion = 1
