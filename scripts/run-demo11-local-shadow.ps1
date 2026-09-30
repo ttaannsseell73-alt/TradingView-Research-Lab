@@ -4,31 +4,33 @@ $Root = "C:\Users\TANSEL\Desktop\Demo11-Shadow"
 $Art = Join-Path $Root "artifacts\demo11"
 $Log = Join-Path $Art "local-shadow.log"
 $Status = Join-Path $Art "DEMO11_LOCAL_STATUS.json"
+$env:PYTHONHOME = $null
+$env:PYTHONPATH = $null
 $PythonExe = $null
 $PythonPrefix = @()
 
 function Resolve-Demo11Python {
   $py = Get-Command py.exe -ErrorAction SilentlyContinue
   if ($py) {
-    & $py.Source -3.12 -c "import sys; assert sys.version_info[:2] >= (3, 12); print(sys.executable)" *> $null
+    & $py.Source -3.12 -E -c "import sys; assert sys.version_info[:2] >= (3, 12); print(sys.executable)" *> $null
     if ($LASTEXITCODE -eq 0) {
-      return [pscustomobject]@{ Exe = $py.Source; Prefix = @("-3.12") }
+      return [pscustomobject]@{ Exe = $py.Source; Prefix = @("-3.12","-E") }
     }
   }
 
   $python = Get-Command python.exe -ErrorAction SilentlyContinue
   if ($python) {
-    & $python.Source -c "import sys; assert sys.version_info[:2] >= (3, 10); print(sys.executable)" *> $null
+    & $python.Source -E -c "import sys; assert sys.version_info[:2] >= (3, 10); print(sys.executable)" *> $null
     if ($LASTEXITCODE -eq 0) {
-      return [pscustomobject]@{ Exe = $python.Source; Prefix = @() }
+      return [pscustomobject]@{ Exe = $python.Source; Prefix = @("-E") }
     }
   }
 
   $legacy = "C:\actions-runner-datahub\.venv-datahub\Scripts\python.exe"
   if (Test-Path $legacy) {
-    & $legacy -c "import sys; print(sys.executable)" *> $null
+    & $legacy -E -c "import sys; print(sys.executable)" *> $null
     if ($LASTEXITCODE -eq 0) {
-      return [pscustomobject]@{ Exe = $legacy; Prefix = @() }
+      return [pscustomobject]@{ Exe = $legacy; Prefix = @("-E") }
     }
   }
 
