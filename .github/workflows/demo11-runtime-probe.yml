@@ -1,6 +1,3 @@
-# exchange-audit-retry 1790788384733
-# live status refresh 1790779533641
-# probe refresh: verify current Demo-11 TESTNET runtime after installer failure
 name: Demo-11 Runtime Probe
 
 on:
@@ -23,15 +20,21 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Read Demo-11 local runtime without exchange writes
+
+      - name: Read Demo-11 runtime and audit ledger/exchange
         shell: powershell
         run: |
           $ErrorActionPreference = "Stop"
           $root="C:\Users\TANSEL\Desktop\Demo11-Shadow"
+          $bot="C:\Users\TANSEL\Desktop\binance-bot"
+
           Write-Host "PROBE_AT=$(Get-Date -Format o)"
           Write-Host "=== PROCESSES ==="
           Get-CimInstance Win32_Process | Where-Object {
-            $_.CommandLine -and ($_.CommandLine -match 'run-demo11-local-loop\.ps1' -or $_.CommandLine -match 'run-demo11-testnet-loop\.ps1')
+            $_.CommandLine -and (
+              $_.CommandLine -match 'run-demo11-local-loop\.ps1' -or
+              $_.CommandLine -match 'run-demo11-testnet-loop\.ps1'
+            )
           } | Select-Object ProcessId,Name,CreationDate,CommandLine | Format-List
 
           foreach($rel in @(
@@ -43,8 +46,8 @@ jobs:
             $p=Join-Path $root $rel
             Write-Host "=== FILE $rel ==="
             if(Test-Path $p){
-              $f=Get-Item $p
-              Write-Host "LAST_WRITE=$($f.LastWriteTime.ToString('o')) SIZE=$($f.Length)"
+              $item=Get-Item $p
+              Write-Host "LAST_WRITE=$($item.LastWriteTime.ToString('o')) SIZE=$($item.Length)"
               Get-Content $p -Raw
             } else {
               Write-Host "MISSING"
@@ -53,10 +56,10 @@ jobs:
 
           Write-Host "=== DEMO11 FILL LEDGER AUDIT ==="
           $pg="canonical-demo11-testnet-pg"
-          $running = docker ps --filter "name=^/$pg$" --format "{{.Names}}"
+          $running=docker ps --filter "name=^/$pg$" --format "{{.Names}}"
           if($running){
             docker exec $pg psql -U postgres -d demo11_testnet -P pager=off -c "SELECT COUNT(*) AS total_fills, COUNT(*) FILTER (WHERE event_time >= 1790726400000) AS metric_fills FROM live_fills;"
-            docker exec $pg psql -U postgres -d demo11_testnet -P pager=off -c "SELECT symbol, side, COUNT(*) AS fills, ROUND(SUM(quantity)::numeric,8) AS qty, MIN(event_time) AS first_ms, MAX(event_time) AS last_ms FROM live_fills WHERE event_time >= 1790726400000 GROUP BY symbol,side ORDER BY symbol,side;"
+            docker exec $pg psql -U postgres -d demo11_testnet -P pager=off -c "SELECT symbol,side,COUNT(*) AS fills,ROUND(SUM(quantity)::numeric,8) AS qty,MIN(event_time) AS first_ms,MAX(event_time) AS last_ms FROM live_fills WHERE event_time >= 1790726400000 GROUP BY symbol,side ORDER BY symbol,side;"
             docker exec $pg psql -U postgres -d demo11_testnet -P pager=off -c "SELECT symbol,side,fill_price,quantity,event_time,fill_id,intent_id FROM live_fills WHERE event_time >= 1790726400000 ORDER BY event_time,fill_id LIMIT 200;"
             docker exec $pg psql -U postgres -d demo11_testnet -P pager=off -c "SELECT event_type,COUNT(*) AS n FROM live_events WHERE created_at >= TIMESTAMPTZ '2026-09-30 00:00:00+00' GROUP BY event_type ORDER BY event_type;"
           } else {
@@ -64,18 +67,10 @@ jobs:
           }
 
           Write-Host "=== DEMO11 EXCHANGE AUDIT ==="
-          $bot="C:\Users\TANSEL\Desktop\binance-bot"
           $envFile=Join-Path $bot ".demo11-testnet.local.env"
           if(!(Test-Path $envFile)){ throw "DEMO11_TESTNET_ENV_MISSING" }
           foreach($line in Get-Content $envFile){
-            if($line -match '^([^#=]+)=(.*)
-          try {
-            npx tsx src/tools/auditDemo11Exchange.ts
-            if($LASTEXITCODE -ne 0){ throw "DEMO11_EXCHANGE_AUDIT_FAILED" }
-          } finally {
-            Pop-Location
-          }
-){
+            if($line -match '^([^#=]+)=(.*)$'){
               [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
             }
           }
