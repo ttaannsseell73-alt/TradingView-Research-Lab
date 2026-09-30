@@ -1,0 +1,143 @@
+name: Install Demo-11 Local Read-Only Shadow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [demo11-canonical-rebuild]
+    paths:
+      - '.github/workflows/demo11-local-shadow-install.yml'
+      - 'scripts/install-demo11-local-shadow.ps1'
+      - 'scripts/run-demo11-local-shadow.ps1'
+      - 'scripts/run-demo11-persistent-shadow.mjs'
+      - 'research/demo11/**'
+      - 'research/tradability_policy_v2.json'
+      - 'docs/demo11/status-ping.txt'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: demo11-local-shadow-install
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate collector and PowerShell syntax
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --test tests/demo11_evidence_state.test.mjs
+          node --check scripts/run-demo11-persistent-shadow.mjs
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE\scripts\run-demo11-local-shadow.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if (@($errors).Count -gt 0) { $errors | ForEach-Object { Write-Error $_.Message }; throw "DEMO11_RUNNER_PARSE_FAILED" }
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE\scripts\install-demo11-local-shadow.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if (@($errors).Count -gt 0) { $errors | ForEach-Object { Write-Error $_.Message }; throw "DEMO11_INSTALLER_PARSE_FAILED" }
+
+  install:
+    needs: validate
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate collector and installer
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --test tests/demo11_evidence_state.test.mjs
+          node --check scripts/run-demo11-persistent-shadow.mjs
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE\scripts\run-demo11-local-shadow.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if (@($errors).Count -gt 0) { throw "DEMO11_RUNNER_PARSE_FAILED" }
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE\scripts\install-demo11-local-shadow.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if (@($errors).Count -gt 0) { throw "DEMO11_INSTALLER_PARSE_FAILED" }
+
+      - name: Install one-minute read-only local collector
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & "$env:GITHUB_WORKSPACE\scripts\install-demo11-local-shadow.ps1"
+
+      - name: Publish current local status
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $p = "C:\Users\TANSEL\Desktop\Demo11-Shadow\artifacts\demo11\DEMO11_LOCAL_STATUS.json"
+          $s = Get-Content $p -Raw | ConvertFrom-Json
+          $coverage = if (@($s.decisionCoverage).Count) { @($s.decisionCoverage) -join ", " } else { "none" }
+          $lines = @(
+            "# Demo-11 Live Evidence Status",
+            "",
+            "- updatedAt: $($s.generatedAt)",
+            "- mode: READ_ONLY_SHADOW",
+            "- exchangeWrites: false",
+            "- loop: Demo11ReadOnlyShadow",
+            "- cycles: $($s.cycles)",
+            "- decisionCoverage: $coverage",
+            "",
+            "## Latest cycle",
+            "",
+            "- evaluated: $($s.latestCycle.evaluated) / $($s.latestCycle.expected)",
+            "- notEvaluated: $($s.latestCycle.notEvaluated)",
+            "- rawFreshObservations: $($s.latestCycle.rawFreshObservations)",
+            "- transitions: $($s.latestCycle.transitions)",
+            "- ALLOW: $($s.latestCycle.allow)",
+            "- DEFER: $($s.latestCycle.defer)",
+            "- REJECT: $($s.latestCycle.reject)",
+            "- MISSED: $($s.latestCycle.missed)",
+            "- hypotheticalIntents: $($s.latestCycle.intentsCreated)",
+            "",
+            "## Persistent totals",
+            "",
+            "- transitions: $($s.totals.transitions)",
+            "- ALLOW: $($s.totals.allow)",
+            "- DEFER: $($s.totals.defer)",
+            "- REJECT: $($s.totals.reject)",
+            "- MISSED: $($s.totals.missed)",
+            "- hypotheticalIntents: $($s.totals.intentsCreated)",
+            "",
+            "_Local collector only. No exchange write capability._"
+          )
+          $tmp = Join-Path $env:RUNNER_TEMP "demo11-status.md"
+          [System.IO.File]::WriteAllLines($tmp,$lines,(New-Object System.Text.UTF8Encoding($false)))
+          gh issue edit 179 --repo "$env:GITHUB_REPOSITORY" --body-file $tmp
+
+      - name: Capture installer evidence
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force artifacts/demo11-local-install | Out-Null
+          Copy-Item "C:\Users\TANSEL\Desktop\Demo11-Shadow\artifacts\demo11\DEMO11_LOCAL_STATUS.json" artifacts/demo11-local-install/
+          Copy-Item "C:\Users\TANSEL\Desktop\Demo11-Shadow\artifacts\demo11\persistent-shadow\DEMO11_EVIDENCE_STATE.json" artifacts/demo11-local-install/
+          $startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\Demo11ReadOnlyShadow.cmd"
+          Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine -match 'run-demo11-local-loop\.ps1' } |
+            Select-Object ProcessId,Name,CommandLine | Format-List | Out-File artifacts/demo11-local-install/loop.txt
+          "STARTUP_EXISTS=$([bool](Test-Path $startup))" | Out-File -Append artifacts/demo11-local-install/loop.txt
+          if (Test-Path $startup) { Get-Content $startup | Out-File -Append artifacts/demo11-local-install/loop.txt }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo11-local-shadow-install
+          path: artifacts/demo11-local-install/
+          if-no-files-found: error
+          retention-days: 90

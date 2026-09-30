@@ -1,0 +1,48 @@
+name: Demo-11 Runtime Probe
+
+on:
+  push:
+    branches: [ demo11-canonical-rebuild ]
+    paths:
+      - '.github/workflows/demo11-runtime-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demo11-runtime-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 5
+    steps:
+      - name: Read Demo-11 local runtime without exchange writes
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $root="C:\Users\TANSEL\Desktop\Demo11-Shadow"
+          Write-Host "PROBE_AT=$(Get-Date -Format o)"
+          Write-Host "=== PROCESSES ==="
+          Get-CimInstance Win32_Process | Where-Object {
+            $_.CommandLine -and ($_.CommandLine -match 'run-demo11-local-loop\.ps1' -or $_.CommandLine -match 'run-demo11-testnet-loop\.ps1')
+          } | Select-Object ProcessId,Name,CreationDate,CommandLine | Format-List
+
+          foreach($rel in @(
+            "artifacts\demo11\DEMO11_LOCAL_STATUS.json",
+            "artifacts\demo11\DEMO11_TESTNET_STATUS.json",
+            "artifacts\demo11\canonical-shadow\DEMO11_CANONICAL_SHADOW.json",
+            "artifacts\demo11\testnet-bridge\DEMO11_TESTNET_SIGNAL.json"
+          )){
+            $p=Join-Path $root $rel
+            Write-Host "=== FILE $rel ==="
+            if(Test-Path $p){
+              $f=Get-Item $p
+              Write-Host "LAST_WRITE=$($f.LastWriteTime.ToString('o')) SIZE=$($f.Length)"
+              Get-Content $p -Raw
+            } else {
+              Write-Host "MISSING"
+            }
+          }

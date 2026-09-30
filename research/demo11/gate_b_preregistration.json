@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "status": "SHADOW_COLLECTION",
+  "purpose": "Forward evidence registration for Demo-11. This is not a profitability or production approval.",
+  "frozenBeforeEvidenceReview": true,
+  "minimums": {
+    "totalComparableExecutionDecisions": 30,
+    "freshTransitionsAcrossCohort": 30,
+    "perStrategyFreshTransitionsForInitialAssessment": 3,
+    "orphanFills": 0,
+    "unexplainedSignalParityDifferences": 0,
+    "unexplainedDecisionDifferences": 0
+  },
+  "requiredDecisionCoverage": ["ALLOW", "DEFER", "REJECT"],
+  "requiredEvidence": [
+    "closed-candle SignalEvent lineage",
+    "restart parity exact",
+    "research-shadow-runtime event parity exact",
+    "census conservation clean",
+    "directional depth decisions recorded",
+    "snapshot gaps distinguished from market-policy rejection",
+    "legacy-vs-canonical decision differences explained",
+    "rollback procedure rehearsed"
+  ],
+  "interpretation": {
+    "insufficientEvents": "INSUFFICIENT_EVIDENCE",
+    "smallSampleProfitability": "NON_PRIMARY",
+    "testnetMarketQuality": "NOT_REPRESENTATIVE_OF_MAINNET_MARKET_MICROSTRUCTURE",
+    "preferredStrategyEvidence": "MAINNET_PUBLIC_DATA_READ_ONLY_SHADOW"
+  }
+}

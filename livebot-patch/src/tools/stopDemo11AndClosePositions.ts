@@ -23,9 +23,9 @@ async function main(): Promise<void> {
   const testnetUrl = process.env.BINANCE_FUTURES_URL?.trim() ?? '';
   const apiKey = process.env.BINANCE_API_KEY?.trim() ?? '';
   const apiSecret = process.env.BINANCE_API_SECRET?.trim() ?? '';
-  const cohortPath = process.env.DEMO10_COHORT_PATH?.trim() ?? 'research/demo_cohort_10.json';
+  const cohortPath = process.env.DEMO11_COHORT_PATH?.trim() ?? 'research/demo_cohort_10.json';
 
-  if (!apiKey || !apiSecret) throw new Error('DEMO10_TESTNET_CREDENTIALS_MISSING');
+  if (!apiKey || !apiSecret) throw new Error('DEMO11_TESTNET_CREDENTIALS_MISSING');
   const host = new URL(testnetUrl).hostname.toLowerCase();
   if (host !== 'testnet.binancefuture.com') {
     throw new Error(`REFUSE_NON_TESTNET_HOST_${host}`);
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
     generatedAt: new Date().toISOString(),
     execution: 'BINANCE_USDM_TESTNET',
     productionOrders: false,
-    scope: 'DEMO10_COHORT_SYMBOLS_ONLY',
+    scope: 'DEMO11_COHORT_SYMBOLS_ONLY',
     symbols: [],
     reconciliationPasses: [],
   };
@@ -221,18 +221,18 @@ async function main(): Promise<void> {
     verifiedFlat: report.symbols.filter((x: any) => ['FLAT', 'SKIPPED_UNAVAILABLE_VERIFIED_FLAT'].includes(x.final?.status)).length,
     unresolved,
   };
-  report.result = unresolved.length ? 'FAIL_CRITICAL_UNRESOLVED' : 'ALL_DEMO10_TESTNET_FLAT';
+  report.result = unresolved.length ? 'FAIL_CRITICAL_UNRESOLVED' : 'ALL_DEMO11_TESTNET_FLAT';
 
   const outDir = path.join(process.cwd(), 'artifacts');
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(
-    path.join(outDir, 'demo10-stop-final.json'),
+    path.join(outDir, 'demo11-stop-final.json'),
     JSON.stringify(report, null, 2) + '\n',
     'utf8'
   );
   console.log(JSON.stringify(report, null, 2));
 
-  if (report.result !== 'ALL_DEMO10_TESTNET_FLAT') process.exit(2);
+  if (report.result !== 'ALL_DEMO11_TESTNET_FLAT') process.exit(2);
 }
 
 main().catch(error => {

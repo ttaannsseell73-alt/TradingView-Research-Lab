@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "BLOCKED_PENDING_MANUAL_REVIEW",
+  "deletionAllowed": false,
+  "reason": "Legacy paths remain available until read-only evidence reaches READY_FOR_MANUAL_REVIEW and rollback is rehearsed.",
+  "candidates": [
+    {
+      "path": "scripts/build-current-signal-watchlist.mjs",
+      "legacyAuthority": "actionStatus(execStatus, signal, ...) and BLOCKED signal semantics",
+      "plannedAction": "remove execution authority after canonical SignalEvent cutover"
+    },
+    {
+      "path": "scripts/build-execution-watchlist.mjs",
+      "legacyAuthority": "generic tradability classification and min(bid,ask) ranking",
+      "plannedAction": "retain only market/cohort observation role or replace with directional policy consumer"
+    },
+    {
+      "path": "research/tradability_policy.json",
+      "legacyAuthority": "Demo-10 legacy policy",
+      "plannedAction": "archive after policy v2 evidence is accepted"
+    },
+    {
+      "path": "livebot-patch/src/tools/runDemo10TestnetOnce.ts",
+      "legacyAuthority": "mixed signal/watchlist/intent orchestration",
+      "plannedAction": "thin to canonical intent consumer only after manual review"
+    }
+  ],
+  "explicitlyProtected": [
+    "Q execution spine: reconcile -> IOC -> fill verification -> protection",
+    "legacy evidence artifacts and issues",
+    "pre-demo11 baseline commit"
+  ]
+}

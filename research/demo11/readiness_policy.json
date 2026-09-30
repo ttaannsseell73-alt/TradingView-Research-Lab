@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "demo11-readiness-v1",
+  "purpose": "Read-only evidence review. This policy cannot enable or submit exchange orders.",
+  "minimumComparableDecisions": 30,
+  "requiredDecisionCoverage": ["ALLOW", "DEFER", "REJECT"],
+  "requirements": {
+    "ciGreen": true,
+    "restartParityExact": true,
+    "eventParityExact": true,
+    "censusClean": true,
+    "orphanFills": 0,
+    "unexplainedDecisionDifferences": 0,
+    "rollbackRehearsed": true
+  }
+}
