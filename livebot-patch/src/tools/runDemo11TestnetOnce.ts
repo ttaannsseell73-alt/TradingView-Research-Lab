@@ -487,7 +487,7 @@ async function main(): Promise<void> {
   }
 
   const signalDoc = JSON.parse(fs.readFileSync(signalPath, 'utf8'));
-  if (signalDoc?.cohortId !== 'demo-10-forward-v2') {
+  if (signalDoc?.cohortId !== 'demo-11-canonical-v1') {
     throw new Error('DEMO11_COHORT_MISMATCH');
   }
 
@@ -617,16 +617,8 @@ async function main(): Promise<void> {
         continue;
       }
 
-      const freshCandidate = null; // Demo-11: no cross-cycle pending-entry authority
-      if (freshCandidate) {
-        await upsertPendingEntry(journal, freshCandidate);
-        state.pendingCaptured = {
-          direction:freshCandidate.direction,
-          candleTime:freshCandidate.candleTime,
-          expiresAt:freshCandidate.expiresAt,
-        };
-        await journal.appendEvent('DEMO11_PENDING_CAPTURED', freshCandidate.underlying, freshCandidate);
-      }
+      // Demo-11 intentionally has no cross-cycle pending-entry authority.
+      // The current bridge must still expose this exact canonical ALLOW intent.
 
       let rawPosition = await adapter.getPositionRisk(symbol);
       let posRow = positionRow(rawPosition, symbol);
