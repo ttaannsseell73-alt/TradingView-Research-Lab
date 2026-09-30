@@ -2,7 +2,7 @@ name: Demo-11 Runtime Probe
 
 on:
   push:
-    branches: [ demo11-canonical-rebuild ]
+    branches: [ main, demo11-canonical-rebuild ]
     paths:
       - '.github/workflows/demo11-runtime-probe.yml'
   workflow_dispatch:
