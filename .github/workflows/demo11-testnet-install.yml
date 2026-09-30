@@ -131,12 +131,13 @@ jobs:
             "",
             "## Symbol results",
             "",
-            "| Symbol | Strategy | TF | Direction | Fresh | Route | Result |",
-            "|---|---|---|---|---|---|---|"
+            "| Symbol | Strategy | TF | Direction | Fresh | Source | Route | Result |",
+            "|---|---|---|---|---|---|---|---|"
           )
           foreach($r in @($s.symbolResults)){
             $route = if ($r.executionRoute) { $r.executionRoute } else { "NONE" }
-            $lines += "| $($r.symbol) | $($r.strategy) | $($r.timeframe) | $($r.signalDirection) | $($r.fresh) | $route | $($r.result) |"
+            $source = if ($r.source) { $r.source } else { "NONE" }
+            $lines += "| $($r.symbol) | $($r.strategy) | $($r.timeframe) | $($r.signalDirection) | $($r.fresh) | $source | $route | $($r.result) |"
           }
           $lines += @(
             "",
