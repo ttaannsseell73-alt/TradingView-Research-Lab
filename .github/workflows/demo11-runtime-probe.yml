@@ -60,3 +60,14 @@ jobs:
           } else {
             Write-Host "DEMO11_PG_NOT_RUNNING"
           }
+
+          Write-Host "=== DEMO11 EXCHANGE AUDIT ==="
+          $bot="C:\Users\TANSEL\Desktop\binance-bot"
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\auditDemo11Exchange.ts" "$bot\src\tools\auditDemo11Exchange.ts" -Force
+          Push-Location $bot
+          try {
+            npx tsx src/tools/auditDemo11Exchange.ts
+            if($LASTEXITCODE -ne 0){ throw "DEMO11_EXCHANGE_AUDIT_FAILED" }
+          } finally {
+            Pop-Location
+          }
