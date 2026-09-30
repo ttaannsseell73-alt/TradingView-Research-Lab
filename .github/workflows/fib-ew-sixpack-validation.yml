@@ -1,0 +1,76 @@
+name: Fibonacci Elliott Sixpack Prior-Year Validation
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  validate:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[FIB EW SIXPACK VALIDATE]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2024-09-20__2025-09-20__15m-1h
+      TUNING_OUT_DIR: artifacts/fib-ew-sixpack-validation
+      TUNING_START: 2024-09-20T00:00:00Z
+      TUNING_END: 2025-09-20T00:00:00Z
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Validate script
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --check scripts/run-fib-ew-sixpack-tuning.mjs
+
+      - name: Export prior-year sixpack cache from local feathers
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $plan = [ordered]@{
+            backend = "local"
+            symbols = @("TAOUSDT","GRIFFAINUSDT","UBUSDT","BEATUSDT","LAYERUSDT","TAGUSDT")
+            timeframes = @("15m","1h")
+            start = "2024-09-20T00:00:00Z"
+            end = "2025-09-20T00:00:00Z"
+          }
+          $planFile = Join-Path (Get-Location) "sixpack-validation-plan.json"
+          $json = $plan | ConvertTo-Json -Depth 5 -Compress
+          [System.IO.File]::WriteAllText($planFile, $json, (New-Object System.Text.UTF8Encoding($false)))
+          New-Item -ItemType Directory -Force -Path $env:RESEARCH_CSV_DIR | Out-Null
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root $env:FREQTRADE_FUTURES_ROOT --plan $planFile --output-dir $env:RESEARCH_CSV_DIR
+          if ($LASTEXITCODE -ne 0) { Write-Host "Batch export partial/nonzero; script will report unavailable histories." }
+
+      - name: Run prior-year validation matrix
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-fib-ew-sixpack-tuning.mjs
+
+      - name: Upload validation result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fib-ew-sixpack-prior-year-validation
+          path: |
+            artifacts/fib-ew-sixpack-validation/sixpack-summary.json
+            artifacts/fib-ew-sixpack-validation/sixpack-all.json
+            artifacts/fib-ew-sixpack-validation/top-per-candidate.csv
+            artifacts/fib-ew-sixpack-validation/common-both.csv
+          if-no-files-found: warn
+          compression-level: 6
