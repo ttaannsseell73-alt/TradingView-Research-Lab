@@ -92,7 +92,7 @@ jobs:
             "- updatedAt: $($s.generatedAt)",
             "- mode: READ_ONLY_SHADOW",
             "- exchangeWrites: false",
-            "- task: Demo11ReadOnlyShadow",
+            "- loop: Demo11ReadOnlyShadow",
             "- cycles: $($s.cycles)",
             "- decisionCoverage: $coverage",
             "",
@@ -129,8 +129,11 @@ jobs:
           New-Item -ItemType Directory -Force artifacts/demo11-local-install | Out-Null
           Copy-Item "C:\Users\TANSEL\Desktop\Demo11-Shadow\artifacts\demo11\DEMO11_LOCAL_STATUS.json" artifacts/demo11-local-install/
           Copy-Item "C:\Users\TANSEL\Desktop\Demo11-Shadow\artifacts\demo11\persistent-shadow\DEMO11_EVIDENCE_STATE.json" artifacts/demo11-local-install/
-          Get-ScheduledTask -TaskName Demo11ReadOnlyShadow | Format-List TaskName,State | Out-File artifacts/demo11-local-install/task.txt
-          Get-ScheduledTaskInfo -TaskName Demo11ReadOnlyShadow | Format-List LastRunTime,LastTaskResult,NextRunTime | Out-File -Append artifacts/demo11-local-install/task.txt
+          $startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\Demo11ReadOnlyShadow.cmd"
+          Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine -match 'run-demo11-local-loop\.ps1' } |
+            Select-Object ProcessId,Name,CommandLine | Format-List | Out-File artifacts/demo11-local-install/loop.txt
+          "STARTUP_EXISTS=$([bool](Test-Path $startup))" | Out-File -Append artifacts/demo11-local-install/loop.txt
+          if (Test-Path $startup) { Get-Content $startup | Out-File -Append artifacts/demo11-local-install/loop.txt }
 
       - uses: actions/upload-artifact@v4
         with:
