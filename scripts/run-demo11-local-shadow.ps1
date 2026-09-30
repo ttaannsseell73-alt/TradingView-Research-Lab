@@ -39,6 +39,9 @@ try {
   & $NodeExe "scripts\run-demo11-persistent-shadow.mjs" "research\demo_cohort_10.json" "artifacts\demo11\execution\EXECUTION_WATCHLIST.json" "artifacts\demo11\candles" "artifacts\demo11\persistent-shadow" "research\tradability_policy_v2.json" "artifacts\demo11\persistent-shadow\DEMO11_EVIDENCE_STATE.json" *>> $Log
   if ($LASTEXITCODE -ne 0) { throw "PERSISTENT_SHADOW_EXIT_$LASTEXITCODE" }
 
+  & $NodeExe "scripts\build-demo11-shadow.mjs" "research\demo_cohort_10.json" "artifacts\demo11\execution\EXECUTION_WATCHLIST.json" "artifacts\demo11\candles" "artifacts\demo11\canonical-shadow" "research\tradability_policy_v2.json" *>> $Log
+  if ($LASTEXITCODE -ne 0) { throw "CURRENT_CANONICAL_SHADOW_EXIT_$LASTEXITCODE" }
+
   $state = Get-Content (Join-Path $Art "persistent-shadow\DEMO11_EVIDENCE_STATE.json") -Raw | ConvertFrom-Json
   $cycle = Get-Content (Join-Path $Art "persistent-shadow\DEMO11_PERSISTENT_CYCLE.json") -Raw | ConvertFrom-Json
   [ordered]@{
