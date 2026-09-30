@@ -53,9 +53,14 @@ $statusPath = Join-Path $InstallRoot "artifacts\demo11\DEMO11_LOCAL_STATUS.json"
 
 # Stop the previous installed loop before preflight so it cannot hold logs/state
 # while the new runtime is being proven.
-$targets = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine -match "run-demo11-local-loop\.ps1" }
+$targets = Get-CimInstance Win32_Process | Where-Object {
+  $_.CommandLine -and (
+    $_.CommandLine -match "run-demo11-local-loop\.ps1" -or
+    $_.CommandLine -match "run-demo11-local-shadow\.ps1"
+  )
+}
 foreach($p in @($targets)) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }
-Start-Sleep -Milliseconds 500
+Start-Sleep -Seconds 1
 
 if (Test-Path $statusPath) { Remove-Item $statusPath -Force }
 
