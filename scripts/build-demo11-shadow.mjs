@@ -46,6 +46,7 @@ for(const candidate of cohort.deploymentCandidates??[]){
       event:null,
       execution_decision:null,
       legacy_execution_status:execRow?.executionStatus??null,
+      market:execRow?.market??null,
     };
     rows.push(row);
 
