@@ -110,7 +110,7 @@ if ($pre.ExitCode -ne 0) {
 }
 if (!(Test-Path $statusPath)) { throw "DEMO11_TESTNET_STATUS_MISSING" }
 $first = Get-Content $statusPath -Raw | ConvertFrom-Json
-if ($first.state -ne "RUNNING" -or $first.productionOrders -ne $false) { throw "DEMO11_TESTNET_PREFLIGHT_CONTRACT_FAILED" }
+if ($first.state -notin @("RUNNING","COOLDOWN") -or $first.productionOrders -ne $false) { throw "DEMO11_TESTNET_PREFLIGHT_CONTRACT_FAILED" }
 $firstCycles = [int]$first.cycles
 
 # Persistent non-admin loop and Startup relaunch.
@@ -140,5 +140,5 @@ if(!$advanced){throw "DEMO11_TESTNET_LOOP_NOT_ADVANCING_processes=$(@($loops).Co
 if(@($loops).Count -lt 1){throw "DEMO11_TESTNET_LOOP_PROCESS_MISSING"}
 if(!(Test-Path $startup)){throw "DEMO11_TESTNET_STARTUP_MISSING"}
 $s=Get-Content $statusPath -Raw | ConvertFrom-Json
-Write-Host "DEMO11_TESTNET_RUNNING cycles=$($s.cycles) open=$($s.testnetSummary.openPositions) freshActions=$($s.bridgeFreshActions)"
+Write-Host "DEMO11_TESTNET_ACTIVE state=$($s.state) cycles=$($s.cycles) open=$($s.testnetSummary.openPositions) freshActions=$($s.bridgeFreshActions)"
 Get-Content $statusPath
