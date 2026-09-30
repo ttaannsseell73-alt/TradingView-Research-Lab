@@ -98,7 +98,7 @@ try {
     canonicalDefer = [int]$canonicalDoc.counts.defer
     canonicalReject = [int]$canonicalDoc.counts.reject
     bridgeFreshActions = $freshActions
-    bridgeCatchupActions = [int]($bridgeDoc.catchupActions ?? 0)
+    bridgeCatchupActions = if ($null -ne $bridgeDoc.catchupActions) { [int]$bridgeDoc.catchupActions } else { 0 }
     testnetResult = $report.result
     testnetSummary = $report.summary
     testnetPositions = $report.testnetPositions
