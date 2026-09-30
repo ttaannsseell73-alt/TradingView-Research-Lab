@@ -2,6 +2,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+function marketReferencePrice(market){
+  const mid=Number(market?.mid);
+  if(Number.isFinite(mid)&&mid>0) return mid;
+  const last=Number(market?.last);
+  if(Number.isFinite(last)&&last>0) return last;
+  const bid=Number(market?.bid);
+  const ask=Number(market?.ask);
+  if(Number.isFinite(bid)&&bid>0&&Number.isFinite(ask)&&ask>0) return (bid+ask)/2;
+  return null;
+}
+
 export function buildDemo11TestnetBridge(report){
   if(report?.mode!=='READ_ONLY_SHADOW') throw new Error('DEMO11_CANONICAL_SHADOW_REQUIRED');
   if(report?.exchangeWrites!==false) throw new Error('SOURCE_MUST_BE_READ_ONLY');
@@ -57,6 +68,7 @@ export function buildDemo11TestnetBridge(report){
       executionReason:decision?.reason??null,
       canonicalIntent:intent??null,
       canonicalStateHash:row?.state_hash??null,
+      referencePrice:marketReferencePrice(row?.market),
     };
   });
 
