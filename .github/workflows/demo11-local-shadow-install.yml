@@ -22,7 +22,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate collector and PowerShell syntax
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --test tests/demo11_evidence_state.test.mjs
+          node --check scripts/run-demo11-persistent-shadow.mjs
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE\scripts\run-demo11-local-shadow.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if (@($errors).Count -gt 0) { $errors | ForEach-Object { Write-Error $_.Message }; throw "DEMO11_RUNNER_PARSE_FAILED" }
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE\scripts\install-demo11-local-shadow.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if (@($errors).Count -gt 0) { $errors | ForEach-Object { Write-Error $_.Message }; throw "DEMO11_INSTALLER_PARSE_FAILED" }
+
   install:
+    needs: validate
     runs-on: [self-hosted, datahub-local]
     timeout-minutes: 10
     steps:
