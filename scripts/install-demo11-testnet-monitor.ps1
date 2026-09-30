@@ -16,9 +16,11 @@ $old = Get-CimInstance Win32_Process | Where-Object {
 foreach($p in @($old)) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }
 
 # Install canonical Q execution components plus Demo-11 adapter into local bot.
-New-Item -ItemType Directory -Force (Join-Path $BotRoot "src\live"),(Join-Path $BotRoot "src\tools") | Out-Null
+New-Item -ItemType Directory -Force (Join-Path $BotRoot "src\live"),(Join-Path $BotRoot "src\tools"),(Join-Path $BotRoot "scripts") | Out-Null
 Copy-Item (Join-Path $SourceRoot "livebot-patch\src\live\*.ts") (Join-Path $BotRoot "src\live\") -Force
 Copy-Item (Join-Path $SourceRoot "livebot-patch\src\tools\runDemo11TestnetOnce.ts") (Join-Path $BotRoot "src\tools\runDemo11TestnetOnce.ts") -Force
+Copy-Item (Join-Path $SourceRoot "livebot-patch\src\tools\stopDemo10AndClosePositions.ts") (Join-Path $BotRoot "src\tools\stopDemo10AndClosePositions.ts") -Force
+Copy-Item (Join-Path $SourceRoot "livebot-patch\scripts\demo11-shutdown-policy.mjs") (Join-Path $BotRoot "scripts\demo11-shutdown-policy.mjs") -Force
 
 $qEnv = Join-Path $BotRoot ".q-forward.local.env"
 $demoEnv = Join-Path $BotRoot ".demo11-testnet.local.env"
