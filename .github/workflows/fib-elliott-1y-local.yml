@@ -1,0 +1,125 @@
+name: Fibonacci Elliott 1Y Causal Benchmark
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[FIB EW 1Y RUN]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 480
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      LOCAL_DATA_MODE: strict
+      RESEARCH_BACKEND: local
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      LOCAL_PARALLEL_SHARDS: 4
+      REUSE_EXISTING_CSV: 1
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2025-09-20__2026-09-20__1m-5m-15m-1h-4h
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Build exact 725-symbol causal Fib/Elliott plan
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $suffix = "_USDT_USDT-15m-futures.feather"
+          $files = Get-ChildItem "$env:FREQTRADE_FUTURES_ROOT\*-15m-futures.feather" -File | Sort-Object Name
+          $symbols = @()
+          foreach ($f in $files) {
+            if ($f.Name.EndsWith($suffix)) {
+              $base = $f.Name.Substring(0, $f.Name.Length - $suffix.Length)
+              $symbols += (($base -replace "_","") + "USDT")
+            }
+          }
+          $symbols = @($symbols | Sort-Object -Unique)
+          if ($symbols.Count -ne 725) { throw "Expected exact universe of 725 symbols, found $($symbols.Count)." }
+
+          $plan = [ordered]@{
+            backend = "local"
+            cloudShards = 1
+            symbols = $symbols
+            timeframes = @("5m","15m","1h","4h")
+            start = "2025-09-20T00:00:00Z"
+            end = "2026-09-20T00:00:00Z"
+            strategies = @(
+              "fib_golden_pocket",
+              "fib_retrace_382",
+              "fib_retrace_500",
+              "fib_retrace_618",
+              "fib_retrace_786",
+              "elliott_w2_w3",
+              "elliott_w4_w5",
+              "elliott_abc",
+              "harmonic_prz"
+            )
+            minCoverage = 0.98
+            minHistoryDays = 30
+            minTrades = @{ "5m"=30; "15m"=25; "1h"=20; "4h"=10 }
+            monthlyBreakdown = $true
+            monthlyMinTrades = 5
+            cost = 0.0014
+            stressCost = 0.0015
+            lowCost = 0.0006
+            maxErrorRate = 0.10
+          }
+          $json = $plan | ConvertTo-Json -Depth 8 -Compress
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "fib-ew-1y-plan.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
+          Write-Host "FIB-EW SYMBOLS=$($symbols.Count) TASKS=$($symbols.Count * 4) STRATEGIES=9 COMBINATIONS=$($symbols.Count * 4 * 9)"
+
+      - name: Run 1Y full universe 4TF
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/fib-ew-1y
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-datahub-plan-parallel-local.mjs fib-ew-1y-plan.json
+
+      - name: Audit determinism and future-data leakage
+        shell: powershell
+        env:
+          AUDIT_OUT_DIR: artifacts/fib-ew-integrity
+          AUDIT_START: 2025-09-20T00:00:00Z
+          AUDIT_END: 2026-09-20T00:00:00Z
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/audit-fib-ew-integrity.mjs
+
+      - name: Build robustness summary
+        shell: powershell
+        env:
+          RESEARCH_OUT_DIR: artifacts/fib-ew-1y
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/summarize-fib-ew-1y.mjs
+
+      - name: Upload Fib/Elliott 1Y result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fib-ew-1y-result
+          path: |
+            artifacts/fib-ew-1y/summary-*.json
+            artifacts/fib-ew-1y/top-*.csv
+            artifacts/fib-ew-1y/results-*.ndjson
+            artifacts/fib-ew-1y/monthly-*.ndjson
+            artifacts/fib-ew-1y/failures-*.ndjson
+            artifacts/fib-ew-1y/fib-ew-accepted.csv
+            artifacts/fib-ew-1y/fib-ew-summary.json
+            artifacts/fib-ew-integrity/fib-ew-integrity.json
+          if-no-files-found: warn
+          compression-level: 6
