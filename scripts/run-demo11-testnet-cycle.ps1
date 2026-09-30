@@ -31,6 +31,11 @@ try {
     throw "DEMO11_CANONICAL_SOURCE_CONTRACT_FAILED"
   }
   if ([int]$canonicalDoc.counts.evaluated -ne 10) { throw "DEMO11_CANONICAL_EVALUATION_NOT_10" }
+  $canonicalAt = [DateTimeOffset]::Parse([string]$canonicalDoc.generatedAt)
+  $canonicalAgeMs = ([DateTimeOffset]::UtcNow - $canonicalAt.ToUniversalTime()).TotalMilliseconds
+  if ($canonicalAgeMs -gt 120000 -or $canonicalAgeMs -lt -10000) {
+    throw "DEMO11_CANONICAL_SOURCE_STALE_ageMs=$([math]::Round($canonicalAgeMs))"
+  }
 
   $savedEap = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
