@@ -11,7 +11,9 @@ import {
   isBenignCancelError,
   isUnavailableSymbolError,
   symbolSnapshotFromGlobal,
-} from '../../scripts/demo11-shutdown-policy.mjs';
+} 
+// @ts-ignore -- runtime ESM helper has no TypeScript declaration file
+from '../../scripts/demo11-shutdown-policy.mjs';
 
 dotenv.config();
 
