@@ -1,6 +1,7 @@
 import { SR25_STRATEGIES, SR25_STRATEGY_IDS } from './sr25_strategies.mjs';
 import { SWEEP_STRATEGIES, SWEEP_STRATEGY_IDS } from './sweep_strategies.mjs';
 import { VISUAL_STRATEGIES, VISUAL_STRATEGY_IDS } from './visual_strategies.mjs';
+import { FIB_EW_STRATEGIES, FIB_EW_STRATEGY_IDS } from './fib_elliott_strategies.mjs';
 
 const finite = Number.isFinite;
 
@@ -670,10 +671,11 @@ export const STRATEGIES = [
   {id:'sr_volume_breakout',name:'SR Volume-Confirmed Breakout',family:'support_resistance',version:'sr-v1',mode:'REVERSAL',signal:signalsSRVolumeBreakout},
   ...SR25_STRATEGIES,
   ...SWEEP_STRATEGIES,
-  ...VISUAL_STRATEGIES
+  ...VISUAL_STRATEGIES,
+  ...FIB_EW_STRATEGIES
 ];
 
-export { SR25_STRATEGY_IDS, SWEEP_STRATEGY_IDS, VISUAL_STRATEGY_IDS };
+export { SR25_STRATEGY_IDS, SWEEP_STRATEGY_IDS, VISUAL_STRATEGY_IDS, FIB_EW_STRATEGY_IDS };
 
 function backtest(c,signals,tradeStart=-Infinity) {
   const trades=[];
