@@ -120,22 +120,26 @@ jobs:
             "- canonical_REJECT: $($s.canonicalReject)",
             "- bridge_fresh_actions: $($s.bridgeFreshActions)",
             "- testnet_result: $($s.testnetResult)",
-            "- open_positions: $($s.testnetSummary.openPositions)",
+            "- open_testnet_positions: $($s.testnetSummary.openPositions)",
+            "- open_shadow_positions: $($s.testnetSummary.shadowOpenPositions)",
+            "- shadow_opened_this_cycle: $($s.testnetSummary.shadowOpenedThisCycle)",
+            "- shadow_closed_this_cycle: $($s.testnetSummary.shadowClosedThisCycle)",
             "- foreign_or_legacy_positions: $($s.testnetSummary.foreignOrLegacyOpenPositions)",
             "- opened_protected_this_cycle: $($s.testnetSummary.openedProtected)",
             "- reconciliation_halts: $($s.testnetSummary.reconciliationHalts)",
             "",
             "## Symbol results",
             "",
-            "| Symbol | Strategy | TF | Direction | Fresh | Result |",
-            "|---|---|---|---|---|---|"
+            "| Symbol | Strategy | TF | Direction | Fresh | Route | Result |",
+            "|---|---|---|---|---|---|---|"
           )
           foreach($r in @($s.symbolResults)){
-            $lines += "| $($r.symbol) | $($r.strategy) | $($r.timeframe) | $($r.signalDirection) | $($r.fresh) | $($r.result) |"
+            $route = if ($r.executionRoute) { $r.executionRoute } else { "NONE" }
+            $lines += "| $($r.symbol) | $($r.strategy) | $($r.timeframe) | $($r.signalDirection) | $($r.fresh) | $route | $($r.result) |"
           }
           $lines += @(
             "",
-            "_Canonical source: immutable Demo-11 SignalEvent → ExecutionDecision → Intent. TESTNET only; production writes disabled._"
+            "_Canonical source: immutable Demo-11 SignalEvent → ExecutionDecision → Intent. Testnet-listed symbols execute on Binance TESTNET; unavailable symbols are persisted as shadow positions. Production writes remain disabled._"
           )
           $tmp=Join-Path $env:TEMP "demo11-testnet-status.md"
           [System.IO.File]::WriteAllLines($tmp,$lines,[Text.UTF8Encoding]::new($false))
