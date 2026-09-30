@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { createIntentLedger, arbitrateIntentBatch } from '../research/demo11/intent-arbiter.mjs';
 
 function marketReferencePrice(market){
   const mid=Number(market?.mid);
@@ -13,11 +14,48 @@ function marketReferencePrice(market){
   return null;
 }
 
-export function buildDemo11TestnetBridge(report){
+const timeframeMs={ '1m':60000,'5m':300000,'15m':900000,'1h':3600000,'4h':14400000,'1d':86400000 };
+
+export function buildDemo11TestnetBridge(report,evidenceState=null,nowMs=Date.now()){
   if(report?.mode!=='READ_ONLY_SHADOW') throw new Error('DEMO11_CANONICAL_SHADOW_REQUIRED');
   if(report?.exchangeWrites!==false) throw new Error('SOURCE_MUST_BE_READ_ONLY');
 
-  const intents=Array.isArray(report?.hypotheticalIntents)?report.hypotheticalIntents:[];
+  const canonicalIntents=Array.isArray(report?.hypotheticalIntents)?report.hypotheticalIntents:[];
+  const currentEventIds=new Set((report?.rows??[]).map(x=>x?.event?.event_id).filter(Boolean).map(String));
+  const rowByStream=new Map((report?.rows??[]).map(row=>[
+    [row?.underlying,row?.symbol,row?.timeframe,row?.strategy].map(x=>String(x??'')).join('|'),
+    row
+  ]));
+  const latestCatchupByStream=new Map();
+  for(const x of evidenceState?.recentEvents??[]){
+    const interval=Number(timeframeMs[String(x?.timeframe??'')]??0);
+    const close=Number(x?.candle_close_ts);
+    const age=Number(nowMs)-close;
+    if(!(interval>0)||!Number.isFinite(close)||age<0||age>interval) continue;
+    if(x?.decision?.verdict!=='ALLOW'||currentEventIds.has(String(x?.event_id??''))) continue;
+    const key=[x?.underlying,x?.symbol,x?.timeframe,x?.strategy].map(v=>String(v??'')).join('|');
+    const row=rowByStream.get(key);
+    if(!row||String(row?.signal?.direction??'')!==String(x?.side??'')) continue;
+    const prior=latestCatchupByStream.get(key);
+    if(!prior||Number(x.candle_close_ts)>Number(prior.candle_close_ts)) latestCatchupByStream.set(key,x);
+  }
+
+  const catchupItems=[...latestCatchupByStream.values()].map(x=>({
+    event:{
+      event_id:String(x.event_id),
+      symbol:String(x.symbol),
+      candle_close_ts:Number(x.candle_close_ts),
+      side:String(x.side),
+    },
+    decision:x.decision,
+  }));
+  const catchupArbitrated=arbitrateIntentBatch({
+    ledger:createIntentLedger(),
+    items:catchupItems,
+    requestedNotional:Number(report?.referenceNotional??100),
+  });
+  const allIntents=[...canonicalIntents,...catchupArbitrated.ledger.intents];
+  const intents=[...new Map(allIntents.map(x=>[String(x.intent_id),x])).values()];
   const intentByEvent=new Map();
   for(const intent of intents){
     for(const id of intent?.supporting_signal_event_ids??[]){
@@ -25,9 +63,17 @@ export function buildDemo11TestnetBridge(report){
     }
   }
 
+  const catchupByStream=new Map([...latestCatchupByStream.entries()]);
   const rows=(report?.rows??[]).map(row=>{
-    const event=row?.event??null;
-    const decision=row?.execution_decision??null;
+    const streamKey=[row?.underlying,row?.symbol,row?.timeframe,row?.strategy].map(x=>String(x??'')).join('|');
+    const catchup=catchupByStream.get(streamKey)??null;
+    const event=row?.event??(catchup?{
+      event_id:String(catchup.event_id),
+      symbol:String(catchup.symbol),
+      candle_close_ts:Number(catchup.candle_close_ts),
+      side:String(catchup.side),
+    }:null);
+    const decision=row?.execution_decision??catchup?.decision??null;
     const eventId=event?.event_id?String(event.event_id):null;
     const intent=eventId?intentByEvent.get(eventId)??null:null;
     const isLead=Boolean(intent&&eventId===String(intent.lead_signal_event_id));
@@ -69,6 +115,8 @@ export function buildDemo11TestnetBridge(report){
       canonicalIntent:intent??null,
       canonicalStateHash:row?.state_hash??null,
       referencePrice:marketReferencePrice(row?.market),
+      catchup:Boolean(catchup&&!row?.event),
+      source:catchup&&!row?.event?'RECENT_EVENT_CATCHUP':'CURRENT_CANDLE',
     };
   });
 
@@ -81,6 +129,7 @@ export function buildDemo11TestnetBridge(report){
     productionOrders:false,
     dataAvailable:Number(report?.counts?.evaluated??0)>0,
     canonicalPolicyVersion:report?.policyVersion??null,
+    catchupActions:rows.filter(x=>x.catchup&&x.fresh).length,
     rows,
   };
 }
@@ -88,14 +137,17 @@ export function buildDemo11TestnetBridge(report){
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
   const input=process.argv[2]??'artifacts/demo11/canonical-shadow/DEMO11_CANONICAL_SHADOW.json';
   const output=process.argv[3]??'artifacts/demo11/testnet-bridge/DEMO11_TESTNET_SIGNAL.json';
+  const evidencePath=process.argv[4]??'artifacts/demo11/persistent-shadow/DEMO11_EVIDENCE_STATE.json';
   const report=JSON.parse(fs.readFileSync(input,'utf8'));
-  const out=buildDemo11TestnetBridge(report);
+  const evidence=fs.existsSync(evidencePath)?JSON.parse(fs.readFileSync(evidencePath,'utf8')):null;
+  const out=buildDemo11TestnetBridge(report,evidence);
   fs.mkdirSync(path.dirname(output),{recursive:true});
   fs.writeFileSync(output,JSON.stringify(out,null,2)+'\n','utf8');
   console.log(JSON.stringify({
     cohortId:out.cohortId,
     rows:out.rows.length,
     freshActions:out.rows.filter(x=>x.fresh).length,
+    catchupActions:out.catchupActions,
     allow:out.rows.filter(x=>x.executionVerdict==='ALLOW').length,
     defer:out.rows.filter(x=>x.executionVerdict==='DEFER').length,
     reject:out.rows.filter(x=>x.executionVerdict==='REJECT').length,
