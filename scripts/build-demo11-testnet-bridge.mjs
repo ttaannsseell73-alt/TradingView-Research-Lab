@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 export function buildDemo11TestnetBridge(report){
   if(report?.mode!=='READ_ONLY_SHADOW') throw new Error('DEMO11_CANONICAL_SHADOW_REQUIRED');
@@ -72,7 +73,7 @@ export function buildDemo11TestnetBridge(report){
   };
 }
 
-if(import.meta.url===new URL(process.argv[1], 'file:').href){
+if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
   const input=process.argv[2]??'artifacts/demo11/canonical-shadow/DEMO11_CANONICAL_SHADOW.json';
   const output=process.argv[3]??'artifacts/demo11/testnet-bridge/DEMO11_TESTNET_SIGNAL.json';
   const report=JSON.parse(fs.readFileSync(input,'utf8'));
