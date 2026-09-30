@@ -395,6 +395,192 @@ async function expirePendingEntries(journal: PgEventJournal, nowMs: number): Pro
   return r.rowCount ?? 0;
 }
 
+
+async function ensureUnavailableShadowSchema(journal: PgEventJournal): Promise<void> {
+  await journal.pool.query(`
+    CREATE TABLE IF NOT EXISTS demo11_shadow_positions (
+      underlying TEXT PRIMARY KEY,
+      symbol TEXT NOT NULL,
+      direction TEXT NOT NULL,
+      entry_price DOUBLE PRECISION NOT NULL,
+      entry_time BIGINT NOT NULL,
+      mark_price DOUBLE PRECISION,
+      last_intent_id TEXT,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await journal.pool.query(`
+    CREATE TABLE IF NOT EXISTS demo11_shadow_trades (
+      trade_id TEXT PRIMARY KEY,
+      underlying TEXT NOT NULL,
+      symbol TEXT NOT NULL,
+      direction TEXT NOT NULL,
+      entry_price DOUBLE PRECISION NOT NULL,
+      entry_time BIGINT NOT NULL,
+      exit_price DOUBLE PRECISION NOT NULL,
+      exit_time BIGINT NOT NULL,
+      exit_reason TEXT NOT NULL,
+      gross_return DOUBLE PRECISION NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+}
+
+async function getUnavailableShadowPosition(
+  journal: PgEventJournal,
+  underlying: string
+): Promise<any | null> {
+  const r = await journal.pool.query(
+    `SELECT underlying,symbol,direction,entry_price,entry_time,mark_price,last_intent_id
+       FROM demo11_shadow_positions WHERE underlying=$1`,
+    [underlying]
+  );
+  return r.rows[0] ?? null;
+}
+
+async function closeUnavailableShadowPosition(
+  journal: PgEventJournal,
+  pos: any,
+  exitPrice: number,
+  exitTime: number,
+  reason: string
+): Promise<void> {
+  const direction = String(pos.direction);
+  const entryPrice = Number(pos.entry_price);
+  const grossReturn = direction === 'LONG'
+    ? exitPrice / entryPrice - 1
+    : entryPrice / exitPrice - 1;
+  const tradeId = [
+    String(pos.underlying),
+    String(pos.entry_time),
+    direction,
+    String(exitTime),
+    reason,
+  ].join('|');
+  await journal.pool.query(
+    `INSERT INTO demo11_shadow_trades
+       (trade_id,underlying,symbol,direction,entry_price,entry_time,exit_price,exit_time,exit_reason,gross_return)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+     ON CONFLICT (trade_id) DO NOTHING`,
+    [
+      tradeId,String(pos.underlying),String(pos.symbol),direction,entryPrice,
+      Number(pos.entry_time),exitPrice,exitTime,reason,grossReturn
+    ]
+  );
+  await journal.pool.query(
+    `DELETE FROM demo11_shadow_positions WHERE underlying=$1`,
+    [String(pos.underlying)]
+  );
+  await journal.appendEvent('DEMO11_SHADOW_CLOSED', tradeId, {
+    underlying:String(pos.underlying),
+    symbol:String(pos.symbol),
+    direction,
+    entryPrice,
+    exitPrice,
+    entryTime:Number(pos.entry_time),
+    exitTime,
+    reason,
+    grossReturn,
+  });
+}
+
+async function openUnavailableShadowPosition(
+  journal: PgEventJournal,
+  row: any,
+  direction: Direction,
+  price: number,
+  candleTime: number
+): Promise<void> {
+  const underlying=String(row?.underlying ?? '');
+  const symbol=String(row?.executionContract ?? '');
+  const intentId=String(row?.canonicalIntent?.intent_id ?? '');
+  await journal.pool.query(
+    `INSERT INTO demo11_shadow_positions
+       (underlying,symbol,direction,entry_price,entry_time,mark_price,last_intent_id,updated_at)
+     VALUES ($1,$2,$3,$4,$5,$4,$6,NOW())
+     ON CONFLICT (underlying) DO UPDATE SET
+       symbol=EXCLUDED.symbol,
+       direction=EXCLUDED.direction,
+       entry_price=EXCLUDED.entry_price,
+       entry_time=EXCLUDED.entry_time,
+       mark_price=EXCLUDED.mark_price,
+       last_intent_id=EXCLUDED.last_intent_id,
+       updated_at=NOW()`,
+    [underlying,symbol,direction,price,candleTime,intentId || null]
+  );
+  await journal.appendEvent('DEMO11_SHADOW_OPENED', intentId || underlying, {
+    underlying,
+    symbol,
+    direction,
+    entryPrice:price,
+    entryTime:candleTime,
+    canonicalSignalEventId:row?.canonicalSignalEventId ?? null,
+    canonicalExecutionDecisionId:row?.canonicalExecutionDecisionId ?? null,
+    canonicalIntentId:intentId || null,
+    reason:'UNAVAILABLE_ON_BINANCE_TESTNET',
+  });
+}
+
+async function applyUnavailableShadow(
+  journal: PgEventJournal,
+  row: any
+): Promise<string> {
+  const underlying=String(row?.underlying ?? '');
+  const price=Number(row?.referencePrice);
+  const action=rowAction(row);
+  const existing=await getUnavailableShadowPosition(journal,underlying);
+
+  if (Number.isFinite(price) && price > 0 && existing) {
+    await journal.pool.query(
+      `UPDATE demo11_shadow_positions SET mark_price=$2,updated_at=NOW() WHERE underlying=$1`,
+      [underlying,price]
+    );
+  }
+
+  if(action.kind==='NONE'){
+    return existing ? 'SHADOW_HOLD' : 'SHADOW_NO_ACTION';
+  }
+  if(!(Number.isFinite(price)&&price>0)){
+    return 'SHADOW_REFERENCE_PRICE_UNAVAILABLE';
+  }
+
+  const candleTime=Number(action.candleTime ?? Date.now());
+  if(action.kind==='EXIT_FLAT'){
+    if(!existing) return 'SHADOW_ALREADY_FLAT';
+    await closeUnavailableShadowPosition(journal,existing,price,candleTime,'TARGET_FLAT');
+    return 'SHADOW_CLOSED';
+  }
+
+  const direction=action.direction as Direction;
+  if(existing){
+    if(String(existing.direction)===direction){
+      return 'SHADOW_HOLD_MATCHING_POSITION';
+    }
+    await closeUnavailableShadowPosition(journal,existing,price,candleTime,'REVERSE_SIGNAL');
+    await openUnavailableShadowPosition(journal,row,direction,price,candleTime);
+    return 'SHADOW_REVERSED';
+  }
+
+  await openUnavailableShadowPosition(journal,row,direction,price,candleTime);
+  return 'SHADOW_OPENED';
+}
+
+async function listUnavailableShadowPositions(journal: PgEventJournal): Promise<any[]> {
+  const r=await journal.pool.query(
+    `SELECT underlying,symbol,direction,entry_price,entry_time,mark_price,last_intent_id
+       FROM demo11_shadow_positions ORDER BY underlying`
+  );
+  return r.rows.map((x:any)=>({
+    underlying:String(x.underlying),
+    symbol:String(x.symbol),
+    direction:String(x.direction),
+    entryPrice:Number(x.entry_price),
+    entryTime:Number(x.entry_time),
+    markPrice:x.mark_price===null?null:Number(x.mark_price),
+    canonicalIntentId:x.last_intent_id??null,
+  }));
+}
+
 function computeLedgerPnl(fills: any[]): {
   realizedGrossPnl: number;
   realizedBySymbol: Record<string, number>;
@@ -542,6 +728,7 @@ async function main(): Promise<void> {
     await journal.init();
     await journal.healthcheck();
     await ensurePendingSchema(journal);
+    await ensureUnavailableShadowSchema(journal);
     report.expiredPendingEntries = await expirePendingEntries(journal, Date.now());
 
     const lock = await leader.acquire();
@@ -613,9 +800,12 @@ async function main(): Promise<void> {
         continue;
       }
       if (!testnetTradable.has(symbol)) {
-        state.result = 'UNAVAILABLE_ON_TESTNET';
+        state.executionRoute = 'SHADOW_UNAVAILABLE_ON_TESTNET';
+        state.referencePrice = row?.referencePrice ?? null;
+        state.result = await applyUnavailableShadow(journal, row);
         continue;
       }
+      state.executionRoute = 'BINANCE_TESTNET';
 
       // Demo-11 intentionally has no cross-cycle pending-entry authority.
       // The current bridge must still expose this exact canonical ALLOW intent.
@@ -1111,6 +1301,8 @@ async function main(): Promise<void> {
 
     const ownedPositions = finalPositions.filter(x => x.ownership === 'DEMO11_OWNED');
     const foreignPositions = finalPositions.filter(x => x.ownership !== 'DEMO11_OWNED');
+    const shadowPositions = await listUnavailableShadowPositions(journal);
+    report.shadowPositions = shadowPositions;
     const fillsResult = await journal.pool.query(
       `SELECT symbol,side,fill_price,quantity,event_time,fill_id
          FROM live_fills
@@ -1141,8 +1333,11 @@ async function main(): Promise<void> {
     report.summary = {
       targetSymbols: targetSymbols.length,
       testnetTradableSymbols: targetSymbols.filter(x => testnetTradable.has(x)).length,
-      unavailableOnTestnet: report.symbols.filter((x: any) => x.result === 'UNAVAILABLE_ON_TESTNET').length,
+      unavailableOnTestnet: report.symbols.filter((x: any) => x.executionRoute === 'SHADOW_UNAVAILABLE_ON_TESTNET').length,
       openPositions: ownedPositions.length,
+      shadowOpenPositions: shadowPositions.length,
+      shadowOpenedThisCycle: report.symbols.filter((x: any) => x.result === 'SHADOW_OPENED' || x.result === 'SHADOW_REVERSED').length,
+      shadowClosedThisCycle: report.symbols.filter((x: any) => x.result === 'SHADOW_CLOSED').length,
       foreignOrLegacyOpenPositions: foreignPositions.length,
       openedProtected: report.symbols.filter((x: any) => x.result === 'OPEN_PROTECTED').length,
       closedToFlat: report.symbols.filter((x: any) => x.result === 'CLOSED_TO_FLAT').length,
