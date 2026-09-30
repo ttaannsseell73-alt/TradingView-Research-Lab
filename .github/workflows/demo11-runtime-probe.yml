@@ -69,21 +69,16 @@ jobs:
           Write-Host "=== DEMO11 EXCHANGE AUDIT ==="
           $envFile=Join-Path $bot ".demo11-testnet.local.env"
           if(!(Test-Path $envFile)){ throw "DEMO11_TESTNET_ENV_MISSING" }
-          foreach($line in Get-Content $envFile){
-            if($line -match '^([^#=]+)=(.*)
-          $env:BINANCE_FUTURES_URL="https://testnet.binancefuture.com"
-          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\auditDemo11Exchange.ts" "$bot\src\tools\auditDemo11Exchange.ts" -Force
-          Push-Location $bot
-          try {
-            npx tsx src/tools/auditDemo11Exchange.ts
-            if($LASTEXITCODE -ne 0){ throw "DEMO11_EXCHANGE_AUDIT_FAILED" }
-          } finally {
-            Pop-Location
-          }
-){
-              Write-Host "ENV_KEY=$($matches[1])"
-              [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
-            }
+          foreach($rawLine in Get-Content $envFile){
+            $line=[string]$rawLine
+            $trim=$line.Trim()
+            if(!$trim -or $trim.StartsWith("#")){ continue }
+            $eq=$line.IndexOf("=")
+            if($eq -le 0){ continue }
+            $key=$line.Substring(0,$eq).Trim()
+            $val=$line.Substring($eq+1)
+            Write-Host ("ENV_KEY="+$key)
+            Set-Item -Path ("Env:"+$key) -Value $val
           }
           $env:BINANCE_FUTURES_URL="https://testnet.binancefuture.com"
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\auditDemo11Exchange.ts" "$bot\src\tools\auditDemo11Exchange.ts" -Force
