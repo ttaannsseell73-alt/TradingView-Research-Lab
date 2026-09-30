@@ -200,12 +200,19 @@ fs.mkdirSync(outDir,{recursive:true});
 
 const months = monthWindows(START, END);
 const all = [];
+const skippedCandidates = [];
 
 for (const candidate of CANDIDATES) {
   const file = path.join(csvDir, candidate.symbol + '-' + candidate.timeframe + '.csv');
-  if (!fs.existsSync(file)) throw new Error('Missing CSV: ' + file);
+  if (!fs.existsSync(file)) {
+    skippedCandidates.push({...candidate, reason:'MISSING_CSV'});
+    continue;
+  }
   const candles = parseCsv(file).filter((b)=>b.t >= START && b.t < END);
-  if (!candles.length) throw new Error('No candles for ' + candidate.symbol + ' ' + candidate.timeframe);
+  if (!candles.length) {
+    skippedCandidates.push({...candidate, reason:'NO_HISTORY'});
+    continue;
+  }
 
   for (const pivot of PIVOTS) {
     for (const holdBars of HOLDS) {
@@ -312,6 +319,7 @@ const summary = {
   schemaVersion:1,
   window:{start:new Date(START).toISOString(),end:new Date(END).toISOString()},
   candidates:CANDIDATES,
+  skippedCandidates,
   structuralConfigs:PIVOTS.length*HOLDS.length,
   directionModes:DIRECTIONS,
   totalVariants:all.length,
