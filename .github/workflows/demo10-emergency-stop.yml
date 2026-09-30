@@ -70,6 +70,8 @@ jobs:
             throw "Refusing shutdown writes outside Binance TESTNET"
           }
 
+          New-Item -ItemType Directory -Force "$env:BOT_ROOT\scripts" | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\scripts\demo11-shutdown-policy.mjs" "$env:BOT_ROOT\scripts\demo11-shutdown-policy.mjs" -Force
           Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\stopDemo10AndClosePositions.ts" "$env:BOT_ROOT\src\tools\stopDemo10AndClosePositions.ts" -Force
           Push-Location $env:BOT_ROOT
           try {
