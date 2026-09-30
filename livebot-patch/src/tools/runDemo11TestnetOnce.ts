@@ -790,6 +790,8 @@ async function main(): Promise<void> {
         signalStatus: row?.status ?? null,
         signalDirection: row?.direction ?? null,
         fresh: row?.fresh ?? false,
+        source: row?.source ?? null,
+        catchup: row?.catchup ?? false,
         result: 'NO_ACTION',
       };
 
