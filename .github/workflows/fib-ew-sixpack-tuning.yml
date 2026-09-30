@@ -1,0 +1,88 @@
+name: Fibonacci Elliott Sixpack Tuning
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  tune:
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      startsWith(github.event.issue.title, '[FIB EW SIXPACK TUNE]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PROGRESS_ISSUE_NUMBER: ${{ github.event.issue.number }}
+      FREQTRADE_FUTURES_ROOT: C:/Users/TANSEL/Desktop/SCALPING_LAB/freqtrade/user_data/data/binance/futures
+      DATAHUB_PYTHON: C:/actions-runner-datahub/.venv-datahub/Scripts/python.exe
+      RESEARCH_CSV_DIR: D:/Futures-Research-Data/research-cache/2025-09-20__2026-09-20__1m-5m-15m-1h-4h
+      TUNING_OUT_DIR: artifacts/fib-ew-sixpack-tuning
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Validate tuning script
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node --check scripts/run-fib-ew-sixpack-tuning.mjs
+
+      - name: Ensure sixpack CSV cache exists
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $needed = @(
+            "TAOUSDT-1h.csv",
+            "GRIFFAINUSDT-1h.csv",
+            "UBUSDT-15m.csv",
+            "BEATUSDT-1h.csv",
+            "LAYERUSDT-1h.csv",
+            "TAGUSDT-1h.csv"
+          )
+          $missing = @($needed | Where-Object { -not (Test-Path (Join-Path $env:RESEARCH_CSV_DIR $_)) })
+          if ($missing.Count -eq 0) {
+            Write-Host "All sixpack CSVs already cached; no export needed."
+            exit 0
+          }
+
+          Write-Host "Missing cache files: $($missing -join ', ')"
+          $plan = [ordered]@{
+            backend = "local"
+            symbols = @("TAOUSDT","GRIFFAINUSDT","UBUSDT","BEATUSDT","LAYERUSDT","TAGUSDT")
+            timeframes = @("15m","1h")
+            start = "2025-09-20T00:00:00Z"
+            end = "2026-09-20T00:00:00Z"
+          }
+          $planFile = Join-Path (Get-Location) "sixpack-cache-plan.json"
+          $json = $plan | ConvertTo-Json -Depth 5 -Compress
+          [System.IO.File]::WriteAllText($planFile, $json, (New-Object System.Text.UTF8Encoding($false)))
+          & $env:DATAHUB_PYTHON scripts/export-freqtrade-feather-batch.py --root $env:FREQTRADE_FUTURES_ROOT --plan $planFile --output-dir $env:RESEARCH_CSV_DIR
+          if ($LASTEXITCODE -ne 0) { throw "Local feather export failed." }
+
+      - name: Run sixpack parameter matrix
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          node scripts/run-fib-ew-sixpack-tuning.mjs
+
+      - name: Upload sixpack tuning result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fib-ew-sixpack-tuning
+          path: |
+            artifacts/fib-ew-sixpack-tuning/sixpack-summary.json
+            artifacts/fib-ew-sixpack-tuning/sixpack-all.json
+            artifacts/fib-ew-sixpack-tuning/top-per-candidate.csv
+            artifacts/fib-ew-sixpack-tuning/common-both.csv
+          if-no-files-found: warn
+          compression-level: 6
