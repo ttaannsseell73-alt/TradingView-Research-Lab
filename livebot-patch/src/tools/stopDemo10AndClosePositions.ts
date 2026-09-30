@@ -3,7 +3,6 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { RateLimitGovernor } from '../live/CanonicalLive';
 import { BinanceUsdmAdapter } from '../live/BinanceUsdmAdapter';
-// @ts-ignore -- runtime ESM helper has no TypeScript declaration file
 import {
   buildShutdownVerdict,
   deterministicShutdownClientOrderId,
@@ -12,7 +11,9 @@ import {
   isBenignCancelError,
   isUnavailableSymbolError,
   symbolSnapshotFromGlobal,
-} from '../../scripts/demo11-shutdown-policy.mjs';
+} 
+// @ts-ignore -- runtime ESM helper has no TypeScript declaration file
+from '../../scripts/demo11-shutdown-policy.mjs';
 
 dotenv.config();
 
