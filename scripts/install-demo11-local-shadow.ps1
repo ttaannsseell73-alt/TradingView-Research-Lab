@@ -21,6 +21,23 @@ Mirror-Tree (Join-Path $SourceRoot "scripts") (Join-Path $InstallRoot "scripts")
 $runner = Join-Path $InstallRoot "run-demo11-local-shadow.ps1"
 Copy-Item (Join-Path $SourceRoot "scripts\run-demo11-local-shadow.ps1") $runner -Force
 
+
+$pythonExe = if ($env:pythonLocation) { Join-Path $env:pythonLocation "python.exe" } else { $null }
+if (!$pythonExe -or !(Test-Path $pythonExe)) { throw "SETUP_PYTHON_RUNTIME_MISSING" }
+& $pythonExe -E -c "import sys; print(sys.executable)" | Out-Host
+if ($LASTEXITCODE -ne 0) { throw "SETUP_PYTHON_RUNTIME_BROKEN" }
+
+$nodeCmd = Get-Command node.exe -ErrorAction Stop
+$nodeExe = $nodeCmd.Source
+if (!(Test-Path $nodeExe)) { throw "SETUP_NODE_RUNTIME_MISSING" }
+
+$runtimeConfig = [ordered]@{
+  pythonExe = $pythonExe
+  nodeExe = $nodeExe
+  createdAt = (Get-Date).ToUniversalTime().ToString("o")
+}
+$runtimeConfig | ConvertTo-Json | Set-Content (Join-Path $InstallRoot "runtime.json") -Encoding UTF8
+
 $statusPath = Join-Path $InstallRoot "artifacts\demo11\DEMO11_LOCAL_STATUS.json"
 if (Test-Path $statusPath) { Remove-Item $statusPath -Force }
 
