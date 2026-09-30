@@ -25,6 +25,7 @@ function baseReport(){
       {
         underlying:'GUA',symbol:'GUAUSDT',strategy:'a',timeframe:'15m',state_hash:'ha',
         signal:{direction:'LONG',transitionAgeBars:0},
+        market:{bid:99,ask:101,mid:100},
         event:{event_id:'sig_a',side:'LONG',candle_close_ts:1000},
         execution_decision:{execution_decision_id:'dec_a',verdict:'ALLOW',reason:null}
       },
@@ -45,6 +46,7 @@ test('only merged intent lead becomes executable fresh action',()=>{
   assert.equal(out.rows[0].fresh,true);
   assert.equal(out.rows[0].action,'ENTER_LONG');
   assert.equal(out.rows[0].canonicalIntent.intent_id,'int_1');
+  assert.equal(out.rows[0].referencePrice,100);
   assert.equal(out.rows[1].status,'SUPPORTING_SIGNAL');
   assert.equal(out.rows[1].fresh,false);
 });
