@@ -6,44 +6,18 @@ $Log = Join-Path $Art "local-shadow.log"
 $Status = Join-Path $Art "DEMO11_LOCAL_STATUS.json"
 $env:PYTHONHOME = $null
 $env:PYTHONPATH = $null
-$PythonExe = $null
-$PythonPrefix = @()
-
-function Resolve-Demo11Python {
-  $py = Get-Command py.exe -ErrorAction SilentlyContinue
-  if ($py) {
-    & $py.Source -3.12 -E -c "import sys; assert sys.version_info[:2] >= (3, 12); print(sys.executable)" *> $null
-    if ($LASTEXITCODE -eq 0) {
-      return [pscustomobject]@{ Exe = $py.Source; Prefix = @("-3.12","-E") }
-    }
-  }
-
-  $python = Get-Command python.exe -ErrorAction SilentlyContinue
-  if ($python) {
-    & $python.Source -E -c "import sys; assert sys.version_info[:2] >= (3, 10); print(sys.executable)" *> $null
-    if ($LASTEXITCODE -eq 0) {
-      return [pscustomobject]@{ Exe = $python.Source; Prefix = @("-E") }
-    }
-  }
-
-  $legacy = "C:\actions-runner-datahub\.venv-datahub\Scripts\python.exe"
-  if (Test-Path $legacy) {
-    & $legacy -E -c "import sys; print(sys.executable)" *> $null
-    if ($LASTEXITCODE -eq 0) {
-      return [pscustomobject]@{ Exe = $legacy; Prefix = @("-E") }
-    }
-  }
-
-  throw "NO_WORKING_PYTHON_RUNTIME"
-}
-
-$ResolvedPython = Resolve-Demo11Python
-$PythonExe = $ResolvedPython.Exe
-$PythonPrefix = @($ResolvedPython.Prefix)
+$RuntimePath = Join-Path $Root "runtime.json"
+if (!(Test-Path $RuntimePath)) { throw "DEMO11_RUNTIME_CONFIG_MISSING" }
+$Runtime = Get-Content $RuntimePath -Raw | ConvertFrom-Json
+$PythonExe = [string]$Runtime.pythonExe
+$NodeExe = [string]$Runtime.nodeExe
+if (!(Test-Path $PythonExe)) { throw "DEMO11_PYTHON_RUNTIME_MISSING" }
+if (!(Test-Path $NodeExe)) { throw "DEMO11_NODE_RUNTIME_MISSING" }
 
 function Invoke-Demo11Python([string[]]$ScriptArgs) {
-  & $PythonExe @PythonPrefix @ScriptArgs
+  & $PythonExe -E @ScriptArgs
 }
+
 New-Item -ItemType Directory -Force $Art | Out-Null
 $mutex = New-Object System.Threading.Mutex($false, "Global\Demo11ReadOnlyShadow")
 $locked = $false
@@ -56,13 +30,13 @@ try {
   Invoke-Demo11Python @("scripts\fetch-live-market-snapshot.py","research\demo_cohort_10.json","artifacts\demo11\live-market.json") *>> $Log
   if ($LASTEXITCODE -ne 0) { throw "MARKET_SNAPSHOT_EXIT_$LASTEXITCODE" }
 
-  node "scripts\build-execution-watchlist.mjs" "research\demo_cohort_10.json" "artifacts\demo11\live-market.json" "research\tradability_policy.json" "artifacts\demo11\execution" *>> $Log
+  & $NodeExe "scripts\build-execution-watchlist.mjs" "research\demo_cohort_10.json" "artifacts\demo11\live-market.json" "research\tradability_policy.json" "artifacts\demo11\execution" *>> $Log
   if ($LASTEXITCODE -ne 0) { throw "EXECUTION_WATCHLIST_EXIT_$LASTEXITCODE" }
 
   Invoke-Demo11Python @("scripts\fetch-current-candles.py","research\demo_cohort_10.json","artifacts\demo11\execution\EXECUTION_WATCHLIST.json","artifacts\demo11\candles") *>> $Log
   if ($LASTEXITCODE -ne 0) { throw "CANDLES_EXIT_$LASTEXITCODE" }
 
-  node "scripts\run-demo11-persistent-shadow.mjs" "research\demo_cohort_10.json" "artifacts\demo11\execution\EXECUTION_WATCHLIST.json" "artifacts\demo11\candles" "artifacts\demo11\persistent-shadow" "research\tradability_policy_v2.json" "artifacts\demo11\persistent-shadow\DEMO11_EVIDENCE_STATE.json" *>> $Log
+  & $NodeExe "scripts\run-demo11-persistent-shadow.mjs" "research\demo_cohort_10.json" "artifacts\demo11\execution\EXECUTION_WATCHLIST.json" "artifacts\demo11\candles" "artifacts\demo11\persistent-shadow" "research\tradability_policy_v2.json" "artifacts\demo11\persistent-shadow\DEMO11_EVIDENCE_STATE.json" *>> $Log
   if ($LASTEXITCODE -ne 0) { throw "PERSISTENT_SHADOW_EXIT_$LASTEXITCODE" }
 
   $state = Get-Content (Join-Path $Art "persistent-shadow\DEMO11_EVIDENCE_STATE.json") -Raw | ConvertFrom-Json
