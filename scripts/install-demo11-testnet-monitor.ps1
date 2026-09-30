@@ -27,7 +27,7 @@ Copy-Item $qEnv $demoEnv -Force
 
 Push-Location $BotRoot
 try {
-  node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.scripts=p.scripts||{};p.scripts['demo11:testnet-once']='tsx src/tools/runDemo11TestnetOnce.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\\n');"
+  node -e "const fs=require('fs');let raw=fs.readFileSync('package.json','utf8');raw=raw.replace(/(?:\\\\n)+\\s*$/,'').trimEnd();const p=JSON.parse(raw);p.scripts=p.scripts||{};p.scripts['demo11:testnet-once']='tsx src/tools/runDemo11TestnetOnce.ts';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
   if ($LASTEXITCODE -ne 0) { throw "PACKAGE_SCRIPT_UPDATE_FAILED" }
   if (!(Test-Path ".git\info\exclude")) { New-Item -ItemType File -Force ".git\info\exclude" | Out-Null }
   $exclude = Get-Content ".git\info\exclude" -ErrorAction SilentlyContinue
