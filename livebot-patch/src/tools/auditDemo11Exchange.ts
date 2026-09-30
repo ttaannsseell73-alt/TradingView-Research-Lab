@@ -3,7 +3,8 @@ import path from 'path';
 import { BinanceUsdmAdapter } from '../live/BinanceUsdmAdapter';
 import { RateLimitGovernor } from '../live/CanonicalLive';
 
-dotenv.config({ path: path.join(process.cwd(), '.demo11-testnet.local.env') });
+dotenv.config();
+dotenv.config({ path: path.join(process.cwd(), '.demo11-testnet.local.env'), override: false });
 
 async function main() {
   const baseUrl=process.env.BINANCE_FUTURES_URL?.trim() || 'https://testnet.binancefuture.com';
