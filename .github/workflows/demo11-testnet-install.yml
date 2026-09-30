@@ -1,0 +1,151 @@
+name: Install Demo-11 Canonical TESTNET
+
+on:
+  push:
+    branches: [ demo11-canonical-rebuild ]
+    paths:
+      - '.github/workflows/demo11-testnet-install.yml'
+      - 'livebot-patch/src/live/**'
+      - 'livebot-patch/src/tools/runDemo11TestnetOnce.ts'
+      - 'scripts/build-demo11-testnet-bridge.mjs'
+      - 'scripts/run-demo11-testnet-cycle.ps1'
+      - 'scripts/run-demo11-testnet-loop.ps1'
+      - 'scripts/install-demo11-testnet-monitor.ps1'
+      - 'scripts/run-demo11-local-shadow.ps1'
+      - 'scripts/install-demo11-local-shadow.ps1'
+      - 'research/demo11/**'
+      - 'research/demo_cohort_10.json'
+      - 'research/tradability_policy_v2.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: demo11-canonical-testnet-install
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/demo11_testnet_bridge.test.mjs
+      - run: node --check scripts/build-demo11-testnet-bridge.mjs
+
+  install:
+    needs: validate
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 25
+    env:
+      DEMO11_STATUS_ISSUE: '181'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate PowerShell installers
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          foreach($p in @(
+            "scripts\run-demo11-local-shadow.ps1",
+            "scripts\install-demo11-local-shadow.ps1",
+            "scripts\run-demo11-testnet-cycle.ps1",
+            "scripts\run-demo11-testnet-loop.ps1",
+            "scripts\install-demo11-testnet-monitor.ps1"
+          )){
+            $tokens=$null; $errors=$null
+            [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE\$p",[ref]$tokens,[ref]$errors) | Out-Null
+            if(@($errors).Count -gt 0){
+              $errors | ForEach-Object { Write-Error $_.Message }
+              throw "POWERSHELL_PARSE_FAILED_$p"
+            }
+          }
+
+      - name: Refresh current canonical shadow runtime
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & "$env:GITHUB_WORKSPACE\scripts\install-demo11-local-shadow.ps1"
+
+      - name: Install canonical TESTNET executor
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          & "$env:GITHUB_WORKSPACE\scripts\install-demo11-testnet-monitor.ps1"
+
+      - name: Capture runtime evidence
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $root="C:\Users\TANSEL\Desktop\Demo11-Shadow"
+          New-Item -ItemType Directory -Force artifacts/demo11-testnet-install | Out-Null
+          Copy-Item "$root\artifacts\demo11\DEMO11_LOCAL_STATUS.json" artifacts/demo11-testnet-install/
+          Copy-Item "$root\artifacts\demo11\DEMO11_TESTNET_STATUS.json" artifacts/demo11-testnet-install/
+          Copy-Item "$root\artifacts\demo11\canonical-shadow\DEMO11_CANONICAL_SHADOW.json" artifacts/demo11-testnet-install/
+          Copy-Item "$root\artifacts\demo11\testnet-bridge\DEMO11_TESTNET_SIGNAL.json" artifacts/demo11-testnet-install/
+          $loops=Get-CimInstance Win32_Process | Where-Object {
+            $_.CommandLine -and ($_.CommandLine -match 'run-demo11-local-loop\.ps1' -or $_.CommandLine -match 'run-demo11-testnet-loop\.ps1')
+          }
+          $loops | Select-Object ProcessId,Name,CommandLine | Format-List | Out-File artifacts/demo11-testnet-install/processes.txt
+
+      - name: Publish canonical TESTNET status
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $p="C:\Users\TANSEL\Desktop\Demo11-Shadow\artifacts\demo11\DEMO11_TESTNET_STATUS.json"
+          $s=Get-Content $p -Raw | ConvertFrom-Json
+          $lines=@(
+            "# Demo-11 TESTNET Runtime Status",
+            "",
+            "- updatedAt: $($s.updatedAt)",
+            "- state: $($s.state)",
+            "- mode: $($s.mode)",
+            "- testnet_orders: ENABLED",
+            "- production_orders: DISABLED",
+            "- cycles: $($s.cycles)",
+            "- canonical_evaluated: $($s.canonicalEvaluated) / 10",
+            "- canonical_transitions: $($s.canonicalTransitions)",
+            "- canonical_ALLOW: $($s.canonicalAllow)",
+            "- canonical_DEFER: $($s.canonicalDefer)",
+            "- canonical_REJECT: $($s.canonicalReject)",
+            "- bridge_fresh_actions: $($s.bridgeFreshActions)",
+            "- testnet_result: $($s.testnetResult)",
+            "- open_positions: $($s.testnetSummary.openPositions)",
+            "- foreign_or_legacy_positions: $($s.testnetSummary.foreignOrLegacyOpenPositions)",
+            "- opened_protected_this_cycle: $($s.testnetSummary.openedProtected)",
+            "- reconciliation_halts: $($s.testnetSummary.reconciliationHalts)",
+            "",
+            "## Symbol results",
+            "",
+            "| Symbol | Strategy | TF | Direction | Fresh | Result |",
+            "|---|---|---|---|---|---|"
+          )
+          foreach($r in @($s.symbolResults)){
+            $lines += "| $($r.symbol) | $($r.strategy) | $($r.timeframe) | $($r.signalDirection) | $($r.fresh) | $($r.result) |"
+          }
+          $lines += @(
+            "",
+            "_Canonical source: immutable Demo-11 SignalEvent → ExecutionDecision → Intent. TESTNET only; production writes disabled._"
+          )
+          $tmp=Join-Path $env:TEMP "demo11-testnet-status.md"
+          [System.IO.File]::WriteAllLines($tmp,$lines,[Text.UTF8Encoding]::new($false))
+          gh issue edit $env:DEMO11_STATUS_ISSUE --repo $env:GITHUB_REPOSITORY --body-file $tmp
+
+      - name: Upload install evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo11-testnet-install-${{ github.run_id }}
+          path: artifacts/demo11-testnet-install
+          if-no-files-found: warn
+          retention-days: 14
