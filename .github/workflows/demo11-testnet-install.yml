@@ -1,3 +1,4 @@
+# Canonical TESTNET runtime: tradable symbols execute; unavailable symbols shadow; production disabled.
 name: Install Demo-11 Canonical TESTNET
 
 on:
