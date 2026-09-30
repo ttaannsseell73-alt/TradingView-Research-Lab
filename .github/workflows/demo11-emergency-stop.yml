@@ -1,0 +1,113 @@
+name: Demo-11 Emergency Stop
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+jobs:
+  stop:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.author_association == 'OWNER' &&
+       github.event.issue.title == '[DEMO11 EMERGENCY STOP]')
+    runs-on: [self-hosted, datahub-local]
+    timeout-minutes: 15
+    env:
+      BOT_ROOT: C:/Users/TANSEL/Desktop/binance-bot
+      DEMO_ROOT: C:/Users/TANSEL/Desktop/Demo11-Shadow
+      DEMO_PG_CONTAINER: canonical-demo11-testnet-pg
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stop Demo-11 local loops and startup relaunchers
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          foreach($name in @("Demo11TestnetMonitor.cmd","Demo11ReadOnlyShadow.cmd")){
+            $startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\$name"
+            if(Test-Path $startup){ Remove-Item $startup -Force; Write-Host "REMOVED_STARTUP=$startup" }
+          }
+          $targets = Get-CimInstance Win32_Process | Where-Object {
+            $_.CommandLine -and (
+              $_.CommandLine -match 'run-demo11-testnet-loop\.ps1' -or
+              $_.CommandLine -match 'run-demo11-local-loop\.ps1' -or
+              $_.CommandLine -match 'run-demo11-testnet-cycle\.ps1' -or
+              $_.CommandLine -match 'run-demo11-local-shadow\.ps1'
+            )
+          }
+          foreach($p in @($targets)){
+            Write-Host "STOP_PROCESS pid=$($p.ProcessId)"
+            Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Flatten Demo-11 Binance TESTNET cohort
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $envFile = Join-Path $env:BOT_ROOT ".demo11-testnet.local.env"
+          if (!(Test-Path $envFile)) { throw "DEMO11_TESTNET_ENV_MISSING" }
+          foreach ($line in Get-Content $envFile) {
+            if ($line -match '^([^#=]+)=(.*)$') {
+              [Environment]::SetEnvironmentVariable($matches[1],$matches[2],"Process")
+            }
+          }
+          $env:LIVEBOT_CANARY_APPROVED = "YES"
+          $env:BINANCE_FUTURES_URL = "https://testnet.binancefuture.com"
+          $env:DEMO11_COHORT_PATH = "$env:GITHUB_WORKSPACE\research\demo_cohort_10.json"
+          if (([Uri]$env:BINANCE_FUTURES_URL).Host.ToLowerInvariant() -ne "testnet.binancefuture.com") {
+            throw "REFUSING_NON_TESTNET_SHUTDOWN"
+          }
+
+          New-Item -ItemType Directory -Force "$env:BOT_ROOT\src\live","$env:BOT_ROOT\src\tools","$env:BOT_ROOT\src\scripts" | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\live\*.ts" "$env:BOT_ROOT\src\live\" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\scripts\demo11-shutdown-policy.mjs" "$env:BOT_ROOT\scripts\demo11-shutdown-policy.mjs" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\livebot-patch\src\tools\stopDemo11AndClosePositions.ts" "$env:BOT_ROOT\src\tools\stopDemo11AndClosePositions.ts" -Force
+
+          Push-Location $env:BOT_ROOT
+          try {
+            npx tsx src/tools/stopDemo11AndClosePositions.ts
+            if ($LASTEXITCODE -ne 0) { throw "DEMO11_TESTNET_FLATTEN_FAILED" }
+          } finally { Pop-Location }
+
+      - name: Clear non-exchange Demo-11 runtime state and stop PostgreSQL
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $running = docker ps --filter "name=^/$env:DEMO_PG_CONTAINER$" --format "{{.Names}}"
+          if ($running) {
+            docker exec $env:DEMO_PG_CONTAINER psql -U postgres -d demo11_testnet -c "TRUNCATE TABLE demo11_shadow_positions, demo11_pending_entries;" 2>$null | Out-Host
+            docker stop $env:DEMO_PG_CONTAINER | Out-Host
+          }
+          Write-Host "DEMO11_RUNTIME_STATE_STOPPED"
+
+      - name: Verify Demo-11 is stopped
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Start-Sleep -Seconds 2
+          foreach($name in @("Demo11TestnetMonitor.cmd","Demo11ReadOnlyShadow.cmd")){
+            $startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\$name"
+            if(Test-Path $startup){ throw "STARTUP_RELAUNCHER_REMAINS_$name" }
+          }
+          $targets = Get-CimInstance Win32_Process | Where-Object {
+            $_.CommandLine -and (
+              $_.CommandLine -match 'run-demo11-testnet-loop\.ps1' -or
+              $_.CommandLine -match 'run-demo11-local-loop\.ps1'
+            )
+          }
+          if(@($targets).Count -gt 0){ throw "DEMO11_LOOP_PROCESS_REMAINS" }
+          Write-Host "DEMO11_EMERGENCY_STOP_VERIFIED"
+
+      - name: Close request
+        if: github.event_name == 'issues'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
