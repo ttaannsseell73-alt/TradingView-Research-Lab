@@ -27,6 +27,7 @@ export class BinanceUsdmAdapter {
   private mode: DeploymentMode;
   private clockOffsetMs = 0;
   private governor?: RateLimitGovernor;
+  private readCache = new Map<string, { expiresAt: number; promise: Promise<any> }>();
 
   constructor(opts: BinanceAdapterOptions = {}) {
     this.http = axios.create({
@@ -68,6 +69,20 @@ export class BinanceUsdmAdapter {
       data: error?.response?.data,
     };
     return safe;
+  }
+
+  private async cachedRead<T>(key: string, ttlMs: number, loader: () => Promise<T>): Promise<T> {
+    const now = Date.now();
+    const cached = this.readCache.get(key);
+    if (cached && cached.expiresAt > now) return cached.promise as Promise<T>;
+    const promise = loader();
+    this.readCache.set(key, { expiresAt: now + ttlMs, promise });
+    try {
+      return await promise;
+    } catch (error) {
+      if (this.readCache.get(key)?.promise === promise) this.readCache.delete(key);
+      throw error;
+    }
   }
 
   private async publicGet<T = any>(path: string, config: any = {}): Promise<AxiosResponse<T>> {
@@ -169,8 +184,10 @@ export class BinanceUsdmAdapter {
   }
 
   async exchangeInfo(): Promise<any> {
-    const response = await this.publicGet('/fapi/v1/exchangeInfo');
-    return response.data;
+    return this.cachedRead('exchangeInfo', 30_000, async () => {
+      const response = await this.publicGet('/fapi/v1/exchangeInfo');
+      return response.data;
+    });
   }
 
   async klines(symbol: string, interval = '15m', limit = 500): Promise<BinanceKline[]> {
@@ -241,12 +258,16 @@ export class BinanceUsdmAdapter {
   }
 
   async getPositionMode(): Promise<'ONE_WAY' | 'HEDGE'> {
-    const data: any = await this.signed('GET', '/fapi/v1/positionSide/dual');
-    return data.dualSidePosition ? 'HEDGE' : 'ONE_WAY';
+    return this.cachedRead('positionMode', 30_000, async () => {
+      const data: any = await this.signed('GET', '/fapi/v1/positionSide/dual');
+      return data.dualSidePosition ? 'HEDGE' : 'ONE_WAY';
+    });
   }
 
   async getAccountConfig(): Promise<any> {
-    return this.signed('GET', '/fapi/v1/accountConfig');
+    return this.cachedRead('accountConfig', 30_000, () =>
+      this.signed('GET', '/fapi/v1/accountConfig')
+    );
   }
 
   async getSymbolConfig(symbol: string): Promise<any> {
