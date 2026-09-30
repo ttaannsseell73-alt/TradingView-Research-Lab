@@ -1,3 +1,4 @@
+# build-fix-trigger: ESM declaration diagnostic patched
 param(
   [string]$Root = "C:\Users\TANSEL\Desktop\Demo11-Shadow",
   [string]$BotRoot = "C:\Users\TANSEL\Desktop\binance-bot"
