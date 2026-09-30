@@ -7,6 +7,7 @@ $Log = Join-Path $Art "demo11-testnet.log"
 $Status = Join-Path $Art "DEMO11_TESTNET_STATUS.json"
 $Canonical = Join-Path $Art "canonical-shadow\DEMO11_CANONICAL_SHADOW.json"
 $Bridge = Join-Path $Art "testnet-bridge\DEMO11_TESTNET_SIGNAL.json"
+$Evidence = Join-Path $Art "persistent-shadow\DEMO11_EVIDENCE_STATE.json"
 $RuntimePath = Join-Path $Root "testnet-runtime.json"
 $DemoEnv = Join-Path $BotRoot ".demo11-testnet.local.env"
 $PgUrl = "postgres://postgres:demo11_testnet_pw@127.0.0.1:55442/demo11_testnet"
@@ -39,7 +40,7 @@ try {
 
   $savedEap = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
-  & $NodeExe (Join-Path $Root "scripts\build-demo11-testnet-bridge.mjs") $Canonical $Bridge *>> $Log
+  & $NodeExe (Join-Path $Root "scripts\build-demo11-testnet-bridge.mjs") $Canonical $Bridge $Evidence *>> $Log
   $bridgeExit = $LASTEXITCODE
   $ErrorActionPreference = $savedEap
   if ($bridgeExit -ne 0) { throw "DEMO11_BRIDGE_EXIT_$bridgeExit" }
@@ -97,6 +98,7 @@ try {
     canonicalDefer = [int]$canonicalDoc.counts.defer
     canonicalReject = [int]$canonicalDoc.counts.reject
     bridgeFreshActions = $freshActions
+    bridgeCatchupActions = [int]($bridgeDoc.catchupActions ?? 0)
     testnetResult = $report.result
     testnetSummary = $report.summary
     testnetPositions = $report.testnetPositions
