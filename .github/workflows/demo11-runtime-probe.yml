@@ -46,3 +46,7 @@ jobs:
               Write-Host "MISSING"
             }
           }
+
+          $execLog=Join-Path $root "artifacts\demo11\demo11-testnet.log"
+          Write-Host "=== TESTNET EXECUTOR LOG TAIL ==="
+          if(Test-Path $execLog){ Get-Content $execLog -Tail 220 } else { Write-Host "MISSING" }
