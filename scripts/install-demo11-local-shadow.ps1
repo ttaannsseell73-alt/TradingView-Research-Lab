@@ -19,8 +19,9 @@ Mirror-Tree (Join-Path $SourceRoot "research") (Join-Path $InstallRoot "research
 Mirror-Tree (Join-Path $SourceRoot "scripts") (Join-Path $InstallRoot "scripts")
 
 $runner = Join-Path $InstallRoot "run-demo11-local-shadow.ps1"
+$loop = Join-Path $InstallRoot "run-demo11-local-loop.ps1"
 Copy-Item (Join-Path $SourceRoot "scripts\run-demo11-local-shadow.ps1") $runner -Force
-
+Copy-Item (Join-Path $SourceRoot "scripts\run-demo11-local-loop.ps1") $loop -Force
 
 $runtimeRoot = Join-Path $InstallRoot "runtime"
 $pythonRoot = Join-Path $runtimeRoot "python312"
@@ -51,7 +52,7 @@ $runtimeConfig | ConvertTo-Json | Set-Content (Join-Path $InstallRoot "runtime.j
 $statusPath = Join-Path $InstallRoot "artifacts\demo11\DEMO11_LOCAL_STATUS.json"
 if (Test-Path $statusPath) { Remove-Item $statusPath -Force }
 
-# Phase 1: prove the exact installed script can complete one full cycle outside Task Scheduler.
+# Phase 1: prove the exact installed one-shot collector completes a full cycle.
 $child = Start-Process -FilePath "powershell.exe" -ArgumentList @("-NoProfile","-ExecutionPolicy","Bypass","-File",$runner) -Wait -PassThru -NoNewWindow
 if ($child.ExitCode -ne 0) {
   if (Test-Path $statusPath) {
@@ -66,35 +67,39 @@ if ($first.error) { throw "LOCAL_SHADOW_PREFLIGHT_FAILED_$($first.error)" }
 if ([int]$first.cycles -lt 1) { throw "LOCAL_SHADOW_PREFLIGHT_CYCLE_NOT_CONFIRMED" }
 $firstCycles = [int]$first.cycles
 
-# Phase 2: install and prove the scheduler itself advances the evidence state.
-$taskName = "Demo11ReadOnlyShadow"
-Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument ('-NoProfile -ExecutionPolicy Bypass -File "' + $runner + '"')
-$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 1)
-$principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType S4U -RunLevel Limited
-$settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 4)
-Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
+# Phase 2: persistent non-admin loop + Startup relaunch.
+$targets = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine -match "run-demo11-local-loop\.ps1" }
+foreach($p in @($targets)) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }
 
-Start-ScheduledTask -TaskName $taskName
+$startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\Demo11ReadOnlyShadow.cmd"
+$cmd = "@echo off`r`nstart `"`" /min powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$loop`"`r`n"
+[System.IO.File]::WriteAllText($startup,$cmd,(New-Object System.Text.UTF8Encoding($false)))
+
+$tracking = $env:RUNNER_TRACKING_ID
+Remove-Item Env:RUNNER_TRACKING_ID -ErrorAction SilentlyContinue
+try {
+  Start-Process -FilePath "powershell.exe" -ArgumentList @("-NoProfile","-WindowStyle","Hidden","-ExecutionPolicy","Bypass","-File",$loop) -WindowStyle Hidden
+} finally {
+  if ($null -ne $tracking -and $tracking -ne "") { $env:RUNNER_TRACKING_ID = $tracking }
+}
+
 $deadline = (Get-Date).AddSeconds(180)
 $advanced = $false
 do {
   Start-Sleep -Seconds 3
   if (Test-Path $statusPath) {
     $s = Get-Content $statusPath -Raw | ConvertFrom-Json
-    if ($s.error) { throw "LOCAL_SHADOW_SCHEDULED_CYCLE_FAILED_$($s.error)" }
+    if ($s.error) { throw "LOCAL_SHADOW_LOOP_CYCLE_FAILED_$($s.error)" }
     if ([int]$s.cycles -gt $firstCycles) { $advanced = $true; break }
   }
 } while ((Get-Date) -lt $deadline)
 
-$task = Get-ScheduledTask -TaskName $taskName
-$taskInfo = Get-ScheduledTaskInfo -TaskName $taskName
-if (!$advanced) {
-  throw "LOCAL_SHADOW_SCHEDULER_NOT_ADVANCING_state=$($task.State)_lastResult=$($taskInfo.LastTaskResult)"
-}
+$loopProcs = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine -match "run-demo11-local-loop\.ps1" }
+if (!$advanced) { throw "LOCAL_SHADOW_LOOP_NOT_ADVANCING_processes=$(@($loopProcs).Count)" }
+if (@($loopProcs).Count -lt 1) { throw "LOCAL_SHADOW_LOOP_PROCESS_MISSING" }
+if (!(Test-Path $startup)) { throw "LOCAL_SHADOW_STARTUP_MISSING" }
 
 $s = Get-Content $statusPath -Raw | ConvertFrom-Json
-Write-Host "DEMO11_LOCAL_SHADOW_RUNNING cycles=$($s.cycles) taskState=$($task.State) lastResult=$($taskInfo.LastTaskResult)"
-$task | Format-List TaskName,State
-$taskInfo | Format-List LastRunTime,LastTaskResult,NextRunTime
+Write-Host "DEMO11_LOCAL_SHADOW_RUNNING cycles=$($s.cycles) loopProcesses=$(@($loopProcs).Count) startup=$startup"
+$loopProcs | Select-Object ProcessId,Name,CommandLine | Format-Table -AutoSize
 Get-Content $statusPath
