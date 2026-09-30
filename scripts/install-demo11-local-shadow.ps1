@@ -29,8 +29,11 @@ $principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" 
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 4)
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 
-Start-ScheduledTask -TaskName $taskName
 $statusPath = Join-Path $InstallRoot "artifacts\demo11\DEMO11_LOCAL_STATUS.json"
+if (Test-Path $statusPath) {
+  Remove-Item $statusPath -Force
+}
+Start-ScheduledTask -TaskName $taskName
 $deadline = (Get-Date).AddSeconds(90)
 do {
   Start-Sleep -Seconds 3
