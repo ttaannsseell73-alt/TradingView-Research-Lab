@@ -50,6 +50,13 @@ $runtimeConfig = [ordered]@{
 $runtimeConfig | ConvertTo-Json | Set-Content (Join-Path $InstallRoot "runtime.json") -Encoding UTF8
 
 $statusPath = Join-Path $InstallRoot "artifacts\demo11\DEMO11_LOCAL_STATUS.json"
+
+# Stop the previous installed loop before preflight so it cannot hold logs/state
+# while the new runtime is being proven.
+$targets = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine -match "run-demo11-local-loop\.ps1" }
+foreach($p in @($targets)) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }
+Start-Sleep -Milliseconds 500
+
 if (Test-Path $statusPath) { Remove-Item $statusPath -Force }
 
 # Phase 1: prove the exact installed one-shot collector completes a full cycle.
@@ -68,9 +75,6 @@ if ([int]$first.cycles -lt 1) { throw "LOCAL_SHADOW_PREFLIGHT_CYCLE_NOT_CONFIRME
 $firstCycles = [int]$first.cycles
 
 # Phase 2: persistent non-admin loop + Startup relaunch.
-$targets = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine -match "run-demo11-local-loop\.ps1" }
-foreach($p in @($targets)) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }
-
 $startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup\Demo11ReadOnlyShadow.cmd"
 $cmd = "@echo off`r`nstart `"`" /min powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$loop`"`r`n"
 [System.IO.File]::WriteAllText($startup,$cmd,(New-Object System.Text.UTF8Encoding($false)))
