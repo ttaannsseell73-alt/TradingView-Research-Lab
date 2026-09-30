@@ -86,3 +86,41 @@ test('flat ALLOW transition becomes explicit exit authority',()=>{
   assert.equal(out.rows[0].status,'FRESH_EXIT');
   assert.equal(out.rows[0].action,'EXIT_TO_FLAT');
 });
+
+test('recent ALLOW event is catch-up executable only inside its timeframe TTL',()=>{
+  const r=baseReport();
+  r.referenceNotional=100;
+  r.hypotheticalIntents=[];
+  r.rows=[{
+    underlying:'GUA',symbol:'GUAUSDT',strategy:'a',timeframe:'15m',state_hash:'h',
+    signal:{direction:'LONG',transitionAgeBars:1},
+    market:{bid:99,ask:101,mid:100},
+    event:null,
+    execution_decision:null
+  }];
+  const evidence={recentEvents:[{
+    underlying:'GUA',symbol:'GUAUSDT',strategy:'a',timeframe:'15m',
+    event_id:'sig_recent',candle_close_ts:1_000_000,side:'LONG',transition:'FLAT→LONG',
+    decision:{
+      execution_decision_id:'dec_recent',
+      signal_event_id:'sig_recent',
+      verdict:'ALLOW',
+      reason:null,
+      max_notional:100
+    }
+  }]};
+
+  const fresh=buildDemo11TestnetBridge(r,evidence,1_060_000);
+  assert.equal(fresh.catchupActions,1);
+  assert.equal(fresh.rows[0].fresh,true);
+  assert.equal(fresh.rows[0].catchup,true);
+  assert.equal(fresh.rows[0].source,'RECENT_EVENT_CATCHUP');
+  assert.equal(fresh.rows[0].canonicalSignalEventId,'sig_recent');
+  assert.ok(fresh.rows[0].canonicalIntent);
+
+  const stale=buildDemo11TestnetBridge(r,evidence,1_000_000+900_001);
+  assert.equal(stale.catchupActions,0);
+  assert.equal(stale.rows[0].fresh,false);
+  assert.equal(stale.rows[0].catchup,false);
+});
+
