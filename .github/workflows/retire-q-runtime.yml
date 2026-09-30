@@ -40,8 +40,8 @@ jobs:
           - automatic_q_cycles: DISABLED
           - q_postgres: stopped where present; data preserved
           - exchange_position_action: NOT_TOUCHED
-          - replacement: Demo-10 live shadow monitor
-          - replacement_status: Issue #150
+          - replacement: Demo-11 canonical TESTNET/shadow runtime
+          - replacement_status: Issue #181
 
           Q is no longer an active monitoring lane.
           "@
