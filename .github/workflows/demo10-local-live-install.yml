@@ -1,24 +1,6 @@
 name: Install Demo-10 Local Testnet Monitor
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'scripts/install-demo10-live-monitor.ps1'
-      - '.github/workflows/demo10-local-live-install.yml'
-      - 'research/demo_cohort_10.json'
-      - 'research/strategy_engine_v2.mjs'
-      - 'research/sr25_strategies.mjs'
-      - 'research/sweep_strategies.mjs'
-      - 'research/visual_strategies.mjs'
-      - 'research/tradability_policy.json'
-      - 'scripts/fetch-live-market-snapshot.py'
-      - 'scripts/fetch-current-candles.py'
-      - 'scripts/build-execution-watchlist.mjs'
-      - 'scripts/build-current-signal-watchlist.mjs'
-      - 'scripts/build-shadow-journal.mjs'
-      - 'livebot-patch/src/live/**'
-      - 'livebot-patch/src/tools/runDemo10TestnetOnce.ts'
   workflow_dispatch:
 
 permissions:
