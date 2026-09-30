@@ -2,7 +2,7 @@ name: Install Demo-11 Canonical TESTNET
 
 on:
   push:
-    branches: [ demo11-canonical-rebuild ]
+    branches: [ main ]
     paths:
       - '.github/workflows/demo11-testnet-install.yml'
       - 'livebot-patch/src/live/**'
