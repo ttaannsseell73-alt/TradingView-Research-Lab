@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { buildFibElliottSuite } from '../research/fib_elliott_strategies.mjs';
 
-const START = Date.parse('2025-09-20T00:00:00Z');
-const END = Date.parse('2026-09-20T00:00:00Z');
+const START = Date.parse(process.env.TUNING_START ?? '2025-09-20T00:00:00Z');
+const END = Date.parse(process.env.TUNING_END ?? '2026-09-20T00:00:00Z');
 const COST = 0.0014;
 const STRESS_COST = 0.0015;
 const LOW_COST = 0.0006;
