@@ -3,11 +3,11 @@
   "runId": "full-reset-20261001",
   "principle": "FULL_RESCAN_FROM_SCRATCH",
   "reuseOldResultsForAcceptance": false,
-  "historicalUniverse": {
-    "includeAllLocallyArchivedUsdM": true,
-    "includeInactiveOrDelisted": true,
-    "expectedHistoricalUniverseSize": 725,
-    "note": "Inactive/delisted symbols remain in research results but cannot be promoted as current trade candidates."
+  "universe": {
+    "source": "CURRENT_BINANCE_USDM_ACTIVE",
+    "requireCurrentlyTrading": true,
+    "includeInactiveOrDelisted": false,
+    "note": "Only symbols actively trading on Binance USD-M at run start are included. Delisted/inactive symbols are excluded entirely."
   },
   "currentCandidateGate": {
     "requireCurrentlyTrading": true,
@@ -19,10 +19,10 @@
       "minSideDepth10bps": 1000,
       "minOpenInterestNotional": 2000000
     },
-    "blockIfInactiveOrDelisted": true,
     "blockIfRecentLiquidityCollapse": true
   },
   "evaluationOrder": [
+    "active_universe_snapshot",
     "data_integrity",
     "strategy_backtest",
     "last_3_months_gate",
