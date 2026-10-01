@@ -1,0 +1,90 @@
+{
+  "shard": 2,
+  "files": 251,
+  "rows": 5020,
+  "errors": 0,
+  "pass3": 33,
+  "pass6": 1,
+  "byStrategy": {
+    "head_shoulders": {
+      "pass3": 3,
+      "pass6": 0
+    },
+    "inverse_head_shoulders": {
+      "pass3": 1,
+      "pass6": 0
+    },
+    "double_top": {
+      "pass3": 0,
+      "pass6": 0
+    },
+    "double_bottom": {
+      "pass3": 1,
+      "pass6": 0
+    },
+    "triple_top": {
+      "pass3": 3,
+      "pass6": 0
+    },
+    "triple_bottom": {
+      "pass3": 1,
+      "pass6": 0
+    },
+    "bull_flag": {
+      "pass3": 4,
+      "pass6": 0
+    },
+    "bear_flag": {
+      "pass3": 3,
+      "pass6": 0
+    },
+    "bull_pennant": {
+      "pass3": 2,
+      "pass6": 0
+    },
+    "bear_pennant": {
+      "pass3": 2,
+      "pass6": 0
+    },
+    "ascending_triangle": {
+      "pass3": 1,
+      "pass6": 0
+    },
+    "descending_triangle": {
+      "pass3": 3,
+      "pass6": 0
+    },
+    "sym_triangle_long": {
+      "pass3": 0,
+      "pass6": 0
+    },
+    "sym_triangle_short": {
+      "pass3": 1,
+      "pass6": 0
+    },
+    "rising_wedge": {
+      "pass3": 1,
+      "pass6": 0
+    },
+    "falling_wedge": {
+      "pass3": 2,
+      "pass6": 0
+    },
+    "rectangle_long": {
+      "pass3": 0,
+      "pass6": 0
+    },
+    "rectangle_short": {
+      "pass3": 0,
+      "pass6": 0
+    },
+    "cup_handle": {
+      "pass3": 3,
+      "pass6": 0
+    },
+    "inverse_cup_handle": {
+      "pass3": 2,
+      "pass6": 1
+    }
+  }
+}
