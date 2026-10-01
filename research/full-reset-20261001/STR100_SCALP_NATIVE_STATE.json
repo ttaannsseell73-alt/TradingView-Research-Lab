@@ -1,0 +1,14 @@
+{
+  "status": "STOPPED_STALE",
+  "correctedAt": "2026-10-01T21:31:00+03:00",
+  "reason": "Recorded worker PIDs no longer exist; prior state falsely reported RUNNING after timeout/restart workers died.",
+  "previous": {
+    "total": 10,
+    "completed": 0,
+    "staleRunning": [
+      "030-fvg-motion",
+      "031-strategy-500-turtle-soup-ny-v5-m5-sweep"
+    ]
+  },
+  "policy": "Do not resume timeout-loop exact sources until isolated. Preserve checkpoints. Do not count anonymous strategy001/004 results as canonical until provenance/name is resolved."
+}
