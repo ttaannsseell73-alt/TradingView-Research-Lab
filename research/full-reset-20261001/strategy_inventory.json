@@ -39,23 +39,25 @@
     {
       "id": "Q_CLASS_RECOVERY",
       "source": "existing",
-      "action": "full_rescan_separate"
+      "action": "REFERENCE_ONLY_NOT_RUN",
+      "reason": "variant/recovery machinery excluded from first-pass canonical rescan"
     },
     {
       "id": "NEARPASS_RECOVERY",
       "source": "existing",
-      "action": "full_rescan_separate"
+      "action": "REFERENCE_ONLY_NOT_RUN",
+      "reason": "variant/recovery machinery excluded from first-pass canonical rescan"
     },
     {
       "id": "STR100_EXACT",
       "source": "existing",
       "declaredManifestItems": 100,
-      "action": "resume_source_recovery_then_full_rescan"
+      "action": "exact_source_strategies_only_no_variants"
     },
     {
       "id": "FREQTRADE_SCALP",
       "source": "existing",
-      "action": "inventory_then_full_rescan_separate"
+      "action": "canonical_strategies_only_full_rescan_separate"
     },
     {
       "id": "MODEL_BASED",
@@ -67,12 +69,13 @@
         "ai-trading-system",
         "crypto-trading-ai-SAC"
       ],
-      "action": "benchmark_separate"
+      "action": "canonical_model_configuration_only_benchmark_separate"
     },
     {
       "id": "NEW_DISCOVERY",
       "source": "new_research",
-      "action": "add_only_as_new_provenance_never_modify_existing"
+      "action": "add_standalone_canonical_strategies_only_no_variants"
     }
-  ]
+  ],
+  "variantPolicy": "NO_VARIANTS_FIRST_PASS"
 }
