@@ -613,9 +613,15 @@ async function main() {
     return;
   }
 
-  const symbols = universeFromFeather(dataRoot);
-  if (symbols.length < 500) {
-    throw new Error(`exact universe guard failed: expected at least 500 symbols, found ${symbols.length}`);
+  let symbols = universeFromFeather(dataRoot);
+  const symbolsFile = process.env.EXACT_SYMBOLS_FILE;
+  if (symbolsFile) {
+    const requested = new Set(fs.readFileSync(path.resolve(symbolsFile), 'utf8').split(/\r?\n/).map((x) => x.trim()).filter(Boolean));
+    symbols = symbols.filter((symbol) => requested.has(symbol));
+  }
+  const minUniverse = Number(process.env.EXACT_MIN_UNIVERSE ?? 500);
+  if (symbols.length < minUniverse) {
+    throw new Error(`exact universe guard failed: expected at least ${minUniverse} symbols, found ${symbols.length}`);
   }
   const timeframes = String(process.env.EXACT_TIMEFRAMES ?? '1m,5m,15m,1h,4h')
     .split(',').map((x) => x.trim()).filter((x) => Object.hasOwn(TF_MS, x));

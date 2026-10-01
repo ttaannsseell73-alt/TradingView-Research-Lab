@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "mode": "EXACT_SOURCE_ONLY",
+    "sourceMutation": "FORBIDDEN",
+    "inputOverrides": "FORBIDDEN",
+    "strategyOverrides": "FORBIDDEN",
+    "indicatorToStrategyConversion": "FORBIDDEN",
+    "syntheticVariants": "EXCLUDED",
+    "onUnavailable": "SKIP",
+    "note": "Fetch original TradingView Pine source, hash it, execute unchanged. If source is unavailable, protected/invite-only, not a strategy, ambiguous, or runtime-unsupported, skip without reconstruction."
+  },
+  "screenshotsExpected": 25,
+  "screenshotItems": 25,
+  "sweepExactItems": 14,
+  "items": [
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Bollinger + RSI, Double Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/zopumZ8a-Bollinger-RSI-Double-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "MACD + SMA 200 Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/yMCa3XZD-MACD-SMA-200-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "SuperTrend STRATEGY",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/P5Gu6F8k/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "PMax Explorer STRATEGY & SCREENER",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/nHGK4Qtp/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "3Commas Bot",
+      "author": "Bjorgum",
+      "url": "https://www.tradingview.com/script/MvlwAzSg-3Commas-Bot/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Hull Suite Strategy",
+      "author": "DashTrader",
+      "url": "https://www.tradingview.com/script/Q9OQye4C-Hull-Suite-Strategy/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Buy&Sell Strategy depends on AO+Stoch+RSI+ATR",
+      "author": "SerdarYILMAZ",
+      "url": "https://www.tradingview.com/script/RpYoQCVJ-Buy-Sell-Strategy-depends-on-AO-Stoch-RSI-ATR-by-SerdarYILMAZ/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Ultimate Strategy Template",
+      "author": "Daveatt",
+      "url": "https://www.tradingview.com/script/2lGyzYkC-Ultimate-Strategy-Template/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Golden Cross, SMA 200 Moving Average Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/6ZReHYKn-Golden-Cross-SMA-200-Moving-Average-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Flawless Victory Strategy - 15min BTC",
+      "author": "Trebor_Namor",
+      "url": null
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "Ichimoku + Daily-Candle_X + HULL-MA_X + MacD",
+      "author": "SeaSide420",
+      "url": "https://www.tradingview.com/script/RJBjyl2W-Ichimoku-Daily-Candle-X-HULL-MA-X-MacD/"
+    },
+    {
+      "origin": "screenshot_1",
+      "group": "screenshots",
+      "name": "RSI Divergence Indicator strategy",
+      "author": "eemani123",
+      "url": "https://www.tradingview.com/script/qSLcZSyw-RSI-Divergence-Indicator-strategy/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Open Close Cross Strategy R5 revised by JustUncleL",
+      "author": "JustUncleL",
+      "url": "https://www.tradingview.com/script/vObmEraY-Open-Close-Cross-Strategy-R5-revised-by-JustUncleL/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Bjorgum Double Tap",
+      "author": "Bjorgum",
+      "url": null
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Bollinger + RSI, Double Strategy Long-Only by ChartArt v1.2",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/HDSdFMa3-Bollinger-RSI-Double-Strategy-Long-Only-by-ChartArt-v1-2/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Fractal Breakout Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/EjLwVtgp-Fractal-Breakout-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "UT Bot Strategy",
+      "author": "QuantNomad",
+      "url": "https://www.tradingview.com/script/VKMgZdYr-UT-Bot-Strategy/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Twin Optimized Trend Tracker Strategy TOTT",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/eENf7NpJ/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "ANN Strategy V2",
+      "author": "sirolf2009",
+      "url": "https://www.tradingview.com/script/oY725jQw-ANN-Strategy-v2/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "MACD + Stochastic, Double Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/G5ro3y87-MACD-Stochastic-Double-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "EMA Slope + EMA Cross Strategy (by ChartArt)",
+      "author": "ChartArt",
+      "url": "https://www.tradingview.com/script/XLGBqrZq-EMA-Slope-EMA-Cross-Strategy-by-ChartArt/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "TradingView Alerts to MT4 MT5 + dynamic variables NON-REPAINTING",
+      "author": "Peter_O",
+      "url": "https://www.tradingview.com/script/9MJO3AgE-TradingView-Alerts-to-MT4-MT5-dynamic-variables-NON-REPAINTING/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "MACD ReLoaded STRATEGY",
+      "author": "KivancOzbilgic",
+      "url": "https://www.tradingview.com/script/VO6DY8s1-MACD-ReLoaded-STRATEGY/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Moon Phases Strategy [LuxAlgo]",
+      "author": "LuxAlgo",
+      "url": "https://www.tradingview.com/script/yvDyq0pv-Moon-Phases-Strategy-LuxAlgo/"
+    },
+    {
+      "origin": "screenshot_2",
+      "group": "screenshots",
+      "name": "Super Scalper - 5 Min 15 Min",
+      "author": "VinayKumarKV",
+      "url": "https://www.tradingview.com/script/4ORGCiTh-Super-Scalper-5-Min-15-Min/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Swing Failure Pattern Strategy Btc Only 5min",
+      "author": "Danish7421",
+      "url": "https://www.tradingview.com/script/Ma3rSidl-Swing-Failure-Pattern-Strategy-Btc-Only-5min/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Crypto Institutional Liquidity Sweep Strategy",
+      "author": "Danish7421",
+      "url": "https://www.tradingview.com/script/ZhJzjmAk-Crypto-Institutional-Liquidity-Sweep-Strategy/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "MNQ Liquidity Sweep Strategy ( KUSH )",
+      "author": "guptakush961",
+      "url": "https://www.tradingview.com/script/cnydr3fS-MNQ-Liquidity-Sweep-Strategy-KUSH/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Liquidity Sweep & RSI Divergence (Fixed $ Risk)",
+      "author": "riipperz",
+      "url": "https://www.tradingview.com/script/zCYYilCg-Liquidity-Sweep-RSI-Divergence-Fixed-Risk/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "FVG.MOTION",
+      "author": "EricAdjei",
+      "url": "https://www.tradingview.com/script/A4aVR9fB-FVG-MOTION/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Strategy_500 - Turtle Soup NY V5 M5 Sweep",
+      "author": "Fran_Pineda",
+      "url": "https://www.tradingview.com/script/XC77YPtV/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Liquidity Sweep Rider Institutional HFT Grabber",
+      "author": "uzair2join",
+      "url": "https://www.tradingview.com/script/Wys8loiZ-Liquidity-Sweep-Rider-Institutional-HFT-Grabber/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "13 EMA Breakout + Liquidity Sweep + BOS Confirmation (A / A+)",
+      "author": "dominiccaldwell13",
+      "url": "https://www.tradingview.com/script/iueqDnDD-13-EMA-Breakout-Liquidity-Sweep-BOS-Confirmation-A-A/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "ICT Daily Liquidity Sweep [PineGen AI]",
+      "author": "PinegenAI",
+      "url": "https://www.tradingview.com/script/SlWseGFp-ICT-Daily-Liquidity-Sweep-PineGen-AI/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Sweep & Reverse | Liquidity Sweep Reversal Strategy",
+      "author": "blitz_locked",
+      "url": "https://www.tradingview.com/script/GoeqO1ev-Sweep-Reverse-Liquidity-Sweep-Reversal-Strategy/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "Market Structure Swing Strategy",
+      "author": "mreckeweg99",
+      "url": "https://www.tradingview.com/script/tevFM5BB-Market-Structure-Swing-Strategy/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "NQ 9:45-10:15 ICT Strategy - Complete",
+      "author": "uzair2join",
+      "url": "https://www.tradingview.com/script/8NHRB35j-NQ-9-45-10-15-ICT-Strategy-Complete/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "SMC Liquidity Grab Pro",
+      "author": "Ericem",
+      "url": "https://www.tradingview.com/script/WZ4s1MRC-SMC-Liquidity-Grab-Pro/"
+    },
+    {
+      "origin": "sweep_exact_research",
+      "group": "sweep_exact",
+      "name": "El Jaguar SFP FVG Sweep [Artillery]",
+      "author": "ArtilleryTrades",
+      "url": "https://www.tradingview.com/script/hXaJJEYq-El-Jaguar-SFP-FVG-Sweep-Artillery/"
+    }
+  ]
+}
