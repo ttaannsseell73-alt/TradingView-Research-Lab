@@ -56,5 +56,15 @@
     "mustBackfillThrough": "2026-10-01T00:00:00Z",
     "requireCoverage": 0.98,
     "rerunAffectedWindows": true
+  },
+  "variantPolicy": {
+    "mode": "FORBIDDEN",
+    "parameterSweeps": false,
+    "tuning": false,
+    "syntheticVariants": false,
+    "recoveryVariants": false,
+    "directionVariants": false,
+    "ruleMutation": false,
+    "note": "First-pass research uses one canonical/original implementation per strategy only. Variants may be considered later by explicit decision."
   }
 }
