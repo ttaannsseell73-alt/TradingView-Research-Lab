@@ -1,0 +1,971 @@
+{
+  "schemaVersion": 1,
+  "runId": "full-reset-20261001",
+  "generatedAt": "2026-10-01T01:36:37.883Z",
+  "activeUniverse": 527,
+  "eligibleSixMonthSymbols": 503,
+  "shortHistorySymbols": 24,
+  "stage1TradeableUniverse": 248,
+  "canonicalStrategies": 101,
+  "variants": false,
+  "testedCombinations": 122016,
+  "pass3": 1196,
+  "pass6": 84,
+  "taskFailures": 48,
+  "familyStatus": [
+    {
+      "schemaVersion": 1,
+      "family": "algo9",
+      "generatedAt": "2026-10-01T01:23:36.780Z",
+      "tested": 11070,
+      "taskFailures": 10,
+      "pass3": 56,
+      "pass6": 3,
+      "mandatoryRule": "3/3 AND 6/6, canonical strategy only, no variants",
+      "byTimeframe": {
+        "15m": {
+          "tested": 2214,
+          "pass3": 13,
+          "pass6": 0
+        },
+        "1h": {
+          "tested": 2214,
+          "pass3": 27,
+          "pass6": 2
+        },
+        "1m": {
+          "tested": 2214,
+          "pass3": 3,
+          "pass6": 0
+        },
+        "4h": {
+          "tested": 2214,
+          "pass3": 10,
+          "pass6": 1
+        },
+        "5m": {
+          "tested": 2214,
+          "pass3": 3,
+          "pass6": 0
+        }
+      },
+      "top6m": [
+        {
+          "symbol": "SKYAIUSDT",
+          "timeframe": "4h",
+          "id": "ott",
+          "stressNet": 1162.160456782313,
+          "pf": 4.05517073769083,
+          "dd": 0.5804440512379623,
+          "trades": 88
+        },
+        {
+          "symbol": "GTCUSDT",
+          "timeframe": "1h",
+          "id": "mavilimw",
+          "stressNet": 2.4774409004774127,
+          "pf": 2.115605437888083,
+          "dd": 0.19829673005652593,
+          "trades": 91
+        },
+        {
+          "symbol": "PHAUSDT",
+          "timeframe": "1h",
+          "id": "mavilimw",
+          "stressNet": 1.7289083080508645,
+          "pf": 1.6692489538244877,
+          "dd": 0.563359685841028,
+          "trades": 94
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "family": "sr35",
+      "generatedAt": "2026-10-01T01:27:24.831Z",
+      "tested": 43050,
+      "taskFailures": 10,
+      "pass3": 480,
+      "pass6": 30,
+      "mandatoryRule": "3/3 AND 6/6, canonical strategy only, no variants",
+      "byTimeframe": {
+        "15m": {
+          "tested": 8610,
+          "pass3": 169,
+          "pass6": 9
+        },
+        "1h": {
+          "tested": 8610,
+          "pass3": 139,
+          "pass6": 12
+        },
+        "1m": {
+          "tested": 8610,
+          "pass3": 49,
+          "pass6": 3
+        },
+        "4h": {
+          "tested": 8610,
+          "pass3": 25,
+          "pass6": 0
+        },
+        "5m": {
+          "tested": 8610,
+          "pass3": 98,
+          "pass6": 6
+        }
+      },
+      "top6m": [
+        {
+          "symbol": "QUSDT",
+          "timeframe": "5m",
+          "id": "sr_range_edge",
+          "stressNet": 292.63307896288296,
+          "pf": 2.219135969059694,
+          "dd": 0.3576611489757018,
+          "trades": 651
+        },
+        {
+          "symbol": "QUSDT",
+          "timeframe": "5m",
+          "id": "sr25_liquidity_absorption",
+          "stressNet": 58.215038298109086,
+          "pf": 1.836162957364815,
+          "dd": 0.31236366561062534,
+          "trades": 679
+        },
+        {
+          "symbol": "GRASSUSDT",
+          "timeframe": "5m",
+          "id": "sr25_poc_mean_reversion",
+          "stressNet": 19.50398991672205,
+          "pf": 1.9763762383863155,
+          "dd": 0.40082173584244807,
+          "trades": 443
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "1h",
+          "id": "sr_liquidity_sweep",
+          "stressNet": 18.60895271175125,
+          "pf": 4.017517400281608,
+          "dd": 0.16284164759725406,
+          "trades": 106
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "1h",
+          "id": "sr25_liquidity_sweep_reclaim",
+          "stressNet": 18.60895271175125,
+          "pf": 4.017517400281608,
+          "dd": 0.16284164759725406,
+          "trades": 106
+        },
+        {
+          "symbol": "4USDT",
+          "timeframe": "1h",
+          "id": "sr25_camarilla_h3_l3",
+          "stressNet": 16.743559885011702,
+          "pf": 2.3620372528240847,
+          "dd": 0.4224989574770526,
+          "trades": 146
+        },
+        {
+          "symbol": "GRASSUSDT",
+          "timeframe": "1h",
+          "id": "sr_prior_day_sweep",
+          "stressNet": 15.46322955502346,
+          "pf": 3.2874601334846982,
+          "dd": 0.32764680445261074,
+          "trades": 86
+        },
+        {
+          "symbol": "GRASSUSDT",
+          "timeframe": "1h",
+          "id": "sr25_previous_day_sweep",
+          "stressNet": 15.46322955502346,
+          "pf": 3.2874601334846982,
+          "dd": 0.32764680445261074,
+          "trades": 86
+        },
+        {
+          "symbol": "BRUSDT",
+          "timeframe": "1h",
+          "id": "sr25_kernel_supply_demand",
+          "stressNet": 9.847713183541618,
+          "pf": 1.7096663774608876,
+          "dd": 0.508755398738975,
+          "trades": 210
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "15m",
+          "id": "sr_liquidity_sweep",
+          "stressNet": 9.210191153758279,
+          "pf": 1.7728335304853737,
+          "dd": 0.26846599150438477,
+          "trades": 426
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "15m",
+          "id": "sr25_liquidity_sweep_reclaim",
+          "stressNet": 9.210191153758279,
+          "pf": 1.7728335304853737,
+          "dd": 0.26846599150438477,
+          "trades": 426
+        },
+        {
+          "symbol": "GRASSUSDT",
+          "timeframe": "1m",
+          "id": "sr25_poc_mean_reversion",
+          "stressNet": 5.735702344881713,
+          "pf": 1.5957018544667914,
+          "dd": 0.3717171015469958,
+          "trades": 916
+        },
+        {
+          "symbol": "DASHUSDT",
+          "timeframe": "1h",
+          "id": "sr_liquidity_sweep",
+          "stressNet": 5.654161998128051,
+          "pf": 2.1644015929601874,
+          "dd": 0.3065411880808765,
+          "trades": 118
+        },
+        {
+          "symbol": "DASHUSDT",
+          "timeframe": "1h",
+          "id": "sr25_liquidity_sweep_reclaim",
+          "stressNet": 5.654161998128051,
+          "pf": 2.1644015929601874,
+          "dd": 0.3065411880808765,
+          "trades": 118
+        },
+        {
+          "symbol": "MONUSDT",
+          "timeframe": "15m",
+          "id": "sr_liquidity_sweep",
+          "stressNet": 5.497246487288974,
+          "pf": 1.6079555784371231,
+          "dd": 0.31227500366987626,
+          "trades": 431
+        },
+        {
+          "symbol": "MONUSDT",
+          "timeframe": "15m",
+          "id": "sr25_liquidity_sweep_reclaim",
+          "stressNet": 5.497246487288974,
+          "pf": 1.6079555784371231,
+          "dd": 0.31227500366987626,
+          "trades": 431
+        },
+        {
+          "symbol": "EULUSDT",
+          "timeframe": "15m",
+          "id": "sr25_value_area_80",
+          "stressNet": 5.324299628210061,
+          "pf": 2.6349022036621164,
+          "dd": 0.26156414800076966,
+          "trades": 124
+        },
+        {
+          "symbol": "GRASSUSDT",
+          "timeframe": "15m",
+          "id": "sr25_poc_mean_reversion",
+          "stressNet": 5.113061433775883,
+          "pf": 1.7624021833849295,
+          "dd": 0.2884527650048665,
+          "trades": 252
+        },
+        {
+          "symbol": "GRASSUSDT",
+          "timeframe": "15m",
+          "id": "sr25_value_area_80",
+          "stressNet": 4.862506494573621,
+          "pf": 1.9823562495862952,
+          "dd": 0.4094929648869796,
+          "trades": 122
+        },
+        {
+          "symbol": "PIEVERSEUSDT",
+          "timeframe": "5m",
+          "id": "sr25_pdh_fvg_mss",
+          "stressNet": 4.633775856419084,
+          "pf": 1.9342479082457675,
+          "dd": 0.5034161290322581,
+          "trades": 81
+        },
+        {
+          "symbol": "MONUSDT",
+          "timeframe": "1h",
+          "id": "sr25_poc_mean_reversion",
+          "stressNet": 4.221188952458163,
+          "pf": 1.8094042656014697,
+          "dd": 0.24117749845413172,
+          "trades": 148
+        },
+        {
+          "symbol": "POWERUSDT",
+          "timeframe": "15m",
+          "id": "sr25_inverse_fvg",
+          "stressNet": 3.9071065859877647,
+          "pf": 1.7132430910722674,
+          "dd": 0.3489727537687768,
+          "trades": 198
+        },
+        {
+          "symbol": "EULUSDT",
+          "timeframe": "15m",
+          "id": "sr25_lsob",
+          "stressNet": 3.1766969461337844,
+          "pf": 1.7291570631509636,
+          "dd": 0.44018537127261936,
+          "trades": 162
+        },
+        {
+          "symbol": "MANAUSDT",
+          "timeframe": "5m",
+          "id": "sr25_poc_mean_reversion",
+          "stressNet": 1.8328683928704672,
+          "pf": 1.7138806051201882,
+          "dd": 0.1924050884255999,
+          "trades": 425
+        },
+        {
+          "symbol": "RENDERUSDT",
+          "timeframe": "1h",
+          "id": "sr25_value_area_80",
+          "stressNet": 1.8071704725185533,
+          "pf": 2.306743086240578,
+          "dd": 0.14518757515030056,
+          "trades": 108
+        },
+        {
+          "symbol": "BBUSDT",
+          "timeframe": "1m",
+          "id": "sr25_camarilla_h3_l3",
+          "stressNet": 1.4920981905288007,
+          "pf": 1.6031097413112128,
+          "dd": 0.331727240965781,
+          "trades": 191
+        },
+        {
+          "symbol": "CELOUSDT",
+          "timeframe": "1h",
+          "id": "sr_liquidity_sweep",
+          "stressNet": 1.3990725232970016,
+          "pf": 2.133802398501944,
+          "dd": 0.23308964113835062,
+          "trades": 102
+        },
+        {
+          "symbol": "CELOUSDT",
+          "timeframe": "1h",
+          "id": "sr25_liquidity_sweep_reclaim",
+          "stressNet": 1.3990725232970016,
+          "pf": 2.133802398501944,
+          "dd": 0.23308964113835062,
+          "trades": 102
+        },
+        {
+          "symbol": "COMPUSDT",
+          "timeframe": "1m",
+          "id": "sr25_camarilla_h3_l3",
+          "stressNet": 1.2698521658853235,
+          "pf": 1.5759718430312013,
+          "dd": 0.17187244094488174,
+          "trades": 192
+        },
+        {
+          "symbol": "SNXUSDT",
+          "timeframe": "5m",
+          "id": "sr25_pdh_fvg_mss",
+          "stressNet": 1.2322621923411572,
+          "pf": 2.071987369686267,
+          "dd": 0.2762054728760427,
+          "trades": 79
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "family": "sweep20",
+      "generatedAt": "2026-10-01T01:29:50.736Z",
+      "tested": 24600,
+      "taskFailures": 10,
+      "pass3": 428,
+      "pass6": 34,
+      "mandatoryRule": "3/3 AND 6/6, canonical strategy only, no variants",
+      "byTimeframe": {
+        "15m": {
+          "tested": 4920,
+          "pass3": 169,
+          "pass6": 15
+        },
+        "1h": {
+          "tested": 4920,
+          "pass3": 80,
+          "pass6": 10
+        },
+        "1m": {
+          "tested": 4920,
+          "pass3": 38,
+          "pass6": 1
+        },
+        "4h": {
+          "tested": 4920,
+          "pass3": 23,
+          "pass6": 3
+        },
+        "5m": {
+          "tested": 4920,
+          "pass3": 118,
+          "pass6": 5
+        }
+      },
+      "top6m": [
+        {
+          "symbol": "QUSDT",
+          "timeframe": "15m",
+          "id": "swp_range48_reclaim",
+          "stressNet": 118.52151803460801,
+          "pf": 3.135730368300339,
+          "dd": 0.5210831162481349,
+          "trades": 223
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "1h",
+          "id": "swp_volume_absorption",
+          "stressNet": 37.92250810688531,
+          "pf": 7.871727632618994,
+          "dd": 0.160243107999541,
+          "trades": 86
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "1h",
+          "id": "swp_range24_reclaim",
+          "stressNet": 18.60895271175125,
+          "pf": 4.017517400281608,
+          "dd": 0.16284164759725406,
+          "trades": 106
+        },
+        {
+          "symbol": "SOONUSDT",
+          "timeframe": "5m",
+          "id": "swp_range48_reclaim",
+          "stressNet": 16.49893519666551,
+          "pf": 1.6708742980870859,
+          "dd": 0.2573495113236174,
+          "trades": 623
+        },
+        {
+          "symbol": "GRASSUSDT",
+          "timeframe": "1h",
+          "id": "swp_prior_day",
+          "stressNet": 15.46322955502346,
+          "pf": 3.2874601334846982,
+          "dd": 0.32764680445261074,
+          "trades": 86
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "1h",
+          "id": "swp_wick_sfp",
+          "stressNet": 12.137232969032922,
+          "pf": 4.137102697481501,
+          "dd": 0.18389427917620127,
+          "trades": 74
+        },
+        {
+          "symbol": "BOMEUSDT",
+          "timeframe": "1h",
+          "id": "swp_pivot_sfp_body",
+          "stressNet": 10.338037285855087,
+          "pf": 3.338044354586101,
+          "dd": 0.21443054259248595,
+          "trades": 122
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "15m",
+          "id": "swp_range24_reclaim",
+          "stressNet": 9.210191153758279,
+          "pf": 1.7728335304853737,
+          "dd": 0.26846599150438477,
+          "trades": 426
+        },
+        {
+          "symbol": "FLOCKUSDT",
+          "timeframe": "15m",
+          "id": "swp_rsi_exhaustion",
+          "stressNet": 8.799741225185183,
+          "pf": 1.887387313673214,
+          "dd": 0.28430033843845115,
+          "trades": 225
+        },
+        {
+          "symbol": "NOMUSDT",
+          "timeframe": "1h",
+          "id": "swp_wick_sfp",
+          "stressNet": 6.146070326728645,
+          "pf": 2.7661641935979193,
+          "dd": 0.37215983685222787,
+          "trades": 82
+        },
+        {
+          "symbol": "FLOCKUSDT",
+          "timeframe": "5m",
+          "id": "swp_atr_expansion",
+          "stressNet": 6.041417025223906,
+          "pf": 1.3931477422931815,
+          "dd": 0.37206672456262246,
+          "trades": 783
+        },
+        {
+          "symbol": "QUSDT",
+          "timeframe": "15m",
+          "id": "swp_volume_absorption",
+          "stressNet": 5.692244627120901,
+          "pf": 1.6569757752648773,
+          "dd": 0.46177754491014045,
+          "trades": 247
+        },
+        {
+          "symbol": "DASHUSDT",
+          "timeframe": "1h",
+          "id": "swp_range24_reclaim",
+          "stressNet": 5.654161998128051,
+          "pf": 2.1644015929601874,
+          "dd": 0.3065411880808765,
+          "trades": 118
+        },
+        {
+          "symbol": "MONUSDT",
+          "timeframe": "15m",
+          "id": "swp_range24_reclaim",
+          "stressNet": 5.497246487288974,
+          "pf": 1.6079555784371231,
+          "dd": 0.31227500366987626,
+          "trades": 431
+        },
+        {
+          "symbol": "FLOCKUSDT",
+          "timeframe": "5m",
+          "id": "swp_range48_reclaim",
+          "stressNet": 5.069725923657388,
+          "pf": 1.4297547077351522,
+          "dd": 0.41021311380619296,
+          "trades": 605
+        },
+        {
+          "symbol": "MONUSDT",
+          "timeframe": "15m",
+          "id": "swp_range48_reclaim",
+          "stressNet": 3.5696815816279077,
+          "pf": 1.647576550978538,
+          "dd": 0.26650510341012656,
+          "trades": 212
+        },
+        {
+          "symbol": "ZETAUSDT",
+          "timeframe": "4h",
+          "id": "swp_opening_range",
+          "stressNet": 3.385054562019646,
+          "pf": 2.6934301021338793,
+          "dd": 0.17907063522194244,
+          "trades": 96
+        },
+        {
+          "symbol": "WLFIUSDT",
+          "timeframe": "15m",
+          "id": "swp_range48_reclaim",
+          "stressNet": 3.0670983115979,
+          "pf": 1.9699411355260155,
+          "dd": 0.3744537136158209,
+          "trades": 217
+        },
+        {
+          "symbol": "MONUSDT",
+          "timeframe": "15m",
+          "id": "swp_atr_expansion",
+          "stressNet": 3.0316035916643687,
+          "pf": 1.571783881885243,
+          "dd": 0.2896312367256587,
+          "trades": 257
+        },
+        {
+          "symbol": "GUSDT",
+          "timeframe": "4h",
+          "id": "swp_asia_range",
+          "stressNet": 2.927932846303678,
+          "pf": 2.2354730034357426,
+          "dd": 0.32068551493162145,
+          "trades": 89
+        },
+        {
+          "symbol": "LITUSDT",
+          "timeframe": "15m",
+          "id": "swp_range48_reclaim",
+          "stressNet": 2.926153982731096,
+          "pf": 1.5418487025574186,
+          "dd": 0.2991641492593753,
+          "trades": 210
+        },
+        {
+          "symbol": "MOODENGUSDT",
+          "timeframe": "15m",
+          "id": "swp_wick_sfp",
+          "stressNet": 2.853366756961244,
+          "pf": 1.626364345412233,
+          "dd": 0.21906449482528534,
+          "trades": 262
+        },
+        {
+          "symbol": "MONUSDT",
+          "timeframe": "15m",
+          "id": "swp_volume_absorption",
+          "stressNet": 2.8264523736474807,
+          "pf": 1.5930763037559852,
+          "dd": 0.22717696909854734,
+          "trades": 233
+        },
+        {
+          "symbol": "SUSHIUSDT",
+          "timeframe": "15m",
+          "id": "swp_failed_breakout",
+          "stressNet": 2.388606851382162,
+          "pf": 1.5155269917613132,
+          "dd": 0.22082220610686887,
+          "trades": 346
+        },
+        {
+          "symbol": "GUSDT",
+          "timeframe": "1h",
+          "id": "swp_asia_range",
+          "stressNet": 2.3077437879979867,
+          "pf": 2.112001126062591,
+          "dd": 0.40677169679603153,
+          "trades": 104
+        },
+        {
+          "symbol": "GPSUSDT",
+          "timeframe": "1h",
+          "id": "swp_range12_reclaim",
+          "stressNet": 2.1762128353150705,
+          "pf": 1.6712838128513008,
+          "dd": 0.30305003041879475,
+          "trades": 156
+        },
+        {
+          "symbol": "AUSDT",
+          "timeframe": "5m",
+          "id": "swp_compression_reclaim",
+          "stressNet": 2.1219144277114035,
+          "pf": 1.534995442917294,
+          "dd": 0.16482572580304422,
+          "trades": 399
+        },
+        {
+          "symbol": "VIRTUALUSDT",
+          "timeframe": "15m",
+          "id": "swp_failed_breakout",
+          "stressNet": 1.9296717274217499,
+          "pf": 1.4009161218418105,
+          "dd": 0.23832098487747,
+          "trades": 347
+        },
+        {
+          "symbol": "AUSDT",
+          "timeframe": "1m",
+          "id": "swp_asia_range",
+          "stressNet": 1.8816894560051507,
+          "pf": 1.806486066443681,
+          "dd": 0.24563250333143694,
+          "trades": 155
+        },
+        {
+          "symbol": "ARKMUSDT",
+          "timeframe": "4h",
+          "id": "swp_asia_range",
+          "stressNet": 1.8571496844779878,
+          "pf": 1.9499830815841968,
+          "dd": 0.22926587922688757,
+          "trades": 85
+        },
+        {
+          "symbol": "AUSDT",
+          "timeframe": "5m",
+          "id": "swp_asia_range",
+          "stressNet": 1.6889653687300878,
+          "pf": 1.7719571106767553,
+          "dd": 0.18115624218704196,
+          "trades": 151
+        },
+        {
+          "symbol": "ETHFIUSDT",
+          "timeframe": "15m",
+          "id": "swp_rsi_exhaustion",
+          "stressNet": 1.4278506003190357,
+          "pf": 1.3758127689589388,
+          "dd": 0.3304194881804857,
+          "trades": 262
+        },
+        {
+          "symbol": "CELOUSDT",
+          "timeframe": "1h",
+          "id": "swp_range24_reclaim",
+          "stressNet": 1.3990725232970016,
+          "pf": 2.133802398501944,
+          "dd": 0.23308964113835062,
+          "trades": 102
+        },
+        {
+          "symbol": "1INCHUSDT",
+          "timeframe": "15m",
+          "id": "swp_pivot_sfp_body",
+          "stressNet": 1.2316196060231994,
+          "pf": 1.4626188485799891,
+          "dd": 0.20710436300253499,
+          "trades": 426
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "family": "visual28",
+      "generatedAt": "2026-10-01T01:34:30.027Z",
+      "tested": 34440,
+      "taskFailures": 10,
+      "pass3": 198,
+      "pass6": 14,
+      "mandatoryRule": "3/3 AND 6/6, canonical strategy only, no variants",
+      "byTimeframe": {
+        "15m": {
+          "tested": 6888,
+          "pass3": 54,
+          "pass6": 3
+        },
+        "1h": {
+          "tested": 6888,
+          "pass3": 48,
+          "pass6": 5
+        },
+        "1m": {
+          "tested": 6888,
+          "pass3": 8,
+          "pass6": 0
+        },
+        "4h": {
+          "tested": 6888,
+          "pass3": 29,
+          "pass6": 2
+        },
+        "5m": {
+          "tested": 6888,
+          "pass3": 59,
+          "pass6": 4
+        }
+      },
+      "top6m": [
+        {
+          "symbol": "SKYAIUSDT",
+          "timeframe": "15m",
+          "id": "vis_sr_breaks",
+          "stressNet": 83.83302328022226,
+          "pf": 2.5206180036771157,
+          "dd": 0.6716613798388864,
+          "trades": 147
+        },
+        {
+          "symbol": "SKYAIUSDT",
+          "timeframe": "1h",
+          "id": "vis_supertrend_10_3",
+          "stressNet": 31.7267695863272,
+          "pf": 3.0980468015596254,
+          "dd": 0.49824906940652236,
+          "trades": 94
+        },
+        {
+          "symbol": "FOLKSUSDT",
+          "timeframe": "5m",
+          "id": "vis_bollinger_rsi_double",
+          "stressNet": 21.484372340507207,
+          "pf": 1.9387238571431578,
+          "dd": 0.360838461999898,
+          "trades": 351
+        },
+        {
+          "symbol": "MAGMAUSDT",
+          "timeframe": "4h",
+          "id": "vis_candlestick_reversal",
+          "stressNet": 10.026501353759382,
+          "pf": 2.2433432284941803,
+          "dd": 0.46947270557139453,
+          "trades": 90
+        },
+        {
+          "symbol": "PARTIUSDT",
+          "timeframe": "1h",
+          "id": "vis_bb_mean_reversion",
+          "stressNet": 8.064293232991107,
+          "pf": 3.7279108890784127,
+          "dd": 0.25203088975605537,
+          "trades": 73
+        },
+        {
+          "symbol": "SAGAUSDT",
+          "timeframe": "15m",
+          "id": "vis_rsi_entries",
+          "stressNet": 4.502543525947668,
+          "pf": 1.9679947720189146,
+          "dd": 0.3130660964762231,
+          "trades": 126
+        },
+        {
+          "symbol": "GTCUSDT",
+          "timeframe": "4h",
+          "id": "vis_candlestick_reversal",
+          "stressNet": 3.4754808956133854,
+          "pf": 2.4550335790495583,
+          "dd": 0.2697118123034352,
+          "trades": 87
+        },
+        {
+          "symbol": "0GUSDT",
+          "timeframe": "1h",
+          "id": "vis_squeeze_momentum",
+          "stressNet": 3.088577226608,
+          "pf": 1.7067881888170289,
+          "dd": 0.2590428245410189,
+          "trades": 194
+        },
+        {
+          "symbol": "CVCUSDT",
+          "timeframe": "5m",
+          "id": "vis_bollinger_rsi_double",
+          "stressNet": 2.2128648235009645,
+          "pf": 1.6190228466735712,
+          "dd": 0.34692394506009994,
+          "trades": 360
+        },
+        {
+          "symbol": "WUSDT",
+          "timeframe": "15m",
+          "id": "vis_nadaraya_watson",
+          "stressNet": 2.143662015676659,
+          "pf": 1.61645394336121,
+          "dd": 0.24772472454059835,
+          "trades": 203
+        },
+        {
+          "symbol": "LDOUSDT",
+          "timeframe": "1h",
+          "id": "vis_bb_mean_reversion",
+          "stressNet": 2.109651537791073,
+          "pf": 2.188603960855797,
+          "dd": 0.12986632710809287,
+          "trades": 83
+        },
+        {
+          "symbol": "WLFIUSDT",
+          "timeframe": "1h",
+          "id": "vis_bb_mean_reversion",
+          "stressNet": 1.9573021916916167,
+          "pf": 3.0924534518969047,
+          "dd": 0.14876842105263166,
+          "trades": 81
+        },
+        {
+          "symbol": "CVCUSDT",
+          "timeframe": "5m",
+          "id": "vis_rsi_entries",
+          "stressNet": 1.8914060044703538,
+          "pf": 1.526233957215962,
+          "dd": 0.35345260937350986,
+          "trades": 398
+        },
+        {
+          "symbol": "GUSDT",
+          "timeframe": "5m",
+          "id": "vis_nadaraya_watson",
+          "stressNet": 1.3182122045525984,
+          "pf": 1.302037443021215,
+          "dd": 0.36119467519758686,
+          "trades": 594
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "family": "fib9",
+      "generatedAt": "2026-10-01T01:34:49.363Z",
+      "tested": 8856,
+      "taskFailures": 8,
+      "pass3": 34,
+      "pass6": 3,
+      "mandatoryRule": "3/3 AND 6/6, canonical strategy only, no variants",
+      "byTimeframe": {
+        "15m": {
+          "tested": 2214,
+          "pass3": 2,
+          "pass6": 0
+        },
+        "1h": {
+          "tested": 2214,
+          "pass3": 22,
+          "pass6": 3
+        },
+        "4h": {
+          "tested": 2214,
+          "pass3": 9,
+          "pass6": 0
+        },
+        "5m": {
+          "tested": 2214,
+          "pass3": 1,
+          "pass6": 0
+        }
+      },
+      "top6m": [
+        {
+          "symbol": "USELESSUSDT",
+          "timeframe": "1h",
+          "id": "elliott_abc",
+          "stressNet": 1.8895559825146067,
+          "pf": 3.100396957503267,
+          "dd": 0.13753015463426776,
+          "trades": 44
+        },
+        {
+          "symbol": "JUPUSDT",
+          "timeframe": "1h",
+          "id": "fib_golden_pocket",
+          "stressNet": 0.4425751728941867,
+          "pf": 1.1861986960547746,
+          "dd": 0.3292222194876855,
+          "trades": 126
+        },
+        {
+          "symbol": "JUPUSDT",
+          "timeframe": "1h",
+          "id": "fib_retrace_618",
+          "stressNet": 0.4425751728941867,
+          "pf": 1.1861986960547746,
+          "dd": 0.3292222194876855,
+          "trades": 126
+        }
+      ]
+    }
+  ],
+  "checkpointIndex": {
+    "algo9": 1240,
+    "sr35": 1240,
+    "sweep20": 1240,
+    "visual28": 1240,
+    "fib9": 992
+  },
+  "rawResultStorage": "ALL_RESULTS.ndjson streamed from immutable per-family outputs"
+}

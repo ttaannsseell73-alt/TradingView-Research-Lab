@@ -1,0 +1,474 @@
+{
+  "thresholds": {
+    "minQuoteVolume24h": 3000000.0,
+    "maxSpreadBps": 8.0,
+    "minSideDepth10bps": 1000.0,
+    "minOpenInterestNotional": 2000000.0
+  },
+  "symbols": {
+    "0GUSDT": {
+      "symbol": "0GUSDT",
+      "quoteVolume24h": 67340625.3674,
+      "spreadBps": 3.2824552765483177,
+      "openInterestNotional": 12440374.524449999,
+      "bidDepth10bps": 16788.113299999997,
+      "askDepth10bps": 8286.4157,
+      "pass": true,
+      "reasons": []
+    },
+    "1INCHUSDT": {
+      "symbol": "1INCHUSDT",
+      "quoteVolume24h": 3125543.65671,
+      "spreadBps": 0.981113563896002,
+      "openInterestNotional": 3160687.828725,
+      "bidDepth10bps": 3449.68172,
+      "askDepth10bps": 1171.43764,
+      "pass": true,
+      "reasons": []
+    },
+    "4USDT": {
+      "symbol": "4USDT",
+      "quoteVolume24h": 5382609.632397,
+      "spreadBps": 1.412928293888864,
+      "openInterestNotional": 8151154.030014501,
+      "bidDepth10bps": 296.617905,
+      "askDepth10bps": 910.612849,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "ARKMUSDT": {
+      "symbol": "ARKMUSDT",
+      "quoteVolume24h": 3906866.2953,
+      "spreadBps": 7.56143667296703,
+      "openInterestNotional": 2645963.70575,
+      "bidDepth10bps": 1762.0938,
+      "askDepth10bps": 30.8259,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "AUSDT": {
+      "symbol": "AUSDT",
+      "quoteVolume24h": 3629831.40865,
+      "spreadBps": 5.071251077640295,
+      "openInterestNotional": 3012824.79729,
+      "bidDepth10bps": 3109.77415,
+      "askDepth10bps": 353.84753,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "BBUSDT": {
+      "symbol": "BBUSDT",
+      "quoteVolume24h": 4237493.103407,
+      "spreadBps": 4.1928721174009755,
+      "openInterestNotional": 3359275.3375359997,
+      "bidDepth10bps": 788.9128059999999,
+      "askDepth10bps": 1773.2924759999999,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "BOMEUSDT": {
+      "symbol": "BOMEUSDT",
+      "quoteVolume24h": 9569888.2199508,
+      "spreadBps": 1.0060868252935926,
+      "openInterestNotional": 8401142.581973901,
+      "bidDepth10bps": 5000.591410399999,
+      "askDepth10bps": 5810.4232444,
+      "pass": true,
+      "reasons": []
+    },
+    "BRUSDT": {
+      "symbol": "BRUSDT",
+      "quoteVolume24h": 32828918.83662,
+      "spreadBps": 3.259567894672767,
+      "openInterestNotional": 15158174.611469999,
+      "bidDepth10bps": 14189.80291,
+      "askDepth10bps": 3161.04212,
+      "pass": true,
+      "reasons": []
+    },
+    "CELOUSDT": {
+      "symbol": "CELOUSDT",
+      "quoteVolume24h": 11668911.680179,
+      "spreadBps": 3.9643211100097497,
+      "openInterestNotional": 3462369.030687,
+      "bidDepth10bps": 1177.5934000000002,
+      "askDepth10bps": 1666.4374070000001,
+      "pass": true,
+      "reasons": []
+    },
+    "COMPUSDT": {
+      "symbol": "COMPUSDT",
+      "quoteVolume24h": 13025231.46,
+      "spreadBps": 4.075810067250055,
+      "openInterestNotional": 4778277.097965,
+      "bidDepth10bps": 1369.86885,
+      "askDepth10bps": 3016.72544,
+      "pass": true,
+      "reasons": []
+    },
+    "CVCUSDT": {
+      "symbol": "CVCUSDT",
+      "quoteVolume24h": 8143549.95742,
+      "spreadBps": 3.205641929796311,
+      "openInterestNotional": 2552895.2326,
+      "bidDepth10bps": 1445.98409,
+      "askDepth10bps": 2514.6512700000003,
+      "pass": true,
+      "reasons": []
+    },
+    "DASHUSDT": {
+      "symbol": "DASHUSDT",
+      "quoteVolume24h": 55323584.54,
+      "spreadBps": 1.6726603663122876,
+      "openInterestNotional": 26266269.5295,
+      "bidDepth10bps": 26874.905450000002,
+      "askDepth10bps": 18781.8628,
+      "pass": true,
+      "reasons": []
+    },
+    "ETHFIUSDT": {
+      "symbol": "ETHFIUSDT",
+      "quoteVolume24h": 46221306.6336,
+      "spreadBps": 1.2831205491754536,
+      "openInterestNotional": 27239370.025965,
+      "bidDepth10bps": 8451.22817,
+      "askDepth10bps": 7828.06148,
+      "pass": true,
+      "reasons": []
+    },
+    "EULUSDT": {
+      "symbol": "EULUSDT",
+      "quoteVolume24h": 3525997.6203,
+      "spreadBps": 3.5835871707575344,
+      "openInterestNotional": 2734504.3668899997,
+      "bidDepth10bps": 2569.46322,
+      "askDepth10bps": 481.8919,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "FLOCKUSDT": {
+      "symbol": "FLOCKUSDT",
+      "quoteVolume24h": 14775337.01587,
+      "spreadBps": 1.5249714067855318,
+      "openInterestNotional": 3689666.83449,
+      "bidDepth10bps": 9519.85635,
+      "askDepth10bps": 16835.22168,
+      "pass": true,
+      "reasons": []
+    },
+    "FOLKSUSDT": {
+      "symbol": "FOLKSUSDT",
+      "quoteVolume24h": 7000120.5052,
+      "spreadBps": 8.271298593880164,
+      "openInterestNotional": null,
+      "bidDepth10bps": null,
+      "askDepth10bps": null,
+      "pass": false,
+      "reasons": [
+        "WIDE_SPREAD"
+      ]
+    },
+    "GPSUSDT": {
+      "symbol": "GPSUSDT",
+      "quoteVolume24h": 6477708.864951,
+      "spreadBps": 0.9285482148653746,
+      "openInterestNotional": 7679531.988732499,
+      "bidDepth10bps": 1480.486826,
+      "askDepth10bps": 4316.888956,
+      "pass": true,
+      "reasons": []
+    },
+    "GRASSUSDT": {
+      "symbol": "GRASSUSDT",
+      "quoteVolume24h": 59751715.91657,
+      "spreadBps": 2.862868594331205,
+      "openInterestNotional": 18988738.265465003,
+      "bidDepth10bps": 4589.51094,
+      "askDepth10bps": 5532.26328,
+      "pass": true,
+      "reasons": []
+    },
+    "GTCUSDT": {
+      "symbol": "GTCUSDT",
+      "quoteVolume24h": 50765080.126413,
+      "spreadBps": 4.27167876975634,
+      "openInterestNotional": 2642434.755359,
+      "bidDepth10bps": 583.420116,
+      "askDepth10bps": 1345.901637,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "GUSDT": {
+      "symbol": "GUSDT",
+      "quoteVolume24h": 7638156.475123,
+      "spreadBps": 2.0774903916072147,
+      "openInterestNotional": 4652498.0473125,
+      "bidDepth10bps": 7795.560063,
+      "askDepth10bps": 2682.019722,
+      "pass": true,
+      "reasons": []
+    },
+    "JUPUSDT": {
+      "symbol": "JUPUSDT",
+      "quoteVolume24h": 27202849.8996,
+      "spreadBps": 3.050175385086,
+      "openInterestNotional": 17054871.41965,
+      "bidDepth10bps": 10824.5627,
+      "askDepth10bps": 6582.8932,
+      "pass": true,
+      "reasons": []
+    },
+    "LDOUSDT": {
+      "symbol": "LDOUSDT",
+      "quoteVolume24h": 41686586.5362,
+      "spreadBps": 2.19130053686839,
+      "openInterestNotional": 17682694.984500002,
+      "bidDepth10bps": 9667.791799999999,
+      "askDepth10bps": 11178.554699999999,
+      "pass": true,
+      "reasons": []
+    },
+    "LITUSDT": {
+      "symbol": "LITUSDT",
+      "quoteVolume24h": 191479066.49647,
+      "spreadBps": 1.0235152631712492,
+      "openInterestNotional": 68281443.37364998,
+      "bidDepth10bps": 8867.93002,
+      "askDepth10bps": 8683.17492,
+      "pass": true,
+      "reasons": []
+    },
+    "MAGMAUSDT": {
+      "symbol": "MAGMAUSDT",
+      "quoteVolume24h": 4208908.94947,
+      "spreadBps": 0.5317310504337461,
+      "openInterestNotional": 3821230.80585,
+      "bidDepth10bps": 3089.9487,
+      "askDepth10bps": 4426.94804,
+      "pass": true,
+      "reasons": []
+    },
+    "MANAUSDT": {
+      "symbol": "MANAUSDT",
+      "quoteVolume24h": 4271916.9442,
+      "spreadBps": 3.355517029249175,
+      "openInterestNotional": 3411944.775675,
+      "bidDepth10bps": 3727.90506,
+      "askDepth10bps": 6559.58028,
+      "pass": true,
+      "reasons": []
+    },
+    "MONUSDT": {
+      "symbol": "MONUSDT",
+      "quoteVolume24h": 54778121.10269,
+      "spreadBps": 3.1560675398463185,
+      "openInterestNotional": 36945005.4139,
+      "bidDepth10bps": 2721.66708,
+      "askDepth10bps": 4305.23901,
+      "pass": true,
+      "reasons": []
+    },
+    "MOODENGUSDT": {
+      "symbol": "MOODENGUSDT",
+      "quoteVolume24h": 4233737.76306,
+      "spreadBps": 2.1184196589350837,
+      "openInterestNotional": 2541303.8383150003,
+      "bidDepth10bps": 3392.943,
+      "askDepth10bps": 4578.78468,
+      "pass": true,
+      "reasons": []
+    },
+    "NOMUSDT": {
+      "symbol": "NOMUSDT",
+      "quoteVolume24h": 33376476.125958,
+      "spreadBps": 4.283572499463265,
+      "openInterestNotional": 5713042.310007,
+      "bidDepth10bps": 1134.481981,
+      "askDepth10bps": 590.593259,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "PARTIUSDT": {
+      "symbol": "PARTIUSDT",
+      "quoteVolume24h": 3550238.13504,
+      "spreadBps": 7.527286413247717,
+      "openInterestNotional": 3043389.508625,
+      "bidDepth10bps": 2707.51115,
+      "askDepth10bps": 486.41632,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "PHAUSDT": {
+      "symbol": "PHAUSDT",
+      "quoteVolume24h": 74823940.30509,
+      "spreadBps": 1.360266612255475,
+      "openInterestNotional": 7651761.977475001,
+      "bidDepth10bps": 2698.5892,
+      "askDepth10bps": 3453.24624,
+      "pass": true,
+      "reasons": []
+    },
+    "PIEVERSEUSDT": {
+      "symbol": "PIEVERSEUSDT",
+      "quoteVolume24h": 3582725.7811,
+      "spreadBps": 1.3787398317951192,
+      "openInterestNotional": 16937041.86095,
+      "bidDepth10bps": 2198.3143,
+      "askDepth10bps": 658.4809,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "POWERUSDT": {
+      "symbol": "POWERUSDT",
+      "quoteVolume24h": 4865125.38289,
+      "spreadBps": 1.2372409526750539,
+      "openInterestNotional": 3106547.2131000003,
+      "bidDepth10bps": 1063.1088,
+      "askDepth10bps": 1404.41662,
+      "pass": true,
+      "reasons": []
+    },
+    "QUSDT": {
+      "symbol": "QUSDT",
+      "quoteVolume24h": 16937871.067976,
+      "spreadBps": 4.045580203626904,
+      "openInterestNotional": 7209770.924688,
+      "bidDepth10bps": 14719.353981999999,
+      "askDepth10bps": 578.890645,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "RENDERUSDT": {
+      "symbol": "RENDERUSDT",
+      "quoteVolume24h": 20499665.0493,
+      "spreadBps": 5.215123859191081,
+      "openInterestNotional": 13165777.0465,
+      "bidDepth10bps": 15543.6277,
+      "askDepth10bps": 14965.907899999998,
+      "pass": true,
+      "reasons": []
+    },
+    "SAGAUSDT": {
+      "symbol": "SAGAUSDT",
+      "quoteVolume24h": 21625092.312644,
+      "spreadBps": 4.008819402685745,
+      "openInterestNotional": 7517095.072284499,
+      "bidDepth10bps": 2311.708347,
+      "askDepth10bps": 2058.826323,
+      "pass": true,
+      "reasons": []
+    },
+    "SKYAIUSDT": {
+      "symbol": "SKYAIUSDT",
+      "quoteVolume24h": 3893134.6275,
+      "spreadBps": 4.681647940074716,
+      "openInterestNotional": 6099454.489499999,
+      "bidDepth10bps": 863.8108,
+      "askDepth10bps": 791.53017,
+      "pass": false,
+      "reasons": [
+        "THIN_10BPS_BOOK"
+      ]
+    },
+    "SNXUSDT": {
+      "symbol": "SNXUSDT",
+      "quoteVolume24h": 4425850.78096,
+      "spreadBps": 3.9331366765012588,
+      "openInterestNotional": 3142898.3574,
+      "bidDepth10bps": 1697.4300199999998,
+      "askDepth10bps": 2528.81424,
+      "pass": true,
+      "reasons": []
+    },
+    "SOONUSDT": {
+      "symbol": "SOONUSDT",
+      "quoteVolume24h": 348535675.9827,
+      "spreadBps": 1.984323841650739,
+      "openInterestNotional": 32184384.4599,
+      "bidDepth10bps": 3887.9256,
+      "askDepth10bps": 5167.5539,
+      "pass": true,
+      "reasons": []
+    },
+    "SUSHIUSDT": {
+      "symbol": "SUSHIUSDT",
+      "quoteVolume24h": 15015464.1936,
+      "spreadBps": 3.6771465342910274,
+      "openInterestNotional": 4262954.553,
+      "bidDepth10bps": 5167.9953,
+      "askDepth10bps": 4386.027,
+      "pass": true,
+      "reasons": []
+    },
+    "USELESSUSDT": {
+      "symbol": "USELESSUSDT",
+      "quoteVolume24h": 54389607.8582,
+      "spreadBps": 0.42516102974043923,
+      "openInterestNotional": 18620737.260965,
+      "bidDepth10bps": 2966.72267,
+      "askDepth10bps": 5581.18997,
+      "pass": true,
+      "reasons": []
+    },
+    "VIRTUALUSDT": {
+      "symbol": "VIRTUALUSDT",
+      "quoteVolume24h": 38349288.31593,
+      "spreadBps": 2.499375156210672,
+      "openInterestNotional": 17147797.92083,
+      "bidDepth10bps": 17393.05039,
+      "askDepth10bps": 20355.80255,
+      "pass": true,
+      "reasons": []
+    },
+    "WLFIUSDT": {
+      "symbol": "WLFIUSDT",
+      "quoteVolume24h": 27390975.37843,
+      "spreadBps": 1.8130722509297548,
+      "openInterestNotional": 132966877.705585,
+      "bidDepth10bps": 18938.5883,
+      "askDepth10bps": 44220.06076,
+      "pass": true,
+      "reasons": []
+    },
+    "WUSDT": {
+      "symbol": "WUSDT",
+      "quoteVolume24h": 8372458.3864559,
+      "spreadBps": 3.001200480192475,
+      "openInterestNotional": 5532956.7243818,
+      "bidDepth10bps": 2606.6107305,
+      "askDepth10bps": 4328.6012292,
+      "pass": true,
+      "reasons": []
+    },
+    "ZETAUSDT": {
+      "symbol": "ZETAUSDT",
+      "quoteVolume24h": 3649968.29596,
+      "spreadBps": 3.8306837770540474,
+      "openInterestNotional": 4148419.86078,
+      "bidDepth10bps": 1576.26068,
+      "askDepth10bps": 2262.498,
+      "pass": true,
+      "reasons": []
+    }
+  }
+}

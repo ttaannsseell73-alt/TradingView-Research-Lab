@@ -1,0 +1,53 @@
+﻿{
+    "runId":  "full-reset-20261001",
+    "startedAt":  "2026-10-01T01:19:46.9041707Z",
+    "families":  [
+                     {
+                         "family":  "algo9",
+                         "startedAt":  "2026-10-01T01:19:46.9135161Z",
+                         "finishedAt":  "2026-10-01T01:23:36.8117084Z",
+                         "runnerExit":  0,
+                         "summaryExit":  0,
+                         "output":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\out-algo9",
+                         "log":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\run-algo9.log"
+                     },
+                     {
+                         "family":  "sr35",
+                         "startedAt":  "2026-10-01T01:23:36.8794428Z",
+                         "finishedAt":  "2026-10-01T01:27:24.8921197Z",
+                         "runnerExit":  0,
+                         "summaryExit":  0,
+                         "output":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\out-sr35",
+                         "log":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\run-sr35.log"
+                     },
+                     {
+                         "family":  "sweep20",
+                         "startedAt":  "2026-10-01T01:27:24.8997455Z",
+                         "finishedAt":  "2026-10-01T01:29:50.7754259Z",
+                         "runnerExit":  0,
+                         "summaryExit":  0,
+                         "output":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\out-sweep20",
+                         "log":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\run-sweep20.log"
+                     },
+                     {
+                         "family":  "visual28",
+                         "startedAt":  "2026-10-01T01:29:50.7774277Z",
+                         "finishedAt":  "2026-10-01T01:34:30.0937091Z",
+                         "runnerExit":  0,
+                         "summaryExit":  0,
+                         "output":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\out-visual28",
+                         "log":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\run-visual28.log"
+                     },
+                     {
+                         "family":  "fib9",
+                         "startedAt":  "2026-10-01T01:34:30.1130374Z",
+                         "finishedAt":  "2026-10-01T01:34:49.3871370Z",
+                         "runnerExit":  0,
+                         "summaryExit":  0,
+                         "output":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\out-fib9",
+                         "log":  "C:\\Users\\TANSEL\\Desktop\\NightResearch-20261001\\research\\full-reset-20261001\\run-fib9.log"
+                     }
+                 ],
+    "updatedAt":  "2026-10-01T01:34:49.3871370Z",
+    "finishedAt":  "2026-10-01T01:34:49.3871370Z"
+}

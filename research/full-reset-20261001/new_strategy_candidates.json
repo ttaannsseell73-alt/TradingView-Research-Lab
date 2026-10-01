@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "rule": "STANDALONE_CANONICAL_ONLY_NO_VARIANTS",
+  "candidates": [
+    {
+      "id": "funding_mean_reversion",
+      "family": "perp_funding",
+      "status": "SECOND_QUEUE_DATA_REQUIRED",
+      "data": [
+        "funding_rate"
+      ],
+      "source": "Gotodataru/binance-futures-backtest + signalview"
+    },
+    {
+      "id": "oi_price_divergence",
+      "family": "open_interest",
+      "status": "SECOND_QUEUE_DATA_REQUIRED",
+      "data": [
+        "open_interest"
+      ],
+      "source": "Gotodataru/binance-futures-backtest"
+    },
+    {
+      "id": "taker_flow_momentum",
+      "family": "orderflow",
+      "status": "SECOND_QUEUE_DATA_REQUIRED",
+      "data": [
+        "taker_buy_quote",
+        "taker_sell_or_total_quote"
+      ],
+      "source": "Gotodataru/binance-futures-backtest"
+    },
+    {
+      "id": "cointegration_stat_arb",
+      "family": "statistical_arbitrage",
+      "status": "SECOND_QUEUE_OHLCV_PAIR_RESEARCH",
+      "data": [
+        "paired_OHLCV"
+      ],
+      "source": "akoiralaa/statistical-arbitrage"
+    }
+  ],
+  "note": "Not mixed into canonical 101-strategy Gate-6 run. No parameter search or variants in first implementation."
+}

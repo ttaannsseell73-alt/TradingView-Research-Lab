@@ -1,0 +1,2523 @@
+{
+  "requested": 503,
+  "ok": 503,
+  "skipped": 0,
+  "failed": 0,
+  "results": [
+    {
+      "symbol": "0GUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000000BOBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000000MOGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000BONKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000CATUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000CHEEMSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000FLOKIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000LUNCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000RATSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000SATSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000SHIBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1000XECUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1INCHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "1MBABYDOGEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "2ZUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "4USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AAVEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ACEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ACHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ACTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ACUUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ADAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AEROUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AEVOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AGLDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AGTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AINUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AIOTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AIOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AIXBTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AKEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AKTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ALCHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ALGOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ALICEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ALLOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ALLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ALPINEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ALTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ANIMEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ANKRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "APEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "API3USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "APRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "APTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ARBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ARCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ARIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ARKMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ARKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ARPAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ARUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ASRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ASTERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ASTRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ATHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ATOMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ATUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AUCTIONUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AVAAIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AVAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AVNTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AWEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AXLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AXSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "AZTECUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "B2USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BABYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BANANAS31USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BANANAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BANDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BANKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BANUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BARDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BASEDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BASUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BATUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BCHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BEAMXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BEATUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BELUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BERAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BICOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BIGTIMEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BIOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BIRBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BLESSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BLUAIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BLURUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BMTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BNBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BNTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BOMEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BRETTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BREVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BROCCOLI714USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BROCCOLIF3BUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BSBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BSVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BTCDOMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BTCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BTRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BULLAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "BUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "C98USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CAKEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CARVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CATIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CELOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CELRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CETUSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CFGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CFXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CGPTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CHILLGUYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CHRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CHZUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CKBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CLANKERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CLOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "COAIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "COLLECTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "COMPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "COOKIEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "COTIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "COWUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CROSSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CRVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CTKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CTSIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CVCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CVXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CYBERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "CYSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DASHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DEEPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DEXEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DODOXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DOGSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DOLOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DOODUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DOTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DRIFTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DUSKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DYDXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "DYMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EDENUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EDGEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EDUUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EGLDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EIGENUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ELSAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ENAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ENJUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ENSOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ENSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EPICUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ERAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ESPORTSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ESPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ETCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ETHFIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ETHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ETHWUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EULUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "EVAAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FARTCOINUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FETUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FFUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FHEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FIDAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FIGHTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FILUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FLOCKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FLOWUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FLUIDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FLUXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FOGOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FOLKSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FORMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FRAXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "FUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GALAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GASUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GIGGLEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GLMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GMTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GMXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GOATUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GPSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GRASSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GRIFFAINUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GRTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GTCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GUAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GUNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "GWEIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HAEDALUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HANAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HBARUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HEIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HEMIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HIVEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HMSTRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HOLOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HOMEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HOTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HUMAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HYPERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ICNTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ICPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IDOLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ILVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IMXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "INITUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "INJUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "INUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "INXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IOSTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IOTAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IOTXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "IRYSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "JASMYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "JCTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "JELLYJELLYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "JOEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "JSTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "JTOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "JUPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KAIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KAITOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KASUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KATUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KAVAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KERNELUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KGENUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KITEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KMNOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KNCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KOMAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "KSMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LABUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LAYERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LDOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LIGHTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LINEAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LINKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LISTAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LITUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LPTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LQTYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LSKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LTCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LUMIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LUNA2USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "LYNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MAGICUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MAGMAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MANAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MANTAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MANTRAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MASKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MAVIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MAVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MEGAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MELANIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MEMEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MERLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "METISUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "METUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MEWUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MINAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MIRAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MITOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MMTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MOCAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MONUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MOODENGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MORPHOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MOVEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MOVRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MTLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MUBARAKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "MYXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NAORISUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NEARUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NEIROUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NEOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NEWTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NIGHTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NILUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NMRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NOMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NOTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "NXPCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "OGNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "OGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ONDOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ONEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ONGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ONTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ONUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "OPENUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "OPNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "OPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ORCAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ORDERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ORDIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PARTIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PAXGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PENDLEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PENGUUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PEOPLEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PHAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PIEVERSEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PIPPINUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PIXELUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PLAYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PLUMEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PNUTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "POLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "POLYXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "POPCATUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PORTALUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "POWERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "POWRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PROMPTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PROMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PROVEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PTBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PUMPBTCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PUMPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PUNDIXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "PYTHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "QNTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "QTUMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "QUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RAREUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RAVEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RAYSOLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RECALLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "REDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RENDERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RESOLVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "REZUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RIFUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RIVERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RLCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ROBOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RONINUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ROSEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RPLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RSRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RUNEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "RVNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SAFEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SAGAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SAHARAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SANDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SANTOSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SAPIENUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SCRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SEIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SENTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SFPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SHELLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SIGNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SIRENUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SKLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SKRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SKYAIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SKYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SLPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SNXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SOLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SOLVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SOMIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SONICUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SOONUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SOPHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SPACEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SPELLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SPKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SPORTFUNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SPXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SQDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SSVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "STABLEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "STBLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "STEEMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "STOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "STRKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "STXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SUIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SUNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SUPERUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SUSHIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SWARMSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SXTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SYNUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "SYRUPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TACUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TAGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TAIKOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TAKEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TAOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "THETAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "THEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TLMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TNSRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TOSHIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TOWNSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TRADOORUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TRBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TREEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TRIAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TRUMPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TRUSTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TRUTHUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TRXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TSTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TURBOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TURTLEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TUTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "TWTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "UAIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "UBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "UMAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "UNIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "USDCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "USELESSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "USTCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "USUALUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "USUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "VANAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "VELODROMEUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "VELVETUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "VETUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "VIRTUALUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "VTHOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "VVVUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WALUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WAXPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WCTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WETUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WIFUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WLDUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WLFIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WOOUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "WUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XAIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XANUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XAUTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XLMUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XMRUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XNYUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XPINUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XPLUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XRPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XTZUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XVGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "XVSUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "YBUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "YFIUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "YGGUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZAMAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZBTUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZECUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZENUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZEREBROUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZETAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZILUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZKCUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZKPUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZKUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZORAUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZROUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "ZRXUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "\u5e01\u5b89\u4eba\u751fUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "\u6211\u8e0f\u9a6c\u6765\u4e86USDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    },
+    {
+      "symbol": "\u9f99\u867eUSDT",
+      "status": "PATCHED",
+      "bars1m": 1440
+    }
+  ]
+}

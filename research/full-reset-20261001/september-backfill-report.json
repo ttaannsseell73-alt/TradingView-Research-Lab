@@ -1,0 +1,4695 @@
+{
+  "root": "C:\\Users\\TANSEL\\Desktop\\SCALPING_LAB\\freqtrade\\user_data\\data\\binance\\futures",
+  "target_start": "2024-09-19T00:00:00+00:00",
+  "target_end_exclusive": "2026-10-01T00:00:00+00:00",
+  "symbols": 522,
+  "started_at": "2026-10-01T01:00:46.104207+00:00",
+  "results": [
+    {
+      "symbol": "0GUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 543375,
+      "min": "2025-09-17T15:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000000BOBUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 693570,
+      "min": "2025-06-05T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000000MOGUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 995730,
+      "min": "2024-11-07T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000BONKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000CATUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1020210,
+      "min": "2024-10-21T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000CHEEMSUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 969855,
+      "min": "2024-11-25T11:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000FLOKIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000LUNCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000RATSUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000SATSUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000SHIBUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1000XECUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1INCHUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "1MBABYDOGEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "2ZUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 521967,
+      "min": "2025-10-02T12:33:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "4USDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 513390,
+      "min": "2025-10-08T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AAVEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ACEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ACHUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ACTUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 989985,
+      "min": "2024-11-11T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ACUUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 362115,
+      "min": "2026-01-21T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ADAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AEROUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 956745,
+      "min": "2024-12-04T14:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AEVOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AGLDUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AGTUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 716490,
+      "min": "2025-05-20T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AIAUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 541695,
+      "min": "2025-09-18T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AIGENSYNUSDT",
+      "status": "CURRENT",
+      "urls": 22,
+      "downloaded_archives": 2,
+      "rows": 220905,
+      "min": "2026-04-29T14:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AINUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 643035,
+      "min": "2025-07-10T10:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AIOTUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 745170,
+      "min": "2025-04-30T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AIOUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 594030,
+      "min": "2025-08-13T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AIXBTUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 933449,
+      "min": "2024-12-20T18:31:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AKEUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 530610,
+      "min": "2025-09-26T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AKTUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 979950,
+      "min": "2024-11-18T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ALCHUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 907935,
+      "min": "2025-01-07T11:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ALGOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ALICEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ALLOUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 464279,
+      "min": "2025-11-11T14:01:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ALLUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 604230,
+      "min": "2025-08-06T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ALPINEUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 736695,
+      "min": "2025-05-06T09:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ALTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ANIMEUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 884580,
+      "min": "2025-01-23T17:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ANKRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "APEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "API3USDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "APRUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 491850,
+      "min": "2025-10-23T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "APTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARBUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARCUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 893460,
+      "min": "2025-01-17T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARIAUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 563820,
+      "min": "2025-09-03T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARKMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARPAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ARXUSDT",
+      "status": "CURRENT",
+      "urls": 24,
+      "downloaded_archives": 2,
+      "rows": 142275,
+      "min": "2026-06-23T04:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ASRUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 736710,
+      "min": "2025-05-06T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ASTERUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 540720,
+      "min": "2025-09-19T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ASTRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ATHUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 785295,
+      "min": "2025-04-02T15:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ATOMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ATUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 483150,
+      "min": "2025-10-29T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AUCTIONUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 705119,
+      "min": "2025-05-28T08:01:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AVAAIUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 893445,
+      "min": "2025-01-17T13:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AVAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 943860,
+      "min": "2024-12-13T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AVNTUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 554940,
+      "min": "2025-09-09T15:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AWEUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 715200,
+      "min": "2025-05-21T08:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AXLUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AXSUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "AZTECUSDT",
+      "status": "CURRENT",
+      "urls": 20,
+      "downloaded_archives": 2,
+      "rows": 332371,
+      "min": "2026-02-11T04:29:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "B2USDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 736470,
+      "min": "2025-05-06T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BABYUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 781110,
+      "min": "2025-04-05T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BANANAS31USDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 801525,
+      "min": "2025-03-22T09:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BANANAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BANDUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BANKUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 762090,
+      "min": "2025-04-18T18:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BANUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 979950,
+      "min": "2024-11-18T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BARDUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 542220,
+      "min": "2025-09-18T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BASEDUSDT",
+      "status": "CURRENT",
+      "urls": 21,
+      "downloaded_archives": 2,
+      "rows": 264360,
+      "min": "2026-03-30T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BASUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 575190,
+      "min": "2025-08-26T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BATUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BBUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BCHUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BEAMXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BEATUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 462945,
+      "min": "2025-11-12T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BELUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BERAUSDT",
+      "status": "CURRENT",
+      "urls": 8,
+      "downloaded_archives": 2,
+      "rows": 864540,
+      "min": "2025-02-06T15:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BICOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BIGTIMEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BILLUSDT",
+      "status": "CURRENT",
+      "urls": 23,
+      "downloaded_archives": 2,
+      "rows": 209745,
+      "min": "2026-05-07T08:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BIOUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 913665,
+      "min": "2025-01-03T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BIRBUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 351045,
+      "min": "2026-01-29T05:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BLESSUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 535110,
+      "min": "2025-09-23T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BLUAIUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 494670,
+      "min": "2025-10-21T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BLURUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BMTUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 808470,
+      "min": "2025-03-17T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BNBUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BNTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BOMEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BRETTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BREVUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 393915,
+      "min": "2025-12-30T10:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BROCCOLI714USDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 802980,
+      "min": "2025-03-21T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BROCCOLIF3BUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 802965,
+      "min": "2025-03-21T09:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BRUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 802755,
+      "min": "2025-03-21T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BSBUSDT",
+      "status": "CURRENT",
+      "urls": 21,
+      "downloaded_archives": 2,
+      "rows": 271455,
+      "min": "2026-03-25T11:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BSVUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BTCDOMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BTRUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 573930,
+      "min": "2025-08-27T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BTWUSDT",
+      "status": "CURRENT",
+      "urls": 24,
+      "downloaded_archives": 2,
+      "rows": 169065,
+      "min": "2026-06-04T14:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BULLAUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 651780,
+      "min": "2025-07-04T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "BUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 713250,
+      "min": "2025-05-22T16:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "C98USDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CAKEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CAPUSDT",
+      "status": "CURRENT",
+      "urls": 24,
+      "downloaded_archives": 2,
+      "rows": 136095,
+      "min": "2026-06-27T11:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CARVUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 602355,
+      "min": "2025-08-07T16:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CATIUSDT",
+      "status": "CURRENT",
+      "urls": 3,
+      "downloaded_archives": 2,
+      "rows": 1064910,
+      "min": "2024-09-20T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CCUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 480240,
+      "min": "2025-10-31T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CELOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CELRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CETUSUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 997080,
+      "min": "2024-11-06T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CFGUSDT",
+      "status": "CURRENT",
+      "urls": 21,
+      "downloaded_archives": 2,
+      "rows": 284340,
+      "min": "2026-03-16T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CFXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CGPTUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 933405,
+      "min": "2024-12-20T19:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CHILLGUYUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 966795,
+      "min": "2024-11-27T14:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CHIPUSDT",
+      "status": "CURRENT",
+      "urls": 22,
+      "downloaded_archives": 2,
+      "rows": 240045,
+      "min": "2026-04-16T07:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CHRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CHZUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CKBUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CLANKERUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 462960,
+      "min": "2025-11-12T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CLOUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 504750,
+      "min": "2025-10-14T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "COAIUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 532350,
+      "min": "2025-09-25T07:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "COLLECTUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 392325,
+      "min": "2025-12-31T13:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "COMPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "COOKIEUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 907950,
+      "min": "2025-01-07T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "COTIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "COWUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 997110,
+      "min": "2024-11-06T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CROSSUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 643050,
+      "min": "2025-07-10T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CRVUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CTKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1066425,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CTRUSDT",
+      "status": "CURRENT",
+      "urls": 23,
+      "downloaded_archives": 2,
+      "rows": 179430,
+      "min": "2026-05-28T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CTSIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 635940,
+      "min": "2025-07-15T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CVCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1066530,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CVXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1054080,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CYBERUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "CYSUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 419820,
+      "min": "2025-12-12T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DASHUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DATAIPUSDT",
+      "status": "CURRENT",
+      "urls": 25,
+      "downloaded_archives": 2,
+      "rows": 127755,
+      "min": "2026-07-03T06:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DEEPUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 756930,
+      "min": "2025-04-22T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DEXEUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 928110,
+      "min": "2024-12-24T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DIAUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1047570,
+      "min": "2024-10-02T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DODOXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DOGSUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DOLOUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 744300,
+      "min": "2025-05-01T03:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DOODUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 732150,
+      "min": "2025-05-09T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DOSUSDT",
+      "status": "UPDATED",
+      "urls": 27,
+      "downloaded_archives": 3,
+      "rows": 71100,
+      "min": "2026-08-11T15:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DOTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DRIFTUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 994095,
+      "min": "2024-11-08T15:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DUSKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DYDXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "DYMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EDENUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 524940,
+      "min": "2025-09-30T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EDGEUSDT",
+      "status": "CURRENT",
+      "urls": 21,
+      "downloaded_archives": 2,
+      "rows": 279960,
+      "min": "2026-03-19T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EDUUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EGLDUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EIGENUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1049400,
+      "min": "2024-10-01T06:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ELSAUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 360995,
+      "min": "2026-01-22T07:25:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ENAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ENJUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ENSOUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 504900,
+      "min": "2025-10-14T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ENSUSDT",
+      "status": "UPDATED",
+      "urls": 3,
+      "downloaded_archives": 2,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EPICUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 814560,
+      "min": "2025-03-13T08:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ERAUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 632670,
+      "min": "2025-07-17T15:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ESPORTSUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 615720,
+      "min": "2025-07-29T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ESPUSDT",
+      "status": "CURRENT",
+      "urls": 20,
+      "downloaded_archives": 2,
+      "rows": 333590,
+      "min": "2026-02-10T08:10:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ETCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ETHFIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ETHWUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EULUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 506010,
+      "min": "2025-10-13T14:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "EVAAUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 520648,
+      "min": "2025-10-03T10:32:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FARTCOINUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 933435,
+      "min": "2024-12-20T18:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FETUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FFUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 526230,
+      "min": "2025-09-29T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FHEUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 770940,
+      "min": "2025-04-12T15:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FIDAUSDT",
+      "status": "CURRENT",
+      "urls": 3,
+      "downloaded_archives": 2,
+      "rows": 1066290,
+      "min": "2024-09-19T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FIGHTUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 359265,
+      "min": "2026-01-23T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FILUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FLOCKUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 555432,
+      "min": "2025-09-09T06:48:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FLOWUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FLUIDUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 533625,
+      "min": "2025-09-24T10:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FLUXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FOGOUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 377880,
+      "min": "2026-01-10T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FOLKSUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 471570,
+      "min": "2025-11-06T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FORMUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 805920,
+      "min": "2025-03-19T08:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FRAXUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 371040,
+      "min": "2026-01-15T08:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "FUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 674595,
+      "min": "2025-06-18T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GALAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GASUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GENIUSUSDT",
+      "status": "CURRENT",
+      "urls": 22,
+      "downloaded_archives": 2,
+      "rows": 240270,
+      "min": "2026-04-16T03:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GIGGLEUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 512055,
+      "min": "2025-10-09T09:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GLMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GMTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GMXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GOATUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1015830,
+      "min": "2024-10-24T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GPSUSDT",
+      "status": "CURRENT",
+      "urls": 8,
+      "downloaded_archives": 2,
+      "rows": 848580,
+      "min": "2025-02-17T17:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GRAMUSDT",
+      "status": "CURRENT",
+      "urls": 25,
+      "downloaded_archives": 2,
+      "rows": 129120,
+      "min": "2026-07-02T08:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GRASSUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 994110,
+      "min": "2024-11-08T15:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GRIFFAINUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 915030,
+      "min": "2025-01-02T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GRTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GRVTUSDT",
+      "status": "UPDATED",
+      "urls": 26,
+      "downloaded_archives": 3,
+      "rows": 87075,
+      "min": "2026-07-31T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GTCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GUAUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 406905,
+      "min": "2025-12-21T10:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GUNUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 788340,
+      "min": "2025-03-31T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "GWEIUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 351030,
+      "min": "2026-01-29T05:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HAEDALUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 744285,
+      "min": "2025-05-01T03:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HANAUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 530670,
+      "min": "2025-09-26T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HBARUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HEIUSDT",
+      "status": "CURRENT",
+      "urls": 8,
+      "downloaded_archives": 2,
+      "rows": 854820,
+      "min": "2025-02-13T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HEMIUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 571410,
+      "min": "2025-08-29T04:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HIVEUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 929550,
+      "min": "2024-12-23T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HMSTRUSDT",
+      "status": "CURRENT",
+      "urls": 3,
+      "downloaded_archives": 2,
+      "rows": 1056210,
+      "min": "2024-09-26T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HOLOUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 552240,
+      "min": "2025-09-11T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HOMEUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 686190,
+      "min": "2025-06-10T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HOTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HUMAUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 707700,
+      "min": "2025-05-26T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 664710,
+      "min": "2025-06-25T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HYPERUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 756660,
+      "min": "2025-04-22T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 702090,
+      "min": "2025-05-30T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ICNTUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 652980,
+      "min": "2025-07-03T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ICPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IDOLUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 651765,
+      "min": "2025-07-04T09:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IDUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ILVUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IMXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "INITUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 765690,
+      "min": "2025-04-16T06:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "INJUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "INUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 602730,
+      "min": "2025-08-07T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "INXUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 348776,
+      "min": "2026-01-30T19:04:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IOSTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IOTAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IOTXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "IRYSUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 442560,
+      "min": "2025-11-26T16:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "JASMYUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "JCTUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 465930,
+      "min": "2025-11-10T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "JELLYJELLYUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 795360,
+      "min": "2025-03-26T16:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "JOEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "JSTUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 748230,
+      "min": "2025-04-28T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "JTOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "JUPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KAIAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 956760,
+      "min": "2024-12-04T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KAITOUSDT",
+      "status": "CURRENT",
+      "urls": 8,
+      "downloaded_archives": 2,
+      "rows": 844500,
+      "min": "2025-02-20T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KASUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KATUSDT",
+      "status": "CURRENT",
+      "urls": 21,
+      "downloaded_archives": 2,
+      "rows": 304980,
+      "min": "2026-03-02T05:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KAVAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KERNELUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 768240,
+      "min": "2025-04-14T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KGENUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 514650,
+      "min": "2025-10-07T14:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KITEUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 483210,
+      "min": "2025-10-29T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KMNOUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 933420,
+      "min": "2024-12-20T19:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KNCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KOMAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 948225,
+      "min": "2024-12-10T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "KSMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LABUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 500250,
+      "min": "2025-10-17T14:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LAUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 693540,
+      "min": "2025-06-05T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LAYERUSDT",
+      "status": "CURRENT",
+      "urls": 8,
+      "downloaded_archives": 2,
+      "rows": 857295,
+      "min": "2025-02-11T15:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LDOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LIGHT_USDT_USDT-1m-futures.feather",
+      "status": "ERROR",
+      "error": "Remote end closed connection without response"
+    },
+    {
+      "symbol": "LINEAUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 566850,
+      "min": "2025-09-01T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LINKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LISTAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LITUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1065990,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LPTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LQTYUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LSKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LTCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LUMIAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 936750,
+      "min": "2024-12-18T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LUNA2USDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "LYNUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 516510,
+      "min": "2025-10-06T07:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MAGICUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MAGMAUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 392310,
+      "min": "2025-12-31T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MANAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MANTAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MANTRAUSDT",
+      "status": "CURRENT",
+      "urls": 21,
+      "downloaded_archives": 2,
+      "rows": 301919,
+      "min": "2026-03-04T08:01:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MARSCOINUSDT",
+      "status": "CURRENT",
+      "urls": 27,
+      "downloaded_archives": 1,
+      "rows": 41175,
+      "min": "2026-09-01T09:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MASKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MAVIAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1066020,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MAVUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MEGAUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 349185,
+      "min": "2026-01-30T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MELANIAUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 889350,
+      "min": "2025-01-20T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MEMEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MERLUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 703650,
+      "min": "2025-05-29T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "METISUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "METUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 509010,
+      "min": "2025-10-11T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MEUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 947940,
+      "min": "2024-12-10T17:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MEWUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MINAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MIRAUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 530640,
+      "min": "2025-09-26T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MITOUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 572130,
+      "min": "2025-08-28T16:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MMTUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 474480,
+      "min": "2025-11-04T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MOCAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 939630,
+      "min": "2024-12-16T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MON_USDT_USDT-1m-futures.feather",
+      "status": "ERROR",
+      "error": "Remote end closed connection without response"
+    },
+    {
+      "symbol": "MOODENGUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1014600,
+      "min": "2024-10-25T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MORPHOUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 966810,
+      "min": "2024-11-27T14:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MOVEUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 949560,
+      "min": "2024-12-09T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MOVRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MTLUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MUBARAKUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 808455,
+      "min": "2025-03-17T13:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 647430,
+      "min": "2025-07-07T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "MYXUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 674610,
+      "min": "2025-06-18T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NAORISUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 612690,
+      "min": "2025-07-31T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NEARUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NEIROUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NEOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NEWTUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 673050,
+      "min": "2025-06-19T14:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NIGHTUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 422700,
+      "min": "2025-12-10T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NILUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 798420,
+      "min": "2025-03-24T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NMRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NOMUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 523680,
+      "min": "2025-10-01T08:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NOTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "NXPCUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 723930,
+      "min": "2025-05-15T06:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "OGNUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "OGUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 728100,
+      "min": "2025-05-12T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ONDOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ONEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ONGUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ONTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ONUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 490530,
+      "min": "2025-10-24T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "OPENUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 556500,
+      "min": "2025-09-08T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "OPGUSDT",
+      "status": "CURRENT",
+      "urls": 22,
+      "downloaded_archives": 2,
+      "rows": 230910,
+      "min": "2026-04-22T15:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "OPNUSDT",
+      "status": "CURRENT",
+      "urls": 20,
+      "downloaded_archives": 2,
+      "rows": 317340,
+      "min": "2026-02-21T15:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "OPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ORCAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 953820,
+      "min": "2024-12-06T15:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ORDERUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 530595,
+      "min": "2025-09-26T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ORDIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "OUSDT",
+      "status": "CURRENT",
+      "urls": 24,
+      "downloaded_archives": 2,
+      "rows": 140415,
+      "min": "2026-06-24T11:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PARTIUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 796980,
+      "min": "2025-03-25T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PAXGUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 794250,
+      "min": "2025-03-27T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PENDLEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PENGUUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 937905,
+      "min": "2024-12-17T16:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PEOPLEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PHAROSUSDT",
+      "status": "CURRENT",
+      "urls": 23,
+      "downloaded_archives": 2,
+      "rows": 199845,
+      "min": "2026-05-14T05:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PHAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 919470,
+      "min": "2024-12-30T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PIEVERSEUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 460110,
+      "min": "2025-11-14T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PIPPINUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 883545,
+      "min": "2025-01-24T10:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PIXELUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PLAYUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 612870,
+      "min": "2025-07-31T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PLUMEUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 802740,
+      "min": "2025-03-21T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PNUTUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 989970,
+      "min": "2024-11-11T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "POLUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "POLYXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PONSUSDT",
+      "status": "CURRENT",
+      "urls": 27,
+      "downloaded_archives": 1,
+      "rows": 34155,
+      "min": "2026-09-06T06:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "POPCATUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PORTALUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "POWERUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 428580,
+      "min": "2025-12-06T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "POWRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PRLUSDT",
+      "status": "CURRENT",
+      "urls": 22,
+      "downloaded_archives": 2,
+      "rows": 261450,
+      "min": "2026-04-01T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PROMPTUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 772890,
+      "min": "2025-04-11T06:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PROMUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 896370,
+      "min": "2025-01-15T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PROVEUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 605220,
+      "min": "2025-08-05T17:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PTBUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 563730,
+      "min": "2025-09-03T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PUMPBTCUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 681960,
+      "min": "2025-06-13T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PUMPUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 770520,
+      "min": "2025-04-12T14:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PUNDIXUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 745320,
+      "min": "2025-04-30T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "PYTHUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "QNTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "QTUM_USDT_USDT-1m-futures.feather",
+      "status": "ERROR",
+      "error": "Remote end closed connection without response"
+    },
+    {
+      "symbol": "QUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 565470,
+      "min": "2025-09-02T07:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RAREUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RAVEUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 416670,
+      "min": "2025-12-14T15:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RAYSOLUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 948240,
+      "min": "2024-12-10T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RECALLUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 503250,
+      "min": "2025-10-15T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "REDUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 824160,
+      "min": "2025-03-06T16:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RENDERUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RESOLVUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 686070,
+      "min": "2025-06-10T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "REUSDT",
+      "status": "CURRENT",
+      "urls": 24,
+      "downloaded_archives": 2,
+      "rows": 148920,
+      "min": "2026-06-18T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "REZUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RIFUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RIVERUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 500235,
+      "min": "2025-10-17T14:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RLCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ROBOUSDT",
+      "status": "CURRENT",
+      "urls": 20,
+      "downloaded_archives": 2,
+      "rows": 309075,
+      "min": "2026-02-27T08:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RONINUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ROSEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RPLUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RSRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RUNEUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "RVNUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SAFEUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1014450,
+      "min": "2024-10-25T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SAGAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SAHARAUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 663120,
+      "min": "2025-06-26T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SANDUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SANTOSUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1010040,
+      "min": "2024-10-28T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SAPIENUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 583590,
+      "min": "2025-08-20T17:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SCRUSDT",
+      "status": "CURRENT",
+      "urls": 4,
+      "downloaded_archives": 2,
+      "rows": 1018920,
+      "min": "2024-10-22T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SEIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SENTUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 460035,
+      "min": "2025-11-14T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SFPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SHELLUSDT",
+      "status": "CURRENT",
+      "urls": 8,
+      "downloaded_archives": 2,
+      "rows": 848565,
+      "min": "2025-02-17T17:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SIGNUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 748140,
+      "min": "2025-04-28T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SIRENUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 801540,
+      "min": "2025-03-22T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SKLUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SKRUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 360795,
+      "min": "2026-01-22T10:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SKYAIUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 726615,
+      "min": "2025-05-13T09:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SKYUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 555420,
+      "min": "2025-09-09T07:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SLPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1066335,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SLXUSDT",
+      "status": "CURRENT",
+      "urls": 24,
+      "downloaded_archives": 2,
+      "rows": 173790,
+      "min": "2026-06-01T07:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SNXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SOLUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SOLVUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 893505,
+      "min": "2025-01-17T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SOMIUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 576870,
+      "min": "2025-08-25T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SONICUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 906779,
+      "min": "2025-01-08T07:01:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SOONUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 712290,
+      "min": "2025-05-23T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SOPHUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 704820,
+      "min": "2025-05-28T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SPACEUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 359295,
+      "min": "2026-01-23T11:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SPELLUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SPK_USDT_USDT-1m-futures.feather",
+      "status": "ERROR",
+      "error": "<urlopen error [WinError 10054] Varolan bir ba\u011flant\u0131 uzaktaki bir ana bilgisayar taraf\u0131ndan zorla kapat\u0131ld\u0131>"
+    },
+    {
+      "symbol": "SPORTFUNUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 369255,
+      "min": "2026-01-16T13:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SPXUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 948195,
+      "min": "2024-12-10T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SQDUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 684675,
+      "min": "2025-06-11T12:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SSVUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "STABLEUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 471600,
+      "min": "2025-11-06T12:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "STARUSDT",
+      "status": "CURRENT",
+      "urls": 23,
+      "downloaded_archives": 2,
+      "rows": 199830,
+      "min": "2026-05-14T05:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "STBLUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 543975,
+      "min": "2025-09-17T05:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "STEEMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "STOUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 770955,
+      "min": "2025-04-12T14:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "STRKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "STXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SUIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SUNUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SUPERUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 895080,
+      "min": "2025-01-16T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SUSHIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SWARMSUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 907905,
+      "min": "2025-01-07T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SXTUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 742530,
+      "min": "2025-05-02T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SYNUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "SYRUPUSDT",
+      "status": "CURRENT",
+      "urls": 11,
+      "downloaded_archives": 2,
+      "rows": 735330,
+      "min": "2025-05-07T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TACUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 635850,
+      "min": "2025-07-15T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TAGUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 621405,
+      "min": "2025-07-25T11:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TAIKOUSDT",
+      "status": "CURRENT",
+      "urls": 12,
+      "downloaded_archives": 2,
+      "rows": 684690,
+      "min": "2025-06-11T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TAKEUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 563805,
+      "min": "2025-09-03T11:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TAOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TAUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 627390,
+      "min": "2025-07-21T07:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "THETAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "THEUSDT",
+      "status": "CURRENT",
+      "urls": 5,
+      "downloaded_archives": 2,
+      "rows": 966945,
+      "min": "2024-11-27T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TIAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TLMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TNSRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TOSHIUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 543990,
+      "min": "2025-09-17T05:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TOWNSUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 605370,
+      "min": "2025-08-05T14:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TRADOORUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 540690,
+      "min": "2025-09-19T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TRBUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TREEUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 615480,
+      "min": "2025-07-29T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TRIAUSDT",
+      "status": "CURRENT",
+      "urls": 20,
+      "downloaded_archives": 2,
+      "rows": 339105,
+      "min": "2026-02-06T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TRUMPUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 892020,
+      "min": "2025-01-18T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TRUSTUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 473190,
+      "min": "2025-11-05T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TRUTHUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 523439,
+      "min": "2025-10-01T12:01:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TRXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TSTUSDT",
+      "status": "CURRENT",
+      "urls": 8,
+      "downloaded_archives": 2,
+      "rows": 860340,
+      "min": "2025-02-09T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TURBOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TURTLEUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 493020,
+      "min": "2025-10-22T15:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TUTUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 804420,
+      "min": "2025-03-20T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "TWTUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "UAIUSDT",
+      "status": "CURRENT",
+      "urls": 17,
+      "downloaded_archives": 2,
+      "rows": 471630,
+      "min": "2025-11-06T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "UBUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 550890,
+      "min": "2025-09-12T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "UMAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "UNIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "USDCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "USELESSUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 591105,
+      "min": "2025-08-15T12:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "USTCUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "USUALUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 936660,
+      "min": "2024-12-18T13:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "USUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 419835,
+      "min": "2025-12-12T10:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "VANAUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 939510,
+      "min": "2024-12-16T13:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "VELODROMEUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 943665,
+      "min": "2024-12-13T16:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "VELVETUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 635925,
+      "min": "2025-07-15T09:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "VETUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "VIRTUALUSDT",
+      "status": "CURRENT",
+      "urls": 6,
+      "downloaded_archives": 2,
+      "rows": 948210,
+      "min": "2024-12-10T12:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "VTHOUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 886470,
+      "min": "2025-01-22T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "VVVUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 876465,
+      "min": "2025-01-29T08:15:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WALUSDT",
+      "status": "CURRENT",
+      "urls": 9,
+      "downloaded_archives": 2,
+      "rows": 793950,
+      "min": "2025-03-27T15:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WAXPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WCTUSDT",
+      "status": "CURRENT",
+      "urls": 10,
+      "downloaded_archives": 2,
+      "rows": 766860,
+      "min": "2025-04-15T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WETUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 422940,
+      "min": "2025-12-10T07:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WIFUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WLDUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WLFIUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 579810,
+      "min": "2025-08-23T08:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WOOUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "WUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XAIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XANUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 526410,
+      "min": "2025-09-29T10:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XAUTUSDT",
+      "status": "CURRENT",
+      "urls": 21,
+      "downloaded_archives": 2,
+      "rows": 269880,
+      "min": "2026-03-26T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XLMUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XMRUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XNYUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 594015,
+      "min": "2025-08-13T11:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XPINUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 551040,
+      "min": "2025-09-12T08:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XPLUSDT",
+      "status": "CURRENT",
+      "urls": 14,
+      "downloaded_archives": 2,
+      "rows": 581190,
+      "min": "2025-08-22T09:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XRPUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XTZUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XVGUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "XVSUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "YBUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 510315,
+      "min": "2025-10-10T14:45:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "YFIUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "YGGUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZAMAUSDT",
+      "status": "CURRENT",
+      "urls": 19,
+      "downloaded_archives": 2,
+      "rows": 379620,
+      "min": "2026-01-09T09:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZBTUSDT",
+      "status": "CURRENT",
+      "urls": 16,
+      "downloaded_archives": 2,
+      "rows": 500430,
+      "min": "2025-10-17T11:30:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZECUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZENUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZEREBROUSDT",
+      "status": "CURRENT",
+      "urls": 7,
+      "downloaded_archives": 2,
+      "rows": 915000,
+      "min": "2025-01-02T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZESTUSDT",
+      "status": "CURRENT",
+      "urls": 24,
+      "downloaded_archives": 2,
+      "rows": 169080,
+      "min": "2026-06-04T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZETAUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZILUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZKCUSDT",
+      "status": "CURRENT",
+      "urls": 15,
+      "downloaded_archives": 2,
+      "rows": 546360,
+      "min": "2025-09-15T14:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZKPUSDT",
+      "status": "CURRENT",
+      "urls": 18,
+      "downloaded_archives": 2,
+      "rows": 406920,
+      "min": "2025-12-21T10:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZKUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZORAUSDT",
+      "status": "CURRENT",
+      "urls": 13,
+      "downloaded_archives": 2,
+      "rows": 621420,
+      "min": "2025-07-25T11:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZROUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    },
+    {
+      "symbol": "ZRXUSDT",
+      "status": "CURRENT",
+      "urls": 2,
+      "downloaded_archives": 1,
+      "rows": 1067040,
+      "min": "2024-09-19T00:00:00+00:00",
+      "max": "2026-09-29T23:59:00+00:00"
+    }
+  ],
+  "finished_at": "2026-10-01T01:03:51.799663+00:00",
+  "errors": 4,
+  "updated": 3,
+  "current": 515
+}
