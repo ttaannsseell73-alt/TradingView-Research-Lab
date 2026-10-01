@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "runId": "full-reset-20261001",
+  "principle": "FULL_RESCAN_FROM_SCRATCH",
+  "reuseOldResultsForAcceptance": false,
+  "historicalUniverse": {
+    "includeAllLocallyArchivedUsdM": true,
+    "includeInactiveOrDelisted": true,
+    "expectedHistoricalUniverseSize": 725,
+    "note": "Inactive/delisted symbols remain in research results but cannot be promoted as current trade candidates."
+  },
+  "currentCandidateGate": {
+    "requireCurrentlyTrading": true,
+    "requireLast3MonthsAllPass": true,
+    "requireLast6MonthsAllPass": true,
+    "currentTradability": {
+      "minQuoteVolume24h": 3000000,
+      "maxSpreadBps": 8,
+      "minSideDepth10bps": 1000,
+      "minOpenInterestNotional": 2000000
+    },
+    "blockIfInactiveOrDelisted": true,
+    "blockIfRecentLiquidityCollapse": true
+  },
+  "evaluationOrder": [
+    "data_integrity",
+    "strategy_backtest",
+    "last_3_months_gate",
+    "last_6_months_gate",
+    "9_month_and_12_month_diagnostics",
+    "historical_robustness",
+    "current_coin_health",
+    "candidate_ranking"
+  ],
+  "timeframes": [
+    "1m",
+    "5m",
+    "15m",
+    "1h",
+    "4h"
+  ],
+  "costs": {
+    "base": 0.0014,
+    "stress": 0.0015,
+    "low": 0.0006
+  },
+  "checkpointing": {
+    "enabled": true,
+    "atomicPerTask": true,
+    "resume": true,
+    "preserveRawResults": true
+  },
+  "provenanceIsolation": true,
+  "noStrategyMutation": true,
+  "september2026": {
+    "mustBackfillThrough": "2026-10-01T00:00:00Z",
+    "requireCoverage": 0.98,
+    "rerunAffectedWindows": true
+  }
+}
