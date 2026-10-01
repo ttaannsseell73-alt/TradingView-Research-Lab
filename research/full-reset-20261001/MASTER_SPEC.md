@@ -21,6 +21,13 @@ Backfill missing September data through 2026-10-01T00:00:00Z, re-audit coverage,
 ## Coin health gate
 A candidate must satisfy current execution-quality thresholds from the configurable policy. Recent liquidity collapse blocks promotion.
 
+## No-variant rule
+- No parameter sweep, tuning, synthetic variant, recovery variant, direction variant, or rule mutation is allowed in this first pass.
+- Each strategy runs exactly once in its canonical/original implementation.
+- LONG/SHORT may be reported separately as metrics, but the strategy rules are not altered to manufacture directional variants.
+- Q-Class/near-pass recovery variant machinery is reference-only and is not executed in this run.
+- Any variant work is a later phase and requires a separate explicit decision.
+
 ## Strategy isolation
 Existing strategies are immutable for this sweep. Families are run separately and retain provenance:
 SR35, Sweep20, ALGO9/Kivanc, Fibonacci/Elliott/Harmonic, Q-Class, Near-Pass/Recovery, STR100 exact-source, Freqtrade/scalp, model-based benchmarks, and newly discovered tactics.
