@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "variantPolicy": "NONE",
+  "candidates": [
+    {
+      "id": "funding_extreme_mr",
+      "family": "funding",
+      "tf": "15m",
+      "status": "BACKTEST_NEXT",
+      "source": "https://github.com/Gotodataru/binance-futures-backtest",
+      "canonicalDefaults": {
+        "emaPeriod": 50,
+        "fundingHigh": 0.0005,
+        "fundingLow": 0.0001,
+        "buyRatioLongMin": 0.45,
+        "buyRatioShortMax": 0.55
+      },
+      "data": [
+        "funding_rate",
+        "taker_buy_ratio",
+        "OHLCV"
+      ]
+    },
+    {
+      "id": "taker_pressure_momentum",
+      "family": "order_flow",
+      "tf": "5m",
+      "status": "BACKTEST_NEXT",
+      "source": "https://github.com/Gotodataru/binance-futures-backtest",
+      "canonicalDefaults": {
+        "maPeriod": 15,
+        "confirmBars": 3,
+        "thresholdHigh": 0.62,
+        "atrPeriod": 14,
+        "atrVs50MaMin": 0.8
+      },
+      "data": [
+        "taker_buy_volume",
+        "OHLCV"
+      ]
+    },
+    {
+      "id": "oi_price_divergence",
+      "family": "open_interest",
+      "tf": "15m",
+      "status": "BACKTEST_NEXT",
+      "source": "https://github.com/Gotodataru/binance-futures-backtest",
+      "canonicalDefaults": {
+        "lookbackBars": 12,
+        "priceThreshold": 0.005,
+        "oiThreshold": 0.01,
+        "useMeanReversion": 1
+      },
+      "data": [
+        "open_interest",
+        "taker_long_short_ratio",
+        "OHLCV"
+      ]
+    },
+    {
+      "id": "log_basis_factor",
+      "family": "basis",
+      "status": "RESEARCH_TO_IMPLEMENT",
+      "source": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6795783",
+      "data": [
+        "mark_price",
+        "index_price",
+        "funding_rate",
+        "OHLCV"
+      ]
+    },
+    {
+      "id": "funding_carry_delta_neutral",
+      "family": "carry",
+      "status": "SEPARATE_SYSTEM_RESEARCH",
+      "source": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5292305",
+      "data": [
+        "spot",
+        "perpetual",
+        "funding_rate"
+      ]
+    },
+    {
+      "id": "pairs_stat_arb",
+      "family": "cross_asset",
+      "status": "SEPARATE_SYSTEM_RESEARCH",
+      "source": "https://arxiv.org/abs/2407.16103",
+      "data": [
+        "multi_asset_prices"
+      ]
+    }
+  ],
+  "historicalDataNote": "Binance Vision daily metrics archive contains OI and taker/long-short fields; quality gaps must be audited before use."
+}

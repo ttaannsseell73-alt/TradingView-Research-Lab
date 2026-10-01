@@ -1,0 +1,4754 @@
+{
+  "snapshotAt": "2026-10-01T01:13:50.219587+00:00",
+  "thresholds": {
+    "minQuoteVolume24h": 3000000,
+    "maxSpreadBps": 8
+  },
+  "count": 527,
+  "coarseTradeable": 261,
+  "rows": [
+    {
+      "symbol": "0GUSDT",
+      "quoteVolume24h": 69928709.1058,
+      "trades24h": 765839,
+      "bid": 0.3031,
+      "ask": 0.3033,
+      "spreadBps": 6.596306068602686,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "1000000BOBUSDT",
+      "quoteVolume24h": 549752.55885,
+      "trades24h": 17695,
+      "bid": 0.0174,
+      "ask": 0.01741,
+      "spreadBps": 5.745475438092269,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "1000000MOGUSDT",
+      "quoteVolume24h": 1329627.21718,
+      "trades24h": 23051,
+      "bid": 0.1165,
+      "ask": 0.1166,
+      "spreadBps": 8.580008580007634,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "1000BONKUSDT",
+      "quoteVolume24h": 53575145.905157,
+      "trades24h": 433654,
+      "bid": 0.003889,
+      "ask": 0.00389,
+      "spreadBps": 2.5710245532837104,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "1000CATUSDT",
+      "quoteVolume24h": 920658.556649,
+      "trades24h": 23266,
+      "bid": 0.002276,
+      "ask": 0.002278,
+      "spreadBps": 8.783487044357775,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "1000CHEEMSUSDT",
+      "quoteVolume24h": 692553.0556448,
+      "trades24h": 46939,
+      "bid": 0.000538,
+      "ask": 0.0005381,
+      "spreadBps": 1.8585633305465412,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "1000FLOKIUSDT",
+      "quoteVolume24h": 9647704.53689,
+      "trades24h": 123049,
+      "bid": 0.02784,
+      "ask": 0.02785,
+      "spreadBps": 3.5913090321420693,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "1000LUNCUSDT",
+      "quoteVolume24h": 3625217.97626,
+      "trades24h": 50828,
+      "bid": 0.05313,
+      "ask": 0.05314,
+      "spreadBps": 1.8819986826014985,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "quoteVolume24h": 283232177.6348314,
+      "trades24h": 1874329,
+      "bid": 0.0042959,
+      "ask": 0.0042961,
+      "spreadBps": 0.46554934823016675,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "1000RATSUSDT",
+      "quoteVolume24h": 1160883.2513,
+      "trades24h": 27111,
+      "bid": 0.03965,
+      "ask": 0.03966,
+      "spreadBps": 2.521750094566401,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "1000SATSUSDT",
+      "quoteVolume24h": 1907570.50373884,
+      "trades24h": 28432,
+      "bid": 1.263e-05,
+      "ask": 1.264e-05,
+      "spreadBps": 7.914523149980138,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "1000SHIBUSDT",
+      "quoteVolume24h": 42486697.722912,
+      "trades24h": 300382,
+      "bid": 0.005766,
+      "ask": 0.005767,
+      "spreadBps": 1.7341541663056144,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "1000XECUSDT",
+      "quoteVolume24h": 2076877.837734,
+      "trades24h": 42233,
+      "bid": 0.00831,
+      "ask": 0.008315,
+      "spreadBps": 6.015037593984717,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "1INCHUSDT",
+      "quoteVolume24h": 3132417.37097,
+      "trades24h": 74130,
+      "bid": 0.10219,
+      "ask": 0.10222,
+      "spreadBps": 2.9352771390834347,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "1MBABYDOGEUSDT",
+      "quoteVolume24h": 1338377.7290869,
+      "trades24h": 34840,
+      "bid": 0.0004151,
+      "ask": 0.0004154,
+      "spreadBps": 7.224563515954419,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "2ZUSDT",
+      "quoteVolume24h": 9932597.26765,
+      "trades24h": 175665,
+      "bid": 0.05937,
+      "ask": 0.05938,
+      "spreadBps": 1.6842105263163054,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "4USDT",
+      "quoteVolume24h": 5473415.30855,
+      "trades24h": 113902,
+      "bid": 0.02141,
+      "ask": 0.021421,
+      "spreadBps": 5.136466577946157,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AAVEUSDT",
+      "quoteVolume24h": 202137299.106,
+      "trades24h": 987082,
+      "bid": 159.78,
+      "ask": 159.79,
+      "spreadBps": 0.6258409738079861,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ACEUSDT",
+      "quoteVolume24h": 12161535.517155,
+      "trades24h": 211087,
+      "bid": 0.18412,
+      "ask": 0.18413,
+      "spreadBps": 0.5431093007458111,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ACHUSDT",
+      "quoteVolume24h": 1353353.167669,
+      "trades24h": 69188,
+      "bid": 0.006086,
+      "ask": 0.006087,
+      "spreadBps": 1.6429803663848397,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ACTUSDT",
+      "quoteVolume24h": 1172447.656426,
+      "trades24h": 40656,
+      "bid": 0.010816,
+      "ask": 0.01082,
+      "spreadBps": 3.6975411351456193,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ACUUSDT",
+      "quoteVolume24h": 689312.55439,
+      "trades24h": 20956,
+      "bid": 0.12372,
+      "ask": 0.12385,
+      "spreadBps": 10.502080219736245,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ADAUSDT",
+      "quoteVolume24h": 219456545.2575,
+      "trades24h": 689775,
+      "bid": 0.2478,
+      "ask": 0.2479,
+      "spreadBps": 4.034698406294805,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AEROUSDT",
+      "quoteVolume24h": 22756625.38111,
+      "trades24h": 305905,
+      "bid": 0.8321,
+      "ask": 0.8322,
+      "spreadBps": 1.2017064231220336,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AEVOUSDT",
+      "quoteVolume24h": 1235334.891728,
+      "trades24h": 30228,
+      "bid": 0.02598,
+      "ask": 0.026,
+      "spreadBps": 7.695267410542203,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AGLDUSDT",
+      "quoteVolume24h": 1326916.5464,
+      "trades24h": 27462,
+      "bid": 0.2063,
+      "ask": 0.2064,
+      "spreadBps": 4.846135207171746,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AGTUSDT",
+      "quoteVolume24h": 41117648.102896,
+      "trades24h": 661738,
+      "bid": 0.025515,
+      "ask": 0.025543,
+      "spreadBps": 10.9679188374007,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AIAUSDT",
+      "quoteVolume24h": 1070309.286,
+      "trades24h": 33348,
+      "bid": 0.07247,
+      "ask": 0.07248,
+      "spreadBps": 1.3797861331488266,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AIGENSYNUSDT",
+      "quoteVolume24h": 1811889.55116,
+      "trades24h": 26399,
+      "bid": 0.0206,
+      "ask": 0.02061,
+      "spreadBps": 4.853190973064593,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AINUSDT",
+      "quoteVolume24h": 3180628.51307,
+      "trades24h": 70486,
+      "bid": 0.02327,
+      "ask": 0.02329,
+      "spreadBps": 8.59106529209736,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AIOTUSDT",
+      "quoteVolume24h": 1712788.12278,
+      "trades24h": 45055,
+      "bid": 0.06198,
+      "ask": 0.06199,
+      "spreadBps": 1.6132935387598712,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AIOUSDT",
+      "quoteVolume24h": 1108277.47085,
+      "trades24h": 35236,
+      "bid": 0.03822,
+      "ask": 0.03825,
+      "spreadBps": 7.846214201648293,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AIXBTUSDT",
+      "quoteVolume24h": 2305887.69658,
+      "trades24h": 47991,
+      "bid": 0.02309,
+      "ask": 0.0231,
+      "spreadBps": 4.329941545788956,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AKEUSDT",
+      "quoteVolume24h": 87460546.94873,
+      "trades24h": 2299710,
+      "bid": 0.031184,
+      "ask": 0.031186,
+      "spreadBps": 0.6413339746668368,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AKTUSDT",
+      "quoteVolume24h": 3928468.06937,
+      "trades24h": 81186,
+      "bid": 0.6522,
+      "ask": 0.6528,
+      "spreadBps": 9.195402298851263,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ALCHUSDT",
+      "quoteVolume24h": 1170740.89208,
+      "trades24h": 35637,
+      "bid": 0.05204,
+      "ask": 0.05209,
+      "spreadBps": 9.603380389896186,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ALGOUSDT",
+      "quoteVolume24h": 28104395.678246,
+      "trades24h": 505020,
+      "bid": 0.12519,
+      "ask": 0.12523,
+      "spreadBps": 3.1946330165332046,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ALICEUSDT",
+      "quoteVolume24h": 7770756.85164,
+      "trades24h": 97161,
+      "bid": 0.1687,
+      "ask": 0.1688,
+      "spreadBps": 5.925925925926918,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ALLOUSDT",
+      "quoteVolume24h": 5137578.39942,
+      "trades24h": 148294,
+      "bid": 0.2829,
+      "ask": 0.28303,
+      "spreadBps": 4.594207764211792,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ALLUSDT",
+      "quoteVolume24h": 1064466.9634,
+      "trades24h": 21275,
+      "bid": 0.6772,
+      "ask": 0.6773,
+      "spreadBps": 1.4765596160943373,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ALPINEUSDT",
+      "quoteVolume24h": 500760.24316,
+      "trades24h": 19522,
+      "bid": 0.3546,
+      "ask": 0.3549,
+      "spreadBps": 8.456659619449386,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ALTUSDT",
+      "quoteVolume24h": 2279986.87647,
+      "trades24h": 38205,
+      "bid": 0.00775,
+      "ask": 0.007753,
+      "spreadBps": 3.8702186673552195,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ANIMEUSDT",
+      "quoteVolume24h": 1438582.226087,
+      "trades24h": 50560,
+      "bid": 0.003377,
+      "ask": 0.003378,
+      "spreadBps": 2.9607698001484315,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ANKRUSDT",
+      "quoteVolume24h": 1373727.656906,
+      "trades24h": 40254,
+      "bid": 0.004957,
+      "ask": 0.004959,
+      "spreadBps": 4.033884630900092,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "APEUSDT",
+      "quoteVolume24h": 6521665.2141,
+      "trades24h": 94427,
+      "bid": 0.1521,
+      "ask": 0.1522,
+      "spreadBps": 6.572461386788629,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "API3USDT",
+      "quoteVolume24h": 2908952.1376,
+      "trades24h": 72328,
+      "bid": 0.2897,
+      "ask": 0.2898,
+      "spreadBps": 3.451251078515582,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "APRUSDT",
+      "quoteVolume24h": 15559689.2604,
+      "trades24h": 210674,
+      "bid": 0.1429,
+      "ask": 0.143,
+      "spreadBps": 6.995452955578103,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "APTUSDT",
+      "quoteVolume24h": 55884678.2154,
+      "trades24h": 552002,
+      "bid": 0.7856,
+      "ask": 0.7857,
+      "spreadBps": 1.2728314134791445,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ARBUSDT",
+      "quoteVolume24h": 121383284.784668,
+      "trades24h": 1102961,
+      "bid": 0.20336,
+      "ask": 0.20337,
+      "spreadBps": 0.49172669830021115,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ARCUSDT",
+      "quoteVolume24h": 1683933.16784,
+      "trades24h": 40923,
+      "bid": 0.07162,
+      "ask": 0.07166,
+      "spreadBps": 5.583472920156108,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ARIAUSDT",
+      "quoteVolume24h": 1182983.55407,
+      "trades24h": 30805,
+      "bid": 0.03675,
+      "ask": 0.03678,
+      "spreadBps": 8.159934720522847,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ARKMUSDT",
+      "quoteVolume24h": 3964501.4669,
+      "trades24h": 54255,
+      "bid": 0.1337,
+      "ask": 0.1338,
+      "spreadBps": 7.476635514017867,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ARKUSDT",
+      "quoteVolume24h": 324318325.5384,
+      "trades24h": 3962875,
+      "bid": 0.2686,
+      "ask": 0.2687,
+      "spreadBps": 3.722315280103815,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ARPAUSDT",
+      "quoteVolume24h": 2317043.100827,
+      "trades24h": 49461,
+      "bid": 0.011182,
+      "ask": 0.011188,
+      "spreadBps": 5.364327223961373,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ARUSDT",
+      "quoteVolume24h": 18011699.433,
+      "trades24h": 234715,
+      "bid": 4.092,
+      "ask": 4.094,
+      "spreadBps": 4.8863913999527675,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ARXUSDT",
+      "quoteVolume24h": 10735491.8921,
+      "trades24h": 242295,
+      "bid": 0.2814,
+      "ask": 0.2815,
+      "spreadBps": 3.55302895718561,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ASRUSDT",
+      "quoteVolume24h": 857609.29536,
+      "trades24h": 42837,
+      "bid": 0.8605,
+      "ask": 0.8606,
+      "spreadBps": 1.1620475277437567,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ASTERUSDT",
+      "quoteVolume24h": 143795753.2097,
+      "trades24h": 837363,
+      "bid": 0.7551,
+      "ask": 0.7552,
+      "spreadBps": 1.3242402171752499,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ASTRUSDT",
+      "quoteVolume24h": 2021748.828361,
+      "trades24h": 50617,
+      "bid": 0.007321,
+      "ask": 0.007324,
+      "spreadBps": 4.096961420279318,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ATHUSDT",
+      "quoteVolume24h": 1900159.959915,
+      "trades24h": 33447,
+      "bid": 0.005974,
+      "ask": 0.005975,
+      "spreadBps": 1.6737802326556743,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ATOMUSDT",
+      "quoteVolume24h": 20563390.976,
+      "trades24h": 128943,
+      "bid": 1.753,
+      "ask": 1.754,
+      "spreadBps": 5.702879954377599,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ATUSDT",
+      "quoteVolume24h": 1160356.79758,
+      "trades24h": 32200,
+      "bid": 0.1551,
+      "ask": 0.1552,
+      "spreadBps": 6.44537544312064,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AUCTIONUSDT",
+      "quoteVolume24h": 1471554.8131,
+      "trades24h": 35851,
+      "bid": 3.735,
+      "ask": 3.736,
+      "spreadBps": 2.6770178021692788,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AUSDT",
+      "quoteVolume24h": 3673038.08879,
+      "trades24h": 77385,
+      "bid": 0.09921,
+      "ask": 0.09927,
+      "spreadBps": 6.045949214025656,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AVAAIUSDT",
+      "quoteVolume24h": 2464017.766204,
+      "trades24h": 46583,
+      "bid": 0.009595,
+      "ask": 0.009596,
+      "spreadBps": 1.0421551769068835,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AVAUSDT",
+      "quoteVolume24h": 2947784.16213,
+      "trades24h": 58834,
+      "bid": 0.2466,
+      "ask": 0.2467,
+      "spreadBps": 4.05432799513436,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "quoteVolume24h": 243278128.278,
+      "trades24h": 934550,
+      "bid": 10.878,
+      "ask": 10.879,
+      "spreadBps": 0.919244381118211,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AVNTUSDT",
+      "quoteVolume24h": 3449072.83882,
+      "trades24h": 114888,
+      "bid": 0.12878,
+      "ask": 0.12883,
+      "spreadBps": 3.881836885213656,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AWEUSDT",
+      "quoteVolume24h": 1973387.8933,
+      "trades24h": 52534,
+      "bid": 0.07232,
+      "ask": 0.07234,
+      "spreadBps": 2.7651043826912933,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AXLUSDT",
+      "quoteVolume24h": 1727992.493458,
+      "trades24h": 45493,
+      "bid": 0.05118,
+      "ask": 0.0512,
+      "spreadBps": 3.9070130884936876,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "AXSUSDT",
+      "quoteVolume24h": 9541968.6487,
+      "trades24h": 176876,
+      "bid": 1.1591,
+      "ask": 1.1592,
+      "spreadBps": 0.8627011171978518,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "AZTECUSDT",
+      "quoteVolume24h": 4618344.78113,
+      "trades24h": 75876,
+      "bid": 0.01758,
+      "ask": 0.0176,
+      "spreadBps": 11.370096645822999,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "B2USDT",
+      "quoteVolume24h": 2799268.8465,
+      "trades24h": 75591,
+      "bid": 0.5039,
+      "ask": 0.5042,
+      "spreadBps": 5.951790496973851,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BABYUSDT",
+      "quoteVolume24h": 6343198.88112,
+      "trades24h": 90407,
+      "bid": 0.0138,
+      "ask": 0.01381,
+      "spreadBps": 7.243752263672287,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BANANAS31USDT",
+      "quoteVolume24h": 998839.526602,
+      "trades24h": 30139,
+      "bid": 0.007737,
+      "ask": 0.007738,
+      "spreadBps": 1.292407108239267,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BANANAUSDT",
+      "quoteVolume24h": 912973.23,
+      "trades24h": 28327,
+      "bid": 4.071,
+      "ask": 4.074,
+      "spreadBps": 7.366482504604331,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BANDUSDT",
+      "quoteVolume24h": 1066497.006,
+      "trades24h": 28682,
+      "bid": 0.2182,
+      "ask": 0.2183,
+      "spreadBps": 4.581901489117479,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BANKUSDT",
+      "quoteVolume24h": 5893047.47772,
+      "trades24h": 89362,
+      "bid": 0.03173,
+      "ask": 0.03174,
+      "spreadBps": 3.1510950055131945,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BANUSDT",
+      "quoteVolume24h": 730233.37918,
+      "trades24h": 28144,
+      "bid": 0.06259,
+      "ask": 0.06261,
+      "spreadBps": 3.194888178912499,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BARDUSDT",
+      "quoteVolume24h": 1246274.4544,
+      "trades24h": 29306,
+      "bid": 0.1395,
+      "ask": 0.1396,
+      "spreadBps": 7.165890361876674,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BASEDUSDT",
+      "quoteVolume24h": 2394750.07812,
+      "trades24h": 39464,
+      "bid": 0.06632,
+      "ask": 0.06633,
+      "spreadBps": 1.5077271013940632,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BASUSDT",
+      "quoteVolume24h": 1009754.358869,
+      "trades24h": 22954,
+      "bid": 0.022735,
+      "ask": 0.022742,
+      "spreadBps": 3.0784792312597853,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BATUSDT",
+      "quoteVolume24h": 1701869.779233,
+      "trades24h": 49148,
+      "bid": 0.08997,
+      "ask": 0.09002,
+      "spreadBps": 5.555864214679524,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BBUSDT",
+      "quoteVolume24h": 4220576.407303,
+      "trades24h": 80926,
+      "bid": 0.009583,
+      "ask": 0.009584,
+      "spreadBps": 1.0434601137381958,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BCHUSDT",
+      "quoteVolume24h": 105513934.52,
+      "trades24h": 686362,
+      "bid": 307.25,
+      "ask": 307.26,
+      "spreadBps": 0.325462563668318,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BEAMXUSDT",
+      "quoteVolume24h": 2567128.396328,
+      "trades24h": 55662,
+      "bid": 0.001999,
+      "ask": 0.002,
+      "spreadBps": 5.001250312578809,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BEATUSDT",
+      "quoteVolume24h": 4967873.0808,
+      "trades24h": 52881,
+      "bid": 0.0916,
+      "ask": 0.0917,
+      "spreadBps": 10.911074740862286,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BELUSDT",
+      "quoteVolume24h": 1053271.4861,
+      "trades24h": 29642,
+      "bid": 0.12774,
+      "ask": 0.12775,
+      "spreadBps": 0.782809503308153,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BERAUSDT",
+      "quoteVolume24h": 49862582.6593,
+      "trades24h": 478519,
+      "bid": 0.2532,
+      "ask": 0.2533,
+      "spreadBps": 3.948667324779645,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BICOUSDT",
+      "quoteVolume24h": 3656369.11762,
+      "trades24h": 69771,
+      "bid": 0.02192,
+      "ask": 0.02193,
+      "spreadBps": 4.561003420753962,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BIGTIMEUSDT",
+      "quoteVolume24h": 2689956.973994,
+      "trades24h": 59761,
+      "bid": 0.008885,
+      "ask": 0.008886,
+      "spreadBps": 1.125429069832047,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BILLUSDT",
+      "quoteVolume24h": 3586866.80141,
+      "trades24h": 42266,
+      "bid": 0.01168,
+      "ask": 0.01169,
+      "spreadBps": 8.557980316646407,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BIOUSDT",
+      "quoteVolume24h": 6909362.31816,
+      "trades24h": 105495,
+      "bid": 0.03098,
+      "ask": 0.03099,
+      "spreadBps": 3.2273680813295442,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BIRBUSDT",
+      "quoteVolume24h": 1223139.02688,
+      "trades24h": 31686,
+      "bid": 0.06507,
+      "ask": 0.0651,
+      "spreadBps": 4.609356994699585,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BLESSUSDT",
+      "quoteVolume24h": 2397343.921455,
+      "trades24h": 45727,
+      "bid": 0.008847,
+      "ask": 0.008857,
+      "spreadBps": 11.296882060550827,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BLUAIUSDT",
+      "quoteVolume24h": 1789053.000529,
+      "trades24h": 45952,
+      "bid": 0.009768,
+      "ask": 0.009776,
+      "spreadBps": 8.186655751124977,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BLURUSDT",
+      "quoteVolume24h": 13857837.7471,
+      "trades24h": 178165,
+      "bid": 0.02115,
+      "ask": 0.02116,
+      "spreadBps": 4.727014890098351,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BMTUSDT",
+      "quoteVolume24h": 1028139.15319,
+      "trades24h": 30929,
+      "bid": 0.01892,
+      "ask": 0.01893,
+      "spreadBps": 5.284015852047341,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BNBUSDT",
+      "quoteVolume24h": 311476796.098,
+      "trades24h": 1177013,
+      "bid": 770.84,
+      "ask": 770.85,
+      "spreadBps": 0.12972776628233826,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BNTUSDT",
+      "quoteVolume24h": 977162.3987,
+      "trades24h": 30985,
+      "bid": 0.3462,
+      "ask": 0.3464,
+      "spreadBps": 5.775339301183308,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BOMEUSDT",
+      "quoteVolume24h": 9535514.3992089,
+      "trades24h": 173406,
+      "bid": 0.0009986,
+      "ask": 0.0009987,
+      "spreadBps": 1.001351824962097,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BRETTUSDT",
+      "quoteVolume24h": 2307115.749214,
+      "trades24h": 46006,
+      "bid": 0.005911,
+      "ask": 0.005914,
+      "spreadBps": 5.073995771670864,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BREVUSDT",
+      "quoteVolume24h": 931756.83534,
+      "trades24h": 28356,
+      "bid": 0.08788,
+      "ask": 0.08791,
+      "spreadBps": 3.4131634336426697,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BROCCOLI714USDT",
+      "quoteVolume24h": 3379743.12562,
+      "trades24h": 59919,
+      "bid": 0.02666,
+      "ask": 0.02667,
+      "spreadBps": 3.7502343896492003,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BROCCOLIF3BUSDT",
+      "quoteVolume24h": 1859803.392383,
+      "trades24h": 44773,
+      "bid": 0.007277,
+      "ask": 0.007279,
+      "spreadBps": 2.748007694421909,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BRUSDT",
+      "quoteVolume24h": 31453608.29439,
+      "trades24h": 514814,
+      "bid": 0.69561,
+      "ask": 0.69575,
+      "spreadBps": 2.012419503220288,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BSBUSDT",
+      "quoteVolume24h": 2183578.01523,
+      "trades24h": 56494,
+      "bid": 0.10083,
+      "ask": 0.10087,
+      "spreadBps": 3.9662865642041023,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BSVUSDT",
+      "quoteVolume24h": 2232706.361,
+      "trades24h": 24162,
+      "bid": 19.99,
+      "ask": 20.01,
+      "spreadBps": 10.000000000001563,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BTCDOMUSDT",
+      "quoteVolume24h": 2785445.2,
+      "trades24h": 31125,
+      "bid": 5099.0,
+      "ask": 5099.1,
+      "spreadBps": 0.19611496259178435,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BTCUSDT",
+      "quoteVolume24h": 14953283914.3,
+      "trades24h": 3859511,
+      "bid": 83563.1,
+      "ask": 83563.2,
+      "spreadBps": 0.011966997413485354,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BTRUSDT",
+      "quoteVolume24h": 4494864.85959,
+      "trades24h": 96923,
+      "bid": 0.05006,
+      "ask": 0.05007,
+      "spreadBps": 1.9974033756123164,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BTWUSDT",
+      "quoteVolume24h": 246800463.61683,
+      "trades24h": 3209177,
+      "bid": 1.3396,
+      "ask": 1.3398,
+      "spreadBps": 1.492871538405613,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "BULLAUSDT",
+      "quoteVolume24h": 2726106.049167,
+      "trades24h": 67824,
+      "bid": 0.0803,
+      "ask": 0.08031,
+      "spreadBps": 1.2452524749405394,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "BUSDT",
+      "quoteVolume24h": 1640389.3945,
+      "trades24h": 32987,
+      "bid": 0.1725,
+      "ask": 0.1726,
+      "spreadBps": 5.795421616923602,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "C98USDT",
+      "quoteVolume24h": 1524314.71878,
+      "trades24h": 25687,
+      "bid": 0.01634,
+      "ask": 0.01635,
+      "spreadBps": 6.11807892321786,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CAKEUSDT",
+      "quoteVolume24h": 13959118.567,
+      "trades24h": 184049,
+      "bid": 2.597,
+      "ask": 2.5971,
+      "spreadBps": 0.3850522708465799,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CAPUSDT",
+      "quoteVolume24h": 16779979.29076,
+      "trades24h": 223323,
+      "bid": 0.06941,
+      "ask": 0.06944,
+      "spreadBps": 4.321209938783182,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CARVUSDT",
+      "quoteVolume24h": 542948.02387,
+      "trades24h": 20522,
+      "bid": 0.04274,
+      "ask": 0.04276,
+      "spreadBps": 4.678362573099225,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CATIUSDT",
+      "quoteVolume24h": 1553510.15567,
+      "trades24h": 43406,
+      "bid": 0.06035,
+      "ask": 0.06039,
+      "spreadBps": 6.625807520291265,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CCUSDT",
+      "quoteVolume24h": 10302717.78126,
+      "trades24h": 166818,
+      "bid": 0.12752,
+      "ask": 0.12756,
+      "spreadBps": 3.136270973813098,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CELOUSDT",
+      "quoteVolume24h": 11741369.399229,
+      "trades24h": 243826,
+      "bid": 0.10172,
+      "ask": 0.10178,
+      "spreadBps": 5.896805896804975,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CELRUSDT",
+      "quoteVolume24h": 2674336.732933,
+      "trades24h": 82056,
+      "bid": 0.003115,
+      "ask": 0.003116,
+      "spreadBps": 3.2097576632954548,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CETUSUSDT",
+      "quoteVolume24h": 1014698.54084,
+      "trades24h": 28222,
+      "bid": 0.02851,
+      "ask": 0.02852,
+      "spreadBps": 3.5069261792037847,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CFGUSDT",
+      "quoteVolume24h": 5676417.2752,
+      "trades24h": 74019,
+      "bid": 0.1507,
+      "ask": 0.1508,
+      "spreadBps": 6.633499170811873,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CFXUSDT",
+      "quoteVolume24h": 4534586.61197,
+      "trades24h": 70363,
+      "bid": 0.05522,
+      "ask": 0.05523,
+      "spreadBps": 1.8107741059308398,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CGPTUSDT",
+      "quoteVolume24h": 2119802.85407,
+      "trades24h": 43282,
+      "bid": 0.02352,
+      "ask": 0.02354,
+      "spreadBps": 8.499787505312021,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CHILLGUYUSDT",
+      "quoteVolume24h": 1577066.295912,
+      "trades24h": 40036,
+      "bid": 0.013816,
+      "ask": 0.013827,
+      "spreadBps": 7.958615200955462,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CHIPUSDT",
+      "quoteVolume24h": 12246307.47074,
+      "trades24h": 142264,
+      "bid": 0.04325,
+      "ask": 0.04326,
+      "spreadBps": 2.3118714599475347,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CHRUSDT",
+      "quoteVolume24h": 2148957.53932,
+      "trades24h": 40406,
+      "bid": 0.02229,
+      "ask": 0.0223,
+      "spreadBps": 4.485310607759405,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CHZUSDT",
+      "quoteVolume24h": 7775491.16356,
+      "trades24h": 70578,
+      "bid": 0.01635,
+      "ask": 0.01636,
+      "spreadBps": 6.114338122897947,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CKBUSDT",
+      "quoteVolume24h": 1585823.7636798,
+      "trades24h": 48526,
+      "bid": 0.0013223,
+      "ask": 0.001323,
+      "spreadBps": 5.2924053982532255,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CLANKERUSDT",
+      "quoteVolume24h": 869628.8012,
+      "trades24h": 24269,
+      "bid": 14.25,
+      "ask": 14.27,
+      "spreadBps": 14.025245441794931,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CLOUSDT",
+      "quoteVolume24h": 2195843.9457,
+      "trades24h": 48708,
+      "bid": 0.05929,
+      "ask": 0.05933,
+      "spreadBps": 6.744225257123314,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "COAIUSDT",
+      "quoteVolume24h": 2179415.0014,
+      "trades24h": 62882,
+      "bid": 0.3235,
+      "ask": 0.3237,
+      "spreadBps": 6.180469715697713,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "COLLECTUSDT",
+      "quoteVolume24h": 1490024.94526,
+      "trades24h": 32422,
+      "bid": 0.01836,
+      "ask": 0.01837,
+      "spreadBps": 5.445140212360246,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "COMPUSDT",
+      "quoteVolume24h": 16295637.45,
+      "trades24h": 190646,
+      "bid": 24.75,
+      "ask": 24.76,
+      "spreadBps": 4.039587962028505,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "COOKIEUSDT",
+      "quoteVolume24h": 2919792.539761,
+      "trades24h": 74639,
+      "bid": 0.012479,
+      "ask": 0.012483,
+      "spreadBps": 3.204871404533929,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "COTIUSDT",
+      "quoteVolume24h": 15977130.662685,
+      "trades24h": 305952,
+      "bid": 0.013346,
+      "ask": 0.013347,
+      "spreadBps": 0.7492601056451245,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "COWUSDT",
+      "quoteVolume24h": 5471090.3729,
+      "trades24h": 71402,
+      "bid": 0.1673,
+      "ask": 0.1674,
+      "spreadBps": 5.975500448161875,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CROSSUSDT",
+      "quoteVolume24h": 1761307.23502,
+      "trades24h": 46242,
+      "bid": 0.14005,
+      "ask": 0.14008,
+      "spreadBps": 2.1418627066006675,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CRVUSDT",
+      "quoteVolume24h": 65771381.80561,
+      "trades24h": 622951,
+      "bid": 0.3952,
+      "ask": 0.3953,
+      "spreadBps": 2.5300442757745474,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CTKUSDT",
+      "quoteVolume24h": 349679.4061,
+      "trades24h": 13060,
+      "bid": 0.127,
+      "ask": 0.1271,
+      "spreadBps": 7.870916961825186,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CTRUSDT",
+      "quoteVolume24h": 1099314.248166,
+      "trades24h": 35353,
+      "bid": 0.012964,
+      "ask": 0.012973,
+      "spreadBps": 6.939892817211186,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CTSIUSDT",
+      "quoteVolume24h": 825677.61135,
+      "trades24h": 34327,
+      "bid": 0.02899,
+      "ask": 0.029,
+      "spreadBps": 3.448870494913972,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CUSDT",
+      "quoteVolume24h": 2017357.82088,
+      "trades24h": 64163,
+      "bid": 0.09121,
+      "ask": 0.09122,
+      "spreadBps": 1.0963109137747216,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CVCUSDT",
+      "quoteVolume24h": 8056797.66539,
+      "trades24h": 119775,
+      "bid": 0.03145,
+      "ask": 0.03146,
+      "spreadBps": 3.179144810047071,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CVXUSDT",
+      "quoteVolume24h": 2893060.5143,
+      "trades24h": 40116,
+      "bid": 2.172,
+      "ask": 2.174,
+      "spreadBps": 9.203865623560882,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "CYBERUSDT",
+      "quoteVolume24h": 5723436.25641,
+      "trades24h": 126665,
+      "bid": 0.3237,
+      "ask": 0.3238,
+      "spreadBps": 3.0888030888027487,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "CYSUSDT",
+      "quoteVolume24h": 3180940.4722,
+      "trades24h": 41052,
+      "bid": 0.1624,
+      "ask": 0.1625,
+      "spreadBps": 6.1557402277634194,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DASHUSDT",
+      "quoteVolume24h": 55107827.22,
+      "trades24h": 448810,
+      "bid": 60.21,
+      "ask": 60.22,
+      "spreadBps": 1.6607157684958915,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DATAIPUSDT",
+      "quoteVolume24h": 5456976.8383,
+      "trades24h": 84890,
+      "bid": 0.2183,
+      "ask": 0.2185,
+      "spreadBps": 9.157509157509422,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "DEEPUSDT",
+      "quoteVolume24h": 8027571.8967,
+      "trades24h": 88013,
+      "bid": 0.02346,
+      "ask": 0.02347,
+      "spreadBps": 4.261666311527634,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DEXEUSDT",
+      "quoteVolume24h": 4581387.45396,
+      "trades24h": 71165,
+      "bid": 1.85,
+      "ask": 1.851,
+      "spreadBps": 5.403944879761631,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DIAUSDT",
+      "quoteVolume24h": 1693257.9578,
+      "trades24h": 32555,
+      "bid": 0.1698,
+      "ask": 0.1699,
+      "spreadBps": 5.887547836325522,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "DODOXUSDT",
+      "quoteVolume24h": 1895442.599831,
+      "trades24h": 47700,
+      "bid": 0.018719,
+      "ask": 0.018722,
+      "spreadBps": 1.6025213001786975,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "quoteVolume24h": 567571538.58944,
+      "trades24h": 1676371,
+      "bid": 0.09472,
+      "ask": 0.09473,
+      "spreadBps": 1.0556875164947082,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DOGSUSDT",
+      "quoteVolume24h": 1446664.73689407,
+      "trades24h": 46972,
+      "bid": 4.865e-05,
+      "ask": 4.867e-05,
+      "spreadBps": 4.110152075627455,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "DOLOUSDT",
+      "quoteVolume24h": 501201.39053,
+      "trades24h": 28024,
+      "bid": 0.03068,
+      "ask": 0.03069,
+      "spreadBps": 3.2589212970505437,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "DOODUSDT",
+      "quoteVolume24h": 3381207.681659,
+      "trades24h": 51521,
+      "bid": 0.001844,
+      "ask": 0.001845,
+      "spreadBps": 5.421523448089633,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DOSUSDT",
+      "quoteVolume24h": 1815990.4037,
+      "trades24h": 26952,
+      "bid": 0.2159,
+      "ask": 0.216,
+      "spreadBps": 4.63070155128451,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "DOTUSDT",
+      "quoteVolume24h": 66969655.55659,
+      "trades24h": 865573,
+      "bid": 1.2401,
+      "ask": 1.2402,
+      "spreadBps": 0.8063540700720799,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DRIFTUSDT",
+      "quoteVolume24h": 1739139.64375,
+      "trades24h": 43917,
+      "bid": 0.01926,
+      "ask": 0.01929,
+      "spreadBps": 15.564202334631515,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "DUSKUSDT",
+      "quoteVolume24h": 4039786.92036,
+      "trades24h": 86407,
+      "bid": 0.09102,
+      "ask": 0.09103,
+      "spreadBps": 1.0985992859100384,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DYDXUSDT",
+      "quoteVolume24h": 9101902.86773,
+      "trades24h": 94068,
+      "bid": 0.1441,
+      "ask": 0.1442,
+      "spreadBps": 6.937218175510855,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "DYMUSDT",
+      "quoteVolume24h": 1528538.702097,
+      "trades24h": 37088,
+      "bid": 0.01953,
+      "ask": 0.01954,
+      "spreadBps": 5.119017148707241,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "EDENUSDT",
+      "quoteVolume24h": 3936139.33773,
+      "trades24h": 70612,
+      "bid": 0.06018,
+      "ask": 0.06021,
+      "spreadBps": 4.983802641415773,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "EDGEUSDT",
+      "quoteVolume24h": 4858374.6927,
+      "trades24h": 93159,
+      "bid": 0.521,
+      "ask": 0.5212,
+      "spreadBps": 3.838034926117405,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "EDUUSDT",
+      "quoteVolume24h": 1889687.15779,
+      "trades24h": 63401,
+      "bid": 0.05226,
+      "ask": 0.05228,
+      "spreadBps": 3.8262865888653503,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "EGLDUSDT",
+      "quoteVolume24h": 6694376.215,
+      "trades24h": 121899,
+      "bid": 4.54,
+      "ask": 4.542,
+      "spreadBps": 4.404316229904822,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "EIGENUSDT",
+      "quoteVolume24h": 19772236.59526,
+      "trades24h": 239401,
+      "bid": 0.2481,
+      "ask": 0.2482,
+      "spreadBps": 4.029820672980727,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ELSAUSDT",
+      "quoteVolume24h": 1094328.36392,
+      "trades24h": 24250,
+      "bid": 0.05537,
+      "ask": 0.0554,
+      "spreadBps": 5.416629051186297,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ENAUSDT",
+      "quoteVolume24h": 438971584.17718,
+      "trades24h": 3406613,
+      "bid": 0.26663,
+      "ask": 0.26664,
+      "spreadBps": 0.3750445365390891,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ENJUSDT",
+      "quoteVolume24h": 3625537.78275,
+      "trades24h": 59380,
+      "bid": 0.02949,
+      "ask": 0.0295,
+      "spreadBps": 3.3904051534156947,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ENSOUSDT",
+      "quoteVolume24h": 1621018.89375,
+      "trades24h": 57240,
+      "bid": 0.9862,
+      "ask": 0.9863,
+      "spreadBps": 1.0139416983522331,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ENSUSDT",
+      "quoteVolume24h": 9238513.931,
+      "trades24h": 157082,
+      "bid": 7.066,
+      "ask": 7.067,
+      "spreadBps": 1.4151277152767763,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "EPICUSDT",
+      "quoteVolume24h": 8994060.06193,
+      "trades24h": 214082,
+      "bid": 0.534,
+      "ask": 0.5341,
+      "spreadBps": 1.872483849826589,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ERAUSDT",
+      "quoteVolume24h": 3693726.15306,
+      "trades24h": 82121,
+      "bid": 0.06634,
+      "ask": 0.06635,
+      "spreadBps": 1.5072725902494537,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ESPORTSUSDT",
+      "quoteVolume24h": 21288869.50182,
+      "trades24h": 241790,
+      "bid": 0.01128,
+      "ask": 0.01129,
+      "spreadBps": 8.861320336729811,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ESPUSDT",
+      "quoteVolume24h": 4153481.35131,
+      "trades24h": 98212,
+      "bid": 0.10712,
+      "ask": 0.10718,
+      "spreadBps": 5.599626691553022,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ETCUSDT",
+      "quoteVolume24h": 40696536.575,
+      "trades24h": 332633,
+      "bid": 8.946,
+      "ask": 8.947,
+      "spreadBps": 1.1177555468612816,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ETHFIUSDT",
+      "quoteVolume24h": 46582527.63017,
+      "trades24h": 595569,
+      "bid": 0.7763,
+      "ask": 0.7764,
+      "spreadBps": 1.28807883042428,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ETHUSDT",
+      "quoteVolume24h": 8658181231.04,
+      "trades24h": 4421320,
+      "bid": 2687.19,
+      "ask": 2687.2,
+      "spreadBps": 0.037213525627144785,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ETHWUSDT",
+      "quoteVolume24h": 653170.6408,
+      "trades24h": 20040,
+      "bid": 0.2898,
+      "ask": 0.29,
+      "spreadBps": 6.89893066574605,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "EULUSDT",
+      "quoteVolume24h": 3521835.84159,
+      "trades24h": 73891,
+      "bid": 1.3969,
+      "ask": 1.3976,
+      "spreadBps": 5.009840758632477,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "EVAAUSDT",
+      "quoteVolume24h": 2617705.8495,
+      "trades24h": 68053,
+      "bid": 0.6652,
+      "ask": 0.6655,
+      "spreadBps": 4.508905087547411,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FARTCOINUSDT",
+      "quoteVolume24h": 31404361.68162,
+      "trades24h": 268072,
+      "bid": 0.1775,
+      "ask": 0.1776,
+      "spreadBps": 5.632216277105984,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FETUSDT",
+      "quoteVolume24h": 68058726.418,
+      "trades24h": 359561,
+      "bid": 0.2341,
+      "ask": 0.2342,
+      "spreadBps": 4.270766602604698,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FFUSDT",
+      "quoteVolume24h": 9286963.66566,
+      "trades24h": 203752,
+      "bid": 0.12994,
+      "ask": 0.12996,
+      "spreadBps": 1.5390534821079065,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FHEUSDT",
+      "quoteVolume24h": 761177.52027,
+      "trades24h": 21863,
+      "bid": 0.0229,
+      "ask": 0.02292,
+      "spreadBps": 8.729812309035,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FIDAUSDT",
+      "quoteVolume24h": 1468389.39271,
+      "trades24h": 39222,
+      "bid": 0.02136,
+      "ask": 0.02137,
+      "spreadBps": 4.680552305171819,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FIGHTUSDT",
+      "quoteVolume24h": 1936659.945502,
+      "trades24h": 53742,
+      "bid": 0.003823,
+      "ask": 0.003825,
+      "spreadBps": 5.230125523012112,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FILUSDT",
+      "quoteVolume24h": 102513435.73135,
+      "trades24h": 790427,
+      "bid": 1.0544,
+      "ask": 1.0545,
+      "spreadBps": 0.9483617051542412,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FLOCKUSDT",
+      "quoteVolume24h": 14739259.45475,
+      "trades24h": 353222,
+      "bid": 0.06576,
+      "ask": 0.06577,
+      "spreadBps": 1.5205656504213678,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FLOWUSDT",
+      "quoteVolume24h": 8045232.01677,
+      "trades24h": 125361,
+      "bid": 0.03133,
+      "ask": 0.03134,
+      "spreadBps": 3.1913196106599844,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FLUIDUSDT",
+      "quoteVolume24h": 967772.6865,
+      "trades24h": 17770,
+      "bid": 1.471,
+      "ask": 1.473,
+      "spreadBps": 13.586956521739143,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FLUXUSDT",
+      "quoteVolume24h": 1765998.59379,
+      "trades24h": 50867,
+      "bid": 0.07364,
+      "ask": 0.07367,
+      "spreadBps": 4.073043242142726,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FOGOUSDT",
+      "quoteVolume24h": 2832872.828814,
+      "trades24h": 54862,
+      "bid": 0.005384,
+      "ask": 0.005386,
+      "spreadBps": 3.714020427112842,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FOLKSUSDT",
+      "quoteVolume24h": 7002889.6341,
+      "trades24h": 78848,
+      "bid": 2.429,
+      "ask": 2.43,
+      "spreadBps": 4.116073266105511,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FORMUSDT",
+      "quoteVolume24h": 5315455.35527,
+      "trades24h": 85074,
+      "bid": 0.2893,
+      "ask": 0.2894,
+      "spreadBps": 3.456022118541178,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "FRAXUSDT",
+      "quoteVolume24h": 735539.1918,
+      "trades24h": 25088,
+      "bid": 0.3084,
+      "ask": 0.3086,
+      "spreadBps": 6.482982171798314,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "FUSDT",
+      "quoteVolume24h": 1800957.939877,
+      "trades24h": 44272,
+      "bid": 0.003583,
+      "ask": 0.003584,
+      "spreadBps": 2.790567880564065,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GALAUSDT",
+      "quoteVolume24h": 16687425.850463,
+      "trades24h": 175502,
+      "bid": 0.002348,
+      "ask": 0.002349,
+      "spreadBps": 4.258037044922856,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GASUSDT",
+      "quoteVolume24h": 1290661.2865,
+      "trades24h": 24033,
+      "bid": 1.428,
+      "ask": 1.429,
+      "spreadBps": 7.000350017501658,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GENIUSUSDT",
+      "quoteVolume24h": 3050858.5502,
+      "trades24h": 67908,
+      "bid": 0.3246,
+      "ask": 0.3247,
+      "spreadBps": 3.0802402587398428,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GIGGLEUSDT",
+      "quoteVolume24h": 7836540.0423,
+      "trades24h": 109993,
+      "bid": 37.91,
+      "ask": 37.93,
+      "spreadBps": 5.274261603376352,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GLMUSDT",
+      "quoteVolume24h": 976559.59642,
+      "trades24h": 36517,
+      "bid": 0.12731,
+      "ask": 0.12738,
+      "spreadBps": 5.49687855824624,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GMTUSDT",
+      "quoteVolume24h": 2290554.555643,
+      "trades24h": 64976,
+      "bid": 0.008675,
+      "ask": 0.008679,
+      "spreadBps": 4.6098882102095144,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GMXUSDT",
+      "quoteVolume24h": 1485375.00138,
+      "trades24h": 40511,
+      "bid": 7.942,
+      "ask": 7.945,
+      "spreadBps": 3.776672751306242,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GOATUSDT",
+      "quoteVolume24h": 1446759.22453,
+      "trades24h": 27942,
+      "bid": 0.01906,
+      "ask": 0.01908,
+      "spreadBps": 10.487676979548603,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GPSUSDT",
+      "quoteVolume24h": 6506243.962015,
+      "trades24h": 155252,
+      "bid": 0.010729,
+      "ask": 0.010732,
+      "spreadBps": 2.795769069474424,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GRAMUSDT",
+      "quoteVolume24h": 31055623.7934,
+      "trades24h": 165347,
+      "bid": 1.512,
+      "ask": 1.513,
+      "spreadBps": 6.611570247933156,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GRASSUSDT",
+      "quoteVolume24h": 63218721.65714,
+      "trades24h": 1132414,
+      "bid": 0.7023,
+      "ask": 0.7025,
+      "spreadBps": 2.8473804100224656,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GRIFFAINUSDT",
+      "quoteVolume24h": 1017828.370534,
+      "trades24h": 36792,
+      "bid": 0.016439,
+      "ask": 0.01645,
+      "spreadBps": 6.6891665906537705,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GRTUSDT",
+      "quoteVolume24h": 12209175.20491,
+      "trades24h": 181046,
+      "bid": 0.02936,
+      "ask": 0.02937,
+      "spreadBps": 3.4054146092285347,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GRVTUSDT",
+      "quoteVolume24h": 2630130.224,
+      "trades24h": 44582,
+      "bid": 0.2073,
+      "ask": 0.2074,
+      "spreadBps": 4.822763443452567,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GTCUSDT",
+      "quoteVolume24h": 50556574.489624,
+      "trades24h": 836257,
+      "bid": 0.09488,
+      "ask": 0.0949,
+      "spreadBps": 2.1077036568650276,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GUAUSDT",
+      "quoteVolume24h": 657923.66833,
+      "trades24h": 31432,
+      "bid": 0.03449,
+      "ask": 0.03451,
+      "spreadBps": 5.797101449275126,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GUNUSDT",
+      "quoteVolume24h": 1570792.837493,
+      "trades24h": 43752,
+      "bid": 0.002996,
+      "ask": 0.002997,
+      "spreadBps": 3.3372267645590945,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "GUSDT",
+      "quoteVolume24h": 7499093.84723,
+      "trades24h": 127122,
+      "bid": 0.004827,
+      "ask": 0.004828,
+      "spreadBps": 2.0714655618853084,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "GWEIUSDT",
+      "quoteVolume24h": 12241865.65733,
+      "trades24h": 138126,
+      "bid": 0.02237,
+      "ask": 0.02239,
+      "spreadBps": 8.936550491509912,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HAEDALUSDT",
+      "quoteVolume24h": 1332047.42628,
+      "trades24h": 40424,
+      "bid": 0.01996,
+      "ask": 0.01997,
+      "spreadBps": 5.008765339345385,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HANAUSDT",
+      "quoteVolume24h": 2192847.08992,
+      "trades24h": 44146,
+      "bid": 0.01252,
+      "ask": 0.01253,
+      "spreadBps": 7.98403193612742,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HBARUSDT",
+      "quoteVolume24h": 188261115.10395,
+      "trades24h": 1341014,
+      "bid": 0.10454,
+      "ask": 0.10455,
+      "spreadBps": 0.9565258979396433,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "HEIUSDT",
+      "quoteVolume24h": 2833211.858729,
+      "trades24h": 65905,
+      "bid": 0.13919,
+      "ask": 0.13925,
+      "spreadBps": 4.309725614136222,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HEMIUSDT",
+      "quoteVolume24h": 6611177.154409,
+      "trades24h": 138366,
+      "bid": 0.00639,
+      "ask": 0.006391,
+      "spreadBps": 1.56482278381994,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "HIVEUSDT",
+      "quoteVolume24h": 1515297.1655,
+      "trades24h": 36322,
+      "bid": 0.05695,
+      "ask": 0.05697,
+      "spreadBps": 3.511235955056037,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HMSTRUSDT",
+      "quoteVolume24h": 1522965.345504,
+      "trades24h": 35911,
+      "bid": 0.0001713,
+      "ask": 0.0001714,
+      "spreadBps": 5.836008170411581,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HOLOUSDT",
+      "quoteVolume24h": 1386332.74146,
+      "trades24h": 38326,
+      "bid": 0.06497,
+      "ask": 0.06498,
+      "spreadBps": 1.5390534821079065,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HOMEUSDT",
+      "quoteVolume24h": 3279282.987588,
+      "trades24h": 72265,
+      "bid": 0.006021,
+      "ask": 0.006022,
+      "spreadBps": 1.6607157684950018,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "HOTUSDT",
+      "quoteVolume24h": 1268117.7532428,
+      "trades24h": 36240,
+      "bid": 0.0004499,
+      "ask": 0.0004501,
+      "spreadBps": 4.444444444444552,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HUMAUSDT",
+      "quoteVolume24h": 12019586.428912,
+      "trades24h": 291377,
+      "bid": 0.029979,
+      "ask": 0.029986,
+      "spreadBps": 2.3346952388893727,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "HUSDT",
+      "quoteVolume24h": 5008912.81811,
+      "trades24h": 91970,
+      "bid": 0.06993,
+      "ask": 0.06994,
+      "spreadBps": 1.4298991921064022,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "HYPERUSDT",
+      "quoteVolume24h": 1529729.20636,
+      "trades24h": 40189,
+      "bid": 0.07247,
+      "ask": 0.07248,
+      "spreadBps": 1.3797861331488266,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "quoteVolume24h": 1175087527.86968,
+      "trades24h": 2783861,
+      "bid": 89.866,
+      "ask": 89.867,
+      "spreadBps": 0.11127617076494298,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ICNTUSDT",
+      "quoteVolume24h": 1198688.2943,
+      "trades24h": 29458,
+      "bid": 0.0969,
+      "ask": 0.097,
+      "spreadBps": 10.314595152140575,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ICPUSDT",
+      "quoteVolume24h": 59218945.784,
+      "trades24h": 402786,
+      "bid": 3.349,
+      "ask": 3.35,
+      "spreadBps": 2.9855202268992085,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "IDOLUSDT",
+      "quoteVolume24h": 736152.42608,
+      "trades24h": 25320,
+      "bid": 0.01068,
+      "ask": 0.01069,
+      "spreadBps": 9.35891436593317,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "IDUSDT",
+      "quoteVolume24h": 2402354.22898,
+      "trades24h": 50672,
+      "bid": 0.03754,
+      "ask": 0.03755,
+      "spreadBps": 2.663470502065006,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ILVUSDT",
+      "quoteVolume24h": 1570268.7789,
+      "trades24h": 31535,
+      "bid": 3.919,
+      "ask": 3.921,
+      "spreadBps": 5.102040816325968,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "IMXUSDT",
+      "quoteVolume24h": 3414381.1863,
+      "trades24h": 63929,
+      "bid": 0.1681,
+      "ask": 0.1682,
+      "spreadBps": 5.9470710674986025,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "INITUSDT",
+      "quoteVolume24h": 12501769.74109,
+      "trades24h": 286990,
+      "bid": 0.1053,
+      "ask": 0.10536,
+      "spreadBps": 5.6963827969230625,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "INJUSDT",
+      "quoteVolume24h": 54276410.2198,
+      "trades24h": 583987,
+      "bid": 7.436,
+      "ask": 7.437,
+      "spreadBps": 1.3447186176297101,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "INUSDT",
+      "quoteVolume24h": 1391288.48603,
+      "trades24h": 31987,
+      "bid": 0.03799,
+      "ask": 0.03801,
+      "spreadBps": 5.2631578947366275,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "INXUSDT",
+      "quoteVolume24h": 2033944.150428,
+      "trades24h": 57150,
+      "bid": 0.005779,
+      "ask": 0.00578,
+      "spreadBps": 1.7302534821353626,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "IOSTUSDT",
+      "quoteVolume24h": 5818648.8252614,
+      "trades24h": 124191,
+      "bid": 0.0008974,
+      "ask": 0.0008976,
+      "spreadBps": 2.2284122562674633,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "IOTAUSDT",
+      "quoteVolume24h": 6439673.637871,
+      "trades24h": 121798,
+      "bid": 0.05368,
+      "ask": 0.05369,
+      "spreadBps": 1.8627177051323576,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "IOTXUSDT",
+      "quoteVolume24h": 1132976.408424,
+      "trades24h": 31989,
+      "bid": 0.003512,
+      "ask": 0.003515,
+      "spreadBps": 8.538494378824433,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "IOUSDT",
+      "quoteVolume24h": 4648710.68452,
+      "trades24h": 61802,
+      "bid": 0.1636,
+      "ask": 0.1637,
+      "spreadBps": 6.110601894287609,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "IRYSUSDT",
+      "quoteVolume24h": 2388048.21822,
+      "trades24h": 45249,
+      "bid": 0.01625,
+      "ask": 0.01626,
+      "spreadBps": 6.151953245155087,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "JASMYUSDT",
+      "quoteVolume24h": 7960214.51605,
+      "trades24h": 159830,
+      "bid": 0.005152,
+      "ask": 0.005153,
+      "spreadBps": 1.9408054342537902,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "JCTUSDT",
+      "quoteVolume24h": 6258976.001547,
+      "trades24h": 107445,
+      "bid": 0.00174,
+      "ask": 0.001742,
+      "spreadBps": 11.487650775416707,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "JELLYJELLYUSDT",
+      "quoteVolume24h": 1386821.99716,
+      "trades24h": 49453,
+      "bid": 0.05608,
+      "ask": 0.05609,
+      "spreadBps": 1.7830079343858543,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "JOEUSDT",
+      "quoteVolume24h": 1381561.77453,
+      "trades24h": 39936,
+      "bid": 0.03853,
+      "ask": 0.03854,
+      "spreadBps": 2.595043466977066,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "JSTUSDT",
+      "quoteVolume24h": 4858529.1366,
+      "trades24h": 121309,
+      "bid": 0.13331,
+      "ask": 0.13334,
+      "spreadBps": 2.250140633787699,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "JTOUSDT",
+      "quoteVolume24h": 27320798.5019,
+      "trades24h": 317350,
+      "bid": 0.5374,
+      "ask": 0.5375,
+      "spreadBps": 1.8606381989020186,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "JUPUSDT",
+      "quoteVolume24h": 27293412.2984,
+      "trades24h": 316950,
+      "bid": 0.3303,
+      "ask": 0.3304,
+      "spreadBps": 3.0270924776765398,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "KAIAUSDT",
+      "quoteVolume24h": 1582558.81978,
+      "trades24h": 30974,
+      "bid": 0.03476,
+      "ask": 0.03477,
+      "spreadBps": 2.876456205955145,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "KAITOUSDT",
+      "quoteVolume24h": 11637856.67347,
+      "trades24h": 170632,
+      "bid": 0.3526,
+      "ask": 0.3527,
+      "spreadBps": 2.8356727633627954,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "KASUSDT",
+      "quoteVolume24h": 7585205.65102,
+      "trades24h": 112181,
+      "bid": 0.04408,
+      "ask": 0.04409,
+      "spreadBps": 2.2683452421449752,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "KATUSDT",
+      "quoteVolume24h": 2255796.312278,
+      "trades24h": 42891,
+      "bid": 0.00506,
+      "ask": 0.005061,
+      "spreadBps": 1.9760893192374915,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "KAVAUSDT",
+      "quoteVolume24h": 4307885.013696,
+      "trades24h": 62928,
+      "bid": 0.06874,
+      "ask": 0.06875,
+      "spreadBps": 1.4546512473648994,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "KERNELUSDT",
+      "quoteVolume24h": 4214694.66972,
+      "trades24h": 83654,
+      "bid": 0.0554,
+      "ask": 0.05541,
+      "spreadBps": 1.8048912553024208,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "KGENUSDT",
+      "quoteVolume24h": 1322234.30949,
+      "trades24h": 24442,
+      "bid": 0.1643,
+      "ask": 0.1644,
+      "spreadBps": 6.084575600851171,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "KITEUSDT",
+      "quoteVolume24h": 7152430.83357,
+      "trades24h": 150310,
+      "bid": 0.14397,
+      "ask": 0.14402,
+      "spreadBps": 3.472342789681743,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "KMNOUSDT",
+      "quoteVolume24h": 5909754.31743,
+      "trades24h": 103466,
+      "bid": 0.0437,
+      "ask": 0.04372,
+      "spreadBps": 4.575611988103223,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "KNCUSDT",
+      "quoteVolume24h": 1069204.6877,
+      "trades24h": 23397,
+      "bid": 0.1388,
+      "ask": 0.1389,
+      "spreadBps": 7.202016564637305,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "KOMAUSDT",
+      "quoteVolume24h": 1624066.571804,
+      "trades24h": 53882,
+      "bid": 0.020291,
+      "ask": 0.020301,
+      "spreadBps": 4.927079227433776,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "KSMUSDT",
+      "quoteVolume24h": 16811793.235,
+      "trades24h": 243082,
+      "bid": 5.224,
+      "ask": 5.227,
+      "spreadBps": 5.741077408860613,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LABUSDT",
+      "quoteVolume24h": 11244591.88136,
+      "trades24h": 150475,
+      "bid": 0.05426,
+      "ask": 0.05427,
+      "spreadBps": 1.842808440061941,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LAUSDT",
+      "quoteVolume24h": 6013817.794211,
+      "trades24h": 121361,
+      "bid": 0.0694,
+      "ask": 0.06941,
+      "spreadBps": 1.4408183848420322,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LAYERUSDT",
+      "quoteVolume24h": 1753518.731018,
+      "trades24h": 43098,
+      "bid": 0.0785,
+      "ask": 0.07852,
+      "spreadBps": 2.547446185200118,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "LDOUSDT",
+      "quoteVolume24h": 42483376.6415,
+      "trades24h": 407206,
+      "bid": 0.4603,
+      "ask": 0.4604,
+      "spreadBps": 2.1722602367761263,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LIGHTUSDT",
+      "quoteVolume24h": 2613722.7142,
+      "trades24h": 42757,
+      "bid": 0.1836,
+      "ask": 0.1837,
+      "spreadBps": 5.445140212359869,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "LINEAUSDT",
+      "quoteVolume24h": 3368940.790226,
+      "trades24h": 53742,
+      "bid": 0.002924,
+      "ask": 0.002925,
+      "spreadBps": 3.4193879295610623,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LINKUSDT",
+      "quoteVolume24h": 254043166.24,
+      "trades24h": 1039788,
+      "bid": 14.391,
+      "ask": 14.392,
+      "spreadBps": 0.6948546016742145,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LISTAUSDT",
+      "quoteVolume24h": 1122688.40894,
+      "trades24h": 38254,
+      "bid": 0.08951,
+      "ask": 0.08955,
+      "spreadBps": 4.467776164413981,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "LITUSDT",
+      "quoteVolume24h": 198312097.33057,
+      "trades24h": 2627527,
+      "bid": 3.9114,
+      "ask": 3.9115,
+      "spreadBps": 0.2556596658533562,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LPTUSDT",
+      "quoteVolume24h": 4388888.594,
+      "trades24h": 80764,
+      "bid": 1.773,
+      "ask": 1.774,
+      "spreadBps": 5.638567803778471,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LQTYUSDT",
+      "quoteVolume24h": 923100.66487,
+      "trades24h": 27461,
+      "bid": 0.2371,
+      "ask": 0.2373,
+      "spreadBps": 8.431703204047459,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "LSKUSDT",
+      "quoteVolume24h": 30311134.92647,
+      "trades24h": 524020,
+      "bid": 0.2791,
+      "ask": 0.27911,
+      "spreadBps": 0.35828809946113466,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LTCUSDT",
+      "quoteVolume24h": 117883761.08,
+      "trades24h": 458025,
+      "bid": 67.44,
+      "ask": 67.45,
+      "spreadBps": 1.4826895989332223,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "LUMIAUSDT",
+      "quoteVolume24h": 1320914.801127,
+      "trades24h": 40908,
+      "bid": 0.08522,
+      "ask": 0.08528,
+      "spreadBps": 7.038123167154325,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "LUNA2USDT",
+      "quoteVolume24h": 2043051.17407,
+      "trades24h": 40216,
+      "bid": 0.05132,
+      "ask": 0.05134,
+      "spreadBps": 3.8963569062924575,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "LYNUSDT",
+      "quoteVolume24h": 55073551.08636,
+      "trades24h": 839162,
+      "bid": 0.02502,
+      "ask": 0.02505,
+      "spreadBps": 11.983223487117545,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MAGICUSDT",
+      "quoteVolume24h": 5519280.05391,
+      "trades24h": 122162,
+      "bid": 0.05323,
+      "ask": 0.05325,
+      "spreadBps": 3.756574004507736,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MAGMAUSDT",
+      "quoteVolume24h": 4219865.93036,
+      "trades24h": 77776,
+      "bid": 0.1889,
+      "ask": 0.18894,
+      "spreadBps": 2.1172983273335,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MANAUSDT",
+      "quoteVolume24h": 4266935.95988,
+      "trades24h": 111693,
+      "bid": 0.09022,
+      "ask": 0.09023,
+      "spreadBps": 1.1083402604610697,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MANTAUSDT",
+      "quoteVolume24h": 1502874.743969,
+      "trades24h": 45075,
+      "bid": 0.0686,
+      "ask": 0.06862,
+      "spreadBps": 2.915026964000309,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MANTRAUSDT",
+      "quoteVolume24h": 2297806.43078,
+      "trades24h": 41665,
+      "bid": 0.004475,
+      "ask": 0.004477,
+      "spreadBps": 4.4682752457557315,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MARSCOINUSDT",
+      "quoteVolume24h": 62066431.65565,
+      "trades24h": 1203393,
+      "bid": 0.13568,
+      "ask": 0.13569,
+      "spreadBps": 0.7370011423525078,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MASKUSDT",
+      "quoteVolume24h": 1615902.2588,
+      "trades24h": 39463,
+      "bid": 0.4656,
+      "ask": 0.4657,
+      "spreadBps": 2.1475357027808224,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MAVIAUSDT",
+      "quoteVolume24h": 746156.01938,
+      "trades24h": 28334,
+      "bid": 0.03202,
+      "ask": 0.03205,
+      "spreadBps": 9.36475729670743,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MAVUSDT",
+      "quoteVolume24h": 1021574.320714,
+      "trades24h": 38671,
+      "bid": 0.011639,
+      "ask": 0.011644,
+      "spreadBps": 4.294979169350854,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MEGAUSDT",
+      "quoteVolume24h": 3090642.0632,
+      "trades24h": 73666,
+      "bid": 0.043,
+      "ask": 0.04301,
+      "spreadBps": 2.325311010348346,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MELANIAUSDT",
+      "quoteVolume24h": 2018064.630034,
+      "trades24h": 41686,
+      "bid": 0.10456,
+      "ask": 0.10457,
+      "spreadBps": 0.9563429445795556,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MEMEUSDT",
+      "quoteVolume24h": 2498334.7305808,
+      "trades24h": 75432,
+      "bid": 0.000599,
+      "ask": 0.0005992,
+      "spreadBps": 3.338340844600315,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MERLUSDT",
+      "quoteVolume24h": 6651334.7826,
+      "trades24h": 115679,
+      "bid": 0.03129,
+      "ask": 0.03131,
+      "spreadBps": 6.389776357827217,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "METISUSDT",
+      "quoteVolume24h": 3046671.0098,
+      "trades24h": 56703,
+      "bid": 3.371,
+      "ask": 3.373,
+      "spreadBps": 5.931198102017271,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "METUSDT",
+      "quoteVolume24h": 10966462.6414,
+      "trades24h": 129875,
+      "bid": 0.3172,
+      "ask": 0.3173,
+      "spreadBps": 3.1520882584726393,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MEUSDT",
+      "quoteVolume24h": 2059487.2943,
+      "trades24h": 47428,
+      "bid": 0.07606,
+      "ask": 0.07609,
+      "spreadBps": 3.943476832073907,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MEWUSDT",
+      "quoteVolume24h": 45109507.1977962,
+      "trades24h": 627810,
+      "bid": 0.0004997,
+      "ask": 0.0004998,
+      "spreadBps": 2.0010005002512585,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MINAUSDT",
+      "quoteVolume24h": 8650304.90474,
+      "trades24h": 154166,
+      "bid": 0.14523,
+      "ask": 0.14527,
+      "spreadBps": 2.7538726333915493,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MIRAUSDT",
+      "quoteVolume24h": 2685492.80921,
+      "trades24h": 60088,
+      "bid": 0.05218,
+      "ask": 0.05219,
+      "spreadBps": 1.9162594615316781,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MITOUSDT",
+      "quoteVolume24h": 2164132.23087,
+      "trades24h": 41066,
+      "bid": 0.01544,
+      "ask": 0.01545,
+      "spreadBps": 6.474587245062863,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MMTUSDT",
+      "quoteVolume24h": 4392819.465,
+      "trades24h": 60179,
+      "bid": 0.1903,
+      "ask": 0.1904,
+      "spreadBps": 5.253480430786274,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MOCAUSDT",
+      "quoteVolume24h": 1598430.508979,
+      "trades24h": 39165,
+      "bid": 0.010597,
+      "ask": 0.010602,
+      "spreadBps": 4.717203641681019,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MONUSDT",
+      "quoteVolume24h": 52598525.95298,
+      "trades24h": 463759,
+      "bid": 0.03224,
+      "ask": 0.03225,
+      "spreadBps": 3.101256008684467,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MOODENGUSDT",
+      "quoteVolume24h": 4242167.96642,
+      "trades24h": 77863,
+      "bid": 0.04743,
+      "ask": 0.04744,
+      "spreadBps": 2.108147991989683,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MORPHOUSDT",
+      "quoteVolume24h": 20999347.02394,
+      "trades24h": 310315,
+      "bid": 2.5033,
+      "ask": 2.5034,
+      "spreadBps": 0.3994647172796893,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MOVEUSDT",
+      "quoteVolume24h": 3797783.170641,
+      "trades24h": 74326,
+      "bid": 0.009426,
+      "ask": 0.009427,
+      "spreadBps": 1.0608391237461043,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MOVRUSDT",
+      "quoteVolume24h": 841753014.293061,
+      "trades24h": 10501504,
+      "bid": 2.3076,
+      "ask": 2.3084,
+      "spreadBps": 3.4662045060654765,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MTLUSDT",
+      "quoteVolume24h": 2505462.3474,
+      "trades24h": 54781,
+      "bid": 0.3297,
+      "ask": 0.3299,
+      "spreadBps": 6.064281382657171,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MUBARAKUSDT",
+      "quoteVolume24h": 23661141.00669,
+      "trades24h": 427769,
+      "bid": 0.05989,
+      "ask": 0.05991,
+      "spreadBps": 3.3388981636058745,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "MUSDT",
+      "quoteVolume24h": 2868742.7522,
+      "trades24h": 66940,
+      "bid": 1.0481,
+      "ask": 1.0491,
+      "spreadBps": 9.536524890328913,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "MYXUSDT",
+      "quoteVolume24h": 3160092.25157,
+      "trades24h": 66352,
+      "bid": 0.07493,
+      "ask": 0.07496,
+      "spreadBps": 4.002935486023383,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NAORISUSDT",
+      "quoteVolume24h": 772683.24594,
+      "trades24h": 34029,
+      "bid": 0.03344,
+      "ask": 0.03346,
+      "spreadBps": 5.979073243646992,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "NEARUSDT",
+      "quoteVolume24h": 911015014.179,
+      "trades24h": 2862673,
+      "bid": 5.294,
+      "ask": 5.295,
+      "spreadBps": 1.8887524789882597,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NEIROUSDT",
+      "quoteVolume24h": 8928028.77838381,
+      "trades24h": 216031,
+      "bid": 9.268e-05,
+      "ask": 9.269e-05,
+      "spreadBps": 1.0789232346112987,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NEOUSDT",
+      "quoteVolume24h": 3094041.205,
+      "trades24h": 65987,
+      "bid": 2.546,
+      "ask": 2.547,
+      "spreadBps": 3.926958570588392,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NEWTUSDT",
+      "quoteVolume24h": 733183.0678,
+      "trades24h": 27405,
+      "bid": 0.04947,
+      "ask": 0.04949,
+      "spreadBps": 4.042037186741954,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "NIGHTUSDT",
+      "quoteVolume24h": 72744027.45172,
+      "trades24h": 744902,
+      "bid": 0.04013,
+      "ask": 0.04015,
+      "spreadBps": 4.982561036372493,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NILUSDT",
+      "quoteVolume24h": 50984761.395612,
+      "trades24h": 761286,
+      "bid": 0.08597,
+      "ask": 0.08599,
+      "spreadBps": 2.3261223540349203,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NMRUSDT",
+      "quoteVolume24h": 34981605.397,
+      "trades24h": 779297,
+      "bid": 11.401,
+      "ask": 11.403,
+      "spreadBps": 1.754078231889728,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NOMUSDT",
+      "quoteVolume24h": 32914425.5964,
+      "trades24h": 509340,
+      "bid": 0.002404,
+      "ask": 0.002405,
+      "spreadBps": 4.1588687876903006,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "NOTUSDT",
+      "quoteVolume24h": 2214525.5044684,
+      "trades24h": 44781,
+      "bid": 0.0004954,
+      "ask": 0.0004955,
+      "spreadBps": 2.0183671409819,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "NXPCUSDT",
+      "quoteVolume24h": 937716.5318,
+      "trades24h": 28902,
+      "bid": 0.2332,
+      "ask": 0.2333,
+      "spreadBps": 4.287245444802433,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "OGNUSDT",
+      "quoteVolume24h": 1141056.66143,
+      "trades24h": 31651,
+      "bid": 0.02055,
+      "ask": 0.02056,
+      "spreadBps": 4.86499635125254,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "OGUSDT",
+      "quoteVolume24h": 916747.3588,
+      "trades24h": 19764,
+      "bid": 2.817,
+      "ask": 2.818,
+      "spreadBps": 3.5492457852702395,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ONDOUSDT",
+      "quoteVolume24h": 223651083.64984,
+      "trades24h": 959935,
+      "bid": 0.5076,
+      "ask": 0.5077,
+      "spreadBps": 1.9698611247904851,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ONEUSDT",
+      "quoteVolume24h": 24080308.1695642,
+      "trades24h": 495386,
+      "bid": 0.0021911,
+      "ask": 0.0021912,
+      "spreadBps": 0.45638135225721554,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ONGUSDT",
+      "quoteVolume24h": 11540591.66411,
+      "trades24h": 216885,
+      "bid": 0.09656,
+      "ask": 0.09657,
+      "spreadBps": 1.0355718945783796,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ONTUSDT",
+      "quoteVolume24h": 2535738.976251,
+      "trades24h": 68826,
+      "bid": 0.05931,
+      "ask": 0.05933,
+      "spreadBps": 3.3715441672284534,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ONUSDT",
+      "quoteVolume24h": 2405021.961,
+      "trades24h": 47686,
+      "bid": 0.111,
+      "ask": 0.1112,
+      "spreadBps": 18.00180018001727,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "OPENUSDT",
+      "quoteVolume24h": 1816640.174,
+      "trades24h": 56072,
+      "bid": 0.1292,
+      "ask": 0.1293,
+      "spreadBps": 7.736943907155821,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "OPGUSDT",
+      "quoteVolume24h": 1701822.0278,
+      "trades24h": 45379,
+      "bid": 0.1255,
+      "ask": 0.1256,
+      "spreadBps": 7.964954201512464,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "OPNUSDT",
+      "quoteVolume24h": 5322862.55055,
+      "trades24h": 57585,
+      "bid": 0.05437,
+      "ask": 0.05439,
+      "spreadBps": 3.6778227289443155,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "OPUSDT",
+      "quoteVolume24h": 37592281.542347,
+      "trades24h": 514860,
+      "bid": 0.13097,
+      "ask": 0.13098,
+      "spreadBps": 0.7635044855896164,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ORCAUSDT",
+      "quoteVolume24h": 5058531.3829,
+      "trades24h": 67676,
+      "bid": 1.648,
+      "ask": 1.649,
+      "spreadBps": 6.066120715802923,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ORDERUSDT",
+      "quoteVolume24h": 755620.89233,
+      "trades24h": 25283,
+      "bid": 0.04065,
+      "ask": 0.04067,
+      "spreadBps": 4.918839153959465,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ORDIUSDT",
+      "quoteVolume24h": 10231322.2598,
+      "trades24h": 158627,
+      "bid": 4.664,
+      "ask": 4.665,
+      "spreadBps": 2.143852502948513,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "OUSDT",
+      "quoteVolume24h": 3804401.7071,
+      "trades24h": 51823,
+      "bid": 0.5533,
+      "ask": 0.5536,
+      "spreadBps": 5.42054386123348,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PARTIUSDT",
+      "quoteVolume24h": 3562377.41857,
+      "trades24h": 49072,
+      "bid": 0.02678,
+      "ask": 0.0268,
+      "spreadBps": 7.465472191115784,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PAXGUSDT",
+      "quoteVolume24h": 83825798.5785,
+      "trades24h": 199673,
+      "bid": 4167.31,
+      "ask": 4167.32,
+      "spreadBps": 0.023996266179323576,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PENDLEUSDT",
+      "quoteVolume24h": 17914991.2008,
+      "trades24h": 268588,
+      "bid": 2.397,
+      "ask": 2.3973,
+      "spreadBps": 1.2514861397917902,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PENGUUSDT",
+      "quoteVolume24h": 120683468.426357,
+      "trades24h": 1061257,
+      "bid": 0.009662,
+      "ask": 0.009663,
+      "spreadBps": 1.0349288486408954,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PEOPLEUSDT",
+      "quoteVolume24h": 7340604.829042,
+      "trades24h": 130847,
+      "bid": 0.009386,
+      "ask": 0.009387,
+      "spreadBps": 1.0653598252802061,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PHAROSUSDT",
+      "quoteVolume24h": 17265902.5368,
+      "trades24h": 326625,
+      "bid": 0.7389,
+      "ask": 0.7392,
+      "spreadBps": 4.059265272985143,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PHAUSDT",
+      "quoteVolume24h": 74592059.37897,
+      "trades24h": 1111215,
+      "bid": 0.07444,
+      "ask": 0.07446,
+      "spreadBps": 2.686366689052014,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PIEVERSEUSDT",
+      "quoteVolume24h": 3577467.8987,
+      "trades24h": 74101,
+      "bid": 1.4513,
+      "ask": 1.4514,
+      "spreadBps": 0.6890136769214109,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PIPPINUSDT",
+      "quoteVolume24h": 7149683.08828,
+      "trades24h": 82916,
+      "bid": 0.01899,
+      "ask": 0.019,
+      "spreadBps": 5.264543300868436,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PIXELUSDT",
+      "quoteVolume24h": 1648007.927789,
+      "trades24h": 36746,
+      "bid": 0.005841,
+      "ask": 0.005844,
+      "spreadBps": 5.1347881899878445,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PLAYUSDT",
+      "quoteVolume24h": 2648545.24031,
+      "trades24h": 122076,
+      "bid": 0.0329,
+      "ask": 0.03293,
+      "spreadBps": 9.11438553850896,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PLUMEUSDT",
+      "quoteVolume24h": 9170680.89044,
+      "trades24h": 120380,
+      "bid": 0.01916,
+      "ask": 0.01917,
+      "spreadBps": 5.217845030002397,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PNUTUSDT",
+      "quoteVolume24h": 4037387.46345,
+      "trades24h": 82949,
+      "bid": 0.05431,
+      "ask": 0.05432,
+      "spreadBps": 1.8411120316676906,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "POLUSDT",
+      "quoteVolume24h": 25401964.02753,
+      "trades24h": 398808,
+      "bid": 0.11293,
+      "ask": 0.11294,
+      "spreadBps": 0.8854650905384621,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "POLYXUSDT",
+      "quoteVolume24h": 2022644.93856,
+      "trades24h": 30374,
+      "bid": 0.04339,
+      "ask": 0.04341,
+      "spreadBps": 4.608294930875389,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PONSUSDT",
+      "quoteVolume24h": 73812563.8776,
+      "trades24h": 745959,
+      "bid": 0.5301,
+      "ask": 0.5302,
+      "spreadBps": 1.8862586060546822,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "POPCATUSDT",
+      "quoteVolume24h": 3177367.99813,
+      "trades24h": 87899,
+      "bid": 0.05236,
+      "ask": 0.05237,
+      "spreadBps": 1.9096724911683496,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PORTALUSDT",
+      "quoteVolume24h": 1641262.390483,
+      "trades24h": 40927,
+      "bid": 0.01685,
+      "ask": 0.01686,
+      "spreadBps": 5.932957579353065,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "POWERUSDT",
+      "quoteVolume24h": 4748524.10633,
+      "trades24h": 99682,
+      "bid": 0.08203,
+      "ask": 0.08209,
+      "spreadBps": 7.311723129416356,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "POWRUSDT",
+      "quoteVolume24h": 1575313.23302,
+      "trades24h": 41870,
+      "bid": 0.06701,
+      "ask": 0.06704,
+      "spreadBps": 4.475941812756769,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PRLUSDT",
+      "quoteVolume24h": 1373100.7964,
+      "trades24h": 22497,
+      "bid": 0.118,
+      "ask": 0.1181,
+      "spreadBps": 8.470986869970595,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PROMPTUSDT",
+      "quoteVolume24h": 1203790.79085,
+      "trades24h": 36750,
+      "bid": 0.02089,
+      "ask": 0.0209,
+      "spreadBps": 4.78583393156238,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PROMUSDT",
+      "quoteVolume24h": 17829632.1181,
+      "trades24h": 273172,
+      "bid": 6.47,
+      "ask": 6.471,
+      "spreadBps": 1.545475620122609,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PROVEUSDT",
+      "quoteVolume24h": 3403168.17318,
+      "trades24h": 43244,
+      "bid": 0.2441,
+      "ask": 0.2442,
+      "spreadBps": 4.095842719639115,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PTBUSDT",
+      "quoteVolume24h": 2965730.2572674,
+      "trades24h": 72114,
+      "bid": 0.0009176,
+      "ask": 0.0009179,
+      "spreadBps": 3.2688640697364373,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PUMPBTCUSDT",
+      "quoteVolume24h": 575037.68814,
+      "trades24h": 17301,
+      "bid": 0.01103,
+      "ask": 0.01104,
+      "spreadBps": 9.062075215223917,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "PUMPUSDT",
+      "quoteVolume24h": 362985148.040696,
+      "trades24h": 1708273,
+      "bid": 0.005792,
+      "ask": 0.005793,
+      "spreadBps": 1.7263703064309583,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PUNDIXUSDT",
+      "quoteVolume24h": 4249542.33076,
+      "trades24h": 111528,
+      "bid": 0.12694,
+      "ask": 0.12699,
+      "spreadBps": 3.9380931752840937,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "PYTHUSDT",
+      "quoteVolume24h": 13278447.97255,
+      "trades24h": 214503,
+      "bid": 0.07699,
+      "ask": 0.077,
+      "spreadBps": 1.2987856354303686,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "QNTUSDT",
+      "quoteVolume24h": 1485872534.404,
+      "trades24h": 9307115,
+      "bid": 293.13,
+      "ask": 293.16,
+      "spreadBps": 1.0233843319868858,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "QTUMUSDT",
+      "quoteVolume24h": 2613371.13554,
+      "trades24h": 60923,
+      "bid": 1.0014,
+      "ask": 1.0017,
+      "spreadBps": 2.9953571963453345,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "QUSDT",
+      "quoteVolume24h": 17237778.460777,
+      "trades24h": 605844,
+      "bid": 0.022345,
+      "ask": 0.022352,
+      "spreadBps": 3.132201266304254,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RAREUSDT",
+      "quoteVolume24h": 14134179.13563,
+      "trades24h": 216442,
+      "bid": 0.01727,
+      "ask": 0.01728,
+      "spreadBps": 5.788712011577188,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RAVEUSDT",
+      "quoteVolume24h": 8307233.0212,
+      "trades24h": 121790,
+      "bid": 0.2083,
+      "ask": 0.2084,
+      "spreadBps": 4.799616030717014,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RAYSOLUSDT",
+      "quoteVolume24h": 31497205.68292,
+      "trades24h": 351278,
+      "bid": 1.9444,
+      "ask": 1.9445,
+      "spreadBps": 0.5142842449021008,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RECALLUSDT",
+      "quoteVolume24h": 1422291.5019,
+      "trades24h": 40968,
+      "bid": 0.0492,
+      "ask": 0.04924,
+      "spreadBps": 8.126777732628682,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "REDUSDT",
+      "quoteVolume24h": 9129487.5504,
+      "trades24h": 138022,
+      "bid": 0.1788,
+      "ask": 0.1789,
+      "spreadBps": 5.59127760693412,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RENDERUSDT",
+      "quoteVolume24h": 20607828.08,
+      "trades24h": 162683,
+      "bid": 1.923,
+      "ask": 1.924,
+      "spreadBps": 5.198856251624069,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RESOLVUSDT",
+      "quoteVolume24h": 1891289.80941,
+      "trades24h": 36439,
+      "bid": 0.01864,
+      "ask": 0.01865,
+      "spreadBps": 5.363368195226383,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "REUSDT",
+      "quoteVolume24h": 7159949.8639,
+      "trades24h": 103862,
+      "bid": 0.4865,
+      "ask": 0.4867,
+      "spreadBps": 4.110152075627486,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "REZUSDT",
+      "quoteVolume24h": 17369306.267458,
+      "trades24h": 236207,
+      "bid": 0.004772,
+      "ask": 0.004775,
+      "spreadBps": 6.284696763380183,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RIFUSDT",
+      "quoteVolume24h": 1545042.57734,
+      "trades24h": 34289,
+      "bid": 0.08336,
+      "ask": 0.08337,
+      "spreadBps": 1.1995441732137135,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "RIVERUSDT",
+      "quoteVolume24h": 20891234.0049,
+      "trades24h": 153166,
+      "bid": 1.216,
+      "ask": 1.217,
+      "spreadBps": 8.220304151254517,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "RLCUSDT",
+      "quoteVolume24h": 1919297.3814,
+      "trades24h": 43243,
+      "bid": 0.3613,
+      "ask": 0.3614,
+      "spreadBps": 2.767400027673695,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ROBOUSDT",
+      "quoteVolume24h": 8189179.74463,
+      "trades24h": 114364,
+      "bid": 0.00904,
+      "ask": 0.00905,
+      "spreadBps": 11.055831951355804,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "RONINUSDT",
+      "quoteVolume24h": 2198983.802509,
+      "trades24h": 52353,
+      "bid": 0.06409,
+      "ask": 0.06412,
+      "spreadBps": 4.679822166758014,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ROSEUSDT",
+      "quoteVolume24h": 3510902.232751,
+      "trades24h": 92312,
+      "bid": 0.008982,
+      "ask": 0.008985,
+      "spreadBps": 3.3394556687254755,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RPLUSDT",
+      "quoteVolume24h": 1045763.2645,
+      "trades24h": 26538,
+      "bid": 1.965,
+      "ask": 1.966,
+      "spreadBps": 5.087763927753191,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "RSRUSDT",
+      "quoteVolume24h": 2345623.158081,
+      "trades24h": 34829,
+      "bid": 0.001692,
+      "ask": 0.001693,
+      "spreadBps": 5.908419497785127,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "RUNEUSDT",
+      "quoteVolume24h": 18024373.4867,
+      "trades24h": 277918,
+      "bid": 0.8077,
+      "ask": 0.8079,
+      "spreadBps": 2.4758603614753403,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "RVNUSDT",
+      "quoteVolume24h": 3084026.502179,
+      "trades24h": 64000,
+      "bid": 0.002367,
+      "ask": 0.002368,
+      "spreadBps": 4.223864836323967,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SAFEUSDT",
+      "quoteVolume24h": 1436986.20823,
+      "trades24h": 45101,
+      "bid": 0.11511,
+      "ask": 0.1152,
+      "spreadBps": 7.815552950370618,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SAGAUSDT",
+      "quoteVolume24h": 21724382.705916,
+      "trades24h": 286393,
+      "bid": 0.02496,
+      "ask": 0.02497,
+      "spreadBps": 4.0056078509912245,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SAHARAUSDT",
+      "quoteVolume24h": 2961626.122054,
+      "trades24h": 81161,
+      "bid": 0.00937,
+      "ask": 0.009371,
+      "spreadBps": 1.0671789125457554,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SANDUSDT",
+      "quoteVolume24h": 12327366.51994,
+      "trades24h": 199563,
+      "bid": 0.04409,
+      "ask": 0.0441,
+      "spreadBps": 2.267830819821536,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SANTOSUSDT",
+      "quoteVolume24h": 661970.83962,
+      "trades24h": 26928,
+      "bid": 0.5182,
+      "ask": 0.5183,
+      "spreadBps": 1.9295706705255955,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SAPIENUSDT",
+      "quoteVolume24h": 765110.24022,
+      "trades24h": 32835,
+      "bid": 0.07582,
+      "ask": 0.07585,
+      "spreadBps": 3.9559570119340997,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SCRUSDT",
+      "quoteVolume24h": 2847032.80876,
+      "trades24h": 73564,
+      "bid": 0.02463,
+      "ask": 0.02464,
+      "spreadBps": 4.059265272985424,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SEIUSDT",
+      "quoteVolume24h": 48336864.31558,
+      "trades24h": 473517,
+      "bid": 0.0742,
+      "ask": 0.07421,
+      "spreadBps": 1.347618085034179,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SENTUSDT",
+      "quoteVolume24h": 3882980.93132,
+      "trades24h": 86487,
+      "bid": 0.0215,
+      "ask": 0.02152,
+      "spreadBps": 9.298000929801326,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SFPUSDT",
+      "quoteVolume24h": 1178802.972,
+      "trades24h": 31752,
+      "bid": 0.3061,
+      "ask": 0.3063,
+      "spreadBps": 6.531678641411935,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SHELLUSDT",
+      "quoteVolume24h": 984888.00462,
+      "trades24h": 43647,
+      "bid": 0.02418,
+      "ask": 0.0242,
+      "spreadBps": 8.267879288962044,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SIGNUSDT",
+      "quoteVolume24h": 1250987.937492,
+      "trades24h": 37993,
+      "bid": 0.012424,
+      "ask": 0.012428,
+      "spreadBps": 3.219056816353236,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SIRENUSDT",
+      "quoteVolume24h": 2984960.68436,
+      "trades24h": 71659,
+      "bid": 0.02286,
+      "ask": 0.02287,
+      "spreadBps": 4.373496610541466,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SKLUSDT",
+      "quoteVolume24h": 2243415.510136,
+      "trades24h": 53670,
+      "bid": 0.004665,
+      "ask": 0.004667,
+      "spreadBps": 4.286326618088867,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SKRUSDT",
+      "quoteVolume24h": 2213095.261602,
+      "trades24h": 50565,
+      "bid": 0.018024,
+      "ask": 0.018027,
+      "spreadBps": 1.6643088957327121,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SKYAIUSDT",
+      "quoteVolume24h": 3835404.94223,
+      "trades24h": 68254,
+      "bid": 0.04209,
+      "ask": 0.04211,
+      "spreadBps": 4.750593824227835,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SKYUSDT",
+      "quoteVolume24h": 12963173.55846,
+      "trades24h": 221825,
+      "bid": 0.07855,
+      "ask": 0.07856,
+      "spreadBps": 1.2729934440850361,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SLPUSDT",
+      "quoteVolume24h": 606721.7213316,
+      "trades24h": 23012,
+      "bid": 0.000672,
+      "ask": 0.0006722,
+      "spreadBps": 2.975747656598793,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SLXUSDT",
+      "quoteVolume24h": 4546905.31618,
+      "trades24h": 76937,
+      "bid": 0.06163,
+      "ask": 0.06167,
+      "spreadBps": 6.4882400648832625,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SNXUSDT",
+      "quoteVolume24h": 4412675.86711,
+      "trades24h": 74749,
+      "bid": 0.2557,
+      "ask": 0.2558,
+      "spreadBps": 3.910068426199198,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SOLUSDT",
+      "quoteVolume24h": 2535722906.5898,
+      "trades24h": 2818287,
+      "bid": 118.01,
+      "ask": 118.02,
+      "spreadBps": 0.8473499131458632,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SOLVUSDT",
+      "quoteVolume24h": 1704067.740777,
+      "trades24h": 58946,
+      "bid": 0.004276,
+      "ask": 0.004279,
+      "spreadBps": 7.013442431325613,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SOMIUSDT",
+      "quoteVolume24h": 20220666.1725,
+      "trades24h": 245665,
+      "bid": 0.2219,
+      "ask": 0.2221,
+      "spreadBps": 9.009009009009269,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SONICUSDT",
+      "quoteVolume24h": 1214178.351455,
+      "trades24h": 26231,
+      "bid": 0.02702,
+      "ask": 0.02704,
+      "spreadBps": 7.399186089531134,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SOONUSDT",
+      "quoteVolume24h": 350941595.0534,
+      "trades24h": 3693650,
+      "bid": 0.5013,
+      "ask": 0.5015,
+      "spreadBps": 3.988831272436737,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SOPHUSDT",
+      "quoteVolume24h": 4785199.652517,
+      "trades24h": 89732,
+      "bid": 0.003693,
+      "ask": 0.003695,
+      "spreadBps": 5.414185165132191,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SPACEUSDT",
+      "quoteVolume24h": 1426844.85008,
+      "trades24h": 36847,
+      "bid": 0.005365,
+      "ask": 0.005367,
+      "spreadBps": 3.7271710771529363,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SPELLUSDT",
+      "quoteVolume24h": 1697050.6043316,
+      "trades24h": 40011,
+      "bid": 9.79e-05,
+      "ask": 9.8e-05,
+      "spreadBps": 10.209290454313672,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SPKUSDT",
+      "quoteVolume24h": 8709768.9542,
+      "trades24h": 120848,
+      "bid": 0.02475,
+      "ask": 0.02476,
+      "spreadBps": 4.039587962027709,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SPORTFUNUSDT",
+      "quoteVolume24h": 788050.19237,
+      "trades24h": 30285,
+      "bid": 0.01761,
+      "ask": 0.01762,
+      "spreadBps": 5.676979846721313,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SPXUSDT",
+      "quoteVolume24h": 11526749.886,
+      "trades24h": 164043,
+      "bid": 0.4451,
+      "ask": 0.4453,
+      "spreadBps": 4.492362982928526,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SQDUSDT",
+      "quoteVolume24h": 1212472.89051,
+      "trades24h": 26056,
+      "bid": 0.03024,
+      "ask": 0.03027,
+      "spreadBps": 9.915716410510255,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SSVUSDT",
+      "quoteVolume24h": 1623265.70354,
+      "trades24h": 36126,
+      "bid": 3.171,
+      "ask": 3.172,
+      "spreadBps": 3.1530821377907423,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "STABLEUSDT",
+      "quoteVolume24h": 2155095.7976,
+      "trades24h": 52057,
+      "bid": 0.02831,
+      "ask": 0.02832,
+      "spreadBps": 3.5316969804001634,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "STARUSDT",
+      "quoteVolume24h": 1863000.26058,
+      "trades24h": 48617,
+      "bid": 0.03628,
+      "ask": 0.03629,
+      "spreadBps": 2.755959762988305,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "STBLUSDT",
+      "quoteVolume24h": 1195888.55018,
+      "trades24h": 26265,
+      "bid": 0.02621,
+      "ask": 0.02622,
+      "spreadBps": 3.8146099561318296,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "STEEMUSDT",
+      "quoteVolume24h": 2345309.84513,
+      "trades24h": 57003,
+      "bid": 0.06442,
+      "ask": 0.06445,
+      "spreadBps": 4.655854737330391,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "STOUSDT",
+      "quoteVolume24h": 1930720.34157,
+      "trades24h": 47170,
+      "bid": 0.04263,
+      "ask": 0.04264,
+      "spreadBps": 2.3454907939477243,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "STRKUSDT",
+      "quoteVolume24h": 16933719.187609,
+      "trades24h": 241188,
+      "bid": 0.04345,
+      "ask": 0.04346,
+      "spreadBps": 2.301231158668996,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "STXUSDT",
+      "quoteVolume24h": 43433031.413,
+      "trades24h": 516563,
+      "bid": 0.3871,
+      "ask": 0.3872,
+      "spreadBps": 2.5829781738341464,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SUIUSDT",
+      "quoteVolume24h": 488136790.49086,
+      "trades24h": 2512137,
+      "bid": 1.1812,
+      "ask": 1.1813,
+      "spreadBps": 0.8465608465607534,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SUNUSDT",
+      "quoteVolume24h": 928215.262572,
+      "trades24h": 28280,
+      "bid": 0.017239,
+      "ask": 0.017241,
+      "spreadBps": 1.1600928074237418,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SUPERUSDT",
+      "quoteVolume24h": 2315181.27984,
+      "trades24h": 57709,
+      "bid": 0.19898,
+      "ask": 0.19902,
+      "spreadBps": 2.0100502512568967,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SUSDT",
+      "quoteVolume24h": 7407193.37946,
+      "trades24h": 115273,
+      "bid": 0.0415,
+      "ask": 0.04151,
+      "spreadBps": 2.409348271291681,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SUSHIUSDT",
+      "quoteVolume24h": 14921866.6501,
+      "trades24h": 194063,
+      "bid": 0.2701,
+      "ask": 0.2702,
+      "spreadBps": 3.7016472330182855,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SWARMSUSDT",
+      "quoteVolume24h": 1048619.632567,
+      "trades24h": 31850,
+      "bid": 0.008319,
+      "ask": 0.00832,
+      "spreadBps": 1.2019953122173992,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SXTUSDT",
+      "quoteVolume24h": 1582152.597883,
+      "trades24h": 47733,
+      "bid": 0.009441,
+      "ask": 0.009445,
+      "spreadBps": 4.235941967595607,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "SYNUSDT",
+      "quoteVolume24h": 6182418.76099,
+      "trades24h": 173399,
+      "bid": 0.15833,
+      "ask": 0.15836,
+      "spreadBps": 1.8945972402034952,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "SYRUPUSDT",
+      "quoteVolume24h": 9902747.59758,
+      "trades24h": 199150,
+      "bid": 0.22593,
+      "ask": 0.226,
+      "spreadBps": 3.0978248843853913,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TACUSDT",
+      "quoteVolume24h": 1956956.270817,
+      "trades24h": 33732,
+      "bid": 0.001534,
+      "ask": 0.001536,
+      "spreadBps": 13.029315960912369,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TAGUSDT",
+      "quoteVolume24h": 1229106.3166636,
+      "trades24h": 32159,
+      "bid": 0.0008541,
+      "ask": 0.000855,
+      "spreadBps": 10.531858873090723,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TAIKOUSDT",
+      "quoteVolume24h": 1005128.23065,
+      "trades24h": 27869,
+      "bid": 0.0902,
+      "ask": 0.09024,
+      "spreadBps": 4.433606739082063,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TAKEUSDT",
+      "quoteVolume24h": 6763540.36196,
+      "trades24h": 156518,
+      "bid": 0.06062,
+      "ask": 0.06065,
+      "spreadBps": 4.947637503092644,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TAOUSDT",
+      "quoteVolume24h": 190880363.39,
+      "trades24h": 1376173,
+      "bid": 302.2,
+      "ask": 302.21,
+      "spreadBps": 0.33090120944361956,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TAUSDT",
+      "quoteVolume24h": 773568.97977,
+      "trades24h": 27766,
+      "bid": 0.05043,
+      "ask": 0.05045,
+      "spreadBps": 3.9651070578904015,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "THETAUSDT",
+      "quoteVolume24h": 4698659.5378,
+      "trades24h": 63837,
+      "bid": 0.2259,
+      "ask": 0.226,
+      "spreadBps": 4.425757911043007,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "THEUSDT",
+      "quoteVolume24h": 1172659.20975,
+      "trades24h": 26611,
+      "bid": 0.07628,
+      "ask": 0.07634,
+      "spreadBps": 7.862665443585964,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TIAUSDT",
+      "quoteVolume24h": 34206314.2592,
+      "trades24h": 334145,
+      "bid": 0.4438,
+      "ask": 0.4439,
+      "spreadBps": 2.253013405430765,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TLMUSDT",
+      "quoteVolume24h": 1817019.092521,
+      "trades24h": 37113,
+      "bid": 0.001544,
+      "ask": 0.001545,
+      "spreadBps": 6.474587245062583,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TNSRUSDT",
+      "quoteVolume24h": 2561029.992452,
+      "trades24h": 57264,
+      "bid": 0.03939,
+      "ask": 0.03941,
+      "spreadBps": 5.076142131979488,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TOSHIUSDT",
+      "quoteVolume24h": 4487072.1981728,
+      "trades24h": 69723,
+      "bid": 0.0001248,
+      "ask": 0.0001249,
+      "spreadBps": 8.009611533840804,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TOWNSUSDT",
+      "quoteVolume24h": 3985902.191379,
+      "trades24h": 93366,
+      "bid": 0.002104,
+      "ask": 0.002105,
+      "spreadBps": 4.751722499406665,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TRADOORUSDT",
+      "quoteVolume24h": 983911.5193,
+      "trades24h": 28408,
+      "bid": 0.6563,
+      "ask": 0.6572,
+      "spreadBps": 13.703844689760365,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TRBUSDT",
+      "quoteVolume24h": 20308291.593,
+      "trades24h": 356769,
+      "bid": 20.942,
+      "ask": 20.946,
+      "spreadBps": 1.909854851031959,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TREEUSDT",
+      "quoteVolume24h": 1736634.48005,
+      "trades24h": 46131,
+      "bid": 0.04552,
+      "ask": 0.04554,
+      "spreadBps": 4.392708104546274,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TRIAUSDT",
+      "quoteVolume24h": 4705243.566214,
+      "trades24h": 87349,
+      "bid": 0.004201,
+      "ask": 0.004202,
+      "spreadBps": 2.380102344401125,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TRUMPUSDT",
+      "quoteVolume24h": 113622186.98858,
+      "trades24h": 390062,
+      "bid": 2.07,
+      "ask": 2.071,
+      "spreadBps": 4.829751267811321,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TRUSTUSDT",
+      "quoteVolume24h": 1103946.25281,
+      "trades24h": 34416,
+      "bid": 0.06107,
+      "ask": 0.06108,
+      "spreadBps": 1.6373311502256345,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TRUTHUSDT",
+      "quoteVolume24h": 647684.594793,
+      "trades24h": 19685,
+      "bid": 0.012918,
+      "ask": 0.012919,
+      "spreadBps": 0.7740836784450713,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TRXUSDT",
+      "quoteVolume24h": 52901581.99343,
+      "trades24h": 231861,
+      "bid": 0.33798,
+      "ask": 0.33799,
+      "spreadBps": 0.2958711185410596,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TSTUSDT",
+      "quoteVolume24h": 2539604.825998,
+      "trades24h": 39141,
+      "bid": 0.01795,
+      "ask": 0.01796,
+      "spreadBps": 5.569479253689553,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TURBOUSDT",
+      "quoteVolume24h": 3749096.6719816,
+      "trades24h": 73057,
+      "bid": 0.0010353,
+      "ask": 0.0010359,
+      "spreadBps": 5.793742757820646,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TURTLEUSDT",
+      "quoteVolume24h": 740679.11976,
+      "trades24h": 23563,
+      "bid": 0.04279,
+      "ask": 0.04281,
+      "spreadBps": 4.672897196261491,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TUSDT",
+      "quoteVolume24h": 2905818.88383,
+      "trades24h": 66668,
+      "bid": 0.005542,
+      "ask": 0.005543,
+      "spreadBps": 1.80423996391544,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "TUTUSDT",
+      "quoteVolume24h": 7397102.68022,
+      "trades24h": 119410,
+      "bid": 0.02432,
+      "ask": 0.02433,
+      "spreadBps": 4.110996916752145,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "TWTUSDT",
+      "quoteVolume24h": 2952288.176,
+      "trades24h": 54523,
+      "bid": 0.6101,
+      "ask": 0.6105,
+      "spreadBps": 6.554153694905242,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "UAIUSDT",
+      "quoteVolume24h": 6008063.1699,
+      "trades24h": 79338,
+      "bid": 0.2958,
+      "ask": 0.2959,
+      "spreadBps": 3.3800912624637145,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "UBUSDT",
+      "quoteVolume24h": 4078801.36055,
+      "trades24h": 92611,
+      "bid": 0.14423,
+      "ask": 0.14424,
+      "spreadBps": 0.6933129961528063,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "UMAUSDT",
+      "quoteVolume24h": 1580433.3726,
+      "trades24h": 34814,
+      "bid": 0.4136,
+      "ask": 0.4137,
+      "spreadBps": 2.4175027196902934,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "UNIUSDT",
+      "quoteVolume24h": 285762789.083,
+      "trades24h": 1086198,
+      "bid": 8.858,
+      "ask": 8.859,
+      "spreadBps": 1.1288592876891639,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "USDCUSDT",
+      "quoteVolume24h": 2816347.857279,
+      "trades24h": 20398,
+      "bid": 1.000016,
+      "ask": 1.000017,
+      "spreadBps": 0.009999835001899802,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "USELESSUSDT",
+      "quoteVolume24h": 54757586.58515,
+      "trades24h": 1329929,
+      "bid": 0.23602,
+      "ask": 0.23603,
+      "spreadBps": 0.4236839317861348,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "USTCUSDT",
+      "quoteVolume24h": 818933.039585,
+      "trades24h": 22581,
+      "bid": 0.005761,
+      "ask": 0.005763,
+      "spreadBps": 3.4710170079838,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "USUALUSDT",
+      "quoteVolume24h": 1425811.625284,
+      "trades24h": 36050,
+      "bid": 0.013587,
+      "ask": 0.013594,
+      "spreadBps": 5.150656708730408,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "USUSDT",
+      "quoteVolume24h": 132716421.366202,
+      "trades24h": 2618306,
+      "bid": 0.02594,
+      "ask": 0.025945,
+      "spreadBps": 1.9273393080844412,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "VANAUSDT",
+      "quoteVolume24h": 1823072.070183,
+      "trades24h": 35925,
+      "bid": 1.0845,
+      "ask": 1.0846,
+      "spreadBps": 0.922041399658743,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "VELODROMEUSDT",
+      "quoteVolume24h": 1079699.29785,
+      "trades24h": 30704,
+      "bid": 0.03564,
+      "ask": 0.03566,
+      "spreadBps": 5.610098176717864,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "VELVETUSDT",
+      "quoteVolume24h": 3290858.37733,
+      "trades24h": 58851,
+      "bid": 0.05624,
+      "ask": 0.05625,
+      "spreadBps": 1.777935816517568,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "VETUSDT",
+      "quoteVolume24h": 7314764.967832,
+      "trades24h": 159259,
+      "bid": 0.008865,
+      "ask": 0.008866,
+      "spreadBps": 1.1279679657109019,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "VIRTUALUSDT",
+      "quoteVolume24h": 39043732.28841,
+      "trades24h": 459950,
+      "bid": 0.8042,
+      "ask": 0.8043,
+      "spreadBps": 1.2433944668944854,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "VTHOUSDT",
+      "quoteVolume24h": 8976513.7735092,
+      "trades24h": 158096,
+      "bid": 0.0006875,
+      "ask": 0.0006877,
+      "spreadBps": 2.9086678301338695,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "VVVUSDT",
+      "quoteVolume24h": 31431764.55854,
+      "trades24h": 626283,
+      "bid": 27.463,
+      "ask": 27.464,
+      "spreadBps": 0.3641196497160483,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "WALUSDT",
+      "quoteVolume24h": 2568312.83683,
+      "trades24h": 43794,
+      "bid": 0.03437,
+      "ask": 0.03439,
+      "spreadBps": 5.817335660267362,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "WAXPUSDT",
+      "quoteVolume24h": 1088639.696231,
+      "trades24h": 30822,
+      "bid": 0.00622,
+      "ask": 0.006222,
+      "spreadBps": 3.2149172158821178,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "WCTUSDT",
+      "quoteVolume24h": 1350999.85331,
+      "trades24h": 39970,
+      "bid": 0.04213,
+      "ask": 0.04214,
+      "spreadBps": 2.373323840037053,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "WETUSDT",
+      "quoteVolume24h": 729660.00115,
+      "trades24h": 21594,
+      "bid": 0.06623,
+      "ask": 0.06631,
+      "spreadBps": 12.071827372868078,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "WIFUSDT",
+      "quoteVolume24h": 39886000.50012,
+      "trades24h": 370261,
+      "bid": 0.2502,
+      "ask": 0.2503,
+      "spreadBps": 3.9960039960057747,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "WLDUSDT",
+      "quoteVolume24h": 404163570.1294,
+      "trades24h": 1874959,
+      "bid": 0.5419,
+      "ask": 0.542,
+      "spreadBps": 1.8451886705413596,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "WLFIUSDT",
+      "quoteVolume24h": 27627272.31751,
+      "trades24h": 215695,
+      "bid": 0.0553,
+      "ask": 0.05531,
+      "spreadBps": 1.8081547780483,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "WOOUSDT",
+      "quoteVolume24h": 1988408.8655,
+      "trades24h": 35609,
+      "bid": 0.01398,
+      "ask": 0.01399,
+      "spreadBps": 7.1505184125858605,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "WUSDT",
+      "quoteVolume24h": 8340840.1309373,
+      "trades24h": 250250,
+      "bid": 0.013498,
+      "ask": 0.013502,
+      "spreadBps": 2.9629629629633567,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XAIUSDT",
+      "quoteVolume24h": 2887097.369766,
+      "trades24h": 71958,
+      "bid": 0.009493,
+      "ask": 0.009496,
+      "spreadBps": 3.1597240507657394,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "XANUSDT",
+      "quoteVolume24h": 2110018.147579,
+      "trades24h": 52107,
+      "bid": 0.012855,
+      "ask": 0.01286,
+      "spreadBps": 3.8887808671979744,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "XAUTUSDT",
+      "quoteVolume24h": 51952951.05,
+      "trades24h": 127471,
+      "bid": 4160.66,
+      "ask": 4160.67,
+      "spreadBps": 0.024034619466403274,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XLMUSDT",
+      "quoteVolume24h": 121729632.57822,
+      "trades24h": 998506,
+      "bid": 0.23024,
+      "ask": 0.23025,
+      "spreadBps": 0.4343199635175574,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XMRUSDT",
+      "quoteVolume24h": 27825645.15,
+      "trades24h": 327433,
+      "bid": 546.37,
+      "ask": 546.38,
+      "spreadBps": 0.18302447952396989,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XNYUSDT",
+      "quoteVolume24h": 690173.109128,
+      "trades24h": 22194,
+      "bid": 0.007048,
+      "ask": 0.007053,
+      "spreadBps": 7.091695624424742,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "XPINUSDT",
+      "quoteVolume24h": 1510620.763007,
+      "trades24h": 28696,
+      "bid": 0.000865,
+      "ask": 0.000866,
+      "spreadBps": 11.554015020219808,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "XPLUSDT",
+      "quoteVolume24h": 75964752.2223,
+      "trades24h": 906782,
+      "bid": 0.09502,
+      "ask": 0.09503,
+      "spreadBps": 1.052354643515917,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XRPUSDT",
+      "quoteVolume24h": 1072686448.332,
+      "trades24h": 2487760,
+      "bid": 1.4932,
+      "ask": 1.4933,
+      "spreadBps": 0.6696802276912036,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XTZUSDT",
+      "quoteVolume24h": 4047836.47292,
+      "trades24h": 74706,
+      "bid": 0.3168,
+      "ask": 0.3169,
+      "spreadBps": 3.156067539845005,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XVGUSDT",
+      "quoteVolume24h": 3004317.771838,
+      "trades24h": 64589,
+      "bid": 0.0033,
+      "ask": 0.003301,
+      "spreadBps": 3.0298439630363054,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "XVSUSDT",
+      "quoteVolume24h": 5063653.5798,
+      "trades24h": 88355,
+      "bid": 3.683,
+      "ask": 3.685,
+      "spreadBps": 5.428881650380629,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "YBUSDT",
+      "quoteVolume24h": 2373401.68191,
+      "trades24h": 56720,
+      "bid": 0.09,
+      "ask": 0.09003,
+      "spreadBps": 3.3327778703551902,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "YFIUSDT",
+      "quoteVolume24h": 4133075.0,
+      "trades24h": 41137,
+      "bid": 2473.0,
+      "ask": 2474.0,
+      "spreadBps": 4.042854255104103,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "YGGUSDT",
+      "quoteVolume24h": 1764629.62173,
+      "trades24h": 34603,
+      "bid": 0.02667,
+      "ask": 0.02668,
+      "spreadBps": 3.74882849109638,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ZAMAUSDT",
+      "quoteVolume24h": 23668111.84214,
+      "trades24h": 411118,
+      "bid": 0.0785,
+      "ask": 0.07851,
+      "spreadBps": 1.2738042162914622,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ZBTUSDT",
+      "quoteVolume24h": 1923484.00165,
+      "trades24h": 39437,
+      "bid": 0.08734,
+      "ask": 0.0874,
+      "spreadBps": 6.867345770860077,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ZECUSDT",
+      "quoteVolume24h": 2270848556.93,
+      "trades24h": 6469415,
+      "bid": 1423.81,
+      "ask": 1423.82,
+      "spreadBps": 0.07023384358214307,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ZENUSDT",
+      "quoteVolume24h": 27352300.501,
+      "trades24h": 352028,
+      "bid": 7.39,
+      "ask": 7.391,
+      "spreadBps": 1.3530884243289818,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ZEREBROUSDT",
+      "quoteVolume24h": 891310.482708,
+      "trades24h": 30411,
+      "bid": 0.031531,
+      "ask": 0.03155,
+      "spreadBps": 6.024000887746924,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ZESTUSDT",
+      "quoteVolume24h": 3445588.72848,
+      "trades24h": 87258,
+      "bid": 0.19195,
+      "ask": 0.19211,
+      "spreadBps": 8.332031453418397,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ZETAUSDT",
+      "quoteVolume24h": 3657400.07243,
+      "trades24h": 74438,
+      "bid": 0.05303,
+      "ask": 0.05306,
+      "spreadBps": 5.65557545480295,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ZILUSDT",
+      "quoteVolume24h": 2382905.186001,
+      "trades24h": 57461,
+      "bid": 0.003533,
+      "ask": 0.003534,
+      "spreadBps": 2.8300551860752767,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ZKCUSDT",
+      "quoteVolume24h": 1752260.12969,
+      "trades24h": 46431,
+      "bid": 0.04221,
+      "ask": 0.04223,
+      "spreadBps": 4.737091425864326,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ZKPUSDT",
+      "quoteVolume24h": 1867231.41614,
+      "trades24h": 40567,
+      "bid": 0.04923,
+      "ask": 0.04925,
+      "spreadBps": 4.061738424045325,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "ZKUSDT",
+      "quoteVolume24h": 4243672.73238,
+      "trades24h": 82280,
+      "bid": 0.012202,
+      "ask": 0.012206,
+      "spreadBps": 3.277613897083359,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ZORAUSDT",
+      "quoteVolume24h": 3390961.144928,
+      "trades24h": 88849,
+      "bid": 0.00793,
+      "ask": 0.007935,
+      "spreadBps": 6.3031831074690166,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ZROUSDT",
+      "quoteVolume24h": 103487398.00932,
+      "trades24h": 1622726,
+      "bid": 1.7141,
+      "ask": 1.7143,
+      "spreadBps": 1.166725002916684,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "ZRXUSDT",
+      "quoteVolume24h": 1283510.8238,
+      "trades24h": 27200,
+      "bid": 0.1229,
+      "ask": 0.123,
+      "spreadBps": 8.133387555917272,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "\u54c8\u57fa\u7c73USDT",
+      "quoteVolume24h": 4122559.93241,
+      "trades24h": 66001,
+      "bid": 0.03161,
+      "ask": 0.03164,
+      "spreadBps": 9.48616600790585,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "\u5e01\u5b89\u4eba\u751fUSDT",
+      "quoteVolume24h": 3467888.43681,
+      "trades24h": 60399,
+      "bid": 0.5038,
+      "ask": 0.504,
+      "spreadBps": 3.969041476482992,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "\u6211\u8e0f\u9a6c\u6765\u4e86USDT",
+      "quoteVolume24h": 1827706.415603,
+      "trades24h": 44712,
+      "bid": 0.011712,
+      "ask": 0.01172,
+      "spreadBps": 6.828269033799358,
+      "coarseTradeable": false
+    },
+    {
+      "symbol": "\u725b\u6765USDT",
+      "quoteVolume24h": 30035610.08271,
+      "trades24h": 430014,
+      "bid": 0.10476,
+      "ask": 0.1048,
+      "spreadBps": 3.8175224279441085,
+      "coarseTradeable": true
+    },
+    {
+      "symbol": "\u9f99\u867eUSDT",
+      "quoteVolume24h": 160737457.236049,
+      "trades24h": 2300766,
+      "bid": 0.04011,
+      "ask": 0.04013,
+      "spreadBps": 4.9850448654035855,
+      "coarseTradeable": true
+    }
+  ]
+}

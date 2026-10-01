@@ -7,7 +7,9 @@
     "source": "CURRENT_BINANCE_USDM_ACTIVE",
     "requireCurrentlyTrading": true,
     "includeInactiveOrDelisted": false,
-    "note": "Only symbols actively trading on Binance USD-M at run start are included. Delisted/inactive symbols are excluded entirely."
+    "note": "Only symbols actively trading on Binance USD-M at run start are included. Delisted/inactive symbols are excluded entirely.",
+    "stage1": "ACTIVE + >=6M history + 24h quote volume >= 3M USDT + spread <= 8 bps",
+    "stage1Count": 248
   },
   "currentCandidateGate": {
     "requireCurrentlyTrading": true,
@@ -19,7 +21,8 @@
       "minSideDepth10bps": 1000,
       "minOpenInterestNotional": 2000000
     },
-    "blockIfRecentLiquidityCollapse": true
+    "blockIfRecentLiquidityCollapse": "ADVISORY_ONLY",
+    "stage2": "6/6 survivor only: OI notional >=2M USDT and min bid/ask depth within 10bps >=1000 USDT"
   },
   "evaluationOrder": [
     "active_universe_snapshot",
@@ -67,4 +70,4 @@
     "ruleMutation": false,
     "note": "First-pass research uses one canonical/original implementation per strategy only. Variants may be considered later by explicit decision."
   }
-}
+}\n

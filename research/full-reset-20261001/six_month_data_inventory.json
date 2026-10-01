@@ -1,0 +1,3697 @@
+{
+  "eligible6m": 503,
+  "short6m": 24,
+  "missing": 0,
+  "errors": 0,
+  "rows": [
+    {
+      "symbol": "0GUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-17T15:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 543375
+    },
+    {
+      "symbol": "1000000BOBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-05T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 693570
+    },
+    {
+      "symbol": "1000000MOGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-07T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 995730
+    },
+    {
+      "symbol": "1000BONKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1000CATUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-21T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1020210
+    },
+    {
+      "symbol": "1000CHEEMSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-25T11:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 969855
+    },
+    {
+      "symbol": "1000FLOKIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1000LUNCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1000RATSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1000SATSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1000SHIBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1000XECUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1INCHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "1MBABYDOGEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "2ZUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-02T12:33:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 521967
+    },
+    {
+      "symbol": "4USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-08T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 513390
+    },
+    {
+      "symbol": "AAVEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ACEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ACHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ACTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-11T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 989985
+    },
+    {
+      "symbol": "ACUUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-21T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 362115
+    },
+    {
+      "symbol": "ADAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "AEROUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-04T14:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 956745
+    },
+    {
+      "symbol": "AEVOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "AGLDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "AGTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-20T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 716490
+    },
+    {
+      "symbol": "AIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-18T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 541695
+    },
+    {
+      "symbol": "AIGENSYNUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-04-29T14:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 220905
+    },
+    {
+      "symbol": "AINUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-10T10:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 643035
+    },
+    {
+      "symbol": "AIOTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-30T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 745170
+    },
+    {
+      "symbol": "AIOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-13T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 594030
+    },
+    {
+      "symbol": "AIXBTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-20T18:31:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 933449
+    },
+    {
+      "symbol": "AKEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-26T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 530610
+    },
+    {
+      "symbol": "AKTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-18T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 979950
+    },
+    {
+      "symbol": "ALCHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-07T11:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 907935
+    },
+    {
+      "symbol": "ALGOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ALICEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ALLOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-11T14:01:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 464279
+    },
+    {
+      "symbol": "ALLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-06T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 604230
+    },
+    {
+      "symbol": "ALPINEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-06T09:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 736695
+    },
+    {
+      "symbol": "ALTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ANIMEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-23T17:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 884580
+    },
+    {
+      "symbol": "ANKRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "APEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "API3USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "APRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-23T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 491850
+    },
+    {
+      "symbol": "APTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ARBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ARCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-17T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 893460
+    },
+    {
+      "symbol": "ARIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-03T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 563820
+    },
+    {
+      "symbol": "ARKMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ARKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ARPAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ARUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ARXUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-06-23T04:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 142275
+    },
+    {
+      "symbol": "ASRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-06T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 736710
+    },
+    {
+      "symbol": "ASTERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-19T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 540720
+    },
+    {
+      "symbol": "ASTRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ATHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-02T15:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 785295
+    },
+    {
+      "symbol": "ATOMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ATUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-29T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 483150
+    },
+    {
+      "symbol": "AUCTIONUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "AUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-28T08:01:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 705119
+    },
+    {
+      "symbol": "AVAAIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-17T13:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 893445
+    },
+    {
+      "symbol": "AVAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-13T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 943860
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "AVNTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-09T15:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 554940
+    },
+    {
+      "symbol": "AWEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-21T08:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 715200
+    },
+    {
+      "symbol": "AXLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "AXSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "AZTECUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-02-11T04:29:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 332371
+    },
+    {
+      "symbol": "B2USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-06T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 736470
+    },
+    {
+      "symbol": "BABYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-05T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 781110
+    },
+    {
+      "symbol": "BANANAS31USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-22T09:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 801525
+    },
+    {
+      "symbol": "BANANAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BANDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BANKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-18T18:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 762090
+    },
+    {
+      "symbol": "BANUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-18T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 979950
+    },
+    {
+      "symbol": "BARDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-18T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 542220
+    },
+    {
+      "symbol": "BASEDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-30T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 264360
+    },
+    {
+      "symbol": "BASUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-26T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 575190
+    },
+    {
+      "symbol": "BATUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BCHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BEAMXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BEATUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-12T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 462945
+    },
+    {
+      "symbol": "BELUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BERAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-02-06T15:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 864540
+    },
+    {
+      "symbol": "BICOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BIGTIMEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BILLUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-05-07T08:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 209745
+    },
+    {
+      "symbol": "BIOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-03T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 913665
+    },
+    {
+      "symbol": "BIRBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-29T05:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 351045
+    },
+    {
+      "symbol": "BLESSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-23T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 535110
+    },
+    {
+      "symbol": "BLUAIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-21T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 494670
+    },
+    {
+      "symbol": "BLURUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BMTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-17T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 808470
+    },
+    {
+      "symbol": "BNBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BNTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BOMEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BRETTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BREVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-30T10:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 393915
+    },
+    {
+      "symbol": "BROCCOLI714USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-21T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 802980
+    },
+    {
+      "symbol": "BROCCOLIF3BUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-21T09:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 802965
+    },
+    {
+      "symbol": "BRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-21T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 802755
+    },
+    {
+      "symbol": "BSBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-25T11:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 271455
+    },
+    {
+      "symbol": "BSVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BTCDOMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BTCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "BTRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-27T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 573930
+    },
+    {
+      "symbol": "BTWUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-06-04T14:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 169065
+    },
+    {
+      "symbol": "BULLAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-04T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 651780
+    },
+    {
+      "symbol": "BUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-22T16:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 713250
+    },
+    {
+      "symbol": "C98USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CAKEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CAPUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-06-27T11:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 136095
+    },
+    {
+      "symbol": "CARVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-07T16:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 602355
+    },
+    {
+      "symbol": "CATIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-20T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1064910
+    },
+    {
+      "symbol": "CCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-31T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 480240
+    },
+    {
+      "symbol": "CELOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CELRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CETUSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-06T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 997080
+    },
+    {
+      "symbol": "CFGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-16T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 284340
+    },
+    {
+      "symbol": "CFXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CGPTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-20T19:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 933405
+    },
+    {
+      "symbol": "CHILLGUYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-27T14:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 966795
+    },
+    {
+      "symbol": "CHIPUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-04-16T07:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 240045
+    },
+    {
+      "symbol": "CHRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CHZUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CKBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CLANKERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-12T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 462960
+    },
+    {
+      "symbol": "CLOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-14T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 504750
+    },
+    {
+      "symbol": "COAIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-25T07:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 532350
+    },
+    {
+      "symbol": "COLLECTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-31T13:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 392325
+    },
+    {
+      "symbol": "COMPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "COOKIEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-07T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 907950
+    },
+    {
+      "symbol": "COTIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "COWUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-06T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 997110
+    },
+    {
+      "symbol": "CROSSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-10T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 643050
+    },
+    {
+      "symbol": "CRVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CTKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1066425
+    },
+    {
+      "symbol": "CTRUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-05-28T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 179430
+    },
+    {
+      "symbol": "CTSIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-15T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 635940
+    },
+    {
+      "symbol": "CVCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1066530
+    },
+    {
+      "symbol": "CVXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1054080
+    },
+    {
+      "symbol": "CYBERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "CYSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-12T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 419820
+    },
+    {
+      "symbol": "DASHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "DATAIPUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-07-03T06:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 127755
+    },
+    {
+      "symbol": "DEEPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-22T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 756930
+    },
+    {
+      "symbol": "DEXEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-24T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 928110
+    },
+    {
+      "symbol": "DIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-02T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1047570
+    },
+    {
+      "symbol": "DODOXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "DOGSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "DOLOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-01T03:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 744300
+    },
+    {
+      "symbol": "DOODUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-09T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 732150
+    },
+    {
+      "symbol": "DOSUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-08-11T15:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 71100
+    },
+    {
+      "symbol": "DOTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "DRIFTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-08T15:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 994095
+    },
+    {
+      "symbol": "DUSKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "DYDXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "DYMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "EDENUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-30T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 524940
+    },
+    {
+      "symbol": "EDGEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-19T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 279960
+    },
+    {
+      "symbol": "EDUUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "EGLDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "EIGENUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-01T06:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1049400
+    },
+    {
+      "symbol": "ELSAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-22T07:25:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 360995
+    },
+    {
+      "symbol": "ENAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ENJUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ENSOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-14T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 504900
+    },
+    {
+      "symbol": "ENSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "EPICUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-13T08:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 814560
+    },
+    {
+      "symbol": "ERAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-17T15:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 632670
+    },
+    {
+      "symbol": "ESPORTSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-29T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 615720
+    },
+    {
+      "symbol": "ESPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-02-10T08:10:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 333590
+    },
+    {
+      "symbol": "ETCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ETHFIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ETHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ETHWUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "EULUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-13T14:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 506010
+    },
+    {
+      "symbol": "EVAAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-03T10:32:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 520648
+    },
+    {
+      "symbol": "FARTCOINUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-20T18:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 933435
+    },
+    {
+      "symbol": "FETUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "FFUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-29T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 526230
+    },
+    {
+      "symbol": "FHEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-12T15:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 770940
+    },
+    {
+      "symbol": "FIDAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1066290
+    },
+    {
+      "symbol": "FIGHTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-23T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 359265
+    },
+    {
+      "symbol": "FILUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "FLOCKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-09T06:48:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 555432
+    },
+    {
+      "symbol": "FLOWUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "FLUIDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-24T10:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 533625
+    },
+    {
+      "symbol": "FLUXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "FOGOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-10T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 377880
+    },
+    {
+      "symbol": "FOLKSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-06T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 471570
+    },
+    {
+      "symbol": "FORMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-19T08:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 805920
+    },
+    {
+      "symbol": "FRAXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-15T08:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 371040
+    },
+    {
+      "symbol": "FUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-18T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 674595
+    },
+    {
+      "symbol": "GALAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GASUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GENIUSUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-04-16T03:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 240270
+    },
+    {
+      "symbol": "GIGGLEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-09T09:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 512055
+    },
+    {
+      "symbol": "GLMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GMTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GMXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GOATUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-24T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1015830
+    },
+    {
+      "symbol": "GPSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-02-17T17:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 848580
+    },
+    {
+      "symbol": "GRAMUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-07-02T08:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 129120
+    },
+    {
+      "symbol": "GRASSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-08T15:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 994110
+    },
+    {
+      "symbol": "GRIFFAINUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-02T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 915030
+    },
+    {
+      "symbol": "GRTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GRVTUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-07-31T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 87075
+    },
+    {
+      "symbol": "GTCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GUAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-21T10:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 406905
+    },
+    {
+      "symbol": "GUNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-31T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 788340
+    },
+    {
+      "symbol": "GUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "GWEIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-29T05:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 351030
+    },
+    {
+      "symbol": "HAEDALUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-01T03:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 744285
+    },
+    {
+      "symbol": "HANAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-26T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 530670
+    },
+    {
+      "symbol": "HBARUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "HEIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-02-13T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 854820
+    },
+    {
+      "symbol": "HEMIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-29T04:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 571410
+    },
+    {
+      "symbol": "HIVEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-23T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 929550
+    },
+    {
+      "symbol": "HMSTRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-26T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1056210
+    },
+    {
+      "symbol": "HOLOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-11T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 552240
+    },
+    {
+      "symbol": "HOMEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-10T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 686190
+    },
+    {
+      "symbol": "HOTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "HUMAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-26T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 707700
+    },
+    {
+      "symbol": "HUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-25T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 664710
+    },
+    {
+      "symbol": "HYPERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-22T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 756660
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-30T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 702090
+    },
+    {
+      "symbol": "ICNTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-03T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 652980
+    },
+    {
+      "symbol": "ICPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "IDOLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-04T09:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 651765
+    },
+    {
+      "symbol": "IDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ILVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "IMXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "INITUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-16T06:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 765690
+    },
+    {
+      "symbol": "INJUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "INUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-07T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 602730
+    },
+    {
+      "symbol": "INXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-30T19:04:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 348776
+    },
+    {
+      "symbol": "IOSTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "IOTAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "IOTXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "IOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "IRYSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-26T16:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 442560
+    },
+    {
+      "symbol": "JASMYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "JCTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-10T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 465930
+    },
+    {
+      "symbol": "JELLYJELLYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-26T16:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 795360
+    },
+    {
+      "symbol": "JOEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "JSTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-28T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 748230
+    },
+    {
+      "symbol": "JTOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "JUPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "KAIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-04T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 956760
+    },
+    {
+      "symbol": "KAITOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-02-20T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 844500
+    },
+    {
+      "symbol": "KASUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "KATUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-02T05:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 304980
+    },
+    {
+      "symbol": "KAVAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "KERNELUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-14T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 768240
+    },
+    {
+      "symbol": "KGENUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-07T14:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 514650
+    },
+    {
+      "symbol": "KITEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-29T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 483210
+    },
+    {
+      "symbol": "KMNOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-20T19:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 933420
+    },
+    {
+      "symbol": "KNCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "KOMAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-10T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 948225
+    },
+    {
+      "symbol": "KSMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LABUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-17T14:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 500250
+    },
+    {
+      "symbol": "LAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-05T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 693540
+    },
+    {
+      "symbol": "LAYERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-02-11T15:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 857295
+    },
+    {
+      "symbol": "LDOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LIGHTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-27T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 529230
+    },
+    {
+      "symbol": "LINEAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-01T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 566850
+    },
+    {
+      "symbol": "LINKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LISTAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LITUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1065990
+    },
+    {
+      "symbol": "LPTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LQTYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LSKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LTCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LUMIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-18T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 936750
+    },
+    {
+      "symbol": "LUNA2USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "LYNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-06T07:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 516510
+    },
+    {
+      "symbol": "MAGICUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MAGMAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-31T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 392310
+    },
+    {
+      "symbol": "MANAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MANTAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MANTRAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-04T08:01:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 301919
+    },
+    {
+      "symbol": "MARSCOINUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-09-01T09:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 41175
+    },
+    {
+      "symbol": "MASKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MAVIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1066020
+    },
+    {
+      "symbol": "MAVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MEGAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-30T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 349185
+    },
+    {
+      "symbol": "MELANIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-20T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 889350
+    },
+    {
+      "symbol": "MEMEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MERLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-29T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 703650
+    },
+    {
+      "symbol": "METISUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "METUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-11T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 509010
+    },
+    {
+      "symbol": "MEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-10T17:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 947940
+    },
+    {
+      "symbol": "MEWUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MINAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MIRAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-26T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 530640
+    },
+    {
+      "symbol": "MITOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-28T16:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 572130
+    },
+    {
+      "symbol": "MMTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-04T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 474480
+    },
+    {
+      "symbol": "MOCAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-16T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 939630
+    },
+    {
+      "symbol": "MONUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-10T07:17:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 510763
+    },
+    {
+      "symbol": "MOODENGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-25T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1014600
+    },
+    {
+      "symbol": "MORPHOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-27T14:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 966810
+    },
+    {
+      "symbol": "MOVEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-09T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 949560
+    },
+    {
+      "symbol": "MOVRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MTLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "MUBARAKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-17T13:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 808455
+    },
+    {
+      "symbol": "MUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-07T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 647430
+    },
+    {
+      "symbol": "MYXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-18T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 674610
+    },
+    {
+      "symbol": "NAORISUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-31T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 612690
+    },
+    {
+      "symbol": "NEARUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "NEIROUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "NEOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "NEWTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-19T14:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 673050
+    },
+    {
+      "symbol": "NIGHTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-10T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 422700
+    },
+    {
+      "symbol": "NILUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-24T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 798420
+    },
+    {
+      "symbol": "NMRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "NOMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-01T08:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 523680
+    },
+    {
+      "symbol": "NOTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "NXPCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-15T06:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 723930
+    },
+    {
+      "symbol": "OGNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "OGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-12T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 728100
+    },
+    {
+      "symbol": "ONDOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ONEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ONGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ONTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ONUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-24T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 490530
+    },
+    {
+      "symbol": "OPENUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-08T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 556500
+    },
+    {
+      "symbol": "OPGUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-04-22T15:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 230910
+    },
+    {
+      "symbol": "OPNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-02-21T15:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 317340
+    },
+    {
+      "symbol": "OPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ORCAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-06T15:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 953820
+    },
+    {
+      "symbol": "ORDERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-26T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 530595
+    },
+    {
+      "symbol": "ORDIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "OUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-06-24T11:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 140415
+    },
+    {
+      "symbol": "PARTIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-25T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 796980
+    },
+    {
+      "symbol": "PAXGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-27T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 794250
+    },
+    {
+      "symbol": "PENDLEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "PENGUUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-17T16:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 937905
+    },
+    {
+      "symbol": "PEOPLEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "PHAROSUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-05-14T05:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 199845
+    },
+    {
+      "symbol": "PHAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-30T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 919470
+    },
+    {
+      "symbol": "PIEVERSEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-14T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 460110
+    },
+    {
+      "symbol": "PIPPINUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-24T10:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 883545
+    },
+    {
+      "symbol": "PIXELUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "PLAYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-31T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 612870
+    },
+    {
+      "symbol": "PLUMEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-21T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 802740
+    },
+    {
+      "symbol": "PNUTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-11T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 989970
+    },
+    {
+      "symbol": "POLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "POLYXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "PONSUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-09-06T06:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 34155
+    },
+    {
+      "symbol": "POPCATUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "PORTALUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "POWERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-06T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 428580
+    },
+    {
+      "symbol": "POWRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "PRLUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-04-01T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 261450
+    },
+    {
+      "symbol": "PROMPTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-11T06:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 772890
+    },
+    {
+      "symbol": "PROMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-15T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 896370
+    },
+    {
+      "symbol": "PROVEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-05T17:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 605220
+    },
+    {
+      "symbol": "PTBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-03T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 563730
+    },
+    {
+      "symbol": "PUMPBTCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-13T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 681960
+    },
+    {
+      "symbol": "PUMPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-12T14:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 770520
+    },
+    {
+      "symbol": "PUNDIXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-30T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 745320
+    },
+    {
+      "symbol": "PYTHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "QNTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "QTUMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "QUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-02T07:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 565470
+    },
+    {
+      "symbol": "RAREUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RAVEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-14T15:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 416670
+    },
+    {
+      "symbol": "RAYSOLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-10T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 948240
+    },
+    {
+      "symbol": "RECALLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-15T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 503250
+    },
+    {
+      "symbol": "REDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-06T16:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 824160
+    },
+    {
+      "symbol": "RENDERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RESOLVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-10T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 686070
+    },
+    {
+      "symbol": "REUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-06-18T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 148920
+    },
+    {
+      "symbol": "REZUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RIFUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RIVERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-17T14:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 500235
+    },
+    {
+      "symbol": "RLCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ROBOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-02-27T08:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 309075
+    },
+    {
+      "symbol": "RONINUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ROSEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RPLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RSRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RUNEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "RVNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SAFEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-25T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1014450
+    },
+    {
+      "symbol": "SAGAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SAHARAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-26T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 663120
+    },
+    {
+      "symbol": "SANDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SANTOSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-28T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1010040
+    },
+    {
+      "symbol": "SAPIENUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-20T17:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 583590
+    },
+    {
+      "symbol": "SCRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-10-22T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1018920
+    },
+    {
+      "symbol": "SEIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SENTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-14T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 460035
+    },
+    {
+      "symbol": "SFPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SHELLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-02-17T17:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 848565
+    },
+    {
+      "symbol": "SIGNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-28T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 748140
+    },
+    {
+      "symbol": "SIRENUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-22T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 801540
+    },
+    {
+      "symbol": "SKLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SKRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-22T10:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 360795
+    },
+    {
+      "symbol": "SKYAIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-13T09:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 726615
+    },
+    {
+      "symbol": "SKYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-09T07:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 555420
+    },
+    {
+      "symbol": "SLPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1066335
+    },
+    {
+      "symbol": "SLXUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-06-01T07:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 173790
+    },
+    {
+      "symbol": "SNXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SOLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SOLVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-17T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 893505
+    },
+    {
+      "symbol": "SOMIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-25T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 576870
+    },
+    {
+      "symbol": "SONICUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-08T07:01:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 906779
+    },
+    {
+      "symbol": "SOONUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-23T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 712290
+    },
+    {
+      "symbol": "SOPHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-28T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 704820
+    },
+    {
+      "symbol": "SPACEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-23T11:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 359295
+    },
+    {
+      "symbol": "SPELLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SPKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-17T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 676260
+    },
+    {
+      "symbol": "SPORTFUNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-16T13:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 369255
+    },
+    {
+      "symbol": "SPXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-10T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 948195
+    },
+    {
+      "symbol": "SQDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-11T12:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 684675
+    },
+    {
+      "symbol": "SSVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "STABLEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-06T12:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 471600
+    },
+    {
+      "symbol": "STARUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-05-14T05:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 199830
+    },
+    {
+      "symbol": "STBLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-17T05:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 543975
+    },
+    {
+      "symbol": "STEEMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "STOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-12T14:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 770955
+    },
+    {
+      "symbol": "STRKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "STXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SUIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SUNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SUPERUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-16T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 895080
+    },
+    {
+      "symbol": "SUSHIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SWARMSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-07T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 907905
+    },
+    {
+      "symbol": "SXTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-02T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 742530
+    },
+    {
+      "symbol": "SYNUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "SYRUPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-05-07T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 735330
+    },
+    {
+      "symbol": "TACUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-15T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 635850
+    },
+    {
+      "symbol": "TAGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-25T11:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 621405
+    },
+    {
+      "symbol": "TAIKOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-06-11T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 684690
+    },
+    {
+      "symbol": "TAKEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-03T11:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 563805
+    },
+    {
+      "symbol": "TAOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-21T07:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 627390
+    },
+    {
+      "symbol": "THETAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "THEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-11-27T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 966945
+    },
+    {
+      "symbol": "TIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TLMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TNSRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TOSHIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-17T05:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 543990
+    },
+    {
+      "symbol": "TOWNSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-05T14:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 605370
+    },
+    {
+      "symbol": "TRADOORUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-19T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 540690
+    },
+    {
+      "symbol": "TRBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TREEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-29T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 615480
+    },
+    {
+      "symbol": "TRIAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-02-06T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 339105
+    },
+    {
+      "symbol": "TRUMPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-18T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 892020
+    },
+    {
+      "symbol": "TRUSTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-05T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 473190
+    },
+    {
+      "symbol": "TRUTHUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-01T12:01:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 523439
+    },
+    {
+      "symbol": "TRXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TSTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-02-09T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 860340
+    },
+    {
+      "symbol": "TURBOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TURTLEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-22T15:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 493020
+    },
+    {
+      "symbol": "TUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "TUTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-20T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 804420
+    },
+    {
+      "symbol": "TWTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "UAIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-11-06T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 471630
+    },
+    {
+      "symbol": "UBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-12T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 550890
+    },
+    {
+      "symbol": "UMAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "UNIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "USDCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "USELESSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-15T12:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 591105
+    },
+    {
+      "symbol": "USTCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "USUALUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-18T13:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 936660
+    },
+    {
+      "symbol": "USUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-12T10:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 419835
+    },
+    {
+      "symbol": "VANAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-16T13:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 939510
+    },
+    {
+      "symbol": "VELODROMEUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-13T16:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 943665
+    },
+    {
+      "symbol": "VELVETUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-15T09:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 635925
+    },
+    {
+      "symbol": "VETUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "VIRTUALUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-12-10T12:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 948210
+    },
+    {
+      "symbol": "VTHOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-22T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 886470
+    },
+    {
+      "symbol": "VVVUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-29T08:15:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 876465
+    },
+    {
+      "symbol": "WALUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-03-27T15:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 793950
+    },
+    {
+      "symbol": "WAXPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "WCTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-04-15T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 766860
+    },
+    {
+      "symbol": "WETUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-10T07:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 422940
+    },
+    {
+      "symbol": "WIFUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "WLDUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "WLFIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-23T08:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 579810
+    },
+    {
+      "symbol": "WOOUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "WUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "XAIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "XANUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-29T10:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 526410
+    },
+    {
+      "symbol": "XAUTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-26T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 269880
+    },
+    {
+      "symbol": "XLMUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "XMRUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "XNYUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-13T11:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 594015
+    },
+    {
+      "symbol": "XPINUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-12T08:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 551040
+    },
+    {
+      "symbol": "XPLUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-08-22T09:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 581190
+    },
+    {
+      "symbol": "XRPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "XTZUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "XVGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "XVSUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "YBUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-10T14:45:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 510315
+    },
+    {
+      "symbol": "YFIUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "YGGUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ZAMAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-09T09:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 379620
+    },
+    {
+      "symbol": "ZBTUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-17T11:30:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 500430
+    },
+    {
+      "symbol": "ZECUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ZENUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ZEREBROUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-01-02T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 915000
+    },
+    {
+      "symbol": "ZESTUSDT",
+      "status": "SHORT_6M",
+      "first": "2026-06-04T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 169080
+    },
+    {
+      "symbol": "ZETAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ZILUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ZKCUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-09-15T14:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 546360
+    },
+    {
+      "symbol": "ZKPUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-12-21T10:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 406920
+    },
+    {
+      "symbol": "ZKUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ZORAUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-07-25T11:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 621420
+    },
+    {
+      "symbol": "ZROUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "ZRXUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2024-09-19T00:00:00+00:00",
+      "last": "2026-09-29T23:59:00+00:00",
+      "rows": 1067040
+    },
+    {
+      "symbol": "\u54c8\u57fa\u7c73USDT",
+      "status": "SHORT_6M",
+      "first": "2026-09-06T07:21:00+00:00",
+      "last": "2026-09-20T13:50:00+00:00",
+      "rows": 20550
+    },
+    {
+      "symbol": "\u5e01\u5b89\u4eba\u751fUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2025-10-20T11:00:00+00:00",
+      "last": "2026-09-20T13:32:00+00:00",
+      "rows": 482553
+    },
+    {
+      "symbol": "\u6211\u8e0f\u9a6c\u6765\u4e86USDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-01-21T14:30:00+00:00",
+      "last": "2026-09-20T13:35:00+00:00",
+      "rows": 348426
+    },
+    {
+      "symbol": "\u725b\u6765USDT",
+      "status": "SHORT_6M",
+      "first": "2026-08-30T11:30:00+00:00",
+      "last": "2026-09-20T13:49:00+00:00",
+      "rows": 30380
+    },
+    {
+      "symbol": "\u9f99\u867eUSDT",
+      "status": "ELIGIBLE_6M",
+      "first": "2026-03-11T11:30:00+00:00",
+      "last": "2026-09-20T13:37:00+00:00",
+      "rows": 278048
+    }
+  ]
+}

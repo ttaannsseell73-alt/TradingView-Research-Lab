@@ -1,0 +1,712 @@
+{
+  "count": 101,
+  "strategies": [
+    {
+      "id": "pmax",
+      "name": "PMax Explorer",
+      "family": "trend_atr",
+      "version": "kivanc-core-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "alphatrend",
+      "name": "AlphaTrend",
+      "family": "trend_volume_atr",
+      "version": "kivanc-core-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "ott",
+      "name": "Optimized Trend Tracker",
+      "family": "adaptive_trend",
+      "version": "kivanc-core-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "tott",
+      "name": "Twin Optimized Trend Tracker",
+      "family": "adaptive_trend",
+      "version": "kivanc-core-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "mavilimw",
+      "name": "MavilimW",
+      "family": "smoothed_trend",
+      "version": "kivanc-core-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "ssl_hybrid_flip",
+      "name": "SSL Hybrid — Flip Mode",
+      "family": "baseline_trend",
+      "version": "tv-open-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "ssl_hybrid_qqe_flip",
+      "name": "SSL Hybrid + QQE — Flip Mode",
+      "family": "trend_momentum_filter",
+      "version": "tv-open-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "ut_bot_quantnomad",
+      "name": "UT Bot Strategy — QuantNomad",
+      "family": "atr_trailing_stop",
+      "version": "tv-open-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "chandelier_zlsma",
+      "name": "Chandelier Exit ZLSMA Strategy",
+      "family": "trend_breakout_filter",
+      "version": "tv-open-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "sr_pivot_bounce",
+      "name": "SR Pivot Bounce",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_pivot_breakout",
+      "name": "SR Pivot Breakout",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_break_retest",
+      "name": "SR Break + Retest",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_wick_rejection",
+      "name": "SR Wick Rejection",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_liquidity_sweep",
+      "name": "SR Liquidity Sweep + Reclaim",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_range_edge",
+      "name": "SR Range Edge Rejection",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_prior_day_sweep",
+      "name": "SR Prior-Day High/Low Sweep",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_level_flip",
+      "name": "SR Breakout Level Flip",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_compression_breakout",
+      "name": "SR Compression Breakout",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr_volume_breakout",
+      "name": "SR Volume-Confirmed Breakout",
+      "family": "support_resistance",
+      "version": "sr-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_fractal_cluster_rejection",
+      "name": "SR25 Fractal Cluster Zone Rejection",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_confirmed_pivot_breakout",
+      "name": "SR25 Confirmed Pivot Breakout",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_breakout_retest",
+      "name": "SR25 Breakout + Retest",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_role_reversal_flip",
+      "name": "SR25 S/R Role-Reversal Level Flip",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_wick_confirmed_zone",
+      "name": "SR25 Wick Rejection at Confirmed Zone",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_liquidity_sweep_reclaim",
+      "name": "SR25 Liquidity Sweep + Reclaim",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_liquidity_absorption",
+      "name": "SR25 Liquidity Sweep + Volume Absorption",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_previous_day_sweep",
+      "name": "SR25 Previous-Day High/Low Sweep",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_week_month_sweep",
+      "name": "SR25 Previous-Week / Month Extreme Sweep",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_lsob",
+      "name": "SR25 Liquidity Sweep + Order Block",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_impulse_ob_retest",
+      "name": "SR25 Impulse Order Block Retest",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_fvg_first_touch",
+      "name": "SR25 Fair Value Gap First-Touch Rejection",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_inverse_fvg",
+      "name": "SR25 Inverse Fair Value Gap",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_pdh_fvg_mss",
+      "name": "SR25 PDH/PDL Sweep + FVG/MSS",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_supply_demand_retest",
+      "name": "SR25 RBD/DBR Supply-Demand Retest",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_kernel_supply_demand",
+      "name": "SR25 Kernel/Volume-Scored Supply-Demand",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_camarilla_h3_l3",
+      "name": "SR25 Camarilla H3/L3 Mean Reversion",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_camarilla_h4_l4",
+      "name": "SR25 Camarilla H4/L4 Breakout",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_narrow_cpr_breakout",
+      "name": "SR25 Narrow CPR Breakout",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_poc_mean_reversion",
+      "name": "SR25 Volume Profile POC Mean Reversion",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_value_area_80",
+      "name": "SR25 Value-Area Edge / 80% Rule",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_naked_poc_revisit",
+      "name": "SR25 Naked POC Revisit",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_swing_anchored_vwap",
+      "name": "SR25 Swing-Anchored VWAP Rejection / Flip",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_trendline_breakout",
+      "name": "SR25 Multi-Touch Trendline Breakout",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "sr25_donchian_breakout",
+      "name": "SR25 Donchian Dynamic S/R Breakout",
+      "family": "support_resistance",
+      "version": "sr25-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_range12_reclaim",
+      "name": "Sweep Range-12 Reclaim",
+      "family": "liquidity_sweep",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_range24_reclaim",
+      "name": "Sweep Range-24 Reclaim",
+      "family": "liquidity_sweep",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_range48_reclaim",
+      "name": "Sweep Range-48 Reclaim",
+      "family": "liquidity_sweep",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_range96_reclaim",
+      "name": "Sweep Range-96 Reclaim",
+      "family": "liquidity_sweep",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_prior_day",
+      "name": "Previous-Day High/Low Sweep",
+      "family": "liquidity_sweep",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_prior_week",
+      "name": "Previous-Week High/Low Sweep",
+      "family": "liquidity_sweep",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_prior_month",
+      "name": "Previous-Month High/Low Sweep",
+      "family": "liquidity_sweep",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_pivot_sfp",
+      "name": "Confirmed-Pivot Swing Failure",
+      "family": "sfp",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_pivot_sfp_body",
+      "name": "Pivot SFP + Body Confirmation",
+      "family": "sfp",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_volume_absorption",
+      "name": "Sweep + Volume Absorption",
+      "family": "liquidity_volume",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_atr_expansion",
+      "name": "Sweep + ATR Expansion",
+      "family": "liquidity_volatility",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_ema50_filter",
+      "name": "Sweep + EMA50 Direction Filter",
+      "family": "liquidity_trend",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_rsi_exhaustion",
+      "name": "Sweep + RSI Exhaustion",
+      "family": "liquidity_momentum",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_wick_sfp",
+      "name": "Sweep + Wick Rejection",
+      "family": "sfp",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_compression_reclaim",
+      "name": "Compression Sweep + Reclaim",
+      "family": "liquidity_volatility",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_mss_confirm",
+      "name": "Sweep + Micro Structure Shift",
+      "family": "liquidity_structure",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_fvg_after",
+      "name": "Sweep + Post-Sweep FVG",
+      "family": "liquidity_fvg",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_failed_breakout",
+      "name": "Two-Bar Failed Breakout Sweep",
+      "family": "turtle_soup",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_asia_range",
+      "name": "Asia Range Sweep",
+      "family": "session_liquidity",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "swp_opening_range",
+      "name": "UTC Opening-Range Sweep",
+      "family": "session_liquidity",
+      "version": "sweep-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_bollinger_rsi_double",
+      "name": "Bollinger + RSI Double — Derived Adapter",
+      "family": "mean_reversion",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_macd_sma200",
+      "name": "MACD + SMA200 — Derived Adapter",
+      "family": "trend_momentum",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_supertrend_10_3",
+      "name": "SuperTrend 10/3 — Derived Adapter",
+      "family": "trend_atr",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_macd_rsi",
+      "name": "MACD + RSI — Derived Adapter",
+      "family": "momentum",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_hull_suite",
+      "name": "Hull Suite — Derived Adapter",
+      "family": "trend",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_ema_cross_9_21",
+      "name": "Single EMA Cross 9/21 — Derived Adapter",
+      "family": "trend",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_golden_cross_50_200",
+      "name": "Golden Cross SMA50/200 — Derived Adapter",
+      "family": "trend",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_fractal_breakout",
+      "name": "Fractal Breakout — Derived Adapter",
+      "family": "breakout",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_macd_stoch",
+      "name": "MACD + Stochastic — Derived Adapter",
+      "family": "momentum",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_ema_slope_cross",
+      "name": "EMA Slope + EMA Cross — Derived Adapter",
+      "family": "trend",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_squeeze_momentum",
+      "name": "Squeeze Momentum — Derived Adapter",
+      "family": "volatility_momentum",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_adx_di",
+      "name": "ADX + DI — Derived Adapter",
+      "family": "trend_strength",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_coppock",
+      "name": "Coppock Curve — Derived Adapter",
+      "family": "momentum",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_rsi_entries",
+      "name": "RSI Signals Entries — Derived Adapter",
+      "family": "momentum",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_bb_mean_reversion",
+      "name": "Bollinger Mean Reversion — Derived Adapter",
+      "family": "mean_reversion",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_vixfix_reversal",
+      "name": "Williams Vix Fix Reversal — Derived Adapter",
+      "family": "volatility",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_sr_breaks",
+      "name": "Support & Resistance Breaks — Derived Adapter",
+      "family": "breakout",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_high_volume_box",
+      "name": "High Volume Boxes — Derived Adapter",
+      "family": "volume_breakout",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_auto_range_breakout",
+      "name": "Auto Range Detector Breakout — Derived Adapter",
+      "family": "range_breakout",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_fibonacci_bb",
+      "name": "Fibonacci Bollinger Bands — Derived Adapter",
+      "family": "volatility_breakout",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_ichimoku_hull",
+      "name": "Ichimoku + Hull — Derived Adapter",
+      "family": "trend_filter",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_open_close_cross",
+      "name": "Open Close Cross — Derived Adapter",
+      "family": "price_action_trend",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_candlestick_reversal",
+      "name": "Candlestick Reversal Patterns — Derived Adapter",
+      "family": "price_action",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_tma_overlay",
+      "name": "TMA Overlay Reversal — Derived Adapter",
+      "family": "mean_reversion",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_super_scalper",
+      "name": "Super Scalper 5m/15m — Derived Adapter",
+      "family": "scalping",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_nadaraya_watson",
+      "name": "Nadaraya-Watson Envelope — Causal Derived Adapter",
+      "family": "statistical_mean_reversion",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_volume_delta_pivot",
+      "name": "Volume Delta Pivot Matrix — Derived Adapter",
+      "family": "volume_orderflow",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "vis_structure_vwap",
+      "name": "Structure-Anchored VWAP — Derived Adapter",
+      "family": "vwap",
+      "version": "visual-derived-v1",
+      "mode": "REVERSAL"
+    },
+    {
+      "id": "fib_golden_pocket",
+      "name": "Fibonacci Golden Pocket 0.618-0.670",
+      "family": "fibonacci",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "fib_retrace_382",
+      "name": "Fibonacci Retracement 0.382 Reclaim",
+      "family": "fibonacci",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "fib_retrace_500",
+      "name": "Fibonacci Retracement 0.500 Reclaim",
+      "family": "fibonacci",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "fib_retrace_618",
+      "name": "Fibonacci Retracement 0.618 Reclaim",
+      "family": "fibonacci",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "fib_retrace_786",
+      "name": "Fibonacci Retracement 0.786 Reclaim",
+      "family": "fibonacci",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "elliott_w2_w3",
+      "name": "Elliott Wave 2 to Wave 3",
+      "family": "elliott_wave",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "elliott_w4_w5",
+      "name": "Elliott Wave 4 to Wave 5",
+      "family": "elliott_wave",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "elliott_abc",
+      "name": "Elliott ABC Completion Reversal",
+      "family": "elliott_wave",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    },
+    {
+      "id": "harmonic_prz",
+      "name": "Harmonic XABCD PRZ (Gartley/Bat/Butterfly/Crab)",
+      "family": "harmonic_fibonacci",
+      "version": "fib-ew-causal-v1",
+      "mode": "TARGET_POSITION"
+    }
+  ]
+}
