@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "runId": "full-reset-20261001",
+  "families": [
+    {
+      "id": "SR35",
+      "source": "existing",
+      "strategies": 35,
+      "action": "full_rescan"
+    },
+    {
+      "id": "SWEEP20",
+      "source": "existing",
+      "strategies": 20,
+      "action": "full_rescan"
+    },
+    {
+      "id": "ALGO9_KIVANC",
+      "source": "existing",
+      "strategies": 9,
+      "action": "full_rescan"
+    },
+    {
+      "id": "FIB_ELLIOTT",
+      "source": "existing",
+      "strategies": [
+        "fib_golden_pocket",
+        "fib_retrace_382",
+        "fib_retrace_500",
+        "fib_retrace_618",
+        "fib_retrace_786",
+        "elliott_w2_w3",
+        "elliott_w4_w5",
+        "elliott_abc",
+        "harmonic_prz"
+      ],
+      "action": "full_rescan"
+    },
+    {
+      "id": "Q_CLASS_RECOVERY",
+      "source": "existing",
+      "action": "full_rescan_separate"
+    },
+    {
+      "id": "NEARPASS_RECOVERY",
+      "source": "existing",
+      "action": "full_rescan_separate"
+    },
+    {
+      "id": "STR100_EXACT",
+      "source": "existing",
+      "declaredManifestItems": 100,
+      "action": "resume_source_recovery_then_full_rescan"
+    },
+    {
+      "id": "FREQTRADE_SCALP",
+      "source": "existing",
+      "action": "inventory_then_full_rescan_separate"
+    },
+    {
+      "id": "MODEL_BASED",
+      "source": "existing",
+      "strategies": [
+        "DiffQuant",
+        "D3QN",
+        "QUANTUM_NINJA",
+        "ai-trading-system",
+        "crypto-trading-ai-SAC"
+      ],
+      "action": "benchmark_separate"
+    },
+    {
+      "id": "NEW_DISCOVERY",
+      "source": "new_research",
+      "action": "add_only_as_new_provenance_never_modify_existing"
+    }
+  ]
+}
