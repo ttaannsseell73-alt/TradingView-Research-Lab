@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "engine": "SCALPING_ENGINE_V1",
+  "mode": "ONE_WAY_SINGLE_IMPULSE",
+  "entry": {
+    "freshCanonicalSignalOnly": true,
+    "directionLockedPerSetup": true,
+    "nextBarExecution": true,
+    "onePositionPerSymbol": true,
+    "pyramiding": false
+  },
+  "positionLifecycle": {
+    "reverseInPlace": false,
+    "oppositeSignalAction": "EXIT_ONLY",
+    "reentryRequiresNewFreshSignal": true
+  },
+  "exit": {
+    "doNotWaitForOriginalStrategyReversal": true,
+    "model": "ADAPTIVE_IMPULSE_EXIT_PENDING_VALIDATION",
+    "components": ["hard_stop", "atr_or_structure_trailing", "opposite_signal_exit", "time_stop"]
+  },
+  "leverage": {
+    "candidates": [3, 5, 10],
+    "globalApproval": false,
+    "approvalScope": "PER_SETUP",
+    "x10Status": "NOT_APPROVED",
+    "note": "Raw one-way exits and first fixed hard-exit baseline both failed 12m leverage robustness; leverage requires adaptive impulse-exit replay."
+  },
+  "evidence": {
+    "eligibleSetups": 33,
+    "directionLong": 29,
+    "directionShort": 4,
+    "sourceRule": "3/3 AND 6/6 + current coin health",
+    "variantsInSourceStrategies": false
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "engine": "SCALPING_ENGINE_V1",
+  "promotionRule": "OOS last 3 months 3/3 AND last 6 months 6/6; current health required",
+  "liveApproved": false,
+  "leveragePolicy": {
+    "x3": "PRIMARY_RESEARCH",
+    "x5": "EXPERIMENTAL",
+    "x10": "DISABLED_NO_POSITIVE_OOS"
+  },
+  "defaultAccountRiskPerTrade": 0.005,
+  "candidates": [
+    {
+      "tier": "NEAR_PASS",
+      "symbol": "MONUSDT",
+      "timeframe": "15m",
+      "direction": "LONG",
+      "signalCluster": "MON_15M_LIQUIDITY_RECLAIM_EQUIV",
+      "primaryStrategy": "sr_liquidity_sweep",
+      "aliases": [
+        "sr25_liquidity_sweep_reclaim",
+        "swp_range24_reclaim"
+      ],
+      "leverage": 3,
+      "accountRisk": 0.005,
+      "exitPolicy": "M10_S5",
+      "maxHoldHours": 4,
+      "oos3": 3,
+      "oos6": 5,
+      "oosNet": 0.1585,
+      "oosMaxDD": 0.0582,
+      "oosPF": 1.372,
+      "trades": 215,
+      "status": "NOT_PROMOTED_5_OF_6"
+    },
+    {
+      "tier": "RESEARCH",
+      "symbol": "MONUSDT",
+      "timeframe": "15m",
+      "direction": "LONG",
+      "primaryStrategy": "swp_atr_expansion",
+      "leverage": 3,
+      "accountRisk": 0.005,
+      "exitPolicy": "M5_S3",
+      "maxHoldHours": 4,
+      "oos3": 3,
+      "oos6": 4,
+      "oosNet": 0.1003,
+      "oosMaxDD": 0.0751,
+      "oosPF": 1.293,
+      "trades": 128,
+      "status": "NOT_PROMOTED_4_OF_6"
+    },
+    {
+      "tier": "RESEARCH",
+      "symbol": "GRASSUSDT",
+      "timeframe": "5m",
+      "direction": "LONG",
+      "primaryStrategy": "sr25_poc_mean_reversion",
+      "leverage": 3,
+      "accountRisk": 0.005,
+      "exitPolicy": "M7_5_S5",
+      "maxHoldHours": 2,
+      "oos3": 3,
+      "oos6": 3,
+      "oosNet": 0.0345,
+      "oosMaxDD": 0.0829,
+      "oosPF": 1.091,
+      "trades": 222,
+      "status": "NOT_PROMOTED_3_OF_6"
+    },
+    {
+      "tier": "EXPERIMENTAL_X5",
+      "symbol": "MONUSDT",
+      "timeframe": "15m",
+      "direction": "LONG",
+      "primaryStrategy": "swp_atr_expansion",
+      "leverage": 5,
+      "accountRisk": 0.005,
+      "exitPolicy": "M10_S5",
+      "maxHoldHours": 4,
+      "oos3": 3,
+      "oos6": 3,
+      "oosNet": 0.1096,
+      "oosMaxDD": 0.1015,
+      "oosPF": 1.309,
+      "trades": 128,
+      "status": "NOT_PROMOTED_3_OF_6"
+    }
+  ],
+  "exactScalpSources": [
+    {
+      "key": "025-super-scalper-5-min-15-min",
+      "status": "REJECT_3M_GATE",
+      "pass3": 0,
+      "pass6": 0
+    },
+    {
+      "key": "023-macd-reloaded-strategy",
+      "status": "RESEARCH_ONLY",
+      "pass3": 24,
+      "pass6": 0
+    },
+    {
+      "key": "026-swing-failure-pattern-strategy-btc-only-5min",
+      "status": "RUNNING_RUNTIME_HEAVY"
+    },
+    {
+      "key": "027-crypto-institutional-liquidity-sweep-strategy",
+      "status": "RUNNING_RUNTIME_HEAVY"
+    }
+  ]
+}
